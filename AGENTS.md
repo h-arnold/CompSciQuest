@@ -41,6 +41,18 @@ build/test commands.
   `eslint-plugin-unicorn` recommended, and `eslint-plugin-sonarjs` recommended.
   Don't add legacy `.eslintrc*` files.
 
+## Language and tone
+
+- Use **British English at all times** — in documentation, code comments, commit
+  messages, agent prompts and all game text. Prefer `-ise`/`-isation`, "colour",
+  "behaviour" and "organise"; use British punctuation and date order; never slip
+  into American spellings.
+- The `content-editor` agent should aim to weave **subtle Welsh references** into
+  the game world where appropriate: place and character names, turns of phrase
+  and small cultural details. Keep them accurate and unobtrusive — they should
+  enrich the setting, not become a lesson or obscure the GCSE content. The exam
+  specification remains the authority for all course facts.
+
 ## Host gotchas
 
 - The three bind-mount source dirs must exist on the **host** before `devcontainer up`,
