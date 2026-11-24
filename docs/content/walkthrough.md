@@ -11,6 +11,12 @@ from the accepted cards only: `rooms.md`, `npcs.md`, `quizzes.md`, `puzzles.md`,
 `hazards.md` and `hints.md`, plus the approved bible and topic file. `content-critic`
 verifies it read-only on the final pass (content-rules.md V4, W4).
 
+> **Format migration.** Those six cards are being migrated verbatim to the
+> corresponding `.yaml` files under `docs/content/1-2-1-data-representation/`
+> (see `status.md`). The `.md` names above and elsewhere in this trace are
+> historical provenance; they resolve on migration to the YAML cards. Migration
+> changes format only, so this trace remains the V4 oracle.
+
 ## 1. Win set and completion sources
 
 Per content-rules.md §8, `game-won` fires when every mapped spec topic with `covered`

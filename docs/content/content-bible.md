@@ -11,6 +11,13 @@ changes only with their agreement (content-rules.md §2, W1–W2). It governs cr
 choices; the rulebook governs authoring practice; `docs/exam-specs/wjec-unit1.md`
 governs course facts.
 
+> **Format migration.** The six approved first-zone cards are being migrated
+> verbatim to YAML under `docs/content/1-2-1-data-representation/`, as described
+> in `status.md` and specified in `docs/developer/content-toolchain.md`. Any
+> `*.md` card name cited in this bible is historical provenance; it resolves on
+> migration to the corresponding `.yaml` card. Migration changes format only — never
+> narrative, IDs, flags, dependencies or scores.
+
 ## 1. Authority and file map
 
 Authority order when sources disagree (content-rules.md §1): course facts →
