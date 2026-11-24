@@ -25,6 +25,21 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
 RUN curl -fsSL https://opencode.ai/v2/install | bash
 ENV PATH="/root/.opencode/bin:/root/.local/bin:${PATH}"
 
+# --- uv + Graphify CLI (local-only knowledge graph) ---
+# Graphify's official PyPI package is `graphifyy` (command: `graphify`) and needs
+# Python 3.11.5-3.14; uv fetches its own Python 3.12 so the Debian 3.11.2 system
+# interpreter is irrelevant. The `mcp` extra adds `graphify-mcp` so OpenCode can
+# query this repo's graph over local stdio; the `pdf` extra lets the skill read
+# spec PDFs. No Graphify account, API key or hosted MCP endpoint is used.
+# GRAPHIFY_BACKEND=none disables headless LLM backends, so CLI extraction stays
+# deterministic and offline. (The OpenCode skill can still use the session's own
+# model for docs/PDFs; pick a local model if that must stay offline too.)
+# NO_CTA hides the hosted-product upsell in CLI output.
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && uv tool install --python 3.12 "graphifyy[mcp,pdf]==0.9.118"
+ENV GRAPHIFY_BACKEND=none \
+    GRAPHIFY_NO_CTA=1
+
 # --- Playwright + browsers/OS deps, vite, vitest ---
 # Pinned to the latest versions verified against the npm registry on 2026-11-24
 # (engines checked: all support Node 26). Bump with `npm install -g <pkg>@latest`.

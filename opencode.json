@@ -1,0 +1,13 @@
+{
+  "mcp": {
+    "servers": {
+      "graphify-local": {
+        "type": "local",
+        "command": [
+          "graphify-mcp",
+          "/workspaces/CompSciQuest/graphify-out/graph.json"
+        ]
+      }
+    }
+  }
+}
