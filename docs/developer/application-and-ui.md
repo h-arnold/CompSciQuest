@@ -164,26 +164,50 @@ export function loadContent(): ContentBundle;
 export function validateContent(bundle: ContentBundle): readonly string[];
 ```
 
+`loadContent()` returns the `ContentBundle` assembled from the committed generated
+files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
-means valid. It runs the structural gates already specified in
-[content-rules.md §7](content-rules.md#7-structural-validation-gates-specification-only)
-at boot, including:
+means valid. It runs the eight shared structural gates in
+[content-rules.md §7](content-rules.md#7-structural-validation-gates) against the
+bundle at boot, including:
 
 - unique artifact IDs and globally unique object/NPC aliases;
 - every exit target, `initialRoom`, `startRoomId` and `move-player` target exists;
+- the start resolves through the world's `startAreaId` and that area's
+  `startRoomId`, never by array position;
 - topic IDs, puzzle dependencies and hazard/quiz/hint targets exist;
 - per-topic score budgets hold (§10 of this document).
 
-Vitest runs the same function against small fixtures and against the real
-catalogues, so boot validation and test validation cannot drift.
+NPC actor binding is pending the user-owned runtime-type decision recorded in
+[content-rules.md §8](content-rules.md#8-decisions-content-must-not-assume), so
+that clause of the `npc-content` gate is not yet enforced. Authoring-only checks
+(stray keys outside `authoring:`, document status, unresolved `todo` placeholders)
+run in `npm run content:validate` on the YAML and cannot run on the runtime
+bundle. Apart from that split, authoring-time, test-time and boot-time validation
+use the same gate functions and cannot drift. Vitest runs `validateContent`
+against small deterministic fixtures and against the real catalogues.
+
+`GameState.createInitial()` takes its world, area, room and room inventory from
+the supplied bundle instead of importing `stubBundle`; it resolves the area by
+the world's `startAreaId` and the room by that area's `startRoomId`.
+`Game.newGame()` calls it directly, so array position is never a substitute for
+the authored start.
 
 ### 3.4 Stub fixture
 
 The skeleton ships a clearly marked stub under `src/content/stub/` — one world,
 one area and two rooms, with empty catalogues for the five later mechanics. It
-exists only so the app boots and Playwright has a deterministic world. It is
-deleted when the first real area is converted from cards. The stub is data, not
-engine code, and carries a `// STUB — replace with authored content` note.
+exists only so the app boots and Playwright has a deterministic world. The stub
+is data, not engine code, and carries a `// STUB — replace with authored content`
+note.
+
+When the first real area is generated, the stub's placeholder data and the direct
+`stubBundle` import are removed: bundle assembly moves into
+`src/content/index.ts`, which returns the committed generated content, and the
+assembly seam is retained rather than deleted. Unit tests use a separate
+deterministic fixture, not the generated zone content. See
+[content-toolchain.md §5](content-toolchain.md#5-generation) for the generation
+handoff.
 
 ## 4. Game façade and meta actions
 
