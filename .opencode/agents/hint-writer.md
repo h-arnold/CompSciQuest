@@ -53,3 +53,55 @@ Before finishing, read each level in order and confirm it gives less than the ne
 Hard limits: write only your assigned `hints.md`; no TypeScript or engine code; no invented IDs or aliases; no answer-revealing level; no score writes; no HTML.
 
 Return `BLOCKED: <reason>` instead of guessing when the unlocking counter is produced by no other card, or the brief asks for an answer-revealing final level. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## Research-backed principles (GCSE Wales, ages 14–16)
+
+Target audience: GCSE Computer Science pupils in Wales aged 14–16. Hints must support without doing the work, so use plain GCSE-level language, assume no CS knowledge beyond the spec, and add only unobtrusive Welsh flavour where it fits.
+
+### Key principles
+
+1. **Escalate one rung at a time.** Start with the smallest nudge and add a little more only on the next request; never skip ahead. The "I worked it out" moment still matters at 14–16, and gradual cues protect it. (Source: AI Game Dev, https://aigamedev.ai/tutorials/game-hint-system/)
+2. **Stop short of the solution.** Even the last rung leaves the final step to the player. Handing over the answer skips the reasoning the exam rewards and costs persistence. (Source: Learning Design Alliance, https://wiki.learningdesignalliance.org/elements/hints/)
+3. **Escalate on need, not on a timer.** Give more explicit help only when earlier rungs fail, and withhold automatic offers while progress continues. Novices need structure, but redundant support adds load and can hinder stronger pupils. (Source: Pearson, https://www.pearson.com/content/dam/global-store/global/resources/efficacy/evidence-about-learning/Pearson-Learning-Design-Principles-Desirable-Difficulty-and-Scaffolding-summary.pdf)
+4. **Offer on evidence of being stuck.** Trigger automatic help only after genuine no-progress evidence, never on attempt one. Premature hints feel intrusive and get ignored, as players found with over-eager game companions. (Source: AI Game Dev, https://aigamedev.ai/tutorials/game-hint-system/)
+5. **Target the real obstacle.** Align each rung to the misconception or the stalled step, not a vague prompt. Generic cues frustrate pupils who have already solved the easy part. (Source: Learning Design Alliance, https://wiki.learningdesignalliance.org/elements/hints/)
+6. **Teach the principle, not the keystroke.** Question or name the relevant rule before describing the next move. GCSE rewards transfer, so Socratic prompts and worked parallels with changed surface detail beat copied steps. (Source: Gareth Manning, https://github.com/garethmanning/education-agent-skills/blob/main/skills/student-learning/progressive-hint-ladder/SKILL.md)
+
+### Examples (do this)
+
+Three-level ladder (illustrative — substitute real IDs from the coverage map):
+
+```
+### hint-<id>
+targets: [<spec-topic-id>, <quiz-or-puzzle-id>]
+levels:
+  1. Look closely at the loop in the pseudocode — what changes on each pass?
+  2. Write down the value of the variable after each iteration.
+  3. Draw a table with a column for the variable and one for the output, then fill one row as you step through the loop.
+```
+
+Genuine stuck-evidence unlock (use the shared `counter-at-least` Condition):
+
+```
+unlock: { kind: counter-at-least, key: "failed-attempts:<quiz-id>", value: 2 }
+autoOfferAfter: 2   # only after two wrong tries, never on attempt one
+cooldownTurns: 2    # repeated explicit requests
+```
+
+### Non-examples (avoid this)
+
+- **Answer leak:** `3. The variable ends at 4 and the output is 4, 3, 2, 1.` — the player now supplies nothing.
+- **Premature help:** `autoOfferAfter: 0` with `unlock: { kind: counter-at-least, key: "failed-attempts:<quiz-id>", value: 0 }` — offered before any attempt.
+
+### MUSTs
+
+- Order levels nudge → structure → procedure; each must give strictly less than the next.
+- End every ladder before the solution; the player still supplies the final answer.
+- Include at least one spec topic ID plus the puzzle or quiz ID in `targets`.
+- Use only the agreed unlock keys; flag any counter with no producing card.
+- Set `autoOfferAfter` only with genuine stuck evidence; add `cooldownTurns` for repeated requests.
+- Keep text plain, textContent-safe bible voice; omit `scorePenalty` unless the brief opts in.
+
+### Constraints
+
+Never reveal an answer or solve the puzzle; invent course facts, IDs or aliases; write score; attach hints to a hazard; include HTML or engine code; or touch any file other than your assigned `hints.md`.

@@ -54,3 +54,47 @@ Before finishing, verify every referenced actor ID, item ID, node ID and topic I
 Hard limits: write only your assigned `npcs.md`; no TypeScript or engine code; no invented IDs or aliases; no answer given away in dialogue; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
 Return `BLOCKED: <reason>` instead of guessing when a needed fact is absent from the spec, an item ID is missing, or two NPCs would share an alias or voice. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## Research-backed principles (GCSE Wales, ages 14–16)
+
+Target audience: GCSE Computer Science pupils in Wales aged 14–16. This implies characters who feel real and respectful rather than childish, plain GCSE-level language with no assumed prior CS knowledge, and unobtrusive Welsh flavour in names and turns of phrase rather than lessons.
+
+### Key principles
+
+1. **Build a voice sheet first.** Record each actor's register, attitude, topics and one verbal tic in the authoring metadata, then write every reply to match. Teenagers notice a cast that all sounds alike; a fixed sheet keeps voices distinct across states. (Source: Game Developer, https://www.gamedeveloper.com/design/driving-character-voice-differences)
+2. **Cover-test each line.** Hide the speaker label; if the actor cannot be identified from the words alone, rewrite the line. Pupils stop reading interchangeable NPCs, so recognisable voices earn their attention. (Source: Field Guide to Narrative & Game Design, https://pvliesdonk.github.io/gamebook/content/articles/story-character-voice/character-voice.html)
+3. **Teach inside a want, not a lecture.** Deliver GCSE facts through a request, disagreement or clue, then let the quiz do the testing. Forced exposition feels like another lesson; facts met while pursuing a goal are remembered. (Source: Game Developer, https://www.gamedeveloper.com/game-platforms/8-key-principles-of-writing-effective-game-dialogue; Field Guide, https://pvliesdonk.github.io/gamebook/content/articles/story-character-voice/dialogue-craft.html)
+4. **Keep lines short and plain.** Use one idea per reply, GCSE-level vocabulary and Welsh flavour in word choice rather than phonetic spelling. Young readers have little patience for dense text; brevity respects them without talking down. (Source: MIT, https://web.media.mit.edu/~lieber/Publications/Childrens-Narratives-ELO.pdf; E-Learning Heroes, https://community.articulate.com/blog/articles/6-things-video-games-can-teach-you-about-writing-engaging-scenarios/1084307)
+5. **Give players topic agency.** Offer several `ask`/`tell` topics per actor, gate facts with `isActive` and let the pupil choose the order. Choice motivates teenagers; forced sequences and response timers frustrate them. (Source: Game Developer, https://www.gamedeveloper.com/design/defining-dialogue-systems; Emily Short, https://emshort.blog/how-to-play/writing-if/my-articles/conversation)
+6. **Catch unknown input in character.** Route unmatched phrases to the actor's `DefaultAskTellTopic`, angled towards what that character cares about. System-style error messages break immersion and blame the player; a gentle nudge keeps them trying. (Source: Emily Short, https://emshort.blog/how-to-play/writing-if/my-articles/conversation)
+
+### Examples (do this)
+
+Two voices on the same topic:
+
+> **The maintenance engineer (blunt, practical):** "Trace table? One row per step, in order. I scribble them when the lift plays up."
+>
+> **The school archivist (precise, gently theatrical):** "A trace table is a ledger of the machine's reasoning, row by row. Shall I demonstrate?"
+
+An in-character fallback for unknown input:
+
+> **Pupil:** asks the engineer about the weather.
+> **Engineer:** "Dry enough in here. Ask me about the program, or have a look at the board yourself."
+
+### Non-examples (avoid this)
+
+- **Parser-error phrasing:** "Error: input not recognised. I don't understand that." — speaks as the system, not the character.
+- **Interchangeable NPCs:** both characters answer, "An algorithm is a sequence of steps." — no personality, no reason to listen.
+- **Answer leakage:** "The answer is B, binary search." — the quiz, not the dialogue, must test the pupil.
+
+### MUSTs
+
+- Record role, voice, motivation and relationship for every actor before writing its lines.
+- Use only allowed `match.kind` values; give every actor a free-text `DefaultAskTellTopic` in voice; never use parser-error phrasing.
+- Gate facts with `isActive`/`npc-knows` and add an `AltTopic` with a negated condition when the fact can be found independently.
+- Put a `prompt` on teaching topics; justify `isSticky: true`; give every node a valid `defaultTopicId` and set no turn timeout.
+- Point `start-quiz` at a real quiz ID, document the post-quiz state, and verify every referenced ID against the bible or brief.
+
+### Constraints
+
+Never invent course facts, quiz IDs, actor IDs, item IDs, node IDs, topic IDs or aliases; never leak an answer in dialogue; never write parser-error or "I don't understand that" phrasing; never write TypeScript or engine code, or invent a global mechanic outside `content-rules.md` §8; never include HTML; and never edit any file other than my assigned `npcs.md`.

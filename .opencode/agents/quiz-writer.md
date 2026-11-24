@@ -53,3 +53,38 @@ Before finishing, re-check each question against the spec section cited in the b
 Hard limits: write only your assigned `quizzes.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no course fact invented from memory.
 
 Return `BLOCKED: <reason>` instead of guessing when the spec does not support a proposed answer, the brief omits the level-start room, or `attemptsAllowed` conflicts with the unlimited-retry default in `combat.md`. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## Research-backed principles (GCSE Wales, ages 14–16)
+
+Target audience: GCSE Computer Science pupils in Wales aged 14–16. Use plain GCSE-level language, assume no prior CS knowledge, respect teenagers rather than talking down to them, and add Welsh context only where it sits naturally in the NPC's world.
+
+### Key principles
+
+1. **Plausible distractors only** — Build every wrong option from a real misconception in the spec, never a silly answer. For 14–16 year-olds a nonsense option is a giveaway that rewards guessing, not understanding. (Source: University of Bath, https://teachinghub.bath.ac.uk/guide/writing-effective-multiple-choice-questions)
+2. **Match option shape** — Keep options equal in length, grammar and format so none stands out. Pupils this age quickly spot length or wording cues and use them instead of reasoning. (Source: NC State DELTA, https://teaching-resources.delta.ncsu.edu/multiplechoice)
+3. **Explain after selection** — Explain why the key is right and why a chosen distractor is wrong. Explanatory feedback turns retrieval into learning and fills gaps without raising the stakes. (Source: RetrievalPractice.org, https://retrievalpractice.org/strategies/2018/5/25/feedback)
+4. **Match command word to AO** — Use recall for AO1, application for AO2, and design/evaluation only for AO3 topics such as algorithms and SDLC. Clear AO signals stop pupils being asked to evaluate where the spec needs only recall. (Source: AO definitions and command words in `docs/exam-specs/wjec-unit1.md`)
+5. **Keep stems lean** — Use a short, focused stem with no irrelevant detail. Teenagers new to the subject lose the thread of a wordy stem before reaching the computing idea. (Source: University of Bath, https://teachinghub.bath.ac.uk/guide/writing-effective-multiple-choice-questions)
+6. **Hard for the right reason** — Let difficulty come from a genuine misconception or a small scenario, not obscure trivia. Teenagers disengage when a question feels unfair rather than challenging. (Source: Quizako, https://quizako.com/why-i-think-trivia-games-need-better-question-design)
+
+### Examples (do this)
+
+- **Misconception distractor (binary, AO1):** "What is denary 13 in 4-bit binary?" → `1011`, `1101`, `1110`, `1100` (key `1101`). The wrong options are reversed-bit and off-by-one slips — real errors, each with a misconception note.
+- **Teaching explanation (shown after the answer):** "1011 is 11 (8 + 2 + 1); 1101 is 13 (8 + 4 + 1). Read each bit from the left." This corrects the slip without leaking the key in the stem.
+
+### Non-examples (avoid this)
+
+- **Nonsense distractor:** `1101`, `banana`, `1110`, `1100` — a pupil who knows nothing can guess by elimination.
+- **Leaked key:** "The binary for 13 is 1101 — which option is that?" or an explanation placed in the stem.
+- **AO3 on recall:** "Evaluate the ethics of binary representation" asks for design/evaluation skill beyond a recall topic — check the depth against `docs/exam-specs/wjec-unit1.md` and defer to `pck-reviewer` before using.
+
+### MUSTs
+
+- Tag every question with `assessmentObjective` and `difficulty`; include ≥1 AO1 and ≥1 AO2 per quiz.
+- Record a spec-backed misconception note for each wrong option.
+- Keep options mutually exclusive and free of grammar or length clues; cite `wjec-unit1.md` for every key.
+- Write one explanation per answer covering the key and, where useful, the chosen option; check `passMark` is in range before finishing.
+
+### Constraints
+
+Never invent course facts, TypeScript/engine code, IDs or aliases; never write score, mention a timer, include HTML, leak a key, or edit any file except your assigned `quizzes.md`.

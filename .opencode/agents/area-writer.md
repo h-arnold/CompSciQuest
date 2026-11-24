@@ -52,3 +52,48 @@ Before finishing, check every ID against the registry, every topic ID against th
 Hard limits: write only your assigned `rooms.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
 Return `BLOCKED: <reason>` instead of guessing when a gate needs a door or exit not in the bible, a clue belongs in another writer's card, an exit target is missing, or a topic ID is not in `COVERAGE.md`. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## Research-backed principles (GCSE Wales, ages 14–16)
+
+Target audience: GCSE Computer Science pupils in Wales aged 14–16. This calls for readable, respectful prose in plain GCSE-level vocabulary, no assumed prior CS knowledge, and unobtrusive Welsh flavour where it fits.
+
+### Key principles
+
+1. **Second person, present tense** — Write as "you" acting now. It puts every reader in the scene without naming a hero or gender. (Source: https://lanternsaga.com/guides/writing-interactive-fiction)
+2. **One to three essentials per room** — State what matters; leave the rest for EXAMINE. Teenagers scan, so a short purposeful paragraph gets read rather than skipped. (Source: https://www.inform-fiction.org/manual/html/s51.html)
+3. **Show, do not tell** — Let a curling chart or a signpost carry the fact instead of stating it. Inference rewards attention and avoids the tone of a lesson. (Source: https://writing-games.org/writing-room-descriptions-tips-and-examples/)
+4. **One true detail per place** — Give each room a single concrete image rather than a stack of adjectives. One sharp image is easier to picture and recall. (Source: https://sub-q.com/room-descriptions-place-and-interiority/)
+5. **Signpost exits with a landing point** — Bind a direction to a named landmark ("the door north leads to the corridor"). Stable anchors stop pupils getting lost and cut cognitive load. (Source: https://dramafork.com/blog/text-map-orientation)
+6. **Keep descriptions stable** — Do not rewrite a room on every state change; note the exception instead. Pupils orient faster when a place looks the same on return. (Source: http://www.aaronareed.net/papers/overview-paper-elo.pdf)
+7. **Plain words, short sentences** — Aim for 15–20 words per sentence and explain any technical term on first use. Plain English aids readers on small screens or with lower literacy without patronising them. (Source: https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-language/)
+
+### Examples (do this)
+
+**Room description (≤80 words):**
+
+> In front of you, sunlight through the blinds stripes six benches where old machines hum. A wall chart shows the parts of a computer, its labels curling at the corners. On the front bench a cardboard box holds a tangle of keyboards. A door north leads to the corridor; a notice by the west door reads "Storfa — staff only". Somewhere a printer clatters, then falls silent.
+
+**Gate with two discoverable clues (the locked storfa cupboard):**
+
+> - Room text: the notice reads "Storfa — staff only", and a sticky key is pinned beside it.
+> - Item text: `EXAMINE the notice` says the cupboard is locked; `EXAMINE the sticky key` says it fits the storfa cupboard.
+> - `USE the sticky key on the cupboard` (canonical `use <item> on <target>`) sets the action flag `store-open`; the gate depends on that flag, not on carrying an item.
+
+### Non-examples (avoid this)
+
+- **First person, past tense, dictated feeling:** "I stepped into the lab. A chart hung there and it made me feel uneasy." Breaks second-person present voice and tells the reader what to feel.
+- **Maze with no signposting:** "a corridor", "another corridor", "a corridor with a door" — no landmarks, no named exits. Pupils cannot navigate without guessing.
+- **Guess-the-noun gate:** "The cupboard is locked. Something opens it." No named, examinable object and no clue to the code.
+
+### MUSTs
+
+- Count every description: ≤80 words, second person, present tense.
+- Give every room registry aliases, an `interesting` hook and ≥1 bible topic ID (or `navigation-only`).
+- Check every exit direction and target against the registry; use only the shared `Condition` union.
+- Place ≥2 discoverable clues per gate and name, in `useNotes`, the action that sets each flag.
+- Mark exactly one `levelStart: true` where a hazard or quiz failure can teleport.
+- Verify all IDs and topic IDs, then re-read each description for a consistent voice.
+
+### Constraints
+
+Never invent course facts, IDs, aliases or mechanics outside `content-rules.md` §8. Never build a maze or a guess-the-verb/noun trap. Never add a door or exit absent from the bible without flagging it. Never write score, engine code or HTML. Never touch any file except your assigned `rooms.md`.
