@@ -20,6 +20,17 @@ Open the repo in VS Code and "Reopen in Container" (or `devcontainer up`).
 (`~/.config/gh`, `~/.config/opencode`, `~/.local/share/opencode`), so run
 `gh auth login` inside the container once and it persists on the host.
 
+Note: the bind-mount source directories must already exist on the host —
+rootless Docker fails container creation with "invalid mount configuration"
+if they don't, so create them once:
+
+```sh
+mkdir -p ~/.config/gh ~/.config/opencode ~/.local/share/opencode
+```
+
+No `consistency=cached` on the mounts: that option only exists on Docker
+Desktop (macOS/Windows) and is rejected/ignored by the Linux daemon.
+
 To bump the pinned npm packages later:
 
 ```sh
