@@ -48,6 +48,6 @@ Before finishing, check that each hazard's level-start room exists in the bible 
 
 ## Constraints and escalation
 
-Hard limits: write only your assigned `hazards.md`; no TypeScript or engine code; no invented IDs or aliases; no unavoidable repeat damage; no HTML; no mechanic assumed from `architecture.md` §11.
+Hard limits: write only your assigned `hazards.md`; no TypeScript or engine code; no invented IDs or aliases; no unavoidable repeat damage; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
 Return `BLOCKED: <reason>` instead of guessing when no counterplay can be designed, the level-start room is missing, or repeatable damage cannot be bounded by a cooldown. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

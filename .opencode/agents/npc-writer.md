@@ -51,6 +51,6 @@ Before finishing, verify every referenced actor ID, item ID, node ID and topic I
 
 ## Constraints and escalation
 
-Hard limits: write only your assigned `npcs.md`; no TypeScript or engine code; no invented IDs or aliases; no answer given away in dialogue; no HTML; no mechanic assumed from `architecture.md` §11.
+Hard limits: write only your assigned `npcs.md`; no TypeScript or engine code; no invented IDs or aliases; no answer given away in dialogue; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
 Return `BLOCKED: <reason>` instead of guessing when a needed fact is absent from the spec, an item ID is missing, or two NPCs would share an alias or voice. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

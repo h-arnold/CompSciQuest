@@ -327,7 +327,7 @@ Every agent file contains two sections: **Definition of done** (binary checks th
 
 1. Only the file named in the brief was changed.
 2. Every ID and alias comes from the bible registry; every topic ID exists in `COVERAGE.md`; runtime field names match the subsystem docs and optional fields are omitted.
-3. Conditions, triggers and effects use only the shared unions; no score is written by content; no HTML is produced; no mechanic is assumed from §8.
+3. Conditions, triggers and effects use only the shared unions; no score is written by content; no HTML is produced; the §8 decisions are used as given, with scoring points and verb aliases authored as content rather than invented as global rules.
 4. Writers end with a report containing the file path, artifact IDs and flagged assumptions. Reviewers end with findings in the required format and exactly one verdict line.
 5. No blocker or major finding from either reviewer remains unresolved in the final round.
 
@@ -336,10 +336,10 @@ Every agent file contains two sections: **Definition of done** (binary checks th
 - Neither writers nor reviewers edit another agent's file. Reviewers edit nothing at all.
 - No course fact is invented from memory or fetched from the web. Unverifiable claims become findings, not corrections.
 - No TypeScript, engine code, rulebook, agent-file or config changes.
-- Undecided mechanics in §8 are escalated to the user, never guessed.
+- The §8 decisions are authoritative. If the bible is silent on a mechanic outside that table, escalate to the user rather than guessing.
 
 ### 9.3 Stop-and-escalate and the review loop
 
-Return `BLOCKED: <reason>` rather than guessing when: a required ID, alias or topic ID is missing; the brief conflicts with the bible, the spec or this rulebook; a subject claim is unverifiable; a mechanic is undecided; a dependency would create a cycle or an unreachable puzzle; or no counterplay can be designed for a hazard.
+Return `BLOCKED: <reason>` rather than guessing when: a required ID, alias or topic ID is missing; the brief conflicts with the bible, the spec or this rulebook; a subject claim is unverifiable; a mechanic outside the §8 decisions and the bible is unclear; a dependency would create a cycle or an unreachable puzzle; or no counterplay can be designed for a hazard.
 
 After a review round, a writer may revise **only its own file, at most two rounds**. If the finding requires another agent's file or a bible change, it returns `BLOCKED: <finding> requires <owner>` (owner = editor, another writer or the bible). The editor reconciles by updating the bible and re-briefing; it never edits a writer's card itself. Reviewers do not enter this loop — they return findings and the editor routes them.

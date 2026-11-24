@@ -34,7 +34,7 @@ Rules you own: N1, N2, N4–N8, D1–D4. In particular:
 - Declare exactly one `levelStart: true` per area if hazards or quiz failures can teleport there.
 - Item `useNotes` states which action sets which flag: puzzles depend on action-set flags, not possession.
 
-Do not: write TypeScript or engine code; invent IDs or aliases; add a door or exit not in the bible without flagging it; write score; include HTML; assume an undecided mechanic from `architecture.md` §11.
+Do not: write TypeScript or engine code; invent IDs or aliases; add a door or exit not in the bible without flagging it; write score; include HTML; invent a global mechanic outside `content-rules.md` §8.
 
 Before finishing, check every ID against the registry, every topic ID against the bible, and re-read each description for voice (N4). Report back a short summary: file path, room IDs, topic IDs and any assumptions you flagged.
 
@@ -49,6 +49,6 @@ Before finishing, check every ID against the registry, every topic ID against th
 
 ## Constraints and escalation
 
-Hard limits: write only your assigned `rooms.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no mechanic assumed from `architecture.md` §11.
+Hard limits: write only your assigned `rooms.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
 Return `BLOCKED: <reason>` instead of guessing when a gate needs a door or exit not in the bible, a clue belongs in another writer's card, an exit target is missing, or a topic ID is not in `COVERAGE.md`. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
