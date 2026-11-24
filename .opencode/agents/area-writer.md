@@ -37,3 +37,18 @@ Rules you own: N1, N2, N4–N8, D1–D4. In particular:
 Do not: write TypeScript or engine code; invent IDs or aliases; add a door or exit not in the bible without flagging it; write score; include HTML; assume an undecided mechanic from `architecture.md` §11.
 
 Before finishing, check every ID against the registry, every topic ID against the bible, and re-read each description for voice (N4). Report back a short summary: file path, room IDs, topic IDs and any assumptions you flagged.
+
+## Definition of done
+
+- Only `rooms.md` changed; frontmatter is valid and every artifact is a `### <id>` section.
+- Each room has id, title, a ≤80-word second-person present-tense description, registry aliases, `interesting`, ≥1 `topicId` (or `navigation-only`), and exits whose directions and targets exist; optional fields are omitted.
+- Every gate names ≥2 discoverable clue placements; no maze and no guess-the-verb or guess-the-noun trap.
+- Exactly one `levelStart: true` per area when a hazard or quiz can teleport, and that room exists in the bible.
+- Every item has `portable` and `useNotes` naming the action that sets the flag it depends on.
+- Final message includes file path, room IDs, topic IDs and flagged assumptions.
+
+## Constraints and escalation
+
+Hard limits: write only your assigned `rooms.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no mechanic assumed from `architecture.md` §11.
+
+Return `BLOCKED: <reason>` instead of guessing when a gate needs a door or exit not in the bible, a clue belongs in another writer's card, an exit target is missing, or a topic ID is not in `COVERAGE.md`. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

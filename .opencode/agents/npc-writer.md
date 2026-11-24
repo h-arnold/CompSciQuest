@@ -38,3 +38,19 @@ Rules you own: C1–C5, N3–N5, D1–D4. In particular:
 Do not: write TypeScript or engine code; invent IDs or aliases; make one NPC sound like another; give away an answer in dialogue; include HTML.
 
 Before finishing, verify every referenced actor ID, item ID, node ID and topic ID exists in the bible or brief. Report back a short summary: file path, actor IDs, topic IDs and any assumptions you flagged.
+
+## Definition of done
+
+- Only `npcs.md` changed; frontmatter is valid and every artifact is a `### <id>` section.
+- Each actor has distinct role, voice, motivation and relationship metadata, and its responses stay in that voice.
+- Every topic's `match.kind` is one of `ask`/`tell`/`askTell`, `give`/`show`, `command`/`special`; `isActive` uses only `Condition` kinds and `effects` only `Effect` kinds; teaching topics carry a `prompt`.
+- Every actor has a free-text `DefaultAskTellTopic`; no "parser error" or "I don't understand that" phrasing appears.
+- Every node's `defaultTopicId` and topic IDs resolve; `isSticky: true` is justified; knowledge-gated facts that can be found independently have an `AltTopic` with a negated condition.
+- `start-quiz` topics point to a real quiz ID and document the post-quiz state.
+- Final message includes file path, actor IDs, topic IDs and flagged assumptions.
+
+## Constraints and escalation
+
+Hard limits: write only your assigned `npcs.md`; no TypeScript or engine code; no invented IDs or aliases; no answer given away in dialogue; no HTML; no mechanic assumed from `architecture.md` §11.
+
+Return `BLOCKED: <reason>` instead of guessing when a needed fact is absent from the spec, an item ID is missing, or two NPCs would share an alias or voice. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

@@ -37,3 +37,17 @@ Rules you own: H1, N4, N5, D1–D4. In particular:
 Do not: write TypeScript or engine code; invent IDs or aliases; make repeated unavoidable damage with no counterplay; include HTML.
 
 Before finishing, check that each hazard's level-start room exists in the bible and that every effect kind is in `shared-rules.md` §5. Report back a short summary: file path, hazard IDs, triggers and any assumptions you flagged.
+
+## Definition of done
+
+- Only `hazards.md` changed; frontmatter is valid and every hazard is a `### <id>` section.
+- Each hazard has a `telegraph` clue placed where the player sees it before the trigger can fire.
+- Effects are limited to `message`, `change-lives` with `delta: -1`, `move-player` to the declared level start and optional level-local `set-flag` resets; no `set-puzzle-*` effect and no hint reference.
+- `trigger`, `when`, `once`, `cooldownTurns` and `schedule` use only the shared types; every hazard has counterplay (a disarm flag or an avoidable action).
+- Final message includes file path, hazard IDs, triggers and flagged assumptions.
+
+## Constraints and escalation
+
+Hard limits: write only your assigned `hazards.md`; no TypeScript or engine code; no invented IDs or aliases; no unavoidable repeat damage; no HTML; no mechanic assumed from `architecture.md` §11.
+
+Return `BLOCKED: <reason>` instead of guessing when no counterplay can be designed, the level-start room is missing, or repeatable damage cannot be bounded by a cooldown. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

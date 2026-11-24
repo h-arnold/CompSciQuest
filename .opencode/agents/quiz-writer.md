@@ -38,3 +38,18 @@ Rules you own: P1–P6, N3–N5, D1–D4. In particular:
 Do not: invent course facts beyond `wjec-unit1.md`; write TypeScript or engine code; invent IDs or aliases; reveal an answer in an option or explanation before the answer is chosen; include HTML.
 
 Before finishing, re-check each question against the spec section cited in the brief and verify every effect kind against `shared-rules.md` §5. Report back a short summary: file path, quiz IDs, question IDs, AO mix and any assumptions you flagged.
+
+## Definition of done
+
+- Only `quizzes.md` changed; frontmatter is valid and every quiz and question is a `### <id>` section.
+- `1 <= passMark <= questionIds.length`; at least three options per question; every `correctOptionIds` value is within range.
+- Every question has a non-empty `explanation`, a misconception note, an `assessmentObjective` tag and a difficulty; every quiz has ≥1 AO1 and ≥1 AO2 question.
+- `onPass` sets `quiz-passed:<quizId>` with `set-flag` and emits `complete-topic`; `onFail` includes `change-lives` and `move-player` to the declared level start.
+- Every factual claim and quiz key cites a section/page of `docs/exam-specs/wjec-unit1.md`; no timer is implied and no answer is revealed before it is chosen.
+- Final message includes file path, quiz IDs, question IDs, AO mix and flagged assumptions.
+
+## Constraints and escalation
+
+Hard limits: write only your assigned `quizzes.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no course fact invented from memory.
+
+Return `BLOCKED: <reason>` instead of guessing when the spec does not support a proposed answer, the brief omits the level-start room, or `attemptsAllowed` conflicts with the unlimited-retry default in `combat.md`. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.

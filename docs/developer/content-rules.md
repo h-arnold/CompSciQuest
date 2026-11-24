@@ -304,13 +304,42 @@ To be implemented as Vitest tests when cards are converted to TypeScript. No tes
 | `hazard-content` | Telegraph text present; effects only from the shared union; no `set-puzzle-*` effects; level-start room declared for the area. |
 | `npc-content` | `defaultTopicId` exists in the node; topic `match` fields non-empty; effects only from the shared union; aliases unique. |
 
-## 8. Open questions content must not assume
+## 8. Decisions content must not assume
 
-These remain undecided in [architecture.md §11](architecture.md#11-open-questions-and-decision-log). Writers must not hard-code answers: use content-level values instead and flag the assumption in the card.
+Content must use the values below instead of hard-coding its own; flag any
+unavoidable assumption in the card. Authority is
+[architecture.md §11](architecture.md#11-decision-log).
 
-- Exact scoring formula (points per room/topic and per-area maximums).
-- The win condition and whether `game-won` is ever emitted.
-- Maximum starting lives and how they are replenished.
-- Final verb list, alias table and noun-resolution ambiguity policy.
-- Whether undo, autosave or multiple save slots exist.
-- Save-key name and corrupt-save quarantine policy.
+| Topic | Decision |
+| --- | --- |
+| Win condition | All mapped spec topics covered emits `game-won` with the final score. |
+| Starting lives | `3`, reset when entering a new world/area; loss comes from hazards and failed quizzes. |
+| Verb list, aliases, ambiguity policy | Grows with content. Unknown verbs and nouns degrade to a friendly in-voice message, never a parser error. |
+| Undo, autosave, save slots | None. |
+| Save key and corrupt saves | Key is `compsciquest:save:v1`; a corrupt live save is quarantined, not discarded. |
+| Exact scoring formula | Still content-dependent: points per room/topic and per-area maximums live in content. |
+
+## 9. Agent acceptance contract
+
+Every agent file contains two sections: **Definition of done** (binary checks that must all be true before the agent finishes) and **Constraints and escalation** (hard limits plus the conditions under which the agent must return `BLOCKED: <reason>` instead of guessing). This section is the shared contract those sections implement; if an agent's wording and this section disagree, this section wins.
+
+### 9.1 Shared definition of done
+
+1. Only the file named in the brief was changed.
+2. Every ID and alias comes from the bible registry; every topic ID exists in `COVERAGE.md`; runtime field names match the subsystem docs and optional fields are omitted.
+3. Conditions, triggers and effects use only the shared unions; no score is written by content; no HTML is produced; no mechanic is assumed from §8.
+4. Writers end with a report containing the file path, artifact IDs and flagged assumptions. Reviewers end with findings in the required format and exactly one verdict line.
+5. No blocker or major finding from either reviewer remains unresolved in the final round.
+
+### 9.2 Shared hard constraints
+
+- Neither writers nor reviewers edit another agent's file. Reviewers edit nothing at all.
+- No course fact is invented from memory or fetched from the web. Unverifiable claims become findings, not corrections.
+- No TypeScript, engine code, rulebook, agent-file or config changes.
+- Undecided mechanics in §8 are escalated to the user, never guessed.
+
+### 9.3 Stop-and-escalate and the review loop
+
+Return `BLOCKED: <reason>` rather than guessing when: a required ID, alias or topic ID is missing; the brief conflicts with the bible, the spec or this rulebook; a subject claim is unverifiable; a mechanic is undecided; a dependency would create a cycle or an unreachable puzzle; or no counterplay can be designed for a hazard.
+
+After a review round, a writer may revise **only its own file, at most two rounds**. If the finding requires another agent's file or a bible change, it returns `BLOCKED: <finding> requires <owner>` (owner = editor, another writer or the bible). The editor reconciles by updating the bible and re-briefing; it never edits a writer's card itself. Reviewers do not enter this loop — they return findings and the editor routes them.

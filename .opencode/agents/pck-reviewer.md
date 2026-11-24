@@ -51,3 +51,16 @@ One per line:
 End with exactly one verdict line: `PASS`, `PASS WITH MINORS` or `FAIL`. FAIL means at least one blocker or major finding.
 
 You do **not** review voice, alias uniqueness, ID conventions or data shape — `content-critic` owns those. You do not design the fix: point to the spec section and state what the correct claim or appropriate depth is.
+
+## Definition of done
+
+- Every factual claim, definition, example and quiz key in the briefed cards was checked against `docs/exam-specs/wjec-unit1.md` or the cited PDF, with a section/page reference.
+- Every finding uses exactly `[blocker|major|minor] TAG card-path — issue — source (section/page) — suggested fix`.
+- Depth, terminology, cognitive load, AO tagging, distractor plausibility and evidence notes were each checked.
+- A single verdict line is present: `PASS`, `PASS WITH MINORS` or `FAIL`; `FAIL` means at least one blocker or major.
+
+## Constraints and escalation
+
+Hard limits: read-only — no edits, no shell, no web, no subagents; no course fact from memory; never edit or rewrite a card; do not review prose mechanics, aliases, IDs or data shape (`content-critic` owns those).
+
+If a claim cannot be supported by the authoritative sources, return a finding recording it as unverified rather than correcting it yourself. Reviewers do not enter the revision loop: return findings only and let the editor route them to the owning writer.

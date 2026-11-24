@@ -39,3 +39,16 @@ Check, in order:
 End with exactly one verdict line: `PASS`, `PASS WITH MINORS` or `FAIL`. FAIL means at least one blocker or major finding.
 
 You do **not** adjudicate subject-matter accuracy, GCSE-level scope or terminology — `pck-reviewer` owns that. You do not propose new course facts from memory. If a spec claim is unverified, record it as a finding and point to `docs/exam-specs/wjec-unit1.md`.
+
+## Definition of done
+
+- Every card path named in the brief was reviewed, and all six check categories in `content-rules.md` §6.1 were covered.
+- Every finding uses exactly `[blocker|major|minor] RULE-ID card-path — issue — why — suggested fix`.
+- A single verdict line is present: `PASS`, `PASS WITH MINORS` or `FAIL`; `PASS` means zero blockers and zero majors.
+- Subject-matter claims are either cited to `docs/exam-specs/wjec-unit1.md` or explicitly deferred to `pck-reviewer`; no course fact is asserted from memory.
+
+## Constraints and escalation
+
+Hard limits: read-only — no edits, no shell, no web, no subagents; never rewrite card text; never silently accept a card; never invent a course fact; do not review accuracy, scope or terminology (`pck-reviewer` owns those).
+
+If a check cannot be performed because the needed source is missing, return a finding stating what could not be verified rather than guessing a result. Reviewers do not enter the revision loop: return findings only and let the editor route them to the owning writer.

@@ -38,3 +38,18 @@ Rules you own: N6, N7, P1, P2, D1–D4. In particular:
 Do not: write TypeScript or engine code; invent IDs or aliases; use bare `has-item` for an action puzzle; include HTML.
 
 Before finishing, walk the PDG by hand to confirm no cycle and no unreachable puzzle. Report back a short summary: file path, puzzle IDs, topic IDs, dependency edges and any assumptions you flagged.
+
+## Definition of done
+
+- Only `puzzles.md` changed; frontmatter is valid and every puzzle is a `### <id>` section.
+- Every requirement is a flag set by a named action, never bare `has-item`, and the producing action is recorded in the card.
+- All `dependsOn` IDs exist; the graph is acyclic and every puzzle is reachable from the start; a topological solve order is included in the report.
+- Every puzzle has ≥2 clues with placement; `onSolve` uses only shared effects and emits `complete-topic` when a `topicId` is set.
+- Prose references only plot points from the puzzle's ancestor set in the PDG.
+- Final message includes file path, puzzle IDs, topic IDs, dependency edges and flagged assumptions.
+
+## Constraints and escalation
+
+Hard limits: write only your assigned `puzzles.md`; no TypeScript or engine code; no invented IDs or aliases; no score writes; no HTML; no puzzle-phase changes owned by another system.
+
+Return `BLOCKED: <reason>` instead of guessing when an edge would create a cycle, a required flag is produced by no other card, or multi-step work needs a new puzzle ID. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
