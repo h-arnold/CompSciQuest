@@ -1,9 +1,9 @@
 # Narrative principles
 
-**Status: draft — awaiting user approval.** This is a living document maintained by
-the content editor. The tone guide in `content-bible.md` will point here, and no
-writer brief is issued until the user has approved both this document and the
-bible. The editor adds to the pattern log (§11) as the story develops.
+**Status: approved 2026-11-24 by the user.** This is a living document maintained
+by the content editor. The tone guide in `content-bible.md` points here, and writer
+briefs cite it as settled authority. The editor adds to the pattern log (§11) as the
+story develops; only `confirmed` entries influence writing.
 
 ## 1. Purpose and authority
 
@@ -213,8 +213,8 @@ worth promoting.
 
 ## 12. Change control
 
-- This document starts as `draft`. Writer briefs cite it only once the user has
-  approved it.
+- This document was `draft` until the user approved it on 2026-11-24. Writer briefs
+  cite it as settled authority from that date.
 - Approved principles are changed only with the user's agreement. Record each
   change as a dated note below with the reason.
 - Pattern log entries (§11) may be added by the editor between approvals; only
@@ -225,3 +225,5 @@ worth promoting.
 - 2026-11-24 — Initial draft from the agreed principles: register, comic mode,
   stakes, consequences, absurd options, NPCs, harm floor, fourth wall and Welsh
   references.
+- 2026-11-24 — **Approved by the user.** Sign-off recorded; the document is now
+  settled authority for writer briefs. No principle text changed.

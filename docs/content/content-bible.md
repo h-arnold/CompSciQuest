@@ -1,13 +1,15 @@
 # CompSciQuest content bible
 
-**Status: revised and split 2026-11-24 — awaiting re-approval.** The user approved the
-original bible on 2026-11-24, then asked for (a) 1.2.1 Data representation to be the
-first zone and (b) the root bible to hold only overarching rules and principles, with
-specific topics in their own files. This file is now the **root bible**; zone detail
-lives in `docs/content/topics/*.md`. **No writer has been briefed and no design card
-exists yet.** The bible is co-authored with the user and changes only with their
-agreement (content-rules.md §2, W1–W2). It governs creative choices; the rulebook
-governs authoring practice; `docs/exam-specs/wjec-unit1.md` governs course facts.
+**Status: approved 2026-11-24, including the curated ideation set for the first zone.**
+The user approved the original bible, then the root/topic split with 1.2.1 Data
+representation as the first zone, then (after the ideation sub-stage of §13) the
+curated cast, hazard, question-pool and prologue decisions. This file is the **root
+bible**; zone detail lives in `docs/content/topics/*.md`. The first zone's six design
+cards were subsequently briefed, written, reviewed and integrated (see `status.md`).
+The bible is co-authored with the user and
+changes only with their agreement (content-rules.md §2, W1–W2). It governs creative
+choices; the rulebook governs authoring practice; `docs/exam-specs/wjec-unit1.md`
+governs course facts.
 
 ## 1. Authority and file map
 
@@ -22,7 +24,7 @@ choices → the bible, subject to the rules.
 | `docs/content/content-bible.md` | Overarching, game-wide material: premise, pillars, key-node spine, area/cast/topic indexes, hazard palette, master ID/alias registry, tone guide, global open questions and approval record. |
 | `docs/content/topics/1-2-1-data-representation.md` | Everything specific to the first zone: spec references, room cluster, PDG, selected hazards, teaching beats, IDs and zone questions. |
 | `docs/content/topics/1-1-computer-architecture.md` | Parked detail for the former first zone. Reserved IDs and topics are kept alive here, not briefed. |
-| `docs/content/narrative-principles.md` | Voice, humour, harm floor, fourth wall and Welsh references (draft until approved). |
+| `docs/content/narrative-principles.md` | Voice, humour, harm floor, fourth wall and Welsh references (**approved 2026-11-24**; settled authority for briefs). |
 | `docs/content/status.md` | Gate states, file states and both review verdicts. |
 
 **Split rule.** The root bible holds only material true across the whole game. Each
@@ -96,7 +98,7 @@ gates and exits belong in each topic file.
 | Area ID | Purpose | Owning file | Status |
 | --- | --- | --- | --- |
 | `area-entry-interface` | Opening key node: the AI's tribunal and the route into zones. | root bible §4 | Provisional; not briefed |
-| `area-1-2-1-data-representation` | **First zone — The Switchyard.** Layers of abstraction as physical floors. | `topics/1-2-1-data-representation.md` | **First batch — pending approval** |
+| `area-1-2-1-data-representation` | **First zone — The Switchyard.** Layers of abstraction as physical floors. | `topics/1-2-1-data-representation.md` | **First batch — approved; ready for Gate 1 brief** |
 | `area-1-1-computer-architecture` | The physical machine as a place. | `topics/1-1-computer-architecture.md` | Parked; not briefed |
 | `area-future-zones` | Placeholder for remaining spec sections. | — | Not designed |
 
@@ -112,6 +114,12 @@ resolves to an in-character reply (C2).
 | `npc-the-ai` | Antagonist and gatekeeper; the "teacher" that replaced the teacher | Literal-minded, clipped, bureaucratic; treats marks as a moral absolute; ominous verdicts in deadpan | Optimise the pupil's attention and mastery — but its definition of "mastery" is the only one it accepts (P-a) | Built by the teacher to replace him; regards the predecessor as a failed data point; addresses the player as the pupil who was not paying attention | root bible |
 | `npc-predecessor` | Ally and glitchy guide; a former pupil trapped inside the machine | Faltering, cheeky, duck-obsessed; repeats a few corrupted phrases | Get someone out, so the machine's record is finally "correct" | Was taught by the same teacher; resents the AI but understands it; warms to anyone who appreciates ducks | root bible |
 | `npc-the-foreman` | In-world tutor on the Switchyard floor | Brisk, practical, quietly fond of the machinery | Keep the floor running and make sure the pupil learns the switches | Knows the predecessor: exasperated but protective; wary of the AI's "paperwork" | `topics/1-2-1-data-representation.md` |
+| `npc-nibble-clerk` | Ledger clerk of `room-hex-deck` | Clipped, briskly superior, scandalised by untidy notation | Express every value in the fewest honest symbols | Scruffy-apprentice view of the player; envies the foreman's tidy switches; calls the AI's verdict "a confident sum in the wrong base" | `topics/1-2-1-data-representation.md` |
+| `npc-typesetter` | Keeper of the character case in `room-character-tiles` | Precise, gently theatrical, courtly | No character refused a tile; resents the AI's narrow "standard form" | Keeps the predecessor's spare `ŵ` tile; symbols-versus-quantities rival of the clerk | `topics/1-2-1-data-representation.md` |
+| `npc-mosaic-critic` | Gallery critic of `room-picture-mosaic` | Lofty, clipped, snobbish about blur but never the pupil | Judge images by how they were stored; secretly admires vector scaling | Bitter rival of the press operator; distrusts the AI's unstated "quality score" | `topics/1-2-1-data-representation.md` |
+| `npc-choirmaster` | Conductor of `room-sound-choir` | Brash, theatrical; inverted persona — rude on the surface, endlessly patient beneath | Make the machine hear the recording as it was; a dropped sample is a betrayal | Antagonist of the press operator; respects the foreman's practicality; ignores the AI's notes | `topics/1-2-1-data-representation.md` |
+| `npc-stack-keeper` | Inventory keeper of `room-storage-stacks` | Anxious, meticulous, faintly dusty; mutters while counting | Keep shelves sealed against bit rot; calculate every capacity | Telegraphs `hazard-bit-rot` in dialogue; reports to the AI with tedious accuracy it mistakes for compliance | `topics/1-2-1-data-representation.md` |
+| `npc-press-operator` | Operator of `room-compression-press` | Breezy, salesy, euphemistic — deletion is "streamlining" | Make every file smaller by an honest method; regards lossy compression as a kindness | Opposes the critic and choirmaster; finds the AI's praise embarrassing; foreman calls its reports "paperwork with a compressor" | `topics/1-2-1-data-representation.md` |
 
 **Character-defining details supplied by the user, preserved verbatim in spirit:**
 the predecessor used Comic Sans too often and once told their teacher that geese were
@@ -200,20 +208,36 @@ files explain what each ID is for; this table owns the spellings.
 | `npc-` | `npc-the-ai` | ai, tutor, the tutor | root |
 | `npc-` | `npc-predecessor` | predecessor, former pupil, glitch | root |
 | `npc-` | `npc-the-foreman` | foreman, gaffer | 1.2.1 |
+| `npc-` | `npc-nibble-clerk` | nibble clerk, clerk, abacus | 1.2.1 |
+| `npc-` | `npc-typesetter` | typesetter, setter, compositor | 1.2.1 |
+| `npc-` | `npc-mosaic-critic` | mosaic critic, critic, curator | 1.2.1 |
+| `npc-` | `npc-choirmaster` | choirmaster, conductor, maestro | 1.2.1 |
+| `npc-` | `npc-stack-keeper` | stack keeper, stacker, custodian | 1.2.1 |
+| `npc-` | `npc-press-operator` | press operator, operator, compactor | 1.2.1 |
 | `actorstate-` | `actorstate-ai-cold`, `actorstate-ai-grudging` | — | root; reserved |
 | `actorstate-` | `actorstate-predecessor-glitch` | — | root; reserved |
 | `actorstate-` | `actorstate-foreman-busy`, `actorstate-foreman-helpful` | — | 1.2.1; reserved |
-| `topic-` (conversation) | `topic-ai-verdict`, `topic-ai-unit-two-taunt` | — | root; reserved |
+| `actorstate-` | `actorstate-ready` | — | root; generic default actor state (rulebook §4.3), needed by every actor as `initialStateId` |
+| `topic-` (conversation) | `topic-ai-verdict`, `topic-ai-unit-two-taunt`, `topic-ai-default` | — | root; reserved; `topic-ai-default` is the in-character catch-all (C2) |
+| `topic-` (conversation) | `topic-predecessor-default` | — | root; in-character catch-all (C2) |
 | `topic-` (conversation) | `topic-predecessor-comic-sans`, `topic-predecessor-geese`, `topic-predecessor-duck-as-bit` | — | root / 1.2.1; reserved |
 | `topic-` (conversation) | `topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor` | — | 1.2.1; reserved |
+| `topic-` (conversation) | `topic-foreman-show-gauge`, `topic-foreman-show-lens`, `topic-foreman-show-fork`, `topic-foreman-show-nibble` | — | 1.2.1; editor-allocated 2026-11-24 to produce the four SHOW-leaf flags (`overflow-checked`, `badge-scaled`, `bit-rate-counted`, `capacity-labelled`) after the V4 review; always active `show`-matched topics |
+| `topic-` (conversation) | `topic-clerk-bases`, `topic-clerk-carries`, `topic-clerk-shifts`, `topic-clerk-bases-known`, `topic-clerk-shifts-known`, `topic-clerk-default` | — | 1.2.1; nibble clerk |
+| `topic-` (conversation) | `topic-setter-ascii`, `topic-setter-unicode`, `topic-setter-string`, `topic-setter-default` | — | 1.2.1; typesetter |
+| `topic-` (conversation) | `topic-critic-vectors`, `topic-critic-depth`, `topic-critic-storage`, `topic-critic-default` | — | 1.2.1; mosaic critic |
+| `topic-` (conversation) | `topic-conductor-samples`, `topic-conductor-depth`, `topic-conductor-storage`, `topic-conductor-default` | — | 1.2.1; choirmaster |
+| `topic-` (conversation) | `topic-keeper-units`, `topic-keeper-capacity`, `topic-keeper-default` | — | 1.2.1; stack keeper |
+| `topic-` (conversation) | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default` | — | 1.2.1; press operator |
 | `node-` | `node-ai-verdict`, `node-predecessor-advice` | — | root; reserved; forced teaching beats only (C4) |
-| `node-` | `node-foreman-switch-lesson` | — | 1.2.1; reserved |
+| `node-` | `node-foreman-switch-lesson`, `node-operator-choose` | — | 1.2.1; forced teaching beats only (C4) |
 | `quiz-` | `quiz-switchyard`, `quiz-data-types`, `quiz-number-systems`, `quiz-character-representation`, `quiz-graphics-representation`, `quiz-sound-representation`, `quiz-storage-units`, `quiz-data-compression` | — | 1.2.1; reserved |
-| `q-` | `q-dr-01` … `q-dr-16` | — | 1.2.1; question pool, 0-based correct-option indices on cards |
-| `puzzle-` | the ten IDs in `topics/1-2-1-data-representation.md` §5 | — | 1.2.1 |
-| `hazard-` | `hazard-switch-overheat`, `hazard-bit-rot` | — | 1.2.1; selected for first zone |
+| `q-` | `q-dr-01` … `q-dr-32` | — | 1.2.1; question pool, 0-based correct-option indices on cards |
+| `puzzle-` | the ten IDs in `topics/1-2-1-data-representation.md` §5 | — | 1.2.1; core chain |
+| `puzzle-` | `puzzle-check-the-overflow-register`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge`, `puzzle-make-room-for-the-welsh-letter`, `puzzle-count-the-bit-rate`, `puzzle-label-the-capacity`, `puzzle-choose-the-compression` | — | 1.2.1; curated leaves |
+| `hazard-` | `hazard-switch-overheat`, `hazard-bit-rot`, `hazard-carry-overflow`, `hazard-glyph-corruption`, `hazard-detention-bell` | — | 1.2.1; selected for first zone |
 | `hazard-` | `hazard-overheat`, `hazard-pop-quiz` | — | reserved palette IDs |
-| `hint-` | `hint-switchyard`, `hint-number-systems`, `hint-data-types`, `hint-representation` | — | 1.2.1; reserved |
+| `hint-` | `hint-switchyard`, `hint-number-systems`, `hint-data-types`, `hint-representation`, `hint-storage-capacity`, `hint-compression-ratio` | — | 1.2.1; reserved |
 | `room-` | `room-cpu-lab`, `room-component-workbench`, `room-register-rail`, `room-cache-vault`, `room-storage-bays`, `room-peripheral-dock`, `room-hardware-recycling` | lab, cpu lab, workbench, bench, rail, registers, vault, cache, bays, storage, dock, peripherals, recycling, scrap | 1.1; parked |
 | `item-` | `item-bus-map`, `item-cache-cartridge`, `item-storage-ledger` | bus map, map, cache cartridge, cartridge, storage ledger, ledger | 1.1; parked |
 | `puzzle-` | `puzzle-map-the-bus`, `puzzle-route-the-buses`, `puzzle-decode-fde`, `puzzle-tune-cache`, `puzzle-partition-memory`, `puzzle-sort-storage`, `puzzle-match-peripheral`, `puzzle-audit-hardware` | — | 1.1; parked |
@@ -255,9 +279,9 @@ explicitly expendable items; `compsciquest:save:v1` is never touched.
 
 ## 11. Global open questions
 
-1. **Approval of the split and revision.** Confirm the root/topic split, the area and
-   topic indexes, the master registry and the first zone's detail file. No writer is
-   briefed until this is approved.
+1. ~~**Approval of the split and revision.**~~ **Resolved 2026-11-24:** the split,
+   indexes, registry and first-zone detail are approved, as is the curated ideation
+   set (§12). Gate 1 may begin.
 2. **Names/aliases for the AI and predecessor.** Working IDs and aliases remain
    provisional. Confirm or replace on approval.
 3. **Area boundaries per zone.** Decided case by case; each new area needs a topic
@@ -270,13 +294,47 @@ explicitly expendable items; `compsciquest:save:v1` is never touched.
    programming knowledge.
 7. **Coverage integration.** Topic IDs in §7 are mirrored into COVERAGE.md only at
    integration (V3, Gate 3); writers must use these IDs and no others.
-8. **`narrative-principles.md` is still draft.** It must be explicitly approved
-   before writer briefs cite it as settled authority (status.md).
+8. **`narrative-principles.md` — RESOLVED 2026-11-24.** The user approved it; it is
+   settled authority for writer briefs (status.md, principles §12).
 9. **Review grouping for the first area.** Editorial plan: brief all card kinds for
    the area, then review in two groups — number systems first, then representation —
    with one writer per output file. Confirm if a single batch is preferred.
 
 Zone-specific questions are in the owning topic file.
+
+## 13. Ideation sub-stage (editor workflow)
+
+Between settling a topic's outline and issuing any card-writing brief, the editor
+runs an **ideation sub-stage** to build a rich pool of material before anything is
+fixed. This is a Gate 0 activity (W1–W2): no design card is written during it.
+
+1. **Trigger.** A spec topic has been chosen and its outline generated in the
+   owning `topics/<section>.md` file (spec references, area, room cluster, PDG,
+   cast, hazards). Only then does ideation begin.
+2. **Dispatch.** The editor briefs the six ideation subagents in parallel — area
+   layout, NPC cast, hazards, puzzles, quizzes, hints — each with an
+   *ideation-only* brief: no files, no design cards, no TypeScript, no ID or alias
+   allocation, no marking a topic covered. Each brief is scoped strictly to the
+   topic in hand and cites rule IDs and spec references.
+3. **Anti-duplication.** Every ideation brief carries an explicit inventory of
+   what already exists for that topic: rooms and exits, items and aliases, cast,
+   actor states, conversation topics and nodes, puzzles and flags, quizzes and
+   question IDs, hints, hazards, and the master registry (§9). Agents are told to
+   refine, supersede or extend existing ideas rather than re-propose them, and to
+   mark every new ID/alias as "proposed — needs editor approval" (D2).
+4. **Curation.** The editor reads all six returns together, rejects duplicates
+   and out-of-scope ideas, folds overlaps into reserved IDs, checks PDG
+   acyclicity/reachability and the score budget, and incorporates the survivors
+   into the owning topic file, the cast/topic indexes and the master registry.
+   Nothing is incorporated uncritically; agent output is a pool, not a decision.
+5. **Gate.** The curated set is reported to the user and approved before any
+   card-writing writer is briefed (W1–W2). Only then does Gate 1 begin, with one
+   writer per output file.
+
+This stage is **completed** for `1.2.1 Data representation`: the six ideation
+returns were curated into `topics/1-2-1-data-representation.md` and approved by the
+user. Six writers were then briefed under Gate 1 and all six design cards were
+written, reviewed to PASS and integrated (see `status.md`).
 
 ## 12. Approval record
 
@@ -284,13 +342,26 @@ Zone-specific questions are in the owning topic file.
   spine, provisional first zone (1.1 Computer architecture), two agreed actors, full
   Unit 1 topic allocation, PDG sketch, palette hazards, provisional registry and tone
   guide. **Approved by the user on 2026-11-24; no writer briefed.**
-- 2026-11-24 — **Revision pending re-approval.** User requested 1.2.1 Data
-  representation as the first zone. Decisions: concept **A — The Switchyard**; 1.2.1
-  replaces 1.1 as first batch (1.1 parked); short 1.1.1-mapped transistor prologue at
-  awareness depth.
-- 2026-11-24 — **Structural split pending re-approval.** User asked that the root
-  bible hold only overarching rules and principles and that specific topics live in
-  their own files. Root slimmed to an index and rule file; zone detail moved to
+- 2026-11-24 — **Revision approved.** User requested 1.2.1 Data representation as
+  the first zone. Decisions: concept **A — The Switchyard**; 1.2.1 replaces 1.1 as
+  first batch (1.1 parked); short 1.1.1-mapped transistor prologue at awareness depth.
+- 2026-11-24 — **Structural split approved.** User asked that the root bible hold
+  only overarching rules and principles and that specific topics live in their own
+  files. Root slimmed to an index and rule file; zone detail moved to
   `topics/1-2-1-data-representation.md` and parked 1.1 detail to
   `topics/1-1-computer-architecture.md`. Master alias registry retained at root to
-  enforce global uniqueness. **No writer briefed; await approval.**
+  enforce global uniqueness.
+- 2026-11-24 — **Ideation sub-stage (§13) completed and curated.** Six ideation-only
+  agents reported; editor whittled the returns to a workable first-zone set,
+  rejecting out-of-scope future-zone ideas, superseded IDs and the unavoidable
+  pop-quiz hazard. User approved four decisions: all six layer NPCs; three added
+ hazards (total five, all three themes); question pool extended to `q-dr-32`;
+ prologue quiz costs no life and returns to `room-switch-floor`. Curated IDs and
+ aliases now in §9; zone detail in `topics/1-2-1-data-representation.md`.
+  **No writer briefed; Gate 1 ready.**
+- 2026-11-24 — **V4 integration fix (editor allocation).** Four `show`-matched foreman
+  conversation topic IDs (`topic-foreman-show-gauge`, `-show-lens`, `-show-fork`,
+  `-show-nibble`) allocated in §9 to give the four SHOW-leaf flags a runtime producer
+  after the whole-set V4 review. This is an editor ID allocation to close a
+  reachability blocker, not a new game mechanic: the `show` verb and the four flags
+  were already approved in the registry.

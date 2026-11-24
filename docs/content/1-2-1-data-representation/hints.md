@@ -1,0 +1,73 @@
+---
+kind: hint
+area: 1-2-1-data-representation
+topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression]
+status: approved
+---
+
+# Hints — 1.2.1 Data representation
+
+<!-- markdownlint-disable MD001 -->
+<!-- Authoring: the ### <id> design-card heading convention deliberately starts at h3 after the H1 title. -->
+
+### hint-switchyard
+
+- targets: [switch-to-bit, quiz-switchyard]
+- levels:
+  - { level: 1, text: "Before the foreman went back to his paperwork he worked the belt in front of you. Each switch on it settled into one of two places. Cast your mind back to that demonstration, not to the gauge yet.", unlock: { kind: counter-at-least, key: failed-attempts:quiz-switchyard, value: 1 } }
+  - { level: 2, text: "Those two places are called on and off: a line carries a mark or it carries none. Now read the switch gauge. Its needle rests against a stamped line, and that line is the marking you need. Hold the two ideas together.", unlock: { kind: counter-at-least, key: hints-shown:hint-switchyard, value: 1 } }
+  - { level: 3, text: "Work one switch at a time. Set it, watch where the needle settles against the stamp, and write down the mark it names. Repeat until the belt agrees with you, then give the foreman your own answer.", unlock: { kind: counter-at-least, key: hints-shown:hint-switchyard, value: 2 } }
+- autoOfferAfter: 1
+- cooldownTurns: 2
+
+### hint-data-types
+
+- targets: [data-types, quiz-data-types, puzzle-sort-the-data-types]
+- levels:
+  - { level: 1, text: "Look at the five labelled bins in the hall and the single loose sample beside them, the one with no type name on it. Each bin keeps one kind of value; it is the loose sample you must file into one of them. Decide what sort of thing each bin will accept before you put the sample anywhere.", unlock: { kind: counter-at-least, key: turns-since:puzzle-sort-the-data-types, value: 3 } }
+  - { level: 2, text: "The boards name exactly five types: Boolean, character, integer, real and string. Boolean holds a True/False condition, character a single number, letter or symbol, integer a whole number, real a number with a decimal point, and string a run of characters. Those five bins are all there are; compare the sample's own characteristic against them and make the choice yourself.", unlock: { kind: counter-at-least, key: hints-shown:hint-data-types, value: 1 } }
+  - { level: 3, text: "Now file the sample yourself. Ask one question at a time: does it show a True/False condition, a single mark, a whole number, a number with a decimal point, or a run of marks? Look closely at whether the sample carries a decimal point, then match that against the five bin labels. Put it in the bin whose description fits; there is no spare bin; the sample belongs in one of the five.", unlock: { kind: counter-at-least, key: hints-shown:hint-data-types, value: 2 } }
+- autoOfferAfter: 3
+- cooldownTurns: 2
+
+### hint-number-systems
+
+- targets: [number-conversion, quiz-number-systems, puzzle-set-the-switches, puzzle-add-with-carries, puzzle-shift-the-row, puzzle-read-nibbles]
+- levels:
+  - { level: 1, text: "Before you convert anything, look at the columns of beads on the carry track and the groups of squares on the nibble card. Each position has a weight based on the base, and the rightmost is the smallest. Let that tell you what a digit in a place is worth.", unlock: { kind: counter-at-least, key: turns-since:puzzle-set-the-switches, value: 3 } }
+  - { level: 2, text: "Write a place-value row under the digits: powers of two for binary, powers of sixteen for hexadecimal. On the nibble card the squares are grouped in fours, so work from the right and fill one group at a time. A hexadecimal digit takes exactly one group of four beads.", unlock: { kind: counter-at-least, key: hints-shown:hint-number-systems, value: 1 } }
+  - { level: 3, text: "Add from the rightmost column leftwards. In each column add the two bits and any carry already waiting. Follow the rule card: 1 + 1 gives zero and carries one; with a carry already there, the column reads one and still carries one. Pass each carry into the next column before you move on.", unlock: { kind: counter-at-least, key: hints-shown:hint-number-systems, value: 2 } }
+  - { level: 4, text: "For a shift, draw the row before and after you move it and count how many columns it has. A bit pushed past the last column drops into the tray scratched OVERFLOW under the carry lamp instead of vanishing; a bit brought in at the other end has to come from somewhere. Say whether the value grows or shrinks, but leave the exact figure to your own working.", unlock: { kind: counter-at-least, key: hints-shown:hint-number-systems, value: 3 } }
+- autoOfferAfter: 3
+- cooldownTurns: 2
+
+### hint-representation
+
+- targets: [character-representation, graphics-representation, sound-representation, quiz-character-representation, quiz-graphics-representation, quiz-sound-representation, puzzle-match-characters, puzzle-build-mosaic, puzzle-tune-sampling]
+- levels:
+  - { level: 1, text: "Every room here keeps its content as many small pieces. Find the smallest piece first: one mark on a tile in the character case, one square in the mosaic, one measurement in the choir. Count nothing until you have that piece in view.", unlock: { kind: counter-at-least, key: turns-since:puzzle-match-characters, value: 3 } }
+  - { level: 2, text: "The labels supply the formal terms. A single mark is a character and a run of them is a string; the stamp names ASCII and Unicode as standardised character sets. In the mosaic, resolution is the width and height in pixels, bit depth is the bits used for each pixel's colour, and colour depth is measured in bits per channel (bpc). At the desk, a sample is one measurement at a point in time; sample rate counts samples per second, bit depth counts bits per sample, and bit rate multiplies sample rate by bit depth.", unlock: { kind: counter-at-least, key: hints-shown:hint-representation, value: 1 } }
+  - { level: 3, text: "Take one tile at a time and hold its mark against the character list on the stamp: is that exact mark in the set you are checking? The spare drawer holds a tile labelled 'a different character' — test it the same way rather than assuming from its label. File a tile only after you have compared its mark.", unlock: { kind: counter-at-least, key: hints-shown:hint-representation, value: 2 } }
+  - { level: 4, text: "For the mosaic, multiply width by height for the pixels, then multiply by the bits used per pixel — the bits per channel times the number of channels. For the choir, multiply sample rate by bit depth by channels by seconds. Both answers arrive in bits; change unit one step at a time, dividing by eight for bytes and then by 1024 for KB, and stop when the unit matches what was asked. No worked total appears here; the figure is yours.", unlock: { kind: counter-at-least, key: hints-shown:hint-representation, value: 3 } }
+- autoOfferAfter: 3
+- cooldownTurns: 2
+
+### hint-storage-capacity
+
+- targets: [data-storage-units, quiz-storage-units, puzzle-stack-the-bytes]
+- levels:
+  - { level: 1, text: "Look at the eight rungs on the shelves and at the brass plate. Each rung names an amount of storage and has a neighbour above and below. Notice what the joint between two rungs is marked before you convert anything.", unlock: { kind: counter-at-least, key: turns-since:puzzle-stack-the-bytes, value: 3 } }
+  - { level: 2, text: "Write the chain in order: bit, nibble, byte, kilobyte, megabyte, gigabyte, terabyte, petabyte. A nibble is four bits and a byte is eight bits. From the byte upward the unit ladder marks each joint ×1024, and the plate states one kilobyte holds 1,024 bytes. Set each multiplier beside its joint.", unlock: { kind: counter-at-least, key: hints-shown:hint-storage-capacity, value: 1 } }
+  - { level: 3, text: "Move one rung at a time; never skip a joint. Going up, multiply by the factor marked on that joint; going down, divide by it. Those factors are powers of two, so reach for 1024, not 1000 — the stack keeper counts by the marked factors and will not accept a decimal answer. Write each step down until the unit matches the one requested.", unlock: { kind: counter-at-least, key: hints-shown:hint-storage-capacity, value: 2 } }
+- autoOfferAfter: 3
+- cooldownTurns: 2
+
+### hint-compression-ratio
+
+- targets: [data-compression, quiz-data-compression, puzzle-pack-the-archive]
+- levels:
+  - { level: 1, text: "The press is meant to make a file smaller while leaving it usable. Two settings are cut into the die: lossless at one end, lossy at the other. Before you choose, decide what 'usable' means for the file in your tray.", unlock: { kind: counter-at-least, key: turns-since:puzzle-pack-the-archive, value: 3 } }
+  - { level: 2, text: "In the glass window one column is labelled original and the other compressed. Write both sizes down and be clear which is the starting size and which is the result: the ratio compares original against compressed. Note whether the first tray returns the file exactly or the second comes back a little blurred — that is what separates the two settings.", unlock: { kind: counter-at-least, key: hints-shown:hint-compression-ratio, value: 1 } }
+  - { level: 3, text: "Form the ratio as original divided by compressed, then cancel it down as you would a fraction. If a size is missing, rearrange it: compressed equals original divided by the ratio, and original equals compressed multiplied by the ratio. At the lever, justify your setting by asking whether this file must return exactly or may lose a little quality, and say why. The figure and the choice are yours.", unlock: { kind: counter-at-least, key: hints-shown:hint-compression-ratio, value: 2 } }
+- autoOfferAfter: 3
+- cooldownTurns: 2

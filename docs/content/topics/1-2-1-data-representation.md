@@ -1,10 +1,10 @@
 # Topic file: 1.2.1 Data representation — The Switchyard
 
-**Status: draft, pending approval with the root bible.** Specific detail for the
-first zone only. Overarching rules, the cast index and the master ID/alias registry
-are in `docs/content/content-bible.md`; this file must not contradict them.
-Course facts come from `docs/exam-specs/wjec-unit1.md` §1.2.1 (and §1.1.1 for the
-prologue), never from memory.
+**Status: approved 2026-11-24, including the curated ideation set (root bible §13).**
+Specific detail for the first zone only. Overarching rules, the cast index and the
+master ID/alias registry are in `docs/content/content-bible.md`; this file must not
+contradict them. Course facts come from `docs/exam-specs/wjec-unit1.md` §1.2.1 (and
+§1.1.1 for the prologue), never from memory. No design card has been written.
 
 ## 1. Scope and area
 
@@ -61,6 +61,14 @@ Spine: arrival → `room-switch-floor` → `room-binary-hall` (first gate) → t
 representation cluster → `room-compression-press` (zone climax gate) → back to the
 hub. Spoke rooms form the non-linear cluster between the gates.
 
+**Scoring decision (recorded here per P6):** every room in this zone declares
+`score: 0` — rooms are setting and navigation, not scoreable first-visit awards.
+Every quiz and puzzle in this zone declares `score: 1`, awarded once on pass or
+solve; the engine's `ScoreTracker` and each topic's `maxScore` budget remain the
+authority on what is actually awarded (§8 decision, application-and-ui.md §10).
+These are content declarations owned by the editor, not changes to the scoring
+formula.
+
 **Items** (see root registry §9 for aliases; ownership starts in the named room,
 then lives on Player, NPC or Room state — D3): `item-switch-gauge` in
 `room-switch-floor`; `item-hex-nibble-card` in `room-hex-deck`; `item-ascii-stamp` in
@@ -68,6 +76,41 @@ then lives on Player, NPC or Room state — D3): `item-switch-gauge` in
 `item-sample-fork` in `room-sound-choir`; `item-compression-die` in
 `room-compression-press`; `item-comic-sans-cartridge` in `room-binary-hall` as the
 expendable joke item (required by no puzzle and cannot strand the player).
+
+### 3.1 Curated fixtures (inside existing rooms)
+
+These are examinable fixtures described in the owning room or item card — **not**
+new rooms, exits or registry aliases. They add physical detail without breaking the
+hub-and-spoke spine (N2) or using up a canonical direction. Every gated fixture keeps
+two discoverable clues (N6).
+
+| Fixture | Inside room | Serves | Interaction / clue shape |
+| --- | --- | --- | --- |
+| Type bins | `room-binary-hall` | `data-types` | Five labelled bins using the spec's own examples; a sixth **unlabelled sample bearing a decimal value** must be matched to the `real` bin by its characteristic. `PUT the sample on the matching bin` sets `types-sorted`. **Editor correction 2026-11-24:** the earlier "fits no type bin" wording is wrong — the spec defines five types and every sample must belong to one of them. |
+| Carry track | `room-hex-deck` | `number-conversion` | Rule card "1 + 1 = 0, carry 1"; chained carry token. `USE the carry token on the rightmost column` sets `carries-added`. |
+| Shift gutter | `room-hex-deck` | `number-conversion` | Arrow notches and a question-card. **Editor decision 2026-11-24:** the clue must teach the *qualitative* effect without a worked number — a left shift multiplies by a multiple of 2, a right shift divides by a multiple of 2 (glossary L2620/L2725); what falls past the end is the overflow to name. `USE the shift lever on the row` sets `row-shifted`. No numeric example is asserted. |
+| Overflow tray | `room-hex-deck` / `room-binary-hall` | `number-conversion` | A tin tray under the carry lamp; a bit that runs past the last switch drops into it. Home of `puzzle-check-the-overflow-register`. No numeric example asserted. |
+| Drafting corner | `room-picture-mosaic` | `graphics-representation` | Smooth vector curves beside a pixel grid that squares off; ruler marks are instructions. Supports `puzzle-scale-the-badge`. |
+| Bit-rate desk | `room-sound-choir` | `sound-representation` | Dials for samples per second and bits per sample, plus a blank dial and patch lead. Supports `puzzle-count-the-bit-rate`. |
+| Unit ladder | `room-storage-stacks` | `data-storage-units` | Rungs bit → nibble → byte → KB → MB → GB → TB → PB, each marked "×1024". Supports `puzzle-label-the-capacity`. |
+| Ratio window | `room-compression-press` | `data-compression` | Two columns and a ratio dial; one sample tray returns exactly, the other does not. Supports `puzzle-choose-the-compression`. |
+
+**Editor decision — switching gate is a conversion task.** `puzzle-set-the-switches`
+is mapped to `number-conversion`, so it must exercise the spec verb "convert between
+denary, binary and hexadecimal" (L534–536), not merely set switches on and off. The
+switch gauge carries the spec's own worked value, denary 37 → binary `100101`
+(L598); setting the switches to that pattern opens the north arch and sets
+`switches-set`. The room card will be re-briefed to carry the 37 marking; the puzzle
+card must require the conversion in its task and clues.
+
+**Accepted layout refinements (options, not replacements):**
+
+- **Foreman's round.** `npc-the-foreman` may appear in spoke rooms using
+  `actorstate-foreman-helpful`, so teaching beats (P2) land where puzzles happen.
+  Owned by the NPC card; no new exit (C1, C3, N3).
+- **Floor diagram.** A painted route diagram in `room-binary-hall` names each spoke
+  direction and the gate flag that opens it (hex → characters → picture → sound →
+  storage → compression). Pure text; an extra navigation clue (N2, N5, N6, N8).
 
 ## 4. Cast addition
 
@@ -78,9 +121,46 @@ the switches — a previous pupil once shorted the whole floor. Knows the predec
 exasperated but protective; calls the AI's audits "paperwork". Motivations oppose the
 AI's (C1). Reserved states: `actorstate-foreman-busy`,
 `actorstate-foreman-helpful`. Reserved conversation topics:
-`topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor`.
+`topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor`, plus the
+four V4 fix topics `topic-foreman-show-gauge`, `topic-foreman-show-lens`,
+`topic-foreman-show-fork`, `topic-foreman-show-nibble` (always-active `show`-matched
+topics producing the four SHOW-leaf flags; editor-allocated 2026-11-24, bible §9).
 Reserved node: `node-foreman-switch-lesson` (a deliberate forced teaching beat only,
-C4). The duck-as-bit teaching hook is `topic-predecessor-duck-as-bit`.
+C4). **Editor decision 2026-11-24:** it stays defined but **reserved/unused** in the
+first batch — entering it from `topic-foreman-switches` would exit it before a
+conversational turn because that topic also starts `quiz-switchyard`. The foreman
+teaches through ordinary topic responses; no new conversation topic ID is allocated.
+The duck-as-bit teaching hook is `topic-predecessor-duck-as-bit`.
+
+**Six layer actors** (user-approved; one per remaining abstraction layer). Each has
+a distinct voice, motivation and at least one relationship with opposing motivations
+(C1); at most one recurring phrase each (narrative-principles.md §7); no mockery of
+the learner or Welsh culture as a joke target (§8). Formal spec terms always appear
+beside any plain gloss (`PCK-TERM`).
+
+| Actor ID | Room / layer | Voice (recurring phrase) | Motivation and key relationship | Topics / node |
+| --- | --- | --- | --- | --- |
+| `npc-nibble-clerk` | hex deck / number | Clipped, superior ("Columns of four, please.") | Fewest honest symbols; envies the foreman's tidy switches; calls the AI's verdict "a confident sum in the wrong base" | `topic-clerk-bases`, `topic-clerk-carries`, `topic-clerk-shifts`, `topic-clerk-default`; AltTopics `topic-clerk-bases-known`, `topic-clerk-shifts-known` |
+| `npc-typesetter` | character tiles / character | Precise, courtly ("Every mark has its place.") | No character refused a tile; keeps the predecessor's spare `ŵ` tile; opposed to the clerk's numbers-only ledger | `topic-setter-ascii`, `topic-setter-unicode`, `topic-setter-string`, `topic-setter-default` |
+| `npc-mosaic-critic` | mosaic / picture | Lofty, snobbish about blur ("Show me the pixels.") | Honest storage counts; secretly admires vector scaling; rival of the press operator | `topic-critic-vectors`, `topic-critic-depth`, `topic-critic-storage`, `topic-critic-default` |
+| `npc-choirmaster` | choir / sound | Brash, theatrical; **inverted persona** — rude surface, endlessly patient ("Again, from the top.") | A dropped sample is a betrayal; antagonist of the press operator; ignores the AI's notes | `topic-conductor-samples`, `topic-conductor-depth`, `topic-conductor-storage`, `topic-conductor-default` |
+| `npc-stack-keeper` | stacks / units | Anxious, meticulous ("Count twice, stack once.") | Seal shelves against bit rot; telegraphs `hazard-bit-rot` in dialogue (H1); reports to the AI with tedious accuracy | `topic-keeper-units`, `topic-keeper-capacity`, `topic-keeper-default` |
+| `npc-press-operator` | press / compression | Breezy, euphemistic ("Nobody will miss it.") | Smaller files by an honest method; regards lossy compression as a kindness; opposes critic and choirmaster | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default`; forced node `node-operator-choose` |
+
+**Conversation shape.** Every teaching topic carries a `prompt` hint and teaches
+method or structure only — never a worked result or a quiz key (N4, C2). Primary
+topics gate on `not npc-knows`; AltTopics with the complement condition fire when the
+fact is independently discoverable via an item or puzzle flag (C3). Free-text input
+resolves to the actor's `*-default` topic in character, never a parser error (C2).
+Each actor hands off to its reserved quiz with `start-quiz` and returns to `ready`
+on `quiz-ended` (npcs.md §6). `node-operator-choose` is the only forced beat beyond
+the foreman's: `isSticky: true` is justified because the climax puzzle depends on
+telling lossy from lossless before committing a file; no turn timeout (C4).
+
+**Reconciliation.** The first ideation sweep's `topic-foreman-unicode-choice` and
+alias `unicode` are **rejected**: the Welsh-letter puzzle runs through the
+typesetter's `topic-setter-unicode`, so no conflicting foreman topic exists. Data
+types keep their voiced beat in the board and the foreman, not a seventh actor.
 
 The AI and predecessor are game-wide; their role detail is in the root bible §6.
 
@@ -103,10 +183,34 @@ only ancestor nodes (N7). Requirements are action flags, not bare `has-item`.
 | `puzzle-stack-the-bytes` | `puzzle-tune-sampling` | flag `stacks-sorted` (opens `room-compression-press`); topic `data-storage-units` |
 | `puzzle-pack-the-archive` | `puzzle-stack-the-bytes` | flag `archive-packed`; topic `data-compression` |
 
+**Curated leaves (user-approved).** All new edges run from existing nodes to new
+leaves, so no cycle is introduced. Produced flags are level-local content keys; each
+needs an owning card (item `useNotes`, fixture or NPC topic) to set it.
+
+| Puzzle ID | `dependsOn` | Requirement / producer | Produces | Topic ID |
+| --- | --- | --- | --- | --- |
+| `puzzle-check-the-overflow-register` | `puzzle-add-with-carries` | `flag-set overflow-checked` via `show item-switch-gauge to npc-the-foreman` after the carry runs off the register | `overflow-checked` | `number-conversion` |
+| `puzzle-weigh-the-pixels` | `puzzle-build-mosaic` | `flag-set pixels-weighed` via `use item-pixel-lens on item-hex-nibble-card` | `pixels-weighed` | `graphics-representation` |
+| `puzzle-scale-the-badge` | `puzzle-build-mosaic` | `flag-set badge-scaled` via `show item-pixel-lens to npc-the-foreman` | `badge-scaled` | `graphics-representation` |
+| `puzzle-make-room-for-the-welsh-letter` | `puzzle-match-characters` | `flag-set unicode-tile-cut` via `topic-setter-unicode` on `npc-the-typesetter` | `unicode-tile-cut` | `character-representation` |
+| `puzzle-count-the-bit-rate` | `puzzle-tune-sampling` | `flag-set bit-rate-counted` via `show item-sample-fork to npc-the-foreman` | `bit-rate-counted` | `sound-representation` |
+| `puzzle-label-the-capacity` | `puzzle-stack-the-bytes` | `flag-set capacity-labelled` via `show item-hex-nibble-card to npc-the-foreman` | `capacity-labelled` | `data-storage-units` |
+| `puzzle-choose-the-compression` | `puzzle-pack-the-archive` | `flag-set compression-chosen` via `use item-compression-die on item-ascii-stamp` | `compression-chosen` | `data-compression` |
+
+Sibling leaves (`puzzle-weigh-the-pixels` / `puzzle-scale-the-badge`) may be solved in
+either order; their prose must not say "after you did X" about a sibling (N7). The
+overflow idea fills the gap left by the core chain; it supersedes
+`puzzle-overflow-register`, and `puzzle-weigh-the-pixels` supersedes
+`puzzle-weigh-the-mosaic` — neither old ID is used.
+
 Two roots (`puzzle-sort-the-data-types`, `puzzle-set-the-switches`) are reachable from
-`room-binary-hall`; every other node descends from one of them, so the graph is
-acyclic with no unreachable puzzle. `switch-to-bit` has no scored puzzle by design:
-teaching beat in `room-switch-floor`, retrieval beat in `quiz-switchyard`.
+`room-binary-hall`; every node, including the seven leaves, descends from one of them,
+so the graph is acyclic with no unreachable puzzle. `switch-to-bit` has no scored
+puzzle by design: teaching beat in `room-switch-floor`, retrieval beat in
+`quiz-switchyard`. Hand-checked topological order: sort types → set switches → add
+with carries → {overflow check, shift row} → read nibbles → match characters →
+{Welsh letter, build mosaic} → {weigh pixels, scale badge, tune sampling} → count bit
+rate → stack bytes → label capacity → pack archive → choose compression.
 
 ## 6. Quizzes, hints and teaching beats
 
@@ -114,48 +218,110 @@ One quiz per spec topic keeps each quiz card's single `topicId` honest
 (content-rules.md §4.4): `quiz-switchyard`, `quiz-data-types`,
 `quiz-number-systems`, `quiz-character-representation`,
 `quiz-graphics-representation`, `quiz-sound-representation`,
-`quiz-storage-units`, `quiz-data-compression`. Question pool `q-dr-01` … `q-dr-16`;
-0-based correct-option indices on cards. Each quiz needs at least one `AO1` and one
-`AO2` question (P3) and an explanation after every answer (P4).
+`quiz-storage-units`, `quiz-data-compression`. Question pool extended to
+`q-dr-01` … `q-dr-32`; 0-based correct-option indices on cards. Each quiz needs at
+least one `AO1` and one `AO2` question (P3) and an explanation after every answer
+(P4). Wrong options are plausible spec-rooted misconceptions, never nonsense (P4).
+No timer, unlimited retries, passMark a count, failure never resets topic or puzzle
+progress (P5). `onPass` uses `complete-topic` plus `set-flag`
+(`quiz-passed:<id>` = true) plus `message`; `onFail` uses `change-lives` and
+`move-player` with reasons (shared-rules.md §5).
+
+| Quiz ID | In-world framing (N3) | Depth / note |
+| --- | --- | --- |
+| `quiz-switchyard` | Foreman on `room-switch-floor` by the gauge; he needs the switch in writing before he signs the AI's "paperwork" | 1.1.1 awareness; **score 0, no life loss**, free retry, fail returns to `room-switch-floor` (user-approved). Shifts/overflow are not assessed here. |
+| `quiz-data-types` | Foreman at the type bins: "It files a decimal point under 'safety hazard'" | 1.2.1 "should know"; five types and appropriate use only |
+| `quiz-number-systems` | **Clerk** at `room-hex-deck`: "Columns of four, please" | Conversion, addition; shifts/overflow folded in as applied items; supersedes `quiz-shift-and-overflow` |
+| `quiz-character-representation` | **Typesetter** with the ASCII stamp and `ŵ` tile; no character refused a tile | ASCII/Unicode; see spec-check flag below |
+| `quiz-graphics-representation` | **Mosaic critic** with the pixel lens: "Show me the pixels" | Bits-per-channel convention stated explicitly; no older bpp material |
+| `quiz-sound-representation` | **Choirmaster** with the sample forks: "Again, from the top" | Keep spec terms; no Nyquist or codec internals |
+| `quiz-storage-units` | **Stack keeper** at the stacks, ledger "gone decimal again" | Base-2 prose chain; see spec-check flag below. Supersedes `quiz-capacity-budget` |
+| `quiz-data-compression` | **Press operator** at the press demands the final compliance figure; predecessor's luggage squashes out as flavour | Zone climax gate; ratio and lossy/lossless |
+
+**Editor reconciliation 2026-11-24 — quiz ownership.** Each layer quiz is issued by
+the layer actor whose NPC card starts it, so `actorId` and `start-quiz` agree and the
+challenge stays diegetic (N3): clerk → `quiz-number-systems`, typesetter →
+`quiz-character-representation`, critic → `quiz-graphics-representation`,
+choirmaster → `quiz-sound-representation`, stack keeper → `quiz-storage-units`,
+press operator → `quiz-data-compression`. The foreman keeps the prologue and data
+types quizzes. The quiz card must be re-briefed to match; no question key changes.
+
+**Spec-check flags for Gate 2 (`pck-reviewer`), not editorial decisions:**
+
+- §1.2.1 L541–546 names ASCII and Unicode but does not state which characters each
+  covers. Do not fix the `ŵ` answer key until confirmed; fallback question is the
+  fully spec-backed "one symbol vs a word" (character vs string).
+- The L683–685 "Equivalent" column appears inconsistent with the prose chain at
+  L566–570 for GB/TB/PB. Use the prose chain only.
+- No worked shift or overflow numbers exist in the guidance: teach the concept,
+  assert no numeric result. Colour depth is bits per channel (L640–643).
 
 Hint sequences: `hint-switchyard`, `hint-number-systems`, `hint-data-types`,
-`hint-representation`. The last may target several spec topic IDs (H2) and must not
-reveal an answer or solve a puzzle (H2, H3).
+`hint-representation`, plus the approved `hint-storage-capacity` and
+`hint-compression-ratio`. `hint-representation` may target several spec topic IDs
+(H2) covering characters, graphics and sound. Each ladder escalates nudge →
+structure → procedure (2–4 rungs), stops short of the answer, and unlocks only on
+the agreed counter keys `failed-attempts:<quizId>`, `turns-since:<puzzleId>` and
+`hints-shown:<hintId>` (shared-rules.md §3). `cooldownTurns` is 2 throughout.
+Automatic offers follow a wrong answer or three stuck turns, never attempt one (H3).
+Superseded: `hint-conversion-check` (folded into `hint-number-systems`) and
+`hint-storage-units-check` (refined into `hint-storage-capacity`).
 
-Teaching beats (P2): each first-batch topic needs a teaching beat (the foreman, the
-predecessor or an in-world label), a retrieval beat (quiz question) and an
-application beat (puzzle) where the spec calls for it. `switch-to-bit` is "should be
-aware of", so teaching plus retrieval is sufficient. A topic with only a quiz is
-incomplete.
+Teaching beats (P2): each first-batch topic needs a teaching beat (an actor or
+in-world label), a retrieval beat (quiz question) and an application beat (puzzle)
+where the spec calls for it. `switch-to-bit` is "should be aware of", so teaching
+plus retrieval is sufficient. A topic with only a quiz is incomplete.
 
 ## 7. Selected hazards
 
-Exactly two, chosen from the game-wide palette (root bible §8). Both are
-telegraphed, cost one life, return to `room-binary-hall` (`startRoomId`), never reset
-puzzle phase and never offer a hint (H1).
+Five, spanning all three palette themes (root bible §8; user-approved). Every one
+is telegraphed where the player reads it before the trigger, costs one life, returns
+to `room-binary-hall` (`startRoomId`), never resets puzzle phase and never offers a
+hint (H1). Telegraphed physical details are in-world metaphor only — no course fact
+or number is asserted in a telegraph.
 
-- `hazard-switch-overheat` — machine faults. Fires on entering `room-switch-floor`
-  unless a cooling flag is set. Telegraph: heat haze off the belt and accelerating
-  clicks.
-- `hazard-bit-rot` — corruption threats. Fires on entering `room-storage-stacks`
-  unless a sealing flag is set. Telegraph: flaking labels and a dry, dusty smell.
+| Hazard ID | Theme / place | Trigger and telegraph | Counterplay |
+| --- | --- | --- | --- |
+| `hazard-switch-overheat` | Machine faults — `room-switch-floor` | On room entry unless a cooling flag is set. Heat haze off the belt; accelerating clicks. | Set the cooling flag via the gauge's `useNotes` |
+| `hazard-carry-overflow` | Machine faults — `room-hex-deck` | On room entry unless `carry-cleared`. A stuck carry lamp drips spare 1s into a tray scratched OVERFLOW. | Clear the lamp via `item-hex-nibble-card` or the clerk's carries topic |
+| `hazard-bit-rot` | Corruption — `room-storage-stacks` | On room entry unless a sealing flag is set. Flaking labels; a dry, dusty smell. | Set the sealing flag; keeper's dialogue also telegraphs it (H1) |
+| `hazard-glyph-corruption` | Corruption — `room-character-tiles` | On using `item-ascii-stamp` unless `tiles-verified`. A tile missing a glyph corner; grey dust on the stamp. | Verify tiles first, or leave the stamp alone |
+| `hazard-detention-bell` | Cartoon school — `room-binary-hall` | On using `item-comic-sans-cartridge`; `once: true`. Warm humming cartridge; a handwritten "Unauthorised font use is a compliance infringement" notice. | Avoidable — the cartridge is expendable and required by no puzzle |
 
-`hazard-pop-quiz` (cartoon school) is reserved for a later, more character-driven
-zone and is not used here.
+Editor-assigned level-local disarm keys for the five hazards: `switch-cooled`
+(overheat), `carry-cleared` (carry-overflow), `stacks-sealed` (bit-rot),
+`tiles-verified` (glyph-corruption). `hazard-detention-bell` needs no disarm flag —
+its counterplay is avoiding the expendable cartridge. Each key needs an owning card
+to set it; until then each hazard still has an avoidable action as counterplay. A
+proposed timed-fuse hazard (`hazard-sample-drift`) is **deferred** — it needs
+scheduler wiring confirmed by the rooms card and code-lead. An unavoidable random
+pop-quiz hazard was rejected (no counterplay; blurs into quiz combat). The reserved
+`hazard-pop-quiz` palette ID remains unused.
+
+Effects are limited to `message` + `change-lives` (`delta: -1`, with reason) +
+`move-player` (`roomId: room-binary-hall`, with reason); no `set-puzzle-*` effect.
 
 ## 8. Welsh references
 
-Two planned touches: the foreman's "Bore da" greeting, and a Unicode tile bearing
-`ŵ` in `room-character-tiles` to show why ASCII is not enough. Both are accurate,
-unobtrusive and never displace a formal technical term; neither is a lesson or a
-joke target (narrative-principles.md §10).
+Three planned touches: the foreman's "Bore da" greeting; the Unicode tile bearing
+`ŵ` in `room-character-tiles`, now kept in the typesetter's spare drawer; and the
+typesetter's care that no character is refused a tile. The `ŵ` is subject to the
+spec-check flag in §6 — the technical claim is not asserted until confirmed. All are
+accurate, unobtrusive and never displace a formal technical term; none is a lesson
+or a joke target (narrative-principles.md §10).
 
 ## 9. Zone-specific open questions
 
-1. Confirm the `quiz-`, `q-`, `hint-`, `puzzle-` and `hazard-` IDs in this file and
-   the master registry before any card is written.
-2. Confirm the two-clue placements for each gated exit when the rooms and NPC cards
-   are briefed (N6).
-3. Confirm the sub-batching: this area has seven scored topics plus the prologue.
-   Editorial plan is to brief all card kinds, then review number systems first and
-   representation second, with one writer per output file.
+1. **Resolved:** all `quiz-`, `q-`, `hint-`, `puzzle-` and `hazard-` IDs in this file
+   are approved and in the master registry (root §9). The four ideation decisions
+   are approved (root §12).
+2. Confirm the two-clue placements for each gated exit and fixture when the rooms and
+   NPC cards are briefed (N6).
+3. **Resolved:** sub-batching — brief all card kinds for the area, then review in two
+   groups (number systems first, representation second), with one writer per output
+   file (Gate 1/2).
+4. **Gate 2 spec checks** (§6): ASCII/Unicode coverage for `ŵ`; the L683–685 units
+   table; no worked shift/overflow numbers; bits-per-channel convention.
+5. **Gate 1 ownership:** disarm flags for the five hazards and the seven new puzzle
+   producers need owning item/fixture/NPC topics; the deferred fuse hazard needs
+   code-lead confirmation if it is ever added.
