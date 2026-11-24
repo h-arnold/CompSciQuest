@@ -1,0 +1,28 @@
+# CompSciQuest
+
+Development happens inside the devcontainer in `.devcontainer/`, which runs
+as **root** (the host uses rootless Docker, so root inside the container keeps
+installs simple).
+
+Preinstalled in the container (versions verified online on 2026-11-24):
+
+| Tool | Version | Source |
+| --- | --- | --- |
+| Node.js (LTS) + npm | 26.13.x | base image `mcr.microsoft.com/devcontainers/javascript-node:26-bookworm` |
+| opencode CLI (v2) | 2.4.x | `curl -fsSL https://opencode.ai/v2/install \| bash` |
+| Playwright | 1.65.1 (+ browsers & OS deps via `playwright install --with-deps`) | npm, pinned |
+| vite | 8.3.8 | npm, pinned |
+| vitest | 5.1.1 | npm, pinned |
+| GitHub CLI (`gh`) | latest (v2.105.0 at setup time) | official apt repo `cli.github.com/packages` |
+
+Open the repo in VS Code and "Reopen in Container" (or `devcontainer up`).
+`gh` auth and opencode config/credentials are bind-mounted from the host
+(`~/.config/gh`, `~/.config/opencode`, `~/.local/share/opencode`), so run
+`gh auth login` inside the container once and it persists on the host.
+
+To bump the pinned npm packages later:
+
+```sh
+npm install -g playwright@latest vite@latest vitest@latest
+playwright install --with-deps   # refresh browsers if playwright changed
+```
