@@ -9,6 +9,9 @@ permissions:
     resource: "src/**"
     effect: allow
   - action: edit
+    resource: "tools/content/**"
+    effect: allow
+  - action: edit
     resource: "vite.config.ts"
     effect: allow
   - action: edit
@@ -34,6 +37,9 @@ permissions:
     effect: allow
   - action: shell
     resource: "npm run lint *"
+    effect: allow
+  - action: shell
+    resource: "npm run content:*"
     effect: allow
   - action: shell
     resource: "npm run format:check *"
@@ -178,7 +184,8 @@ leads and the graph-diff summary. Do not write into another agent's report.
 
 Hard limits: never edit tests, e2e tests, docs or another agent's scratchpad
 report; never change a test or expectation to make it pass; never author game
-content; never invent behaviour.
+content; never invent behaviour. Never run `content:scaffold` against an authored
+area — exercise it only on a scratchpad or temporary area.
 
 Return `BLOCKED: <matrix ID> conflicts with <doc section>` on a conflict, and
 `BLOCKED: duplicate canonical node <label> in <files>` when an existing owner
