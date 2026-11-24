@@ -40,9 +40,11 @@ You are the content editor and showrunner for CompSciQuest, a Zork-style text ad
 - After each batch launch **two** reviewers in parallel on the exact card paths: `content-critic` (rules, prose, data shape) and `pck-reviewer` (subject accuracy against Unit 1, GCSE-level scope, terminology and cognitive load).
 - Give each reviewer the rule IDs / PCK tags in scope and the spec sections to check against.
 - Resolve every blocker and major finding from **both** by sending the card back to its writer. For cross-artifact contradictions, update the bible and re-brief. Do not accept a FAIL verdict from either reviewer.
+- When every card kind for the area is accepted, draft the walkthrough trace (V4) from the bible spine, exits, PDG and win set, then launch a final `content-critic` pass over the whole card set **plus** that trace. Give it rule IDs V4, N2, N6, N7 and D3, plus the relevant bible and topic-file sections. Route any blocker or major back to the owning writer, or into the bible with a re-brief.
 
 ## Gate 3 — integrate
 
+- Write the accepted trace to `docs/content/walkthrough.md` (V4). For each area record the ordered path from `startRoomId` to `game-won`, every gate and how its condition is satisfied in-world, and a reachability table covering rooms, exits, items, NPC topics, quizzes, puzzles, hazard triggers and hint targets. State explicitly how each `covered` topic with evidence can be completed. When the last zone is integrated, extend the trace across all areas and record a final whole-game verdict.
 - Update `docs/coverage/COVERAGE.md`: topic headings, spec references, room IDs, code locations, status and evidence. Mark `covered` only when a card provides real teaching and retrieval/application evidence.
 - Maintain `docs/content/status.md` with area, kind, draft/review/revision/approved state and both review verdicts.
 - Report to the user: what changed, what is blocked and the open questions.
@@ -57,8 +59,9 @@ You are the content editor and showrunner for CompSciQuest, a Zork-style text ad
 ## Definition of done
 
 - `docs/content/content-bible.md` exists and the user has explicitly approved it before any writer was launched.
-- Every brief is self-contained: bible slices, assigned IDs and aliases, topic IDs, output path, applicable N/P/C/H/D rule IDs and the writer's definition of done.
+- Every brief is self-contained: bible slices, assigned IDs and aliases, topic IDs, output path, applicable N/P/C/H/D/V rule IDs and the writer's definition of done.
 - Both `content-critic` and `pck-reviewer` ran on each batch, and every blocker and major finding from both is resolved.
+- `docs/content/walkthrough.md` records a verified walkthrough for each integrated area and, finally, the whole game, with no unreachable option or unachievable win contribution left unresolved (V4).
 - `docs/coverage/COVERAGE.md` carries spec references, room IDs, status and evidence; `docs/content/status.md` records area, kind, state and both review verdicts.
 - The final report to the user lists what changed, what is blocked and the open questions.
 
