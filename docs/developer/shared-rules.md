@@ -2,9 +2,9 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) · [NPCs](npcs.md) ·
-[hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) ·
-[hints](hints.md).
+Part of the CompSciQuest design set: [architecture](architecture.md) ·
+[storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
+[quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Purpose
 
@@ -146,8 +146,9 @@ Conventions:
 - `EffectApplier.apply(effect): GameEvent[]` is the only mutator of these fields.
   Handlers and domain systems **return** effects; they do not write state directly.
 - `transfer-item` uses the reserved owner ID `'player'`; other owners are actor
-  IDs. It updates both inventories atomically — no separate remove/grant pair is
-  needed for `give`/`show`.
+  IDs or room IDs. It updates both inventories atomically — no separate
+  remove/grant pair is needed for `give`/`show`. Every item has exactly one owner
+  ([storage-schema.md §3.3](storage-schema.md#33-invariants)).
 - `enter-node` requires a `nodeId`; `exit-node` has none. Optional properties are
   omitted, never assigned `undefined` (`exactOptionalPropertyTypes`).
 - Every effect produces at least one buffered event, so every state change is
@@ -186,66 +187,37 @@ stay deterministic for saves and tests.
 
 - Define a `Random` port: `nextInt(maxExclusive: number): number`.
 - The production implementation is a seeded PRNG (e.g. mulberry32) whose seed
-  lives in `GameStateDto.rngSeed`; the seed **advances on each draw and is saved**.
+  lives in `GameStateDto.rngSeed` as an unsigned 32-bit integer; the seed
+  **advances on each draw and is saved**
+  ([storage-schema.md §3.3](storage-schema.md#33-invariants)).
 - Unit tests inject a fake `Random` returning fixed values.
 - No `Math.random()` anywhere in `src/core`.
 
 ## 8. State additions — schema stays v1
 
 Per decision, **there is no schema migration step yet**. `SCHEMA_VERSION` remains
-`1` and `SaveManager` does not migrate; these fields are added to `GameStateDto`
-during pre-release development. Migration will be revisited before public
-release.
+`1` and `SaveManager` does not migrate. Every persisted shape — `GameStateDto`,
+`SaveDto`, `RoomStateDto`, `NpcStateDto`, `HazardStateDto`, `PuzzleStateDto` /
+`PuzzlePhase`, `HintStateDto`, `QuizStateDto`, `AreaProgress`, `SessionStatus`,
+`ScheduledEvent` and `LoadResult` — is defined canonically in
+[storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical). Subsystem
+documents link there instead of redeclaring fields.
 
-These are the canonical sub-DTO shapes; subsystem documents reference them:
+What is specific to this rule spine:
 
-```ts
-// src/core/GameState.ts — additive fields, version still 1
-export interface GameStateDto {
-  // existing: player, flags, score, progress, turn
-  readonly npcs: Readonly<Record<string, NpcStateDto>>;
-  readonly hazards: Readonly<Record<string, HazardStateDto>>;
-  readonly puzzles: Readonly<Record<string, PuzzleStateDto>>;
-  readonly hints: Readonly<Record<string, HintStateDto>>;
-  readonly quiz: QuizStateDto;
-  readonly schedule: readonly ScheduledEvent[];
-  readonly rngSeed: number;
-  readonly counters: Readonly<Record<string, number>>;
-}
-
-export interface NpcStateDto {
-  readonly stateId: string;
-  readonly knownTopics: readonly string[];
-  readonly activeNodeId?: string;          // omitted when no node is active
-  readonly topicUses: Readonly<Record<string, number>>;
-}
-export interface HazardStateDto {
-  readonly lastFiredTurn?: number;         // omitted until first fire
-  readonly timesFired: number;
-}
-export type PuzzlePhase = 'unsolved' | 'active' | 'solved';
-export interface PuzzleStateDto { readonly phase: PuzzlePhase; }
-export interface HintStateDto {
-  readonly levelsShown: readonly number[];
-  readonly lastShownTurn?: number;         // omitted until first hint
-  readonly firstRequestedTurn?: number;    // omitted until first request
-}
-export interface QuizStateDto {
-  readonly activeQuizId?: string;          // omitted when no quiz is active
-  readonly questionIds: readonly string[];
-  readonly index: number;
-  readonly correctCount: number;
-  readonly answers: readonly number[];
-  readonly attempts: number;
-  readonly startedTurn: number;
-}
-```
-
-Only plain arrays, records, strings and numbers go into DTOs — no `Set`, `Map`,
-functions or class instances (decision: keep JSON trivial; no custom serialiser).
-
-A consequence to accept now: old v1 saves made before these fields existed will
-fail strict validation. That is fine while the game is unreleased.
+- Only plain arrays, records, strings, numbers and booleans go into DTOs — no
+  `Set`, `Map`, functions or class instances (decision: keep JSON trivial; no
+  custom serialiser). Optional properties are omitted, never `undefined`.
+- `counters` uses free-form string keys (no prefix restriction at load). The
+  three defined prefixes and the `turns-since` activation/increment rule are in
+  §3 and [storage-schema.md §4](storage-schema.md#4-counters-and-stuckness).
+- Item ownership is a property of Player, NPC and Room state; the `rooms` record
+  holds `RoomStateDto`. Mutable door/container/item state uses kebab-case
+  `flags` keys (§5).
+- `score` is not stored: `ScoreTracker` writes `AreaProgress.earnedScore` and the
+  total is derived at restore ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
+- Old v1 saves made before these fields existed fail strict validation. That is
+  accepted while the game is unreleased.
 
 ## 9. Event additions
 
@@ -308,8 +280,13 @@ and NPC aliases so `NameResolver` never has to guess.
 ## 13. Decisions resolved
 
 - Skipped cascades are silent to the player; only tests observe them.
-- `counters` are never pruned — a complete audit trail is kept.
-- DTOs use plain arrays/records; no custom serialiser.
+- `counters` are never pruned — a complete audit trail is kept; keys are
+  free-form strings with no prefix restriction at load.
+- DTOs use plain arrays/records; no custom serialiser. Item ownership is a
+  property of Player, NPC and Room state, and mutable item/exit state uses the
+  kebab-case `flags` convention.
+- `score` is not persisted: `ScoreTracker` writes `AreaProgress.earnedScore` and
+  the total is derived at restore.
 - Conversation starts implicitly on `ask`/`give`/`show`; there is no turn timeout.
 - `give`/`show` use a dedicated `transfer-item` effect.
 - Object and NPC aliases must be globally unique, enforced by content validation.

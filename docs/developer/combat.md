@@ -3,7 +3,8 @@
 Status: planned · Last updated: 2026-11-24
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[shared rule spine](shared-rules.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
+[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
+[NPCs](npcs.md) · [hazards](hazards.md) ·
 [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Scope
@@ -48,13 +49,14 @@ questionIds.length`, no correct option on a question, or an unknown `topicId`.
 Definitions live in `src/content/quizzes/`; `QuizCatalogue` resolves IDs.
 
 `QuizStateDto` is defined in
-[shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+[storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 ## 3. Flow
 
 1. A conversation topic applies `start-quiz`, exiting the current node. Before
-   starting, check `attemptsAllowed`: if exhausted, emit a friendly message and
-   do not start. Otherwise increment `attempts` at quiz start.
+   starting, check `quizAttempts[quizId]` against `attemptsAllowed`: if exhausted,
+   emit a friendly message and do not start. Otherwise increment that count at
+   quiz start ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)).
 2. `QuizSystem` creates `QuizStateDto`, optionally shuffles `questionIds` using
    the injected `Random` port (shared spine §7), and emits `quiz-started`.
 3. Emit `question-asked` with the prompt and numbered options. The UI's
@@ -112,7 +114,8 @@ optional penalty is handled by `ScoreTracker` via `hint-penalty-applied`.
 ## 7. Tests
 
 - Quiz starts from a conversation topic's `start-quiz` effect.
-- `attemptsAllowed` is checked before starting; `attempts` increments at start.
+- `attemptsAllowed` is checked against `quizAttempts[quizId]`; the count
+  increments at start and persists across attempts.
 - Correct/incorrect answers update `correctCount` and `answers` correctly;
   `answer 1` maps to option index `0`.
 - Pass path emits `quiz-ended(passed)`, sets `quiz-passed:<quizId>` and emits
@@ -133,3 +136,6 @@ optional penalty is handled by `ScoreTracker` via `hint-penalty-applied`.
 - `passMark` is a count, not a percentage.
 - `livesOnFail` was removed; `onFail`'s `change-lives` effect is the single
   source of life loss.
+- Retry limits are stored in `quizAttempts: Record<quizId, number>`, not in a
+  single `QuizStateDto.attempts` field
+  ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)).

@@ -28,7 +28,7 @@ deliberately out of scope; where content is involved, this document defines the
 | OOP with strict TS | Classes for entities with identity and behaviour; plain interfaces/type aliases for data shapes. Composition over deep inheritance. |
 | Separation of concerns | The engine never touches the DOM; the UI never owns game rules. They communicate through commands in and events out. |
 | Data-driven content | Rooms, items and spec topics are declarative definitions consumed by the engine. No content is hard-coded into engine logic. |
-| One source of truth | `GameState` is the only serialised game state and holds score and per-area progress. `ScoreTracker` is its sole writer for those fields. |
+| One source of truth | The persisted shape is defined in [storage-schema.md](storage-schema.md); `GameState` is its runtime counterpart. Score is derived from per-area progress at restore; `ScoreTracker` is the sole writer of `earnedScore`. |
 | Explicit persistence | Saves are versioned (`SCHEMA_VERSION = 1`) and validated on load; no migration is implemented yet. |
 | Testability | Dependencies (event bus, storage adapter, clock) are injected; no hidden globals in the core. |
 
@@ -73,7 +73,7 @@ src/
     Clock.ts               # injectable time source used for savedAt
   core/
     GameState.ts           # authoritative state + GameStateDto shape; createInitial()/fromDto()/toDto()
-    Player.ts              # position, inventory, lives (score lives in GameState)
+    Player.ts              # position, inventory, lives (total score derived at restore)
     World.ts               # worlds/areas/rooms registry; room lookup
     Room.ts                # room identity, description, exits, entry hooks
     Exit.ts                # directed connection + conditions (locked, hidden, gated)
@@ -111,7 +111,7 @@ src/
       EventBus.ts          # publish/subscribe
       GameEvent.ts         # GameEvent union + RoomSummary
     scoring/
-      ScoreTracker.ts      # sole writer of score and progress, driven by events
+      ScoreTracker.ts      # sole writer of area progress/earnedScore; total derived
       WorldProgress.ts     # per-world/area visited rooms, score, completed topics
       SpecTopic.ts         # topic contract mirroring docs/coverage/COVERAGE.md
       SpecTopicCatalogue.ts # lookup of topic title/spec reference by topic or room ID
@@ -156,7 +156,7 @@ documents listed in §12. They all share the rule spine documented in
 
 | Class / module | Responsibility | Key state | Collaborators |
 | --- | --- | --- | --- |
-| `GameState` | Canonical serialisable snapshot; factories `createInitial()` / `fromDto()`; `toDto()` returns the state shape only | player, world flags, **score**, progress, turn count | `Player`, `WorldProgress` |
+| `GameState` | Runtime counterpart of the canonical DTO; factories `createInitial()` / `fromDto()`; `toDto()` returns the state shape only | player, entity inventories, flags, progress, turn, **status**, schedule; score is derived at restore | `Player`, `WorldProgress` |
 | `Player` | The player character's mutable state | position, inventory, lives | `Item`, `Room` |
 | `World` | Registry/lookup for worlds, areas and rooms; validates exits | room map | `Room`, `Exit` |
 | `Room` | A location: description, exits, special entry behaviour | id, title, exits | `Exit`, `Player` |
@@ -166,9 +166,9 @@ documents listed in §12. They all share the rule spine documented in
 | `NameResolver` | Resolve `ParsedCommand` noun phrases to object IDs and produce a `Command`; unresolved nouns produce `unknown` | visibility rules | `Item`, `Room`, `Player`, `ParsedCommand` |
 | `RuleEngine` | Central preconditions ("has key?", "door open?") | none | `Precondition`, verb handlers |
 | `EventBus` | Decouples engine from UI; `publish` takes a whole turn's event batch | listener set | `GameEvent` |
-| `ScoreTracker` | Sole writer of score/progress, driven by events | visited sets (within `WorldProgress`) | `GameState`, `SpecTopic` |
+| `ScoreTracker` | Sole writer of per-area progress/`earnedScore`, driven by events; total score is derived | visited sets (within `WorldProgress`) | `GameState`, `SpecTopic` |
 | `SpecTopicCatalogue` | Look up topic title/spec reference for UI labels | topic index | `SpecTopic` |
-| `Session` | New game/restart/win/lose; handles `lives == 0` | session status | `GameState`, `EventBus` |
+| `Session` | New game/restart/win/lose; handles `lives == 0` | session status (persisted as `status`) | `GameState`, `EventBus` |
 
 ### Application services
 
@@ -225,7 +225,8 @@ and prevents the UI seeing half-updated state. The full contract, including
 cascade limits and observer ordering, is in [shared-rules.md](shared-rules.md#2-turn-pipeline-amends-architecturemd-62).
 
 Handlers do **not** write score directly; they emit events, and `ScoreTracker` is
-the only code that writes `GameState.score` and `WorldProgress`. The parser must
+the only code that writes `WorldProgress`/`AreaProgress.earnedScore`. The total
+`GameState.score` is derived from those area totals at restore. The parser must
 never throw on bad input: unknown verbs, and nouns that `NameResolver` cannot
 match to a visible object, both become an `unknown` command whose handler emits a
 friendly "I don't understand that" message. Meta actions (save, load,
@@ -240,10 +241,12 @@ it succeeded.
    returns a `move-player` effect.
 2. `EffectApplier` moves `Player.position` and emits `room-entered` with a
    `RoomSummary`.
-3. `ScoreTracker` marks the room visited in `WorldProgress`, awards any room
-   score, and records topic progress. Following `COVERAGE.md`, only topics whose
-   status is `covered` **and** which have evidence are scoreable; unmapped topics
-   may be shown as "not mapped yet" but award no points.
+3. `ScoreTracker` marks the room visited in `WorldProgress`, adds any room points
+   to `AreaProgress.earnedScore`, and records topic progress. Following
+   `COVERAGE.md`, only topics whose status is `covered` **and** which have
+   evidence are scoreable; unmapped topics may be shown as "not mapped yet" but
+   award no points. The total score is derived from the area totals at restore
+   ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
 4. `ScorePanel` re-renders worlds/areas visited, score achieved and the spec area.
    It uses `SpecTopicCatalogue` to turn topic IDs into titles/spec references and
    never computes scores itself.
@@ -264,24 +267,30 @@ import: File.text() → JSON.parse → validate version + shape
         → SaveManager restores a new GameState → UI refreshed
 ```
 
-- `JSON.parse` and validation errors are caught and shown as readable messages;
-  a bad file must never partially overwrite the live save.
-- Unknown or newer schema versions are rejected with an explicit message rather
-  than being force-loaded.
+- Validation uses a typed `LoadResult` with reasons `invalid-json`,
+  `wrong-version`, `newer-version`, `invalid-shape` and `invalid-content`
+  ([storage-schema.md §8](storage-schema.md#8-validation-contract)); a bad file
+  must never partially overwrite the live save.
+- Unknown or newer schema versions are rejected rather than force-loaded. On
+  boot, a corrupt live save is quarantined with its raw text, reason and
+  timestamp and can be downloaded for recovery (§9 of that document).
 - Imported text is only ever treated as data: the UI renders it via
-  `textContent`, so a malicious save cannot inject HTML.
+  `textContent`, so a malicious save cannot inject HTML. The file's `savedAt` is
+  preserved and downloads carry a dated filename.
 - The initial schema version is `1`. **No migration is implemented yet**: new
-  state fields from the subsystem designs are added to v1 directly. Migration is
-  revisited before public release (§11).
+  state fields are added to v1 directly and unknown extra fields are ignored.
+  Migration is revisited before public release (§11).
 
 ### 6.5 Losing a life and winning
 
 Life loss comes from two designed systems: [hazards](hazards.md) and failed
 adversarial quizzes ([combat.md](combat.md)). Both emit `lives-changed`; `Session`
-detects `lives == 0` and emits `game-over` with the final score. When all mapped
-spec topics are covered, a handler emits `game-won` with the final score. Both
-end states are exited through `Session.newGame()`, which
-restores `GameState.createInitial()`.
+detects `lives == 0`, sets the persisted `status` to `'lost'` and emits
+`game-over` with the final score. When every spec topic with `covered` status and
+evidence is completed, a handler sets `status` to `'won'` and emits `game-won`
+with the final score. A reloaded end state does not re-emit the event. Both end
+states are exited through `Session.newGame()`, which restores
+`GameState.createInitial()`.
 
 ## 7. Core interface sketches
 
@@ -384,51 +393,23 @@ export interface SpecTopicCatalogue {
   getByRoomId(roomId: string): readonly SpecTopic[];
 }
 
-export interface AreaProgress {
-  readonly worldId: string;
-  readonly areaId: string;
-  readonly visitedRooms: readonly string[];
-  readonly completedTopics: readonly string[];
-  readonly earnedScore: number;
-  readonly maxScore: number;
-}
 ```
 
-```ts
-// src/core/GameState.ts — pure state shape: no version, no timestamp.
-import type { Position } from '../types/domain';
-import type { AreaProgress } from './scoring/SpecTopic';
+`AreaProgress` is part of the persisted shape defined in
+[storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical).
 
-export interface GameStateDto {
-  readonly player: {
-    readonly position: Position;
-    readonly inventory: readonly string[];
-    readonly lives: number;
-  };
-  readonly flags: Readonly<Record<string, boolean>>;
-  readonly score: number;
-  readonly progress: readonly AreaProgress[];
-  readonly turn: number;
-}
-
-// GameState implements Serialisable<GameStateDto>: createInitial(), fromDto(dto),
-// toDto(). SaveManager owns the envelope below.
-```
-
-```ts
-// src/application/SaveDto.ts — StorageAdapter is declared only in
-// src/storage/StorageAdapter.ts; Clock only in src/application/Clock.ts.
-import type { GameStateDto } from '../core/GameState';
-
-export interface SaveDto {
-  readonly version: 1;
-  readonly savedAt: string; // ISO 8601, from Clock
-  readonly state: GameStateDto;
-}
-```
+`GameStateDto`, `SaveDto` and every sub-DTO are defined canonically in
+[storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical), together
+with the validation result, quarantine shape and API contracts. `GameState`
+implements `createInitial()` / `fromDto()` / `toDto()`; `SaveManager` owns the
+envelope. In particular, `score` is derived at restore rather than stored, and
+`status` is persisted.
 
 ## 8. Conventions
 
+- Persisted shapes (DTOs, envelope, validation result and quarantine) are
+  canonical in [storage-schema.md](storage-schema.md); do not duplicate their
+  definitions in other documents.
 - **One primary export per file**, file named after it (one class per file for
   entities; small related types may share a `types` module).
 - **Composition over deep inheritance.** `Item` subclasses override small
@@ -471,7 +452,8 @@ export interface SaveDto {
   progress, and that only `covered` topics with evidence score points.
 - Save DTO: round-trip `GameState → DTO → JSON → DTO → GameState`; rejection of
   malformed, unknown-version and newer-version saves, plus acceptance of
-  additive v1 fields.
+  additive v1 fields. Derived score, refreshed maxima, quiz attempts, entity
+  inventories and persisted end status follow [storage-schema.md §12](storage-schema.md#12-tests).
 - Lives: decrement, zero → `game-over`, restart resets state.
 - Win: `game-won` carries the final score and restart resets state.
 
@@ -525,8 +507,9 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
   `ParsedCommand` (verb + raw noun phrases) and `NameResolver` turns that into a
   `Command` by resolving nouns to object IDs. `TopicResolver` handles free-text
   conversation topics.
-- `GameState.score` and `WorldProgress` are canonical; `ScoreTracker` is their
-  sole writer. Events are buffered per turn; `ScoreTracker` observes before
+- `WorldProgress`/`AreaProgress.earnedScore` are canonical persisted progress;
+  `ScoreTracker` is their sole writer and the total `GameState.score` is derived
+  at restore. Events are buffered per turn; `ScoreTracker` observes before
   `Session` so end events carry the final score.
 - Save/load/download/import are application-level actions intercepted before
   core command dispatch, not core commands.
@@ -548,6 +531,27 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
 - Hazards: fire after the room description, emit `hazard-triggered`, use
   content-declared level starts, and never offer hints.
 
+**Storage schema** — full contracts in [storage-schema.md](storage-schema.md):
+
+- Item ownership is a property of Player, NPCs and Rooms (a `rooms` record of
+  `RoomStateDto`); every item has exactly one owner. Mutable item/exit state
+  uses a kebab-case `flags` convention.
+- `status` (`playing` / `won` / `lost`) is persisted; win = all catalogue topics
+  with `covered` status and evidence in completed topics, skipped when status is
+  not `playing`.
+- `score` is not stored; it is derived from area totals at restore.
+  `AreaProgress.maxScore` is stored but refreshed from content at restore.
+- Quiz retries use `quizAttempts: Record<quizId, number>`; the generic
+  `attempts`, `startedTurn` and `firstRequestedTurn` fields were dropped.
+- `turns-since:<puzzleId>` starts at 0 on activation and ticks every later turn.
+- Validation checks required keys and types, ignores extra keys, uses a typed
+  `LoadResult` with five failure reasons, and checks content IDs against
+  catalogues.
+- A corrupt live save is quarantined on boot only under
+  `compsciquest:save:v1:corrupt` with raw text, reason and timestamp; one slot,
+  downloadable. Imports preserve `savedAt`; downloads use a dated filename.
+- Checksums and multi-tab protection are out of scope for v1.
+
 **Settled as implementation/data tasks (no design decision outstanding)**
 
 - Scoring values (points per room/topic, per-area maximums) live in content and
@@ -563,11 +567,13 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
 These documents extend this architecture; they are linked from the relevant
 sections above and must stay consistent with it. Implement in the order listed
 after the shared spine: hazards and puzzles first, NPCs second, quiz combat and
-hints last.
+hints last. The storage schema is the canonical definition of everything those
+systems persist.
 
 | Document | What it specifies |
 | --- | --- |
-| [shared-rules.md](shared-rules.md) | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer, DTO additions and observer order. |
+| [storage-schema.md](storage-schema.md) | Canonical DTOs, envelope, item ownership, validation and `LoadResult`, quarantine, restore-time derivation and API contracts. |
+| [shared-rules.md](shared-rules.md) | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer and observer order. |
 | [hazards.md](hazards.md) | Traps and penalties as declarative, scheduled life-loss rules. |
 | [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation. |
 | [npcs.md](npcs.md) | Actors, actor states, conversation topics, `ConvNode`, knowledge gating and `TopicResolver`. |

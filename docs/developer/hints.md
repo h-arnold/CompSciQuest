@@ -3,7 +3,8 @@
 Status: planned · Last updated: 2026-11-24
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[shared rule spine](shared-rules.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
+[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
+[NPCs](npcs.md) · [hazards](hazards.md) ·
 [quiz combat](combat.md) · [puzzles](puzzles.md).
 
 ## 1. Scope
@@ -39,8 +40,8 @@ export interface HintSequence {
 revision area a hint belongs to. Definitions live in `src/content/hints/`;
 `HintCatalogue` resolves by ID and by target.
 
-`HintStateDto` (`levelsShown`, `lastShownTurn?`, `firstRequestedTurn?`) is defined
-in [shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+`HintStateDto` (`levelsShown`, `lastShownTurn?`) is defined in
+[storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 Counters for gating live in `GameStateDto.counters` using the shared namespace:
 `hints-shown:<hintId>`, `failed-attempts:<quizId>`, `turns-since:<puzzleId>`.

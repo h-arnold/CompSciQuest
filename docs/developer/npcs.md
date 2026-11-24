@@ -3,7 +3,8 @@
 Status: planned · Last updated: 2026-11-24
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[shared rule spine](shared-rules.md) · [hazards](hazards.md) ·
+[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
+[hazards](hazards.md) ·
 [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Scope
@@ -61,8 +62,9 @@ export interface ConversationNode {
 
 `Actor` is an entity with identity and behaviour, so it is a class in `src/core`,
 consistent with `architecture.md` §5: `id`/`aliases` (reuse `GameObject`),
-`stateId`, `knownTopics`, `activeNodeId?` and `topicUses`. Its serialised shape is
-`NpcStateDto` in [shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+`stateId`, `knownTopics`, `inventory`, `activeNodeId?` and `topicUses`. Its
+serialised shape is `NpcStateDto` in
+[storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 ## 3. Commands and topic resolution
 
@@ -149,7 +151,7 @@ quiz's `onPass`/`onFail` effects.
 ## 7. State, events and UI
 
 - `GameStateDto.npcs[id]: NpcStateDto` — see
-  [shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+  [storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 - New events (`conversation-started`, `npc-spoke`, `conversation-ended`,
   `topic-suggested`) are defined in
   [shared-rules.md §9](shared-rules.md#9-event-additions).

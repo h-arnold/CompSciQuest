@@ -2,7 +2,7 @@
 
 Status: draft · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) · [shared rule spine](shared-rules.md) · [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
+Part of the CompSciQuest design set: [architecture](architecture.md) · [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Purpose and authority
 
@@ -76,7 +76,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 
 - **D1 — Cards only.** Writers produce Markdown design cards under `docs/content/<area>/`. They never edit engine code, `src/`, the rulebook, agent files or `opencode.json`.
 - **D2 — Editor-owned IDs.** IDs are kebab-case with a kind prefix: `room-`, `item-`, `npc-`, `actorstate-`, `topic-`, `node-`, `quiz-`, `q-`, `puzzle-`, `hazard-`, `hint-`. The editor allocates IDs and aliases in the bible; writers never invent one outside their brief.
-- **D3 — Runtime data shape.** Runtime fields use exactly the names and types in the subsystem docs. Only plain strings, numbers, arrays and records are allowed; omit optional fields rather than assigning `undefined` ([shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1)).
+- **D3 — Runtime data shape.** Runtime fields use exactly the names and types in the subsystem docs. Only plain strings, numbers, arrays and records are allowed; omit optional fields rather than assigning `undefined` ([storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical)). Each item declares its `initialRoom`; after that, ownership lives on Player, NPC or Room state.
 - **D4 — Authoring metadata is separate.** Fields such as `assessmentObjective`, `difficulty`, `clues`, `role`, `voice`, `motivation`, `relationship` and `telegraph` exist only on cards. They are dropped on conversion to TypeScript and never fed to the engine.
 
 ### V — Validation
@@ -131,6 +131,7 @@ Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nes
 - aliases: [cache, registers]
 - portable: true
 - description: ...
+- initialRoom: room-cpu-lab   # starting owner; item ownership is a Player/NPC/Room property
 - useNotes: ...               # (authoring) which action sets which flag
 ```
 

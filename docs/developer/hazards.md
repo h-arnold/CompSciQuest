@@ -3,7 +3,8 @@
 Status: planned · Last updated: 2026-11-24
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[shared rule spine](shared-rules.md) · [NPCs](npcs.md) · [quiz combat](combat.md) ·
+[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
+[NPCs](npcs.md) · [quiz combat](combat.md) ·
 [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Scope
@@ -43,7 +44,7 @@ applies a `schedule` effect that adds the `ScheduledEvent` to
 `GameStateDto.schedule`. After that, `Scheduler` owns its countdown.
 
 `HazardStateDto` is defined in
-[shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+[storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 ## 3. Execution
 

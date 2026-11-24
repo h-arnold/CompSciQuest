@@ -3,7 +3,8 @@
 Status: planned · Last updated: 2026-11-24
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[shared rule spine](shared-rules.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
+[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
+[NPCs](npcs.md) · [hazards](hazards.md) ·
 [quiz combat](combat.md) · [hints](hints.md).
 
 ## 1. Scope
@@ -30,7 +31,7 @@ export interface Puzzle {
 State uses three phases (multi-step tasks are represented by one puzzle per step
 in the dependency graph, but a puzzle may be activated before it is solved).
 `PuzzlePhase` and `PuzzleStateDto` are defined canonically in
-[shared-rules.md §8](shared-rules.md#8-state-additions--schema-stays-v1).
+[storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 ## 3. Completion detection
 
