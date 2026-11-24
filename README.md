@@ -72,3 +72,20 @@ To bump the pinned npm packages later:
 npm install -g playwright@latest vite@latest vitest@latest
 playwright install --with-deps   # refresh browsers if playwright changed
 ```
+
+## Formatting and Markdown linting
+
+Prettier formats code and Markdown; `markdownlint-cli2` lints Markdown. Both
+are local devDependencies, configured in `.prettierrc.json`, `.prettierignore`
+and `.markdownlint-cli2.jsonc`:
+
+```sh
+npm run format          # format all eligible files
+npm run format:check    # check formatting without writing changes
+npm run lint:md         # lint Markdown
+npm run lint:md:fix     # fix auto-fixable Markdown issues
+```
+
+Generated Graphify output is excluded from ESLint, Prettier and Markdownlint.
+Tool-managed `.opencode/` files and PDF-derived exam-spec Markdown are also
+excluded from formatting and Markdown linting.

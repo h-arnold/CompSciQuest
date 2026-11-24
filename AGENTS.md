@@ -24,6 +24,11 @@ build/test commands.
   yet; `npm install` in the repo root is not the setup step.
 - ESLint and its plugins are **local devDependencies** — plugins must resolve
   from the project. Run `npm run lint` (or `npm run lint:fix`).
+- Prettier and `markdownlint-cli2` are local devDependencies too. Run
+  `npm run format` / `npm run format:check` for formatting and
+  `npm run lint:md` / `npm run lint:md:fix` for Markdown linting. Generated
+  Graphify output is excluded from ESLint, Prettier and Markdownlint; imported
+  exam-spec Markdown and `.opencode/` files are excluded from formatting.
 - opencode v2 comes from `https://opencode.ai/v2/install`. The plain
   `/install` URL installs legacy **v1** — never substitute it when rebuilding or
   reinstalling.
@@ -71,6 +76,7 @@ This project has a knowledge graph at graphify-out/ with god nodes, community st
 When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
 
 Rules:
+
 - When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. When the answer is under a Markdown heading, `graphify section "<heading>"` prints that section's text, so the .md need not be opened. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.

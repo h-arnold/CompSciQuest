@@ -7,6 +7,7 @@ export default [
   {
     ignores: [
       '.opencode/', // tool-managed integration files
+      '**/graphify-out/', // generated graph/markdown reports
       'dist/',
       'coverage/',
       'node_modules/',

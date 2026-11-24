@@ -1,0 +1,26 @@
+{
+  "config": {
+    // Prettier handles code width; prose wrapping is preserved by design.
+    "MD013": false,
+    // Prettier pads Markdown tables to align columns, which MD060 forbids.
+    "MD060": false,
+    // Docs use bold "Status: ..." callouts in place of headings.
+    "MD036": false,
+    // ASCII diagrams in fenced blocks have no meaningful language tag.
+    "MD040": false,
+    // Coverage templates use angle-bracket placeholders such as <room-id>.
+    "MD033": false,
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    ".git/**",
+    ".opencode/**",
+    "coverage/**",
+    "dist/**",
+    "docs/exam-specs/**",
+    "**/graphify-out/**",
+    "node_modules/**",
+    "playwright-report/**",
+    "test-results/**",
+  ],
+}

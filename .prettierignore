@@ -1,0 +1,12 @@
+# Generated and tool-managed files — never reformat these.
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+**/graphify-out/
+docs/exam-specs/
+.opencode/
+
+# Machine-generated lockfile.
+package-lock.json
