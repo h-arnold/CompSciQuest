@@ -121,7 +121,7 @@ schema, the validator or the generator.
 
 `npm run content:validate` parses every card with the `yaml` package, applies
 Zod shape checks, then runs all eight cross-artifact gates from
-[content-rules.md §7](content-rules.md#7-structural-validation-gates-specification-only)
+[content-rules.md §7](content-rules.md#7-structural-validation-gates)
 as plain TypeScript checks: `content-ids`, `quiz-content`, `puzzle-graph`,
 `world-graph`, `hint-content`, `hazard-content`, `npc-content` and
 `score-content`. These checks cover unique IDs and globally unique aliases,
