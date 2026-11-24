@@ -45,6 +45,14 @@ build/test commands.
 - Lint config is flat-config `eslint.config.js` using `eslint` recommended,
   `eslint-plugin-unicorn` recommended, and `eslint-plugin-sonarjs` recommended.
   Don't add legacy `.eslintrc*` files.
+- Source and test files are capped at **600 lines**, enforced by the `max-lines`
+  ESLint rule. When a file would exceed this limit, do not suppress the rule or
+  leave the oversized file in place: split it by domain or responsibility into
+  two or more new files instead. If more than two files covering the same domain
+  are created, keep them together in a new subfolder at the location where the
+  original large file lived (for example, split `src/core/Hazards.ts` into
+  `src/core/hazards/`). Never split purely by line count — each new file must
+  own a coherent domain or responsibility.
 
 ## Delegation protocol (code work)
 

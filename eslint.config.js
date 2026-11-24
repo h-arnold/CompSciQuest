@@ -55,6 +55,26 @@ export default [
     },
   },
   {
+    // Source and test files are capped at 600 lines. Split an oversized file
+    // by domain or responsibility into two or more new files rather than
+    // suppressing this rule — see AGENTS.md for the folder layout to use.
+    files: [
+      'src/**/*.ts',
+      'src/**/*.js',
+      'tests/**/*.ts',
+      'tests/**/*.js',
+      'e2e/**/*.ts',
+      'e2e/**/*.js',
+      '**/*.test.ts',
+      '**/*.test.js',
+      '**/*.spec.ts',
+      '**/*.spec.js',
+    ],
+    rules: {
+      'max-lines': ['error', { max: 600 }],
+    },
+  },
+  {
     files: [
       'eslint.config.js',
       '**/*.test.js',
