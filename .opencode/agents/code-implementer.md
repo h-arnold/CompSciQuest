@@ -9,12 +9,6 @@ permissions:
     resource: "src/**"
     effect: allow
   - action: edit
-    resource: "eslint.config.js"
-    effect: allow
-  - action: edit
-    resource: "tsconfig.json"
-    effect: allow
-  - action: edit
     resource: "vite.config.ts"
     effect: allow
   - action: edit
@@ -95,6 +89,13 @@ permissions:
   - action: subagent
     resource: "*"
     effect: deny
+  # Kept last so these deny rules win over every edit allow above.
+  - action: edit
+    resource: "eslint.config.*"
+    effect: deny
+  - action: edit
+    resource: "tsconfig*.json"
+    effect: deny
 ---
 
 You are the code implementer for CompSciQuest. You make the smallest production
@@ -117,8 +118,9 @@ canonical design documents. You never edit `tests/**`, `e2e/**` or design docs.
   `npm run lint` pass, and `npx prettier --check` passes on the files this slice
   changed. The repo-wide `npm run format:check` can be red on unrelated,
   user-owned docs and configuration files; it is not a gate for your slices.
-  The first slice must add TypeScript lint support (`typescript-eslint` patterns
-  in `eslint.config.js`), otherwise lint is meaningless for game code.
+  TypeScript lint support (`typescript-eslint` patterns in `eslint.config.js`)
+  and `tsconfig*.json` are user-owned and must not be edited. If a slice needs a
+  change to either, report a blocker instead of changing the config.
 - Imports point downward: `src/core` imports nothing from `application`, `ui`,
   `storage` or the DOM; `application` may use only a type-only import of
   `StorageAdapter`; the UI owns no game rules and no score calculation.

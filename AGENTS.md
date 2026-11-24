@@ -65,13 +65,19 @@ subagents and are dispatched by `code-lead`, not used as primaries.
 
 ### Agents and ownership
 
-| Agent              | Owns                             | Scratchpad output                          |
-| ------------------ | -------------------------------- | ------------------------------------------ |
-| `test-planner`     | `branch-matrix.md` only          | `branch-matrix.md`                         |
-| `test-writer`      | `tests/**`                       | `slices/<id>/red-report.md`                |
-| `code-implementer` | `src/**` plus build/lint config  | `slices/<id>/implementation.md`            |
-| `code-reviewer`    | nothing — read-only              | `slices/<id>/review.md`                    |
-| `browser-tester`   | `e2e/**`, `playwright.config.ts` | `slices/<id>/qa-report.md` and screenshots |
+| Agent              | Owns                                                     | Scratchpad output                          |
+| ------------------ | -------------------------------------------------------- | ------------------------------------------ |
+| `test-planner`     | `branch-matrix.md` only                                  | `branch-matrix.md`                         |
+| `test-writer`      | `tests/**`                                               | `slices/<id>/red-report.md`                |
+| `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts` | `slices/<id>/implementation.md`            |
+| `code-reviewer`    | nothing — read-only                                      | `slices/<id>/review.md`                    |
+| `browser-tester`   | `e2e/**`, `playwright.config.ts`                         | `slices/<id>/qa-report.md` and screenshots |
+
+The ESLint config (`eslint.config.*`) and TypeScript configs (`tsconfig*.json`)
+are user-owned. `opencode.json` denies edits to those paths for every agent;
+`code-lead` alone has an `ask` rule and may proceed only after the user
+explicitly approves the edit. Every other agent must escalate a config change
+to the user rather than work around it.
 
 All working artefacts go in `.opencode/scratchpad/`, which is gitignored except
 its README. Source, tests and configuration never go there. Every brief names

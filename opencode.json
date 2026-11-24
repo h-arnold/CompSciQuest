@@ -1,6 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "content-editor",
+  "permissions": [
+    { "action": "edit", "resource": "eslint.config.*", "effect": "deny" },
+    { "action": "edit", "resource": "tsconfig*.json", "effect": "deny" }
+  ],
   "agents": {
     "content-editor": {
       "permissions": [
