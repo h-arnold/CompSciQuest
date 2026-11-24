@@ -2,28 +2,31 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
 [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Purpose
 
 NPCs, hazards, quiz combat, puzzles and hints all reduce to the same primitive:
-*when a condition holds, apply a set of effects, possibly on a schedule*. Building
+_when a condition holds, apply a set of effects, possibly on a schedule_. Building
 five separate engines would duplicate the same machinery five times, so this
 document defines one small **rule spine** in `src/core/` and the thin domain
 systems documented separately sit on top of it.
 
-| Concept | Question it answers | Where it lives |
-| --- | --- | --- |
-| `Condition` | "Is this true right now?" | `src/core/rules/Condition.ts` |
-| `Trigger` | "When should I check?" | `src/core/rules/Trigger.ts` |
-| `Effect` | "What should change?" | `src/core/effects/Effect.ts` |
+| Concept     | Question it answers       | Where it lives                     |
+| ----------- | ------------------------- | ---------------------------------- |
+| `Condition` | "Is this true right now?" | `src/core/rules/Condition.ts`      |
+| `Trigger`   | "When should I check?"    | `src/core/rules/Trigger.ts`        |
+| `Effect`    | "What should change?"     | `src/core/effects/Effect.ts`       |
 | `Scheduler` | "When on the turn clock?" | `src/core/scheduling/Scheduler.ts` |
 
 `EffectApplier` is the only code that applies effects to `GameState`. `ScoreTracker`
-remains the only writer of score and progress: an effect that should score emits
-`topic-completed` (or `hint-penalty-applied`) rather than writing a number.
+remains the only writer of score and progress: it awards from the achievement
+events `room-entered`, `puzzle-solved`, `quiz-ended` and `hint-penalty-applied`
+rather than writing a number. `complete-topic` / `topic-completed` only records
+completion for the win check and the score panel and awards no points
+([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 
 ## 2. Turn pipeline (amends architecture.md §6.2)
 
@@ -75,23 +78,39 @@ export type Condition =
   | { readonly kind: 'has-item'; readonly itemId: string }
   | { readonly kind: 'visited-room'; readonly roomId: string }
   | { readonly kind: 'topic-complete'; readonly topicId: string }
-  | { readonly kind: 'npc-knows'; readonly actorId: string; readonly topicId: string }
-  | { readonly kind: 'actor-state'; readonly actorId: string; readonly stateId: string }
-  | { readonly kind: 'in-node'; readonly actorId: string; readonly nodeId: string }
+  | {
+      readonly kind: 'npc-knows';
+      readonly actorId: string;
+      readonly topicId: string;
+    }
+  | {
+      readonly kind: 'actor-state';
+      readonly actorId: string;
+      readonly stateId: string;
+    }
+  | {
+      readonly kind: 'in-node';
+      readonly actorId: string;
+      readonly nodeId: string;
+    }
   | { readonly kind: 'puzzle-solved'; readonly puzzleId: string }
   | { readonly kind: 'quiz-passed'; readonly quizId: string }
-  | { readonly kind: 'counter-at-least'; readonly key: string; readonly value: number }
+  | {
+      readonly kind: 'counter-at-least';
+      readonly key: string;
+      readonly value: number;
+    }
   | { readonly kind: 'all' | 'any'; readonly of: readonly Condition[] }
   | { readonly kind: 'not'; readonly of: Condition };
 ```
 
 `counter-at-least` is deliberately generic. The agreed key namespace is:
 
-| Counter key | Incremented by |
-| --- | --- |
-| `hints-shown:<hintId>` | `show-hint` effect |
-| `failed-attempts:<quizId>` | a wrong quiz answer |
-| `turns-since:<puzzleId>` | each turn after a puzzle first becomes active |
+| Counter key                | Incremented by                                |
+| -------------------------- | --------------------------------------------- |
+| `hints-shown:<hintId>`     | `show-hint` effect                            |
+| `failed-attempts:<quizId>` | a wrong quiz answer                           |
+| `turns-since:<puzzleId>`   | each turn after a puzzle first becomes active |
 
 `quiz-passed` reads the flag `quiz-passed:<quizId>`, which the quiz's `onPass`
 effects must set with `set-flag`. There is no other writer.
@@ -121,24 +140,60 @@ state. A definition may have one trigger; multiple conditions combine with `all`
 ```ts
 // src/core/effects/Effect.ts
 export type Effect =
-  | { readonly kind: 'set-flag'; readonly flag: string; readonly value: boolean }
+  | {
+      readonly kind: 'set-flag';
+      readonly flag: string;
+      readonly value: boolean;
+    }
   | { readonly kind: 'message'; readonly text: string }
-  | { readonly kind: 'change-lives'; readonly delta: number; readonly reason: string }
+  | {
+      readonly kind: 'change-lives';
+      readonly delta: number;
+      readonly reason: string;
+    }
   | { readonly kind: 'complete-topic'; readonly topicId: string }
   | { readonly kind: 'grant-item' | 'remove-item'; readonly itemId: string }
-  | { readonly kind: 'transfer-item'; readonly itemId: string;
-      readonly fromOwnerId: string; readonly toOwnerId: string }
-  | { readonly kind: 'move-player'; readonly roomId: string; readonly reason: string }
-  | { readonly kind: 'set-actor-state'; readonly actorId: string; readonly stateId: string }
-  | { readonly kind: 'learn-topic'; readonly actorId: string; readonly topicId: string }
-  | { readonly kind: 'enter-node'; readonly actorId: string; readonly nodeId: string }
+  | {
+      readonly kind: 'transfer-item';
+      readonly itemId: string;
+      readonly fromOwnerId: string;
+      readonly toOwnerId: string;
+    }
+  | {
+      readonly kind: 'move-player';
+      readonly roomId: string;
+      readonly reason: string;
+    }
+  | {
+      readonly kind: 'set-actor-state';
+      readonly actorId: string;
+      readonly stateId: string;
+    }
+  | {
+      readonly kind: 'learn-topic';
+      readonly actorId: string;
+      readonly topicId: string;
+    }
+  | {
+      readonly kind: 'enter-node';
+      readonly actorId: string;
+      readonly nodeId: string;
+    }
   | { readonly kind: 'exit-node'; readonly actorId: string }
   | { readonly kind: 'set-puzzle-active'; readonly puzzleId: string }
   | { readonly kind: 'set-puzzle-solved'; readonly puzzleId: string }
   | { readonly kind: 'schedule'; readonly event: ScheduledEvent }
-  | { readonly kind: 'start-quiz'; readonly quizId: string; readonly actorId: string }
-  | { readonly kind: 'show-hint'; readonly hintId: string; readonly level: number;
-      readonly text: string };
+  | {
+      readonly kind: 'start-quiz';
+      readonly quizId: string;
+      readonly actorId: string;
+    }
+  | {
+      readonly kind: 'show-hint';
+      readonly hintId: string;
+      readonly level: number;
+      readonly text: string;
+    };
 ```
 
 Conventions:
@@ -152,9 +207,12 @@ Conventions:
 - `enter-node` requires a `nodeId`; `exit-node` has none. Optional properties are
   omitted, never assigned `undefined` (`exactOptionalPropertyTypes`).
 - Every effect produces at least one buffered event, so every state change is
-  explainable in the output log.
+  explainable in the output log. The complete effect → event mapping is
+  canonical in [application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping).
 - `change-lives` emits `lives-changed`; `Session` owns game-over.
-- `complete-topic` emits `topic-completed`; `ScoreTracker` owns the score.
+- `complete-topic` emits `topic-completed`, which records completion only; the
+  score comes from the separate achievement event
+  ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 - `move-player` emits `room-entered`, so room scoring in `architecture.md` §6.3
   continues to work for quiz-failure teleports.
 - `set-puzzle-active` emits `puzzle-activated`; `set-puzzle-solved` emits
@@ -176,8 +234,10 @@ export interface ScheduledEvent {
 - A **fuse** counts down by one each turn and fires at `0`, then is removed.
 - A **daemon** fires whenever `remainingTurns` reaches `0` and is reset to
   `repeatEveryTurns` (defaulting to the initial `remainingTurns`).
-- `Scheduler.tick(turn)` runs first in phase 4. All scheduled state is serialised
-  in `GameStateDto.schedule`, so a reload resumes timers accurately.
+- `Scheduler.tick(turn, state)` runs first in phase 4 (signature pinned in
+  [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
+  All scheduled state is serialised in `GameStateDto.schedule`, so a reload
+  resumes timers accurately.
 - Fire order is array order in the save.
 
 ## 7. Random port
@@ -221,39 +281,27 @@ What is specific to this rule spine:
 
 ## 9. Event additions
 
-The `GameEvent` union in `architecture.md` §7 gains these variants. Together the
-full set of new events is:
+The full `GameEvent` union is canonical in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
+It includes the baseline events from `architecture.md`, the thirteen subsystem
+variants formerly listed here, and the bookkeeping events needed by the effect →
+event mapping. Do not redeclare those variants in subsystem documents.
 
-```ts
-| { readonly type: 'conversation-started'; readonly actorId: string }
-| { readonly type: 'npc-spoke'; readonly actorId: string; readonly text: string }
-| { readonly type: 'conversation-ended'; readonly actorId: string; readonly reason: string }
-| { readonly type: 'topic-suggested'; readonly actorId: string; readonly text: string }
-| { readonly type: 'hazard-triggered'; readonly hazardId: string; readonly reason: string }
-| { readonly type: 'puzzle-activated'; readonly puzzleId: string }
-| { readonly type: 'puzzle-solved'; readonly puzzleId: string; readonly topicId?: string }
-| { readonly type: 'quiz-started'; readonly quizId: string; readonly actorId: string }
-| { readonly type: 'question-asked'; readonly quizId: string; readonly questionId: string;
-    readonly prompt: string; readonly options: readonly string[] }
-| { readonly type: 'answer-evaluated'; readonly quizId: string; readonly questionId: string;
-    readonly correct: boolean; readonly explanation: string }
-| { readonly type: 'quiz-ended'; readonly quizId: string; readonly passed: boolean;
-    readonly reason: string }
-| { readonly type: 'hint-shown'; readonly hintId: string; readonly level: number;
-    readonly text: string }
-| { readonly type: 'hint-penalty-applied'; readonly hintId: string; readonly delta: number };
-```
-
-`hint-penalty-applied` is the only new score-related event; `ScoreTracker`
-consumes it. All text is rendered with `textContent`.
+`hint-penalty-applied` is the only score-related addition; `ScoreTracker`
+consumes it. All text is rendered with `textContent`, and
+[application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping)
+defines how every event becomes a transcript line or panel update.
 
 ## 10. Content registration
 
 All definitions are declarative data under `src/content/`, never hard-coded in
-engine classes. Each system has a catalogue exposing `getById(id)` and any
-targeted lookups. The engine consumes catalogues through interfaces, so tests can
-inject small fixtures. Content validation enforces global uniqueness of object
-and NPC aliases so `NameResolver` never has to guess.
+engine classes. Each system has a catalogue exposing `getById(id)`, `all` and any
+targeted lookups, bundled into one injected `ContentBundle`; the concrete
+interfaces and the boot-time `validateContent` gate are canonical in
+[application-and-ui.md §3](application-and-ui.md#3-content-bundle-and-registration).
+The engine consumes catalogues through interfaces, so tests can inject small
+fixtures. Content validation enforces global uniqueness of object and NPC aliases
+so `NameResolver` never has to guess.
 
 ## 11. Determinism and ordering rules
 
@@ -263,7 +311,8 @@ and NPC aliases so `NameResolver` never has to guess.
 3. No `Math.random()` in core; use the injected `Random` port.
 4. Rules that fire more than once in a turn are skipped after their first fire.
    The skip is silent to the player and asserted only in tests.
-5. All UI text comes from events and is rendered with `textContent`.
+5. All UI text comes from events or the read-only `GameViewData` and is rendered
+   with `textContent` ([application-and-ui.md §7](application-and-ui.md#7-ui-structure-and-view-model)).
 
 ## 12. Tests
 

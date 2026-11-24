@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
 [NPCs](npcs.md) · [quiz combat](combat.md) ·
 [puzzles](puzzles.md) · [hints](hints.md).
@@ -22,12 +22,12 @@ Hazards are planned for v1 with designs in this document.
 // src/core/hazards/Hazard.ts — declarative definition
 export interface Hazard {
   readonly id: string;
-  readonly trigger: Trigger;              // shared spine §4
-  readonly when: Condition;               // shared spine §3
-  readonly effects: readonly Effect[];    // shared spine §5
-  readonly once?: boolean;                // omit for repeatable hazards
-  readonly cooldownTurns?: number;        // omit when no cooldown
-  readonly schedule?: ScheduledEvent;     // fuse/daemon, shared spine §6
+  readonly trigger: Trigger; // shared spine §4
+  readonly when: Condition; // shared spine §3
+  readonly effects: readonly Effect[]; // shared spine §5
+  readonly once?: boolean; // omit for repeatable hazards
+  readonly cooldownTurns?: number; // omit when no cooldown
+  readonly schedule?: ScheduledEvent; // fuse/daemon, shared spine §6
 }
 ```
 
@@ -85,13 +85,15 @@ puzzles. Puzzle progress is only changed by the puzzle system itself.
 Hazard definitions live in `src/content/hazards/`. A `HazardCatalogue` exposes
 `getById(id)` and `getForRoom(roomId)` so `HazardSystem` does not scan the whole
 content set every turn. The level-start room is **declared explicitly per
-world/area in content**, not derived from the world graph.
+world/area in content**, not derived from the world graph: it is the runtime
+`startRoomId` on `AreaDefinition`
+([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions)).
 
 ## 6. Events and UI
 
-- New event: `hazard-triggered { hazardId, reason }`, defined in
-  [shared-rules.md §9](shared-rules.md#9-event-additions). The `message` event
-  carries the player-facing text.
+- New event: `hazard-triggered { hazardId, reason }`, part of the canonical union
+  in [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
+  The `message` event carries the player-facing text.
 - `OutputLog` renders both as text via `textContent`. No hazard-specific UI panel.
 
 ## 7. Tests
@@ -100,7 +102,9 @@ world/area in content**, not derived from the world graph.
 - `once` fires exactly once across multiple turns; cooldown blocks early refires
   and handles an absent `lastFiredTurn`.
 - Damage emits `lives-changed`; zero lives emits `game-over` with final score.
-- `move-player` on failure emits `room-entered` and re-scores the entry correctly.
+- `move-player` on failure emits `room-entered` and `ScoreTracker` applies the
+  normal first-visit rule: returning to an already visited room awards no further
+  points ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 - A registered schedule survives JSON save/load mid-countdown.
 - Two hazards firing in the same turn are applied in declaration order.
 - A hazard failure does not change puzzle phase.

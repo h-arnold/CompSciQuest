@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [content rules](content-rules.md) ·
 [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) ·
 [puzzles](puzzles.md) · [hints](hints.md).
@@ -32,8 +32,8 @@ Constraints carried over from [architecture.md](architecture.md) §1–2:
 ```ts
 // src/application/SaveDto.ts
 export interface SaveDto {
-  readonly version: 1;       // literal; see schema.ts
-  readonly savedAt: string;  // ISO 8601, supplied by the injected Clock
+  readonly version: 1; // literal; see schema.ts
+  readonly savedAt: string; // ISO 8601, supplied by the injected Clock
   readonly state: GameStateDto;
 }
 ```
@@ -57,23 +57,23 @@ import type { Position } from '../types/domain';
 
 export interface GameStateDto {
   readonly player: {
-    readonly position: Position;             // { worldId, areaId, roomId }
-    readonly inventory: readonly string[];    // item IDs carried by the player
+    readonly position: Position; // { worldId, areaId, roomId }
+    readonly inventory: readonly string[]; // item IDs carried by the player
     readonly lives: number;
   };
-  readonly rooms: Readonly<Record<string, RoomStateDto>>;   // keyed by room ID
-  readonly npcs: Readonly<Record<string, NpcStateDto>>;     // keyed by actor ID
+  readonly rooms: Readonly<Record<string, RoomStateDto>>; // keyed by room ID
+  readonly npcs: Readonly<Record<string, NpcStateDto>>; // keyed by actor ID
   readonly hazards: Readonly<Record<string, HazardStateDto>>;
   readonly puzzles: Readonly<Record<string, PuzzleStateDto>>;
   readonly hints: Readonly<Record<string, HintStateDto>>;
   readonly quiz: QuizStateDto;
-  readonly quizAttempts: Readonly<Record<string, number>>;  // lifetime retries per quiz
-  readonly flags: Readonly<Record<string, boolean>>;        // world + action + item flags
+  readonly quizAttempts: Readonly<Record<string, number>>; // lifetime retries per quiz
+  readonly flags: Readonly<Record<string, boolean>>; // world + action + item flags
   readonly progress: readonly AreaProgress[];
   readonly turn: number;
   readonly status: SessionStatus;
   readonly schedule: readonly ScheduledEvent[];
-  readonly rngSeed: number;                                  // 32-bit unsigned PRNG state
+  readonly rngSeed: number; // 32-bit unsigned PRNG state
   readonly counters: Readonly<Record<string, number>>;
 }
 ```
@@ -91,20 +91,20 @@ export interface GameStateDto {
 export type SessionStatus = 'playing' | 'won' | 'lost';
 
 export interface RoomStateDto {
-  readonly inventory: readonly string[];     // items dropped in this room
+  readonly inventory: readonly string[]; // items dropped in this room
 }
 // A room absent from `rooms` has an empty inventory; entries are created lazily.
 
 export interface NpcStateDto {
   readonly stateId: string;
   readonly knownTopics: readonly string[];
-  readonly inventory: readonly string[];     // items given/shown to this actor
-  readonly activeNodeId?: string;            // omitted when no node is active
+  readonly inventory: readonly string[]; // items given/shown to this actor
+  readonly activeNodeId?: string; // omitted when no node is active
   readonly topicUses: Readonly<Record<string, number>>;
 }
 
 export interface HazardStateDto {
-  readonly lastFiredTurn?: number;           // omitted until first fire
+  readonly lastFiredTurn?: number; // omitted until first fire
   readonly timesFired: number;
 }
 
@@ -115,15 +115,15 @@ export interface PuzzleStateDto {
 
 export interface HintStateDto {
   readonly levelsShown: readonly number[];
-  readonly lastShownTurn?: number;           // omitted until first hint
+  readonly lastShownTurn?: number; // omitted until first hint
 }
 
 export interface QuizStateDto {
-  readonly activeQuizId?: string;            // omitted when no quiz is active
-  readonly questionIds: readonly string[];   // shuffled order, fixed for this attempt
+  readonly activeQuizId?: string; // omitted when no quiz is active
+  readonly questionIds: readonly string[]; // shuffled order, fixed for this attempt
   readonly index: number;
   readonly correctCount: number;
-  readonly answers: readonly number[];       // choices in this attempt (0-based)
+  readonly answers: readonly number[]; // choices in this attempt (0-based)
 }
 
 export interface AreaProgress {
@@ -132,7 +132,7 @@ export interface AreaProgress {
   readonly visitedRooms: readonly string[];
   readonly completedTopics: readonly string[];
   readonly earnedScore: number;
-  readonly maxScore: number;                 // refreshed from content at restore
+  readonly maxScore: number; // refreshed from content at restore
 }
 ```
 
@@ -166,11 +166,11 @@ export interface AreaProgress {
 `counters` is a free-form `Record<string, number>`; validation does not restrict
 keys. Only conditions interpret the three agreed prefixes:
 
-| Key | Incremented by |
-| --- | --- |
-| `hints-shown:<hintId>` | `show-hint` effect |
-| `failed-attempts:<quizId>` | wrong quiz answer |
-| `turns-since:<puzzleId>` | every turn after the puzzle first becomes active |
+| Key                        | Incremented by                                   |
+| -------------------------- | ------------------------------------------------ |
+| `hints-shown:<hintId>`     | `show-hint` effect                               |
+| `failed-attempts:<quizId>` | wrong quiz answer                                |
+| `turns-since:<puzzleId>`   | every turn after the puzzle first becomes active |
 
 `PuzzleSystem` creates `turns-since:<puzzleId>` with value `0` when the puzzle
 becomes `active`, then increments it on every subsequent turn in phase 4 —
@@ -191,7 +191,9 @@ The save stores IDs, not content. Content must therefore declare:
 
 - each item's starting room (an `initialRoom` field on the area card's item
   artifact, added to [content-rules.md](content-rules.md) §4.2);
-- level-start rooms per world/area for hazard and quiz failure teleports;
+- level-start rooms per world/area for hazard and quiz failure teleports, as the
+  runtime `startAreaId` / `startRoomId` fields defined in
+  [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions);
 - `SpecTopic.status` and `evidence` in `COVERAGE.md`, used for the covered +
   evidence scoring rule and for the win check.
 
@@ -206,14 +208,17 @@ exist (§8). The engine never hard-codes content IDs.
 1. **Score** — compute the total from `progress[].earnedScore` and expose it as
    the runtime `GameState.score`. It is never read from the save.
 2. **Maxima** — for each `AreaProgress`, refresh `maxScore` from
-   `SpecTopicCatalogue` using the topics mapped to that area, so an older save
-   adjusts when content changes.
+   `SpecTopicCatalogue.getByAreaId(worldId, areaId)` (the lookup is defined in
+   [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)), so
+   an older save adjusts when content changes.
 
 The win check is evaluated against the **live catalogue**, not a topic list in
 the save: the game is won when every `SpecTopic` with `status === 'covered'` and
 non-empty `evidence` has its ID in some `progress[].completedTopics`. If
 `status !== 'playing'` the check is skipped, so a reloaded won game cannot emit
-`game-won` a second time.
+`game-won` a second time. During play the same check is owned by
+`Session.observe` in phase 5 ([application-and-ui.md §11](application-and-ui.md#11-win-check-owner));
+restore only derives and never emits.
 
 ## 8. Validation contract
 
@@ -257,15 +262,17 @@ On **boot only**, if the live save exists but validation fails for any reason,
 
 ```ts
 export interface QuarantineDto {
-  readonly quarantinedAt: string;       // ISO 8601, from Clock
+  readonly quarantinedAt: string; // ISO 8601, from Clock
   readonly reason: LoadFailureReason;
-  readonly raw: string;                 // exact text read from storage
+  readonly raw: string; // exact text read from storage
 }
 ```
 
 - Only one quarantine slot exists; an existing quarantine is **never
   overwritten**.
-- Boot then starts a new game rather than blocking the player.
+- Boot then continues to the title screen with Continue disabled, rather than
+  blocking the player; `GameState.createInitial()` runs when New Game is chosen
+  ([application-and-ui.md §2](application-and-ui.md#2-boot-title-screen-and-session-start)).
 - `SaveControls` offers a **download quarantined save** action so the text can
   be inspected or recovered.
 - Import failures show an error and leave both the live save and quarantine
@@ -283,11 +290,11 @@ export interface StorageAdapter {
 
 // src/application/SaveManager.ts
 export interface SaveManager {
-  buildDto(state: GameStateDto): SaveDto;   // adds version + savedAt from Clock
-  save(state: GameStateDto): void;          // buildDto → stringify → storage.write
-  load(): LoadResult;                       // read live save; quarantine on failure
-  validate(text: string): LoadResult;       // import path; never writes storage
-  restore(dto: SaveDto): GameState;         // derives score + maxScore (§7)
+  buildDto(state: GameStateDto): SaveDto; // adds version + savedAt from Clock
+  save(state: GameStateDto): void; // buildDto → stringify → storage.write
+  load(): LoadResult; // read live save; quarantine on failure
+  validate(text: string): LoadResult; // import path; never writes storage
+  restore(dto: SaveDto): GameState; // derives score + maxScore (§7)
 }
 ```
 
@@ -302,15 +309,17 @@ save:     GameState.toDto() → buildDto() → JSON.stringify
           └→ SaveFile.download(json)  (dated filename)
 
 boot:     StorageAdapter.read(...) → validate()
-          ├─ ok    → restore(dto) → GameState
-          └─ fail  → quarantine raw text → GameState.createInitial()
+          ├─ ok    → title screen with Continue enabled → restore(dto) → GameState
+          └─ fail  → quarantine raw text → title screen with Continue disabled
+                     → New Game → GameState.createInitial()
 
 import:   File.text() → validate() → restore(dto) → GameState
           (no storage writes on success or failure)
 ```
 
-Meta actions (save, load, download, import, restart) are intercepted before
-core command dispatch and do not advance the turn (architecture.md §6.2).
+Meta actions (save, load, download, import, restart) are intercepted by `Game`
+before core command dispatch and do not advance the turn
+([application-and-ui.md §4.1](application-and-ui.md#41-meta-actions)).
 
 ## 12. Tests
 
@@ -336,24 +345,24 @@ schema migration, multiple save slots, autosave and undo.
 
 ## 14. Decisions resolved
 
-| Decision | Choice |
-| --- | --- |
-| Item ownership | Properties of Player, NPC and Room state; no central owner map. |
-| Mutable item/exit state | Kebab-case `flags` convention; no `itemStates` record. |
-| Session status | Persisted as `status: 'playing' \| 'won' \| 'lost'`. |
-| Score | Removed from the DTO; derived at restore from area totals. |
-| `AreaProgress.maxScore` | Stored but refreshed from content at restore. |
-| Quiz retry limits | `quizAttempts: Record<quizId, number>`; no generic `attempts` field. |
-| `turns-since` | Created at 0 on activation, incremented every later turn. |
-| Spare fields | `startedTurn` and `firstRequestedTurn` dropped. |
-| Win check | Catalogue topics with `covered` + evidence, checked against completed topics. |
-| Validation strictness | Required keys and types checked; extra keys ignored. |
-| Error model | Typed `LoadResult` union with five reasons. |
-| Quarantine | One slot, raw text + reason + timestamp, boot only, downloadable. |
-| API contracts | Exact `StorageAdapter` and `SaveManager` signatures pinned above. |
-| Import/export | Preserve `savedAt`; dated download filename. |
-| Derived values | Applied by `SaveManager.restore()`, keeping core content-free. |
-| Progress validation | Unique `(worldId, areaId)`; content IDs checked. |
-| Counter keys | Free-form strings; no prefix restriction at load. |
-| Room inventory | `rooms: Record<roomId, RoomStateDto>`, not a flat `roomItems` map. |
-| Integrity / multi-tab | Neither in v1; documented as out of scope. |
+| Decision                | Choice                                                                        |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| Item ownership          | Properties of Player, NPC and Room state; no central owner map.               |
+| Mutable item/exit state | Kebab-case `flags` convention; no `itemStates` record.                        |
+| Session status          | Persisted as `status: 'playing' \| 'won' \| 'lost'`.                          |
+| Score                   | Removed from the DTO; derived at restore from area totals.                    |
+| `AreaProgress.maxScore` | Stored but refreshed from content at restore.                                 |
+| Quiz retry limits       | `quizAttempts: Record<quizId, number>`; no generic `attempts` field.          |
+| `turns-since`           | Created at 0 on activation, incremented every later turn.                     |
+| Spare fields            | `startedTurn` and `firstRequestedTurn` dropped.                               |
+| Win check               | Catalogue topics with `covered` + evidence, checked against completed topics. |
+| Validation strictness   | Required keys and types checked; extra keys ignored.                          |
+| Error model             | Typed `LoadResult` union with five reasons.                                   |
+| Quarantine              | One slot, raw text + reason + timestamp, boot only, downloadable.             |
+| API contracts           | Exact `StorageAdapter` and `SaveManager` signatures pinned above.             |
+| Import/export           | Preserve `savedAt`; dated download filename.                                  |
+| Derived values          | Applied by `SaveManager.restore()`, keeping core content-free.                |
+| Progress validation     | Unique `(worldId, areaId)`; content IDs checked.                              |
+| Counter keys            | Free-form strings; no prefix restriction at load.                             |
+| Room inventory          | `rooms: Record<roomId, RoomStateDto>`, not a flat `roomItems` map.            |
+| Integrity / multi-tab   | Neither in v1; documented as out of scope.                                    |

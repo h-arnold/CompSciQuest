@@ -5,7 +5,7 @@ Status: draft · Last updated: 2026-11-24
 This document describes how the game's **logic and mechanics** will be scaffolded and
 structured. Game content (rooms, items, puzzles and the actual GCSE topics) is
 deliberately out of scope; where content is involved, this document defines the
-*contracts* it will eventually fill in, not the content itself.
+_contracts_ it will eventually fill in, not the content itself.
 
 ## 1. Scope and goals
 
@@ -22,15 +22,15 @@ deliberately out of scope; where content is involved, this document defines the
 
 ## 2. Design principles
 
-| Principle | What it means in practice |
-| --- | --- |
-| Static-first | No backend calls. `localStorage` is the live store; JSON files are the portable store. |
-| OOP with strict TS | Classes for entities with identity and behaviour; plain interfaces/type aliases for data shapes. Composition over deep inheritance. |
-| Separation of concerns | The engine never touches the DOM; the UI never owns game rules. They communicate through commands in and events out. |
-| Data-driven content | Rooms, items and spec topics are declarative definitions consumed by the engine. No content is hard-coded into engine logic. |
-| One source of truth | The persisted shape is defined in [storage-schema.md](storage-schema.md); `GameState` is its runtime counterpart. Score is derived from per-area progress at restore; `ScoreTracker` is the sole writer of `earnedScore`. |
-| Explicit persistence | Saves are versioned (`SCHEMA_VERSION = 1`) and validated on load; no migration is implemented yet. |
-| Testability | Dependencies (event bus, storage adapter, clock) are injected; no hidden globals in the core. |
+| Principle              | What it means in practice                                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static-first           | No backend calls. `localStorage` is the live store; JSON files are the portable store.                                                                                                                                    |
+| OOP with strict TS     | Classes for entities with identity and behaviour; plain interfaces/type aliases for data shapes. Composition over deep inheritance.                                                                                       |
+| Separation of concerns | The engine never touches the DOM; the UI never owns game rules. They communicate through commands in and events out.                                                                                                      |
+| Data-driven content    | Rooms, items and spec topics are declarative definitions consumed by the engine. No content is hard-coded into engine logic.                                                                                              |
+| One source of truth    | The persisted shape is defined in [storage-schema.md](storage-schema.md); `GameState` is its runtime counterpart. Score is derived from per-area progress at restore; `ScoreTracker` is the sole writer of `earnedScore`. |
+| Explicit persistence   | Saves are versioned (`SCHEMA_VERSION = 1`) and validated on load; no migration is implemented yet.                                                                                                                        |
+| Testability            | Dependencies (event bus, storage adapter, clock) are injected; no hidden globals in the core.                                                                                                                             |
 
 ## 3. Layers and dependency direction
 
@@ -67,6 +67,8 @@ src/
   main.ts                  # composition root: constructs and wires everything
   application/
     Game.ts                # façade + turn pipeline; owns GameState; delegates saving
+    GameViewData.ts        # read-only view-model for the UI panels
+    MetaAction.ts          # save/load/download/import/restart union
     SaveManager.ts         # build/validate/restore SaveDto (no migration yet)
     SaveDto.ts             # SaveDto envelope (version + savedAt) + runtime type guards
     schema.ts              # SCHEMA_VERSION (1); migration intentionally absent
@@ -88,7 +90,8 @@ src/
       Parser.ts            # tokens -> ParsedCommand; never throws
       ParsedCommand.ts     # intermediate: canonical verb + raw noun phrases + original input
       NameResolver.ts      # noun phrases -> object IDs; unresolved -> "unknown" command
-      Command.ts           # Command discriminated union + handler signature
+      Command.ts           # canonical Command union (application-and-ui.md §5)
+      CommandHandler.ts    # handler signature: (command, context) => Effect[]
       verbs/               # one handler per verb (Command pattern)
     rules/
       Precondition.ts      # predicates for actions/exits (has item, flag set, door open…)
@@ -102,14 +105,14 @@ src/
     scheduling/
       ScheduledEvent.ts    # fuse/daemon definition
       Scheduler.ts         # turn-clock ticking, serialisable
-    npcs/                  # see docs/developer/npcs.md
-    hazards/               # see docs/developer/hazards.md
-    combat/                # quiz combat; see docs/developer/combat.md
-    puzzles/               # see docs/developer/puzzles.md
-    hints/                 # see docs/developer/hints.md
+    npcs/                  # DialogueSystem; see docs/developer/npcs.md
+    hazards/               # HazardSystem; see docs/developer/hazards.md
+    combat/                # QuizSystem; see docs/developer/combat.md
+    puzzles/               # PuzzleSystem; see docs/developer/puzzles.md
+    hints/                 # HintSystem; see docs/developer/hints.md
     events/
       EventBus.ts          # publish/subscribe
-      GameEvent.ts         # GameEvent union + RoomSummary
+      GameEvent.ts         # canonical GameEvent union + RoomSummary (application-and-ui.md §6)
     scoring/
       ScoreTracker.ts      # sole writer of area progress/earnedScore; total derived
       WorldProgress.ts     # per-world/area visited rooms, score, completed topics
@@ -118,16 +121,22 @@ src/
     lifecycle/
       Session.ts           # new game, restart, win, lose; lives == 0 -> game over
   content/                 # declarative definitions for all game content
+    index.ts               # loadContent(): ContentBundle from typed catalogues
+    validateContent.ts     # boot-time structural validation gates
+    stub/                  # temporary one-area, two-room fixture (replace with cards)
     README.md              # describes the contracts to fill in
   ui/
     GameWindow.ts          # creates the browser window/layout and mounts the app
+    TitleScreen.ts         # Continue / New Game overlay shown at boot
     Terminal.ts            # text navigation: input box, command history, prompt
     OutputLog.ts           # renders engine events as text (never raw HTML)
+    formatEvent.ts         # pure GameEvent -> transcript lines
     ScorePanel.ts          # worlds/areas visited, score, mapped GCSE spec area
     ConversationPanel.ts   # NPC dialogue and suggested topics (npcs.md)
     QuizPanel.ts           # question + numbered options as text (combat.md)
     HintPanel.ts           # escalating hint text (hints.md)
     SaveControls.ts        # save/load/download/import buttons
+    style.css              # plain CSS for the browser-window chrome and panels
   storage/
     StorageAdapter.ts      # interface only (read/write/remove)
     BrowserStorage.ts      # localStorage implementation
@@ -154,59 +163,65 @@ documents listed in §12. They all share the rule spine documented in
 
 ### Core
 
-| Class / module | Responsibility | Key state | Collaborators |
-| --- | --- | --- | --- |
-| `GameState` | Runtime counterpart of the canonical DTO; factories `createInitial()` / `fromDto()`; `toDto()` returns the state shape only | player, entity inventories, flags, progress, turn, **status**, schedule; score is derived at restore | `Player`, `WorldProgress` |
-| `Player` | The player character's mutable state | position, inventory, lives | `Item`, `Room` |
-| `World` | Registry/lookup for worlds, areas and rooms; validates exits | room map | `Room`, `Exit` |
-| `Room` | A location: description, exits, special entry behaviour | id, title, exits | `Exit`, `Player` |
-| `Exit` | A directed connection with conditions for traversing it | target, conditions | `Precondition` |
-| `Item` (+ subclasses) | Portable objects and their interactions | id, aliases, flags, state | `Player`, `RuleEngine` |
-| `Tokenizer` / `Parser` | Turn text into a `ParsedCommand` (verb + raw noun phrases); verb aliases and direction shortcuts | verb/alias tables | `ParsedCommand` |
-| `NameResolver` | Resolve `ParsedCommand` noun phrases to object IDs and produce a `Command`; unresolved nouns produce `unknown` | visibility rules | `Item`, `Room`, `Player`, `ParsedCommand` |
-| `RuleEngine` | Central preconditions ("has key?", "door open?") | none | `Precondition`, verb handlers |
-| `EventBus` | Decouples engine from UI; `publish` takes a whole turn's event batch | listener set | `GameEvent` |
-| `ScoreTracker` | Sole writer of per-area progress/`earnedScore`, driven by events; total score is derived | visited sets (within `WorldProgress`) | `GameState`, `SpecTopic` |
-| `SpecTopicCatalogue` | Look up topic title/spec reference for UI labels | topic index | `SpecTopic` |
-| `Session` | New game/restart/win/lose; handles `lives == 0` | session status (persisted as `status`) | `GameState`, `EventBus` |
+| Class / module         | Responsibility                                                                                                              | Key state                                                                                            | Collaborators                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `GameState`            | Runtime counterpart of the canonical DTO; factories `createInitial()` / `fromDto()`; `toDto()` returns the state shape only | player, entity inventories, flags, progress, turn, **status**, schedule; score is derived at restore | `Player`, `WorldProgress`                 |
+| `Player`               | The player character's mutable state                                                                                        | position, inventory, lives                                                                           | `Item`, `Room`                            |
+| `World`                | Registry/lookup for worlds, areas and rooms; validates exits                                                                | room map                                                                                             | `Room`, `Exit`                            |
+| `Room`                 | A location: description, exits, special entry behaviour                                                                     | id, title, exits                                                                                     | `Exit`, `Player`                          |
+| `Exit`                 | A directed connection with conditions for traversing it                                                                     | target, conditions                                                                                   | `Precondition`                            |
+| `Item` (+ subclasses)  | Portable objects and their interactions                                                                                     | id, aliases, flags, state                                                                            | `Player`, `RuleEngine`                    |
+| `Tokenizer` / `Parser` | Turn text into a `ParsedCommand` (verb + raw noun phrases); verb aliases and direction shortcuts                            | verb/alias tables                                                                                    | `ParsedCommand`                           |
+| `NameResolver`         | Resolve `ParsedCommand` noun phrases to object IDs and produce a `Command`; unresolved nouns produce `unknown`              | visibility rules                                                                                     | `Item`, `Room`, `Player`, `ParsedCommand` |
+| `RuleEngine`           | Central preconditions ("has key?", "door open?")                                                                            | none                                                                                                 | `Precondition`, verb handlers             |
+| `EventBus`             | Decouples engine from UI; `publish` takes a whole turn's event batch                                                        | listener set                                                                                         | `GameEvent`                               |
+| `ScoreTracker`         | Sole writer of per-area progress/`earnedScore`, driven by events; total score is derived                                    | visited sets (within `WorldProgress`)                                                                | `GameState`, `SpecTopic`                  |
+| `SpecTopicCatalogue`   | Look up topic title/spec reference for UI labels                                                                            | topic index                                                                                          | `SpecTopic`                               |
+| `Session`              | New game/restart/win/lose; handles `lives == 0`                                                                             | session status (persisted as `status`)                                                               | `GameState`, `EventBus`                   |
 
 ### Application services
 
-| Class / module | Responsibility | Collaborators |
-| --- | --- | --- |
-| `Game` | Façade and turn pipeline: `submit(input)`; exposes save/load that delegate to `SaveManager` (they never enter core dispatch) | `Tokenizer`, `Parser`, `NameResolver`, verb handlers, `RuleEngine`, `ScoreTracker`, `EventBus`, `SaveManager` |
-| `SaveManager` | Assemble `SaveDto` from `GameState.toDto()` with version/`savedAt`, then validate and restore; catches parse errors. No migration yet | `GameState`, `StorageAdapter`, `Clock`, `schema` |
-| `Clock` | Injectable `now()` used for `savedAt` | — |
-| `schema` | `SCHEMA_VERSION` (1); migration intentionally absent until public release | `SaveDto` |
+| Class / module | Responsibility                                                                                                                                                                                                                              | Collaborators                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `Game`         | Façade and turn pipeline: `submit`, `newGame`, `continueGame`, `restart`, `getViewData`; meta actions intercepted before core dispatch. Full signatures in [application-and-ui.md §4](application-and-ui.md#4-game-façade-and-meta-actions) | `Tokenizer`, `Parser`, `NameResolver`, verb handlers, `RuleEngine`, `ScoreTracker`, `EventBus`, `SaveManager`, `ContentBundle` |
+| `SaveManager`  | Assemble `SaveDto` from `GameState.toDto()` with version/`savedAt`, then validate and restore; catches parse errors. No migration yet                                                                                                       | `GameState`, `StorageAdapter`, `Clock`, `schema`                                                                               |
+| `Clock`        | Injectable `now()` used for `savedAt`                                                                                                                                                                                                       | —                                                                                                                              |
+| `schema`       | `SCHEMA_VERSION` (1); migration intentionally absent until public release                                                                                                                                                                   | `SaveDto`                                                                                                                      |
 
 ### Persistence and UI
 
-| Class / module | Responsibility |
-| --- | --- |
-| `StorageAdapter` / `BrowserStorage` | Abstract and implement `localStorage` access; the seam used by tests. |
-| `SaveFile` | Download a save as a `.json` file and read an imported `File` as text. |
-| `GameWindow` | Create the page shell, mount child views, own the overall layout. |
-| `Terminal` | Command input, prompt, submit handling and up-arrow command history. |
-| `OutputLog` | Append event text safely (`textContent`, never `innerHTML`). |
-| `ScorePanel` | Render visited worlds/areas, scores and the linked GCSE spec area, using `SpecTopicCatalogue` for labels. |
-| `ConversationPanel` | Render NPC dialogue and suggested topics from conversation events. |
-| `QuizPanel` | Render the current question and numbered options as text. |
-| `HintPanel` | Render escalating hint text and the hint cooldown message. |
-| `SaveControls` | Save/load/download/import buttons and user-facing error messages. |
+| Class / module                      | Responsibility                                                                                                                |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `StorageAdapter` / `BrowserStorage` | Abstract and implement `localStorage` access; the seam used by tests.                                                         |
+| `SaveFile`                          | Download a save as a `.json` file and read an imported `File` as text.                                                        |
+| `GameWindow`                        | Create the page shell, mount child views, own the overall layout.                                                             |
+| `TitleScreen`                       | Continue / New Game overlay shown at boot; Continue disabled without a valid save.                                            |
+| `Terminal`                          | Command input, prompt, submit handling and bounded in-memory command history.                                                 |
+| `OutputLog`                         | Append event text safely (`textContent`, never `innerHTML`), using `formatEvent`.                                             |
+| `formatEvent`                       | Pure `GameEvent` → transcript lines, using the bundle for labels.                                                             |
+| `ScorePanel`                        | Render visited worlds/areas, scores and the linked GCSE spec area from `GameViewData`, using `SpecTopicCatalogue` for labels. |
+| `ConversationPanel`                 | Render NPC dialogue and suggested topics from conversation events.                                                            |
+| `QuizPanel`                         | Render the current question and numbered options as text.                                                                     |
+| `HintPanel`                         | Render escalating hint text and the hint cooldown message.                                                                    |
+| `SaveControls`                      | Save/load/download/import buttons and user-facing error messages.                                                             |
 
 ## 6. Key flows
 
 ### 6.1 Bootstrap (`src/main.ts`)
 
 1. Find `#app` (already present in `index.html`) or throw a clear error.
-2. Construct the clock, storage adapter, `SaveManager`, event bus, `GameState`,
-   core services and `Game`.
-3. If a valid save exists in storage, restore it; otherwise start a new session.
-4. Construct `GameWindow` with `Terminal`, `OutputLog`, `ScorePanel`,
-   `ConversationPanel`, `QuizPanel`, `HintPanel` and `SaveControls`, subscribing
-   them to the event bus.
-5. Emit an initial room description so the player is never staring at a blank
-   screen.
+2. Construct the clock, storage adapter, `SaveManager`, event bus and the
+   `ContentBundle` from `src/content/index.ts`; run `validateContent(bundle)`
+   and fail fast on structural errors.
+3. Call `SaveManager.load()`; on failure the live save is quarantined by
+   `SaveManager` and boot continues with no usable save.
+4. Construct the core services and `Game`, then `GameWindow` with `TitleScreen`,
+   `Terminal`, `OutputLog`, `ScorePanel`, `ConversationPanel`, `QuizPanel`,
+   `HintPanel` and `SaveControls`, subscribing them to the event bus.
+5. Show the title screen with Continue (enabled only for a valid save) and New
+   Game. The chosen action starts the session and emits the initial room
+   description; the overlay is removed only after that batch is published.
+   The full sequence is in [application-and-ui.md §2](application-and-ui.md#2-boot-title-screen-and-session-start).
 
 ### 6.2 One command turn
 
@@ -230,7 +245,7 @@ the only code that writes `WorldProgress`/`AreaProgress.earnedScore`. The total
 never throw on bad input: unknown verbs, and nouns that `NameResolver` cannot
 match to a visible object, both become an `unknown` command whose handler emits a
 friendly "I don't understand that" message. Meta actions (save, load,
-download, import, restart) are intercepted by `Game`/`SaveControls` *before* core
+download, import, restart) are intercepted by `Game`/`SaveControls` _before_ core
 dispatch and are not part of the core `Command` union; they do not advance the
 turn. The turn counter increments once per submitted game command, whether or not
 it succeeded.
@@ -287,9 +302,11 @@ Life loss comes from two designed systems: [hazards](hazards.md) and failed
 adversarial quizzes ([combat.md](combat.md)). Both emit `lives-changed`; `Session`
 detects `lives == 0`, sets the persisted `status` to `'lost'` and emits
 `game-over` with the final score. When every spec topic with `covered` status and
-evidence is completed, a handler sets `status` to `'won'` and emits `game-won`
-with the final score. A reloaded end state does not re-emit the event. Both end
-states are exited through `Session.newGame()`, which restores
+evidence is completed, `Session.observe` sets `status` to `'won'` and emits
+`game-won` with the final score
+([application-and-ui.md §11](application-and-ui.md#11-win-check-owner)). A
+reloaded end state does not re-emit the event. Both end states are exited through
+the title screen's New Game / restart path, which restores
 `GameState.createInitial()`.
 
 ## 7. Core interface sketches
@@ -300,8 +317,7 @@ under the repo's strict TypeScript settings.
 ```ts
 // src/types/domain.ts
 export type Direction =
-  | 'north' | 'south' | 'east' | 'west'
-  | 'up' | 'down' | 'in' | 'out';
+  'north' | 'south' | 'east' | 'west' | 'up' | 'down' | 'in' | 'out';
 
 export interface Position {
   readonly worldId: string;
@@ -325,48 +341,21 @@ export interface Serialisable<TDto> {
 ```ts
 // src/core/commands/ParsedCommand.ts — between Parser and NameResolver
 export interface ParsedCommand {
-  readonly verb: string;                   // canonical verb, e.g. 'take'
+  readonly verb: string; // canonical verb, e.g. 'take'
   readonly nounPhrases: readonly string[]; // raw words, e.g. ['brass key']
-  readonly raw: string;                    // original input for friendly errors
+  readonly raw: string; // original input for friendly errors
 }
 ```
 
-```ts
-// src/core/commands/Command.ts — output of NameResolver, input to dispatch.
-// Optional fields are OMITTED when absent, never assigned `undefined`
-// (exactOptionalPropertyTypes). Save/load and other meta actions are
-// application-level and deliberately absent from this union.
-export type Command =
-  | { readonly kind: 'go'; readonly direction: Direction }
-  | { readonly kind: 'take'; readonly itemId: string }
-  | { readonly kind: 'drop'; readonly itemId: string }
-  | { readonly kind: 'use'; readonly itemId: string; readonly targetId?: string }
-  | { readonly kind: 'examine'; readonly targetId: string }
-  | { readonly kind: 'look' }
-  | { readonly kind: 'inventory' }
-  | { readonly kind: 'score' }
-  | { readonly kind: 'help' }
-  | { readonly kind: 'unknown'; readonly raw: string };
-```
+The canonical `Command` union (22 variants, including NPC verbs, `answer`,
+`hint` and the dedicated door verbs) and the canonical `GameEvent` union (27
+variants including `RoomSummary`) are defined in
+[application-and-ui.md §5 and §6](application-and-ui.md#5-canonical-command-union-and-verbs).
+Do not duplicate them here. Meta actions are application-level and deliberately
+absent from `Command`.
 
 ```ts
-// src/core/events/GameEvent.ts
-export interface RoomSummary {
-  readonly id: string;
-  readonly title: string;
-  readonly description: string;
-  readonly exits: readonly Direction[];
-}
-
-export type GameEvent =
-  | { readonly type: 'message'; readonly text: string }
-  | { readonly type: 'room-entered'; readonly room: RoomSummary }
-  | { readonly type: 'score-changed'; readonly delta: number; readonly total: number; readonly reason: string }
-  | { readonly type: 'topic-completed'; readonly topicId: string }
-  | { readonly type: 'lives-changed'; readonly lives: number }
-  | { readonly type: 'game-over'; readonly reason: string; readonly finalScore: number }
-  | { readonly type: 'game-won'; readonly finalScore: number };
-
+// src/core/events/EventBus.ts — unchanged; publish takes the whole turn batch
 export interface EventBus {
   publish(events: readonly GameEvent[]): void;
   subscribe(listener: (event: GameEvent) => void): () => void;
@@ -378,22 +367,20 @@ export interface EventBus {
 export type SpecStatus = 'not started' | 'in progress' | 'covered';
 
 export interface SpecTopic {
-  readonly id: string;             // topic name from "## Topic: <name>"
+  readonly id: string; // topic name from "## Topic: <name>"
   readonly title: string;
-  readonly specReference: string;  // PDF section/page
-  readonly codeLocation: string;   // path::symbol; empty when not mapped
+  readonly specReference: string; // PDF section/page
+  readonly codeLocation: string; // path::symbol; empty when not mapped
   readonly status: SpecStatus;
-  readonly evidence: string;       // empty when not mapped yet
+  readonly evidence: string; // empty when not mapped yet
   readonly roomIds: readonly string[]; // a topic may span several rooms
   readonly maxScore: number;
 }
-
-export interface SpecTopicCatalogue {
-  getById(id: string): SpecTopic | undefined;
-  getByRoomId(roomId: string): readonly SpecTopic[];
-}
-
 ```
+
+`SpecTopicCatalogue` is defined canonically in
+[application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures); it
+provides `getById`, `getByRoomId` and `getByAreaId`.
 
 `AreaProgress` is part of the persisted shape defined in
 [storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical).
@@ -408,8 +395,10 @@ envelope. In particular, `score` is derived at restore rather than stored, and
 ## 8. Conventions
 
 - Persisted shapes (DTOs, envelope, validation result and quarantine) are
-  canonical in [storage-schema.md](storage-schema.md); do not duplicate their
-  definitions in other documents.
+  canonical in [storage-schema.md](storage-schema.md); the `Command` and
+  `GameEvent` unions and application/UI contracts are canonical in
+  [application-and-ui.md](application-and-ui.md). Do not duplicate any of them
+  in other documents.
 - **One primary export per file**, file named after it (one class per file for
   entities; small related types may share a `types` module).
 - **Composition over deep inheritance.** `Item` subclasses override small
@@ -459,7 +448,8 @@ envelope. In particular, `score` is derived at restore rather than stored, and
 
 **Playwright (`e2e/`) — browser flows**
 
-- App boots into the initial room with visible output.
+- App boots to the title screen; New Game enters the initial room with visible
+  output and a score panel ([application-and-ui.md §12](application-and-ui.md#12-tests-for-the-skeleton)).
 - Typing a command produces output and updates the score panel.
 - A save survives a page reload (`localStorage`).
 - Download produces a valid JSON file; importing it restores state.
@@ -515,8 +505,9 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
   core command dispatch, not core commands.
 - The save key is `compsciquest:save:v1`; a corrupt live save is quarantined,
   not discarded. No undo, autosave or multiple slots.
-- Win condition: all mapped spec topics covered, which emits `game-won`.
-- Starting lives: `3`, reset when entering a new world/area.
+- Win condition: all spec topics with `covered` status and evidence completed,
+  checked by `Session.observe`, which emits `game-won`.
+- Starting lives: `3`, reset on area change.
 - Topic↔room mapping: `SpecTopic.roomIds` plus `status`/`evidence`, mirroring
   `COVERAGE.md`.
 - NPCs: implicit conversation start via `ask`/`give`/`show`, no turn timeout, a
@@ -552,6 +543,27 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
   downloadable. Imports preserve `savedAt`; downloads use a dated filename.
 - Checksums and multi-tab protection are out of scope for v1.
 
+**Application and UI** — full contracts in [application-and-ui.md](application-and-ui.md):
+
+- Boot shows a title screen overlay with Continue (disabled without a valid
+  save) and New Game. The browser window uses a main terminal with inline
+  conversation/quiz/hint panels and a side score/save panel.
+- Save actions are buttons plus typed meta-action aliases, both intercepted by
+  `Game` before core dispatch; meta actions never advance the turn.
+- Doors and containers use dedicated `open`, `close`, `unlock` and `put` verbs;
+  `use` remains available for puzzles.
+- Scoring is per puzzle: each room visit, puzzle solve and quiz pass awards its
+  own content-declared points within `SpecTopic.maxScore`; `topic-completed`
+  itself awards nothing. No new persisted field is needed for idempotency.
+- Content is a single injected `ContentBundle` of typed catalogues validated at
+  boot; a clearly marked one-area, two-room stub fixture keeps the skeleton
+  bootable until real cards are converted.
+- `Game.getViewData()` is the state channel for `ScorePanel`; events drive the
+  transcript and transient panels. Command history is bounded and in-memory.
+- `Session.observe` owns the in-play win check; `SaveManager.restore()` derives
+  but never re-emits an end event.
+- `package.json` and `README.md` are authoritative for installed tooling.
+
 **Settled as implementation/data tasks (no design decision outstanding)**
 
 - Scoring values (points per room/topic, per-area maximums) live in content and
@@ -565,20 +577,22 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
 ## 12. Subsystem design documents
 
 These documents extend this architecture; they are linked from the relevant
-sections above and must stay consistent with it. Implement in the order listed
-after the shared spine: hazards and puzzles first, NPCs second, quiz combat and
-hints last. The storage schema is the canonical definition of everything those
-systems persist.
+sections above and must stay consistent with it. Build the persistence layer,
+then the content registry and UI shell defined in
+[application-and-ui.md](application-and-ui.md), then the mechanics in this order:
+hazards and puzzles first, NPCs second, quiz combat and hints last. The storage
+schema is the canonical definition of everything those systems persist.
 
-| Document | What it specifies |
-| --- | --- |
-| [storage-schema.md](storage-schema.md) | Canonical DTOs, envelope, item ownership, validation and `LoadResult`, quarantine, restore-time derivation and API contracts. |
-| [shared-rules.md](shared-rules.md) | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer and observer order. |
-| [hazards.md](hazards.md) | Traps and penalties as declarative, scheduled life-loss rules. |
-| [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation. |
-| [npcs.md](npcs.md) | Actors, actor states, conversation topics, `ConvNode`, knowledge gating and `TopicResolver`. |
-| [combat.md](combat.md) | Adversarial quizzes: questions, grading, pass/fail effects, retries and seeded question order. |
-| [hints.md](hints.md) | Escalating, adaptive hint sequences with optional score penalty. |
+| Document                                       | What it specifies                                                                                                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [application-and-ui.md](application-and-ui.md) | Canonical content bundle, boot/title flow, `Game` façade, `Command`/`GameEvent` unions, UI layout and view-model, behavioural signatures and effect/event mapping. |
+| [storage-schema.md](storage-schema.md)         | Canonical DTOs, envelope, item ownership, validation and `LoadResult`, quarantine, restore-time derivation and API contracts.                                      |
+| [shared-rules.md](shared-rules.md)             | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer and observer order.                                                               |
+| [hazards.md](hazards.md)                       | Traps and penalties as declarative, scheduled life-loss rules.                                                                                                     |
+| [puzzles.md](puzzles.md)                       | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation.                                                                                     |
+| [npcs.md](npcs.md)                             | Actors, actor states, conversation topics, `ConvNode`, knowledge gating and `TopicResolver`.                                                                       |
+| [combat.md](combat.md)                         | Adversarial quizzes: questions, grading, pass/fail effects, retries and seeded question order.                                                                     |
+| [hints.md](hints.md)                           | Escalating, adaptive hint sequences with optional score penalty.                                                                                                   |
 
 As implementation begins, keep this file and the subsystem documents in sync
 with the code.

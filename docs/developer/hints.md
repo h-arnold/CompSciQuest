@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
 [NPCs](npcs.md) · [hazards](hazards.md) ·
 [quiz combat](combat.md) · [puzzles](puzzles.md).
@@ -21,18 +21,18 @@ Hints are planned for v1 with designs in this document.
 ```ts
 // src/core/hints/HintSequence.ts — declarative definition
 export interface HintLevel {
-  readonly level: number;                 // 1-based
+  readonly level: number; // 1-based
   readonly text: string;
-  readonly unlock: Condition;             // shared spine §3
-  readonly scorePenalty?: number;         // omitted = 0; see §5
+  readonly unlock: Condition; // shared spine §3
+  readonly scorePenalty?: number; // omitted = 0; see §5
 }
 
 export interface HintSequence {
   readonly id: string;
-  readonly targets: readonly string[];    // puzzle / quiz / topic ids
+  readonly targets: readonly string[]; // puzzle / quiz / topic ids
   readonly levels: readonly HintLevel[];
-  readonly autoOfferAfter?: number;       // failed attempts or stuck turns
-  readonly cooldownTurns?: number;        // minimum turns between requests
+  readonly autoOfferAfter?: number; // failed attempts or stuck turns
+  readonly cooldownTurns?: number; // minimum turns between requests
 }
 ```
 
@@ -49,11 +49,9 @@ Systems increment them; conditions only read them.
 
 ## 3. Commands and delivery
 
-New core `Command` variant:
-
-```ts
-| { readonly kind: 'hint'; readonly targetId?: string }  // omit for current context
-```
+The `hint` variant is defined in the canonical `Command` union in
+[application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs).
+Its optional `targetId` is omitted when there is no explicit context.
 
 Context resolution order:
 
@@ -71,8 +69,9 @@ must not skip levels. Then apply a `show-hint` effect. Repeated
 requests are rate-limited: if `cooldownTurns` is set and `lastShownTurn` exists,
 a request before `turn - lastShownTurn >= cooldownTurns` returns a short "think
 about it for a moment" message and does not show a hint. `hint-shown` is defined
-in [shared-rules.md §9](shared-rules.md#9-event-additions); `HintPanel` (or
-`OutputLog`) renders it with `textContent`.
+in the canonical union in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
+`HintPanel` (or `OutputLog`) renders it with `textContent`.
 
 Hints never write puzzle/quiz state.
 
@@ -94,8 +93,9 @@ or instruction, and the player must still supply an answer to pass a quiz.
 The default `scorePenalty` is **0** — penalties discourage the behaviour a
 revision tool should encourage. If content opts in, `HintSystem` must not write
 score directly; it emits `hint-penalty-applied { hintId, delta }` and
-`ScoreTracker` (the sole score writer) applies it. This event is defined in
-[shared-rules.md §9](shared-rules.md#9-event-additions).
+`ScoreTracker` (the sole score writer) applies it. This event is part of the
+canonical union in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
 
 ## 6. Tests
 

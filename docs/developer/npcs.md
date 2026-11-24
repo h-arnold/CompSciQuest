@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
 [hazards](hazards.md) ·
 [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
@@ -22,40 +22,46 @@ NPCs are planned for v1 with designs in this document.
 ```ts
 // src/core/npcs/ActorState.ts — data, not behaviour
 export interface ActorState {
-  readonly id: string;            // e.g. 'idle', 'ready', 'talking', 'hostile'
-  readonly stateDesc: string;     // appended to examine text
-  readonly specialDesc: string;   // shown in the room listing
+  readonly id: string; // e.g. 'idle', 'ready', 'talking', 'hostile'
+  readonly stateDesc: string; // appended to examine text
+  readonly specialDesc: string; // shown in the room listing
   readonly onEnter?: readonly Effect[];
   readonly onExit?: readonly Effect[];
 }
 
 // src/core/npcs/ConversationTopic.ts
 export type TopicMatch =
-  | { readonly kind: 'ask' | 'tell' | 'askTell'; readonly objectIds: readonly string[] }
+  | {
+      readonly kind: 'ask' | 'tell' | 'askTell';
+      readonly objectIds: readonly string[];
+    }
   | { readonly kind: 'give' | 'show'; readonly itemIds: readonly string[] }
-  | { readonly kind: 'command' | 'special'; readonly keywords: readonly string[] };
+  | {
+      readonly kind: 'command' | 'special';
+      readonly keywords: readonly string[];
+    };
 
 export type ResponseStrategy =
   | { readonly kind: 'once' }
-  | { readonly kind: 'sequence' }   // play in order, repeat the last
-  | { readonly kind: 'rotating' };  // cycle; uses injected Random if shuffled
+  | { readonly kind: 'sequence' } // play in order, repeat the last
+  | { readonly kind: 'rotating' }; // cycle; uses injected Random if shuffled
 
 export interface ConversationTopic {
   readonly id: string;
   readonly match: TopicMatch;
-  readonly isActive: Condition;          // shared spine §3
+  readonly isActive: Condition; // shared spine §3
   readonly responses: readonly string[];
   readonly strategy: ResponseStrategy;
-  readonly effects: readonly Effect[];   // learn-topic, set-flag, enter-node, start-quiz…
-  readonly prompt?: string;              // "(You could ask why.)"
+  readonly effects: readonly Effect[]; // learn-topic, set-flag, enter-node, start-quiz…
+  readonly prompt?: string; // "(You could ask why.)"
 }
 
 // src/core/npcs/ConversationNode.ts
 export interface ConversationNode {
   readonly id: string;
-  readonly isSticky: boolean;            // false = expires after one turn
+  readonly isSticky: boolean; // false = expires after one turn
   readonly topics: readonly ConversationTopic[];
-  readonly defaultTopicId: string;       // catches unmatched input, keeps node open
+  readonly defaultTopicId: string; // catches unmatched input, keeps node open
   readonly onEnterEffects?: readonly Effect[];
 }
 ```
@@ -68,16 +74,10 @@ serialised shape is `NpcStateDto` in
 
 ## 3. Commands and topic resolution
 
-New core `Command` variants:
-
-```ts
-| { readonly kind: 'talk-to'; readonly actorId: string }
-| { readonly kind: 'ask';    readonly actorId: string; readonly topic: string }
-| { readonly kind: 'tell';   readonly actorId: string; readonly topic: string }
-| { readonly kind: 'give';   readonly actorId: string; readonly itemId: string }
-| { readonly kind: 'show';   readonly actorId: string; readonly itemId: string }
-| { readonly kind: 'bye' }
-```
+The NPC commands are `talk-to`, `ask`, `tell`, `give`, `show` and `bye`. Their
+exact shapes are part of the canonical union in
+[application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs);
+do not redeclare them here.
 
 `NameResolver` resolves object IDs; it cannot resolve free-text topics.
 `TopicResolver` sits beside it and takes the raw noun phrase from
@@ -153,8 +153,8 @@ quiz's `onPass`/`onFail` effects.
 - `GameStateDto.npcs[id]: NpcStateDto` — see
   [storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 - New events (`conversation-started`, `npc-spoke`, `conversation-ended`,
-  `topic-suggested`) are defined in
-  [shared-rules.md §9](shared-rules.md#9-event-additions).
+  `topic-suggested`) are part of the canonical union in
+  [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
 - `ConversationPanel` mounts in bootstrap beside `OutputLog`, subscribes to the
   event bus and renders all text via `textContent`. It never computes responses.
 

@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
 [NPCs](npcs.md) · [hazards](hazards.md) ·
 [puzzles](puzzles.md) · [hints](hints.md).
@@ -24,23 +24,24 @@ quiz starts from a `ConversationNode` special topic via the `start-quiz` effect.
 // src/core/combat/Quiz.ts — declarative definition
 export interface Quiz {
   readonly id: string;
-  readonly actorId: string;                 // who is asking
-  readonly topicId: string;                 // SpecTopic id from COVERAGE.md
-  readonly questionIds: readonly string[];  // content order; shuffled with Random
-  readonly passMark: number;                // count, 1..questionIds.length
-  readonly onPass: readonly Effect[];       // complete-topic + set-flag + message
-  readonly onFail: readonly Effect[];       // change-lives + move-player + message
-  readonly hintSequenceId?: string;         // omitted when no hints
-  readonly attemptsAllowed?: number;        // omitted for unlimited retries
+  readonly actorId: string; // who is asking
+  readonly topicId: string; // SpecTopic id from COVERAGE.md
+  readonly score: number; // awarded once on pass, 0 if not scoreable
+  readonly questionIds: readonly string[]; // content order; shuffled with Random
+  readonly passMark: number; // count, 1..questionIds.length
+  readonly onPass: readonly Effect[]; // complete-topic + set-flag + message
+  readonly onFail: readonly Effect[]; // change-lives + move-player + message
+  readonly hintSequenceId?: string; // omitted when no hints
+  readonly attemptsAllowed?: number; // omitted for unlimited retries
 }
 
 // src/core/combat/QuizQuestion.ts
 export interface QuizQuestion {
   readonly id: string;
   readonly prompt: string;
-  readonly options: readonly string[];      // shown numbered 1..n
+  readonly options: readonly string[]; // shown numbered 1..n
   readonly correctOptionIds: readonly number[]; // 0-based indices into options
-  readonly explanation: string;             // shown after every answer
+  readonly explanation: string; // shown after every answer
 }
 ```
 
@@ -82,20 +83,19 @@ Definitions live in `src/content/quizzes/`; `QuizCatalogue` resolves IDs.
 
 ## 4. Commands and events
 
-New core `Command` variant:
-
-```ts
-| { readonly kind: 'answer'; readonly option: number } // 0-based after parsing
-```
-
+The `answer` variant is defined in the canonical `Command` union in
+[application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs).
 `answer N` is 1-based in the UI; the parser stores `option = N - 1`. Option-text
 keywords are accepted as aliases. `answer` outside a quiz is allowed and emits a
 friendly "nobody asked you anything" message. There is **no time limit** — the
 game is turn-based, and no clock exists in core.
 
-Events are defined in [shared-rules.md §9](shared-rules.md#9-event-additions):
-`quiz-started`, `question-asked`, `answer-evaluated`, `quiz-ended`. All text is
-rendered with `textContent`; option lists are built from data, never HTML strings.
+The quiz events (`quiz-started`, `question-asked`, `answer-evaluated`,
+`quiz-ended`) are part of the canonical union in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
+their rendering is specified in
+[§6.1](application-and-ui.md#61-event-to-view-mapping). All text is rendered with
+`textContent`; option lists are built from data, never HTML strings.
 
 ## 5. Randomness and determinism
 
@@ -139,3 +139,6 @@ optional penalty is handled by `ScoreTracker` via `hint-penalty-applied`.
 - Retry limits are stored in `quizAttempts: Record<quizId, number>`, not in a
   single `QuizStateDto.attempts` field
   ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)).
+- A quiz pass awards its own declared `score` once, guarded by the
+  `quiz-passed:<quizId>` flag; `topic-completed` itself awards no points
+  ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).

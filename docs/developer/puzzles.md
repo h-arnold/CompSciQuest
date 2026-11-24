@@ -2,7 +2,7 @@
 
 Status: planned · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
 [NPCs](npcs.md) · [hazards](hazards.md) ·
 [quiz combat](combat.md) · [hints](hints.md).
@@ -21,10 +21,11 @@ document. Completion reporting already has a seam in `architecture.md` §6.3
 export interface Puzzle {
   readonly id: string;
   readonly requirements: readonly Condition[]; // all must hold (shared spine §3)
-  readonly onSolve: readonly Effect[];         // shared spine §5
-  readonly topicId?: string;                   // omitted if not a spec topic
-  readonly hintSequenceId?: string;            // omitted when no hints
-  readonly dependsOn: readonly string[];       // ids, for the dependency graph
+  readonly onSolve: readonly Effect[]; // shared spine §5
+  readonly topicId?: string; // omitted if not a spec topic
+  readonly score: number; // first-solve award, 0 if not scoreable
+  readonly hintSequenceId?: string; // omitted when no hints
+  readonly dependsOn: readonly string[]; // ids, for the dependency graph
 }
 ```
 
@@ -46,16 +47,19 @@ after hazards and NPC reactions, before auto-hints:
    sets the phase to `solved` **before** emitting `puzzle-solved`, which prevents
    double-firing.
 3. Apply `onSolve` effects through `EffectApplier`. If `topicId` is set, include a
-   `complete-topic` effect; that emits `topic-completed` and `ScoreTracker`
-   awards points under the existing covered+evidence rule. Several puzzles may
-   map to the same topic; `ScoreTracker` decides whether to award once or per
-   puzzle.
+   `complete-topic` effect; that emits `topic-completed` and records completion
+   for the win check. Points come from the puzzle's own `score` on the
+   `puzzle-solved` event. The settled rule is **per-puzzle scoring**: several
+   puzzles may map to one topic and each awards its own points, within the
+   topic's `maxScore` budget
+   ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
+   Only covered topics with evidence are scoreable.
 4. A solved puzzle stays solved. A hazard teleport or flag reset does **not**
    revert it — puzzle progress is owned solely by `PuzzleSystem`.
 
-**Critical authoring rule:** requirements must be *action-set flags*, not mere
+**Critical authoring rule:** requirements must be _action-set flags_, not mere
 possession. "Has the brass key" must not auto-solve "unlock the door"; the
-`use key on door` handler sets `door-unlocked`, and *that flag* is a requirement.
+`use key on door` handler sets `door-unlocked`, and _that flag_ is a requirement.
 A possession check is only valid for puzzles whose solution genuinely is
 carrying something to a place.
 
@@ -112,3 +116,5 @@ solve a puzzle; they only emit `hint-shown` events and may adjust counters.
 - Several puzzles may map to one topic (many-to-one).
 - Dependency graph validation runs as a Vitest test.
 - Puzzle phase is never reset by hazards or quiz failures.
+- Scoring is per puzzle, not once per topic
+  ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).

@@ -2,7 +2,7 @@
 
 Status: draft · Last updated: 2026-11-24
 
-Part of the CompSciQuest design set: [architecture](architecture.md) · [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
+Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) · [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
 
 ## 1. Purpose and authority
 
@@ -10,12 +10,12 @@ This file is the rulebook for game **content**: rooms, items, NPCs, conversation
 
 Authority order when sources disagree:
 
-| Question | Authority order |
-| --- | --- |
-| Course facts | `docs/exam-specs/wjec-unit1.md` and the PDF → `docs/coverage/COVERAGE.md` → bible |
-| Data shape and runtime behaviour | subsystem docs + [shared-rules.md](shared-rules.md) → this file |
-| Authoring practice | this file → bible |
-| Creative choices | bible, subject to the rules below |
+| Question                         | Authority order                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| Course facts                     | `docs/exam-specs/wjec-unit1.md` and the PDF → `docs/coverage/COVERAGE.md` → bible |
+| Data shape and runtime behaviour | subsystem docs + [shared-rules.md](shared-rules.md) → this file                   |
+| Authoring practice               | this file → bible                                                                 |
+| Creative choices                 | bible, subject to the rules below                                                 |
 
 Definitions used throughout:
 
@@ -56,7 +56,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **P3 — Assessment objectives.** Every quiz question is tagged `AO1`, `AO2` or `AO3` plus a difficulty. Each quiz contains at least one `AO1` and one `AO2` question; `AO3` is used for design/evaluation topics (algorithms, SDLC). Tags are authoring metadata, dropped on conversion.
 - **P4 — Distractors and explanations.** Wrong options are plausible misconceptions drawn from the spec, never nonsense options. Every answer, right or wrong, produces an explanation that says why the key is correct and, where useful, why the chosen distractor is wrong ([combat.md §2](combat.md#2-model)).
 - **P5 — Retrieval loop.** Quizzes have no timer. `passMark` is a count, not a percentage. Retries are unlimited unless the editor explicitly assigns `attemptsAllowed`. Failure costs a life and returns the player to the declared level start; it never resets topic or puzzle progress ([combat.md §3](combat.md#3-flow)).
-- **P6 — Score integrity.** Content never writes score and never awards points itself. It emits `complete-topic`; `ScoreTracker` decides whether the covered+evidence rule allows points ([shared-rules.md §5](shared-rules.md#5-effect-and-effectapplier)). Hints default to zero penalty.
+- **P6 — Score integrity.** Content declares each room, puzzle and quiz `score` but never writes score itself. `ScoreTracker` awards from the achievement events for covered topics with evidence; `complete-topic` / `topic-completed` records completion and awards nothing ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)). Hints default to zero penalty.
 
 ### C — Conversation and NPCs
 
@@ -77,7 +77,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **D1 — Cards only.** Writers produce Markdown design cards under `docs/content/<area>/`. They never edit engine code, `src/`, the rulebook, agent files or `opencode.json`.
 - **D2 — Editor-owned IDs.** IDs are kebab-case with a kind prefix: `room-`, `item-`, `npc-`, `actorstate-`, `topic-`, `node-`, `quiz-`, `q-`, `puzzle-`, `hazard-`, `hint-`. The editor allocates IDs and aliases in the bible; writers never invent one outside their brief.
 - **D3 — Runtime data shape.** Runtime fields use exactly the names and types in the subsystem docs. Only plain strings, numbers, arrays and records are allowed; omit optional fields rather than assigning `undefined` ([storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical)). Each item declares its `initialRoom`; after that, ownership lives on Player, NPC or Room state.
-- **D4 — Authoring metadata is separate.** Fields such as `assessmentObjective`, `difficulty`, `clues`, `role`, `voice`, `motivation`, `relationship` and `telegraph` exist only on cards. They are dropped on conversion to TypeScript and never fed to the engine.
+- **D4 — Authoring metadata is separate.** Fields such as `assessmentObjective`, `difficulty`, `clues`, `role`, `voice`, `motivation`, `relationship` and `telegraph` exist only on cards. They are dropped on conversion to TypeScript and never fed to the engine. The exception is `levelStart`, which is now the runtime `startRoomId` on the area definition ([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions)).
 
 ### V — Validation
 
@@ -93,74 +93,87 @@ One file per (area, kind), named as in the table below. Every file begins with f
 
 ```yaml
 ---
-kind: area            # area | npc | quiz | puzzle | hazard | hint
+kind: area # area | npc | quiz | puzzle | hazard | hint
 area: 1-1-computer-architecture
 topicIds: [cpu-components, fetch-decode-execute]
-status: draft         # draft | reviewed | approved
+status: draft # draft | reviewed | approved
 ---
 ```
 
 Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nested runtime objects use inline record syntax, e.g. `- { kind: flag-set, flag: door-unlocked, value: true }`. Omit optional runtime fields entirely. Authoring metadata is marked `(authoring)` and is dropped on conversion.
 
-| Kind | File | Artifacts defined |
-| --- | --- | --- |
-| area | `rooms.md` | rooms, exits, items |
-| npc | `npcs.md` | actors, actor states, conversation topics, conversation nodes |
-| quiz | `quizzes.md` | quizzes, questions |
-| puzzle | `puzzles.md` | puzzles |
-| hazard | `hazards.md` | hazards |
-| hint | `hints.md` | hint sequences |
+| Kind   | File         | Artifacts defined                                             |
+| ------ | ------------ | ------------------------------------------------------------- |
+| area   | `rooms.md`   | rooms, exits, items                                           |
+| npc    | `npcs.md`    | actors, actor states, conversation topics, conversation nodes |
+| quiz   | `quizzes.md` | quizzes, questions                                            |
+| puzzle | `puzzles.md` | puzzles                                                       |
+| hazard | `hazards.md` | hazards                                                       |
+| hint   | `hints.md`   | hint sequences                                                |
 
-### 4.2 Area / rooms card
+### 4.2 Area and rooms card
 
 ```md
+### area-1-1-computer-architecture
+
+- worldId: world-1-computer-architecture
+- name: Computer Architecture
+- startRoomId: room-cpu-lab # runtime level start for hazards and quiz failures
+- lives: 3 # reset on entering the area
+
 ### room-cpu-lab
+
 - title: The CPU Lab
 - aliases: [lab, cpu lab]
-- description: ...            # ≤80 words, second person present (N4, N8)
-- interesting: ...            # (authoring) the sensory/affordance hook
+- description: ... # ≤80 words, second person present (N4, N8)
+- interesting: ... # (authoring) the sensory/affordance hook
 - topicIds: [cpu-components]
 - exits:
   - { direction: north, to: room-memory-vault }
   - { direction: west, to: room-bus-way, conditions: [{ kind: flag-set, flag: bus-mapped }] }
-- entryEffects: []            # Effect[]; omit when empty
-- levelStart: true            # (authoring) declared start for this world/area
+- entryEffects: [] # Effect[]; omit when empty
+- score: 0 # first-visit award; 0 when not scoreable
 
 ### item-register-cache
+
 - name: register cache
 - aliases: [cache, registers]
 - portable: true
 - description: ...
-- initialRoom: room-cpu-lab   # starting owner; item ownership is a Player/NPC/Room property
-- useNotes: ...               # (authoring) which action sets which flag
+- initialRoom: room-cpu-lab # starting owner; item ownership is a Player/NPC/Room property
+- useNotes: ... # (authoring) which action sets which flag
 ```
 
 ### 4.3 NPC card
 
 ```md
 ### npc-archivist
+
 - aliases: [archivist, keeper]
 - initialStateId: actorstate-ready
-- role: tutor               # (authoring) C1
-- voice: clipped, patient    # (authoring) C1
-- motivation: ...           # (authoring) C1
-- relationship: ...         # (authoring) C1
+- role: tutor # (authoring) C1
+- voice: clipped, patient # (authoring) C1
+- motivation: ... # (authoring) C1
+- relationship: ... # (authoring) C1
 
 ### actorstate-ready
+
 - stateDesc: ...
 - specialDesc: ...
-- onEnter: []               # Effect[]; omit when empty
+- onEnter: [] # Effect[]; omit when empty
 
 ### topic-fde-explain
+
 - actorId: npc-archivist
 - match: { kind: askTell, objectIds: [fetch-decode-execute] }
 - isActive: { kind: not, of: { kind: npc-knows, actorId: npc-archivist, topicId: fetch-decode-execute } }
-- responses: [...]          # in-character, N4
+- responses: [...] # in-character, N4
 - strategy: { kind: once }
 - effects: [{ kind: learn-topic, actorId: npc-archivist, topicId: fetch-decode-execute }]
-- prompt: ...               # "(You could ask why.)"
+- prompt: ... # "(You could ask why.)"
 
 ### node-fde
+
 - actorId: npc-archivist
 - isSticky: false
 - topics: [topic-fde-why]
@@ -171,8 +184,10 @@ Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nes
 
 ```md
 ### quiz-fde-cycle
+
 - actorId: npc-archivist
 - topicId: fetch-decode-execute
+- score: 2 # awarded once on pass; counts towards topic maxScore
 - questionIds: [q-fde-1, q-fde-2, q-fde-3]
 - passMark: 2
 - onPass:
@@ -185,31 +200,35 @@ Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nes
 - hintSequenceId: hint-fde
 
 ### q-fde-1
+
 - prompt: ...
 - options: [...]
-- correctOptionIds: [1]     # 0-based indices; UI shows 1-based
+- correctOptionIds: [1] # 0-based indices; UI shows 1-based
 - explanation: ...
-- assessmentObjective: AO1  # (authoring) P3
-- difficulty: easy          # (authoring) P3
-- misconception: ...        # (authoring) P4: what wrong answers target
+- assessmentObjective: AO1 # (authoring) P3
+- difficulty: easy # (authoring) P3
+- misconception: ... # (authoring) P4: what wrong answers target
 ```
 
 ### 4.5 Puzzle card
 
 ```md
 ### puzzle-unlock-cache
-- requirements: [{ kind: flag-set, flag: cache-decoded }]  # action flags, not possession
+
+- requirements: [{ kind: flag-set, flag: cache-decoded }] # action flags, not possession
 - onSolve: [{ kind: complete-topic, topicId: data-representation }]
 - topicId: data-representation
+- score: 1 # awarded once on solve; topics may be scored per puzzle
 - hintSequenceId: hint-cache
 - dependsOn: [puzzle-find-key]
-- clues: [...]              # (authoring) ≥2 discoverable clues, N6
+- clues: [...] # (authoring) ≥2 discoverable clues, N6
 ```
 
 ### 4.6 Hazard card
 
 ```md
 ### hazard-overheat
+
 - trigger: { kind: on-room-enter, roomId: room-cpu-lab }
 - when: { kind: not, of: { kind: flag-set, flag: cooling-fitted } }
 - effects:
@@ -217,13 +236,14 @@ Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nes
   - { kind: change-lives, delta: -1, reason: ... }
   - { kind: move-player, roomId: room-cpu-lab, reason: ... }
 - once: true
-- telegraph: ...            # (authoring) the clue before harm, H1
+- telegraph: ... # (authoring) the clue before harm, H1
 ```
 
 ### 4.7 Hint card
 
 ```md
 ### hint-fde
+
 - targets: [fetch-decode-execute, puzzle-unlock-cache]
 - levels:
   - { level: 1, text: ..., unlock: { kind: counter-at-least, key: failed-attempts:quiz-fde-cycle, value: 1 } }
@@ -235,19 +255,19 @@ Each artifact is a `### <id>` section. Fields are listed as `- name: value`. Nes
 
 The bible owns one registry table. Writers copy IDs from it verbatim; a request for a new ID goes back to the editor and the user.
 
-| Prefix | Artifact | Example |
-| --- | --- | --- |
-| `room-` | room | `room-cpu-lab` |
-| `item-` | item | `item-register-cache` |
-| `npc-` | actor | `npc-archivist` |
-| `actorstate-` | actor state | `actorstate-ready` |
-| `topic-` | conversation topic | `topic-fde-explain` |
-| `node-` | conversation node | `node-fde` |
-| `quiz-` | quiz | `quiz-fde-cycle` |
-| `q-` | quiz question | `q-fde-1` |
-| `puzzle-` | puzzle | `puzzle-unlock-cache` |
-| `hazard-` | hazard | `hazard-overheat` |
-| `hint-` | hint sequence | `hint-fde` |
+| Prefix        | Artifact           | Example               |
+| ------------- | ------------------ | --------------------- |
+| `room-`       | room               | `room-cpu-lab`        |
+| `item-`       | item               | `item-register-cache` |
+| `npc-`        | actor              | `npc-archivist`       |
+| `actorstate-` | actor state        | `actorstate-ready`    |
+| `topic-`      | conversation topic | `topic-fde-explain`   |
+| `node-`       | conversation node  | `node-fde`            |
+| `quiz-`       | quiz               | `quiz-fde-cycle`      |
+| `q-`          | quiz question      | `q-fde-1`             |
+| `puzzle-`     | puzzle             | `puzzle-unlock-cache` |
+| `hazard-`     | hazard             | `hazard-overheat`     |
+| `hint-`       | hint sequence      | `hint-fde`            |
 
 Aliases are lowercase words or short phrases, unique across **all** objects and NPCs, and listed in the bible before a writer uses them. A topic ID matching a spec topic uses the exact `## Topic: <name>` heading from `COVERAGE.md` (converted to kebab-case), so the graph can join document and code nodes.
 
@@ -280,15 +300,15 @@ It ends with a one-line verdict: `PASS`, `PASS WITH MINORS` or `FAIL`. It never 
 [blocker|major|minor] TAG card-path — what is wrong — source (section/page) — suggested fix
 ```
 
-| Tag | Check |
-| --- | --- |
-| `PCK-ACC` | Factual accuracy: every statement, definition, example and quiz key matches the spec. No invented processors, registers, protocols, algorithms or numbers. |
-| `PCK-DEPTH` | Scope stays inside Unit 1; nothing from A-level or professional practice is smuggled in. Respect "should know" versus "should be aware of" (Version 3 changed one item on p.53 from "understand" to "be aware of"). Do not present technology as value-free where the spec integrates legal, social, ethical, environmental and professional dimensions. |
-| `PCK-TERM` | Terminology matches the spec; a friendly paraphrase must be accompanied by the formal term. No misleading shorthand. |
-| `PCK-LOAD` | Prerequisites come before use; new vocabulary is explained in plain GCSE-level language; text is readable by a typical 14–16 year-old with no assumed prior CS knowledge. |
-| `PCK-AO` | Questions assess the tagged objective and the spec's command words; AO1 and AO2 present; AO3 only for design/evaluation topics (algorithms, SDLC). |
-| `PCK-DISTRACTOR` | Wrong options are plausible misconceptions a GCSE learner actually holds, rooted in the spec. |
-| `PCK-EVIDENCE` | A spec reference and evidence note exist; nothing is treated as covered without them. |
+| Tag              | Check                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PCK-ACC`        | Factual accuracy: every statement, definition, example and quiz key matches the spec. No invented processors, registers, protocols, algorithms or numbers.                                                                                                                                                                                               |
+| `PCK-DEPTH`      | Scope stays inside Unit 1; nothing from A-level or professional practice is smuggled in. Respect "should know" versus "should be aware of" (Version 3 changed one item on p.53 from "understand" to "be aware of"). Do not present technology as value-free where the spec integrates legal, social, ethical, environmental and professional dimensions. |
+| `PCK-TERM`       | Terminology matches the spec; a friendly paraphrase must be accompanied by the formal term. No misleading shorthand.                                                                                                                                                                                                                                     |
+| `PCK-LOAD`       | Prerequisites come before use; new vocabulary is explained in plain GCSE-level language; text is readable by a typical 14–16 year-old with no assumed prior CS knowledge.                                                                                                                                                                                |
+| `PCK-AO`         | Questions assess the tagged objective and the spec's command words; AO1 and AO2 present; AO3 only for design/evaluation topics (algorithms, SDLC).                                                                                                                                                                                                       |
+| `PCK-DISTRACTOR` | Wrong options are plausible misconceptions a GCSE learner actually holds, rooted in the spec.                                                                                                                                                                                                                                                            |
+| `PCK-EVIDENCE`   | A spec reference and evidence note exist; nothing is treated as covered without them.                                                                                                                                                                                                                                                                    |
 
 It ends with `PASS`, `PASS WITH MINORS` or `FAIL` (FAIL = at least one blocker or major). It does not review voice, aliases, IDs or data shape — that is `content-critic`'s job — and it does not design the fix: it points to the spec section and states the correct claim or appropriate depth.
 
@@ -296,14 +316,15 @@ It ends with `PASS`, `PASS WITH MINORS` or `FAIL` (FAIL = at least one blocker o
 
 To be implemented as Vitest tests when cards are converted to TypeScript. No test files exist in this draft.
 
-| Gate | Checks |
-| --- | --- |
-| `content-ids` | Unique artifact IDs; globally unique aliases; ID prefixes per §5; every referenced topic ID exists in `COVERAGE.md`; every exit target and `move-player` room exists; exit directions valid. |
-| `quiz-content` | `1 <= passMark <= questionIds.length`; every question has ≥1 correct option within range; explanation non-empty; AO tag and difficulty present; ≥1 AO1 and ≥1 AO2 per quiz; `onPass` sets `quiz-passed:<id>` and emits `complete-topic`; `onFail` includes `change-lives`. |
-| `puzzle-graph` | `dependsOn` IDs exist; graph acyclic; every puzzle reachable from the start; requirements are action-set flags rather than bare `has-item`; ≥2 clues per puzzle; `topicId` exists. |
-| `hint-content` | 2–4 levels in ascending order; unlock keys from the agreed namespace; targets exist; no answer-revealing level; penalty absent or zero by default. |
-| `hazard-content` | Telegraph text present; effects only from the shared union; no `set-puzzle-*` effects; level-start room declared for the area. |
-| `npc-content` | `defaultTopicId` exists in the node; topic `match` fields non-empty; effects only from the shared union; aliases unique. |
+| Gate             | Checks                                                                                                                                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `content-ids`    | Unique artifact IDs; globally unique aliases; ID prefixes per §5; every referenced topic ID exists in `COVERAGE.md`; every exit target and `move-player` room exists; exit directions valid.                                                                                                                                   |
+| `quiz-content`   | `1 <= passMark <= questionIds.length`; every question has ≥1 correct option within range; explanation non-empty; AO tag and difficulty present; ≥1 AO1 and ≥1 AO2 per quiz; `onPass` sets `quiz-passed:<id>` and emits `complete-topic`; `onFail` includes `change-lives`.                                                     |
+| `puzzle-graph`   | `dependsOn` IDs exist; graph acyclic; every puzzle reachable from the start; requirements are action-set flags rather than bare `has-item`; ≥2 clues per puzzle; `topicId` exists.                                                                                                                                             |
+| `hint-content`   | 2–4 levels in ascending order; unlock keys from the agreed namespace; targets exist; no answer-revealing level; penalty absent or zero by default.                                                                                                                                                                             |
+| `hazard-content` | Telegraph text present; effects only from the shared union; no `set-puzzle-*` effects; level-start room declared for the area.                                                                                                                                                                                                 |
+| `npc-content`    | `defaultTopicId` exists in the node; topic `match` fields non-empty; effects only from the shared union; aliases unique.                                                                                                                                                                                                       |
+| `score-content`  | Every room, puzzle and quiz defines a non-negative integer `score`; for each spec topic, the sum of scores of its mapped rooms, puzzles and quizzes is at most that topic's `maxScore` ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)); every area declares a valid `startRoomId`. |
 
 ## 8. Decisions content must not assume
 
@@ -311,14 +332,16 @@ Content must use the values below instead of hard-coding its own; flag any
 unavoidable assumption in the card. Authority is
 [architecture.md §11](architecture.md#11-decision-log).
 
-| Topic | Decision |
-| --- | --- |
-| Win condition | All mapped spec topics covered emits `game-won` with the final score. |
-| Starting lives | `3`, reset when entering a new world/area; loss comes from hazards and failed quizzes. |
-| Verb list, aliases, ambiguity policy | Grows with content. Unknown verbs and nouns degrade to a friendly in-voice message, never a parser error. |
-| Undo, autosave, save slots | None. |
-| Save key and corrupt saves | Key is `compsciquest:save:v1`; a corrupt live save is quarantined, not discarded. |
-| Exact scoring formula | Still content-dependent: points per room/topic and per-area maximums live in content. |
+| Topic                                | Decision                                                                                                                                                                                                                                                                                      |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Win condition                        | All mapped spec topics with `covered` status and evidence completed cause `Session.observe` to emit `game-won` with the final score ([application-and-ui.md §11](application-and-ui.md#11-win-check-owner)).                                                                                  |
+| Starting lives                       | `3`, reset on **area change**; loss comes from hazards and failed quizzes.                                                                                                                                                                                                                    |
+| Verb list, aliases, ambiguity policy | The v1 verb and alias tables are fixed in [application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs), including dedicated door verbs. Unknown verbs and nouns degrade to a friendly in-voice message, never a parser error, and there is no disambiguation prompt. |
+| Undo, autosave, save slots           | None. Saves are manual, via buttons or typed meta-action aliases.                                                                                                                                                                                                                             |
+| Save key and corrupt saves           | Key is `compsciquest:save:v1`; a corrupt live save is quarantined, not discarded.                                                                                                                                                                                                             |
+| Exact scoring formula                | Per puzzle: each room visit, puzzle solve and quiz pass awards its own content-declared `score`, within `SpecTopic.maxScore`; `topic-completed` awards nothing. See [application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic).                                |
+| Title screen                         | v1 boots to a Continue / New Game overlay before the first room; Continue is disabled without a valid save.                                                                                                                                                                                   |
+| Content registration                 | All definitions are converted into one injected `ContentBundle`; areas declare `startRoomId` as a runtime field.                                                                                                                                                                              |
 
 ## 9. Agent acceptance contract
 
