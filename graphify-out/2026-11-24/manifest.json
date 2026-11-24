@@ -7,9 +7,9 @@
     "ast_empty": true
   },
   "eslint.config.js": {
-    "mtime": 1795526522.4527574,
-    "seen": 1795526631.7485487,
-    "ast_hash": "feb64357d0542c69a6a23094c3c21022",
+    "mtime": 1795530701.8126924,
+    "seen": 1795530747.349552,
+    "ast_hash": "5c857364039771c80ae2ff293a2d7c91",
     "semantic_hash": ""
   },
   "package.json": {
@@ -19,10 +19,10 @@
     "semantic_hash": ""
   },
   "opencode.json": {
-    "mtime": 1795519963.7493649,
-    "seen": 1795522170.1639147,
-    "ast_hash": "1949b31518e95f7d7c36aa54695f02ec",
-    "semantic_hash": "1949b31518e95f7d7c36aa54695f02ec"
+    "mtime": 1795530612.1386027,
+    "seen": 1795530747.3495574,
+    "ast_hash": "f5a40540f5100897d45d8fea4cf33950",
+    "semantic_hash": ""
   },
   "src/main.ts": {
     "mtime": 1795514852.463721,
@@ -133,9 +133,9 @@
     "semantic_hash": ""
   },
   "src/application/Game.ts": {
-    "mtime": 1795525986.3865306,
-    "seen": 1795526631.748613,
-    "ast_hash": "1b32e56ba13e677cfae0865f9db669d7",
+    "mtime": 1795530529.1015937,
+    "seen": 1795530574.2475183,
+    "ast_hash": "97ab71c1e97bf836a97f5e2c566a7b75",
     "semantic_hash": ""
   },
   "src/application/GameViewData.ts": {
@@ -163,9 +163,9 @@
     "semantic_hash": ""
   },
   "src/application/SaveManager.ts": {
-    "mtime": 1795525986.3865306,
-    "seen": 1795526631.748669,
-    "ast_hash": "2d15da4f08a94a1efbb1a0aa0f1644cb",
+    "mtime": 1795530528.9430025,
+    "seen": 1795530574.247546,
+    "ast_hash": "29b5cfb438518f874751879aab4beb17",
     "semantic_hash": ""
   },
   "src/application/schema.ts": {
@@ -319,9 +319,9 @@
     "semantic_hash": ""
   },
   "src/content/stub/index.ts": {
-    "mtime": 1795526558.2421732,
-    "seen": 1795526631.7527337,
-    "ast_hash": "9e1d8264af9c5fd07b55fceb40e66541",
+    "mtime": 1795529982.4539514,
+    "seen": 1795530574.247692,
+    "ast_hash": "e728b3b1b2bf6ee77ec38dd7351ad2a0",
     "semantic_hash": ""
   },
   "src/content/stub/rooms.ts": {
@@ -349,9 +349,9 @@
     "semantic_hash": ""
   },
   "src/core/GameState.ts": {
-    "mtime": 1795525906.3986015,
-    "seen": 1795526631.7527812,
-    "ast_hash": "e4950d78ed419371d015bb579e9d705e",
+    "mtime": 1795529971.9208233,
+    "seen": 1795530574.2477198,
+    "ast_hash": "ec7f59dd79188e55a579ea555d256157",
     "semantic_hash": ""
   },
   "src/core/HazardStateDto.ts": {
@@ -511,9 +511,9 @@
     "semantic_hash": ""
   },
   "src/core/lifecycle/Session.ts": {
-    "mtime": 1795525958.1522028,
-    "seen": 1795526631.7529707,
-    "ast_hash": "e2d31c46bc988f848eb01f0d23c7b5d0",
+    "mtime": 1795530529.349846,
+    "seen": 1795530574.2478752,
+    "ast_hash": "598321b6b7468c1cef86698a92d12ce7",
     "semantic_hash": ""
   },
   "src/core/npcs/ActorState.ts": {
@@ -640,6 +640,66 @@
     "mtime": 1795525888.7413964,
     "seen": 1795526631.7538443,
     "ast_hash": "0afbfe6c8ed4768f6feb6961bb280990",
+    "semantic_hash": ""
+  },
+  "src/core/effects/EffectApplier.ts": {
+    "mtime": 1795530529.3099153,
+    "seen": 1795530574.247836,
+    "ast_hash": "281c8c1025d70bf9326ac0a837054ae6",
+    "semantic_hash": ""
+  },
+  "src/storage/BrowserStorage.ts": {
+    "mtime": 1795530001.27018,
+    "seen": 1795530574.248158,
+    "ast_hash": "2c4f11fc3d29755c4744d0fb59c4825d",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/persistence.ts": {
+    "mtime": 1795528328.2477171,
+    "seen": 1795529960.7538843,
+    "ast_hash": "73f059fb0bea306de6ad68faf3596f2f",
+    "semantic_hash": ""
+  },
+  "tests/persistence/Download.test.ts": {
+    "mtime": 1795528133.715104,
+    "seen": 1795529960.7538884,
+    "ast_hash": "5a02205af6bc87a1afad2bd2de54fcce",
+    "semantic_hash": ""
+  },
+  "tests/persistence/Restore.test.ts": {
+    "mtime": 1795528143.4654598,
+    "seen": 1795529960.7538924,
+    "ast_hash": "4869415f8232ece8fff8f21d37639581",
+    "semantic_hash": ""
+  },
+  "tests/persistence/SaveDto.types.test.ts": {
+    "mtime": 1795528241.2126539,
+    "seen": 1795529960.753896,
+    "ast_hash": "a8eb2bd4334f9da5e5d2ba633a145ba4",
+    "semantic_hash": ""
+  },
+  "tests/persistence/SaveManager.test.ts": {
+    "mtime": 1795528356.6196723,
+    "seen": 1795529960.7538996,
+    "ast_hash": "7130beb9a38e3193ec4e9fe0f8b8422f",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261124_135337_8c83774d_where_are_the_persistence_contracts_canonical__sav.md": {
+    "mtime": 1795528417.078802,
+    "seen": 1795529960.7539701,
+    "ast_hash": "37c44c1ec9d6d85ee6f104f6d0ce12a5",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261124_143021_68c57a92_where_are_the_runtime_seams_savemanager_game_creat.md": {
+    "mtime": 1795530621.608919,
+    "seen": 1795530747.3502061,
+    "ast_hash": "43d09fb01537bfbedca5759fd6c0f7ca",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261124_143035_31f7b54e_bypass_check__do_compsciquest_save_v1__door_open.md": {
+    "mtime": 1795530635.8469534,
+    "seen": 1795530747.3502119,
+    "ast_hash": "cecf0d1351c2ed7c9ca1dbcc5be61b94",
     "semantic_hash": ""
   },
   "package-lock.json": {
