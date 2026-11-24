@@ -13,3 +13,11 @@ graphify-out/.graphify_analysis.json
 graphify-out/.graphify_build.json
 graphify-out/.graphify_partition_cache.json
 graphify-out/.graphify_root
+
+# Applies to both graphify-out/ and docs/graphify-out/
+**/.graphify_*.json
+**/.graphify_*.sig
+**/.graphify_python
+**/.graphify_root
+**/graphify-out/manifest.json
+**/graphify-out/cache/

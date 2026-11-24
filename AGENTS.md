@@ -65,3 +65,12 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 - A committed graphify-out/graph.json is rewritten whole on every build, so a large diff to it in a pull request is expected. Do not flag it as churn or suggest skipping the graph rebuild or its hooks.
+
+### Two separate graphs
+
+- **Codebase graph** — `graphify-out/graph.json` at the repo root, exposed as MCP server `graphify-local`. AST-only; refresh with `graphify update .` (or git hooks). Use it for how the game code is structured and connected.
+- **Coverage graph** — `docs/graphify-out/graph.json`, exposed as MCP server `coverage-local`. Built from the `docs/` folder so it includes `docs/exam-specs/*.pdf` and `docs/coverage/COVERAGE.md`. Use it for specification topics and how they map to rooms/game content. It needs a semantic backend (the OpenCode session's model via the graphify skill, or Ollama); its `graph.json` does not exist until the first build, so `coverage-local` will appear unavailable until then.
+- `docs/coverage/COVERAGE.md` is the authoritative spec → topic → room → code mapping. The coverage graph is evidence, not proof: check confidence-tagged edges and PDF citations before treating a topic as covered. An absent path is not proof of a gap.
+- Root `.graphifyignore` keeps `docs/exam-specs/` and coverage graph outputs out of the codebase scan. Keep it — otherwise a full scan at the repo root would pull the specification into the code graph.
+- Choose the graph by MCP tool namespace: `graphify-local` for code, `coverage-local` for source material/coverage. CLI equivalents: from the repo root, `graphify query "..."` reads the code graph; from `docs/` it reads the coverage graph, or pass `--graph <path>` explicitly.
+- To build the coverage graph, change the working directory to `docs/` first — the graphify skill always writes `graphify-out/` relative to the current directory — then use the skill on that folder. Never run the coverage build from the repo root: it would overwrite `graphify-out/graph.json`, the codebase graph. For strictly offline extraction use `cd docs` then `graphify extract . --backend ollama --max-concurrency 1` (requires the `ollama` extra; CLI flags override `GRAPHIFY_BACKEND=none`). Rebuild the coverage graph only when the spec or coverage map changes.

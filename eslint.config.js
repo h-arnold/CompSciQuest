@@ -6,6 +6,7 @@ import globals from 'globals';
 export default [
   {
     ignores: [
+      '.opencode/', // tool-managed integration files
       'dist/',
       'coverage/',
       'node_modules/',

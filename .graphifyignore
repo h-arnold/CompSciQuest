@@ -1,0 +1,6 @@
+# The codebase graph (repo root) indexes source only.
+# Source material and its graph are queried through the `coverage-local` MCP
+# server / docs/graphify-out/graph.json, so keep them out of the code scan.
+docs/exam-specs/
+docs/graphify-out/
+docs/coverage/graphify-out/

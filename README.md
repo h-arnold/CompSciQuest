@@ -17,6 +17,20 @@ Preinstalled in the container (versions verified online on 2026-11-24):
 | uv | 0.13.9 | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Graphify CLI (`graphify`, PyPI `graphifyy`) | 0.9.118 on Python 3.12 (uv-managed), with `mcp` + `pdf` extras | `uv tool install --python 3.12 "graphifyy[mcp,pdf]==0.9.118"` |
 
+## TypeScript and the build
+
+TypeScript 7.0.2 (the native compiler) is pinned locally as `typescript-7`.
+`npm run typecheck` calls its `tsc` binary directly; `npm run build` runs that
+check before Vite builds. Vite itself is also a local devDependency so its
+`vite/client` types resolve during type-checking. `vite.config.ts` sets the
+base path to `/CompSciQuest/` for GitHub Pages project-site deployment.
+
+The separate `typescript` dependency is the official TypeScript 6 compatibility
+shim (`@typescript/typescript6`). `eslint-plugin-sonarjs` still imports the
+TypeScript JavaScript API, which TypeScript 7 no longer ships; this is
+Microsoft's recommended side-by-side setup until ESLint plugins support TS 7.
+See `tsconfig.json` for the strictness and unreachable-code settings.
+
 Graphify is installed **local-only**: `GRAPHIFY_BACKEND=none` in the Dockerfile
 disables all LLM/cloud backends, so extraction is deterministic AST parsing with
 nothing sent off the machine. No Graphify account, API key, or hosted MCP
