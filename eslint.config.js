@@ -41,13 +41,15 @@ export default [
       },
     },
     rules: {
-      // PascalCase paths are pinned by the design docs; authored placeholder
-      // catalogues use kebab-case. Both remain enforced rather than disabled.
+      // PascalCase and explicit camelCase paths are pinned by the design docs;
+      // authored placeholder catalogues use kebab-case. All remain enforced
+      // rather than disabled. User-approved on 2026-11-24 (validateContent.ts).
       'unicorn/filename-case': [
         'error',
         {
           cases: {
             pascalCase: true,
+            camelCase: true,
             kebabCase: true,
           },
         },
