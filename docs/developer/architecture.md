@@ -17,8 +17,8 @@ deliberately out of scope; where content is involved, this document defines the
   separate from behaviour (engine).
 - Keep the core engine **DOM-free and deterministic** so it can be unit-tested
   without a browser.
-- Define extension points for deferred features without building them yet, and
-  be explicit about which features have a seam today and which do not.
+- Define contracts and extension points for planned systems without building
+  them yet, and be explicit about which features have a seam today and which do not.
 
 ## 2. Design principles
 
@@ -29,7 +29,7 @@ deliberately out of scope; where content is involved, this document defines the
 | Separation of concerns | The engine never touches the DOM; the UI never owns game rules. They communicate through commands in and events out. |
 | Data-driven content | Rooms, items and spec topics are declarative definitions consumed by the engine. No content is hard-coded into engine logic. |
 | One source of truth | `GameState` is the only serialised game state and holds score and per-area progress. `ScoreTracker` is its sole writer for those fields. |
-| Explicit persistence | Saves are versioned, validated on load, and migrated when the schema changes. |
+| Explicit persistence | Saves are versioned (`SCHEMA_VERSION = 1`) and validated on load; no migration is implemented yet. |
 | Testability | Dependencies (event bus, storage adapter, clock) are injected; no hidden globals in the core. |
 
 ## 3. Layers and dependency direction
@@ -48,7 +48,7 @@ deliberately out of scope; where content is involved, this document defines the
   │ GameState · Player · World · Room · items · commands · rules │
   │ · events · scoring · lifecycle. Pure TS: no DOM, no storage. │
   ├──────────────────────────────────────────────────────────────┤
-  │ Content definitions (src/content, deferred)                  │
+  │ Content definitions (src/content, planned)                   │
   └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -67,9 +67,9 @@ src/
   main.ts                  # composition root: constructs and wires everything
   application/
     Game.ts                # façade + turn pipeline; owns GameState; delegates saving
-    SaveManager.ts         # build/validate/migrate/restore SaveDto
+    SaveManager.ts         # build/validate/restore SaveDto (no migration yet)
     SaveDto.ts             # SaveDto envelope (version + savedAt) + runtime type guards
-    schema.ts              # SCHEMA_VERSION (1) and migration steps
+    schema.ts              # SCHEMA_VERSION (1); migration intentionally absent
     Clock.ts               # injectable time source used for savedAt
   core/
     GameState.ts           # authoritative state + GameStateDto shape; createInitial()/fromDto()/toDto()
@@ -92,7 +92,21 @@ src/
       verbs/               # one handler per verb (Command pattern)
     rules/
       Precondition.ts      # predicates for actions/exits (has item, flag set, door open…)
+      Condition.ts         # shared condition union (superset of Precondition)
+      ConditionEvaluator.ts # pure condition evaluation
+      Trigger.ts           # when a rule is checked
       RuleEngine.ts        # checks preconditions before a handler executes
+    effects/
+      Effect.ts            # shared effect union
+      EffectApplier.ts     # sole mutator for effect-driven fields
+    scheduling/
+      ScheduledEvent.ts    # fuse/daemon definition
+      Scheduler.ts         # turn-clock ticking, serialisable
+    npcs/                  # see docs/developer/npcs.md
+    hazards/               # see docs/developer/hazards.md
+    combat/                # quiz combat; see docs/developer/combat.md
+    puzzles/               # see docs/developer/puzzles.md
+    hints/                 # see docs/developer/hints.md
     events/
       EventBus.ts          # publish/subscribe
       GameEvent.ts         # GameEvent union + RoomSummary
@@ -103,13 +117,16 @@ src/
       SpecTopicCatalogue.ts # lookup of topic title/spec reference by topic or room ID
     lifecycle/
       Session.ts           # new game, restart, win, lose; lives == 0 -> game over
-  content/                 # deferred: declarative room/item/topic definitions
-    README.md              # placeholder describing the contracts to fill in
+  content/                 # declarative definitions for all game content
+    README.md              # describes the contracts to fill in
   ui/
     GameWindow.ts          # creates the browser window/layout and mounts the app
     Terminal.ts            # text navigation: input box, command history, prompt
     OutputLog.ts           # renders engine events as text (never raw HTML)
     ScorePanel.ts          # worlds/areas visited, score, mapped GCSE spec area
+    ConversationPanel.ts   # NPC dialogue and suggested topics (npcs.md)
+    QuizPanel.ts           # question + numbered options as text (combat.md)
+    HintPanel.ts           # escalating hint text (hints.md)
     SaveControls.ts        # save/load/download/import buttons
   storage/
     StorageAdapter.ts      # interface only (read/write/remove)
@@ -129,6 +146,10 @@ prerequisite before `npm run lint` covers game code. `vite.config.ts` already se
 `base: '/CompSciQuest/'` for GitHub Pages; the bootstrap must not assume it is
 served from the domain root.
 
+The subsystem folders under `src/core` are specified in the separate design
+documents listed in §12. They all share the rule spine documented in
+[shared-rules.md](shared-rules.md).
+
 ## 5. Class responsibilities
 
 ### Core
@@ -144,7 +165,7 @@ served from the domain root.
 | `Tokenizer` / `Parser` | Turn text into a `ParsedCommand` (verb + raw noun phrases); verb aliases and direction shortcuts | verb/alias tables | `ParsedCommand` |
 | `NameResolver` | Resolve `ParsedCommand` noun phrases to object IDs and produce a `Command`; unresolved nouns produce `unknown` | visibility rules | `Item`, `Room`, `Player`, `ParsedCommand` |
 | `RuleEngine` | Central preconditions ("has key?", "door open?") | none | `Precondition`, verb handlers |
-| `EventBus` | Decouples engine from UI | listener set | `GameEvent` |
+| `EventBus` | Decouples engine from UI; `publish` takes a whole turn's event batch | listener set | `GameEvent` |
 | `ScoreTracker` | Sole writer of score/progress, driven by events | visited sets (within `WorldProgress`) | `GameState`, `SpecTopic` |
 | `SpecTopicCatalogue` | Look up topic title/spec reference for UI labels | topic index | `SpecTopic` |
 | `Session` | New game/restart/win/lose; handles `lives == 0` | session status | `GameState`, `EventBus` |
@@ -154,9 +175,9 @@ served from the domain root.
 | Class / module | Responsibility | Collaborators |
 | --- | --- | --- |
 | `Game` | Façade and turn pipeline: `submit(input)`; exposes save/load that delegate to `SaveManager` (they never enter core dispatch) | `Tokenizer`, `Parser`, `NameResolver`, verb handlers, `RuleEngine`, `ScoreTracker`, `EventBus`, `SaveManager` |
-| `SaveManager` | Assemble `SaveDto` from `GameState.toDto()` with version/`savedAt`, then validate, migrate and restore; catches parse errors | `GameState`, `StorageAdapter`, `Clock`, `schema` |
+| `SaveManager` | Assemble `SaveDto` from `GameState.toDto()` with version/`savedAt`, then validate and restore; catches parse errors. No migration yet | `GameState`, `StorageAdapter`, `Clock`, `schema` |
 | `Clock` | Injectable `now()` used for `savedAt` | — |
-| `schema` | `SCHEMA_VERSION` and migration steps | `SaveDto` |
+| `schema` | `SCHEMA_VERSION` (1); migration intentionally absent until public release | `SaveDto` |
 
 ### Persistence and UI
 
@@ -168,6 +189,9 @@ served from the domain root.
 | `Terminal` | Command input, prompt, submit handling and up-arrow command history. |
 | `OutputLog` | Append event text safely (`textContent`, never `innerHTML`). |
 | `ScorePanel` | Render visited worlds/areas, scores and the linked GCSE spec area, using `SpecTopicCatalogue` for labels. |
+| `ConversationPanel` | Render NPC dialogue and suggested topics from conversation events. |
+| `QuizPanel` | Render the current question and numbered options as text. |
+| `HintPanel` | Render escalating hint text and the hint cooldown message. |
 | `SaveControls` | Save/load/download/import buttons and user-facing error messages. |
 
 ## 6. Key flows
@@ -178,26 +202,27 @@ served from the domain root.
 2. Construct the clock, storage adapter, `SaveManager`, event bus, `GameState`,
    core services and `Game`.
 3. If a valid save exists in storage, restore it; otherwise start a new session.
-4. Construct `GameWindow` with `Terminal`, `OutputLog`, `ScorePanel` and
-   `SaveControls`, subscribing them to the event bus.
+4. Construct `GameWindow` with `Terminal`, `OutputLog`, `ScorePanel`,
+   `ConversationPanel`, `QuizPanel`, `HintPanel` and `SaveControls`, subscribing
+   them to the event bus.
 5. Emit an initial room description so the player is never staring at a blank
    screen.
 
 ### 6.2 One command turn
 
 ```
-raw input
-  → Tokenizer (lowercase, punctuation, direction shortcuts)
-  → Parser (verb + raw noun phrases -> ParsedCommand; unknown input -> `unknown`)
-  → NameResolver (noun phrases -> object IDs via room + inventory + aliases;
-                  unresolved noun -> `unknown` command carrying the original input)
-  → dispatch the resulting Command to a verb handler
-  → RuleEngine checks preconditions
-  → handler mutates GameState and returns outcome events
-  → EventBus publishes events
-  → ScoreTracker observes score/progress events and writes GameState.score / WorldProgress
-  → UI re-renders from the resulting state and events
+1. Resolve    Tokenizer → Parser → NameResolver / TopicResolver → Command
+2. Validate   RuleEngine checks preconditions
+3. Execute    verb handler applies Effects; events go into a per-turn buffer
+4. React      Scheduler → Hazards → NPC reactions → Puzzles → Auto-hints
+5. Observe    ScoreTracker.observe(events) → Session.observe(events)
+6. Publish    EventBus.publish(events) → UI renders one coherent batch
 ```
+
+This is a superset of the original flow: `TopicResolver` is needed for NPC
+conversation topics, and the per-turn event buffer gives deterministic ordering
+and prevents the UI seeing half-updated state. The full contract, including
+cascade limits and observer ordering, is in [shared-rules.md](shared-rules.md#2-turn-pipeline-amends-architecturemd-62).
 
 Handlers do **not** write score directly; they emit events, and `ScoreTracker` is
 the only code that writes `GameState.score` and `WorldProgress`. The parser must
@@ -211,9 +236,10 @@ it succeeded.
 
 ### 6.3 Room entry, score and spec-topic mapping
 
-1. A successful `go` command resolves the `Exit`, checks its conditions, and
-   moves `Player.position`.
-2. Room entry emits `room-entered` with a `RoomSummary`.
+1. A successful `go` command resolves the `Exit`, checks its conditions and
+   returns a `move-player` effect.
+2. `EffectApplier` moves `Player.position` and emits `room-entered` with a
+   `RoomSummary`.
 3. `ScoreTracker` marks the room visited in `WorldProgress`, awards any room
    score, and records topic progress. Following `COVERAGE.md`, only topics whose
    status is `covered` **and** which have evidence are scoreable; unmapped topics
@@ -222,8 +248,9 @@ it succeeded.
    It uses `SpecTopicCatalogue` to turn topic IDs into titles/spec references and
    never computes scores itself.
 
-Deferred puzzle/quest completion will hook into the same `topic-completed`
-event, so the score panel needs no redesign when puzzles arrive.
+Puzzle completion ([puzzles.md](puzzles.md)) and quiz passes
+([combat.md](combat.md)) hook into the same `topic-completed` event, so the score
+panel needs no redesign when those systems are implemented.
 
 ### 6.4 Save, load, download and import
 
@@ -233,7 +260,7 @@ GameState.toDto() → GameStateDto (state shape only)
      ├→ StorageAdapter.write(SAVE_KEY, json)       (live save)
      └→ SaveFile.download(json)                    (downloadable file)
 
-import: File.text() → JSON.parse → validate version + shape → migrate if needed
+import: File.text() → JSON.parse → validate version + shape
         → SaveManager restores a new GameState → UI refreshed
 ```
 
@@ -243,17 +270,18 @@ import: File.text() → JSON.parse → validate version + shape → migrate if n
   than being force-loaded.
 - Imported text is only ever treated as data: the UI renders it via
   `textContent`, so a malicious save cannot inject HTML.
-- The initial schema version is `1`; the migration policy for later versions is
-  still open (§11).
+- The initial schema version is `1`. **No migration is implemented yet**: new
+  state fields from the subsystem designs are added to v1 directly. Migration is
+  revisited before public release (§11).
 
 ### 6.5 Losing a life and winning
 
-Something will eventually cause damage (hazards/combat are deferred), but the
-mechanisms are in place now: a handler emits `lives-changed`; `Session` detects
-`lives == 0` and emits `game-over` with the final score. When the (still undefined)
-win condition is met, a handler emits `game-won`, also carrying the final score.
-Both end states are exited through `Session.newGame()`, which restores
-`GameState.createInitial()`.
+Life loss comes from two designed systems: [hazards](hazards.md) and failed
+adversarial quizzes ([combat.md](combat.md)). Both emit `lives-changed`; `Session`
+detects `lives == 0` and emits `game-over` with the final score. When all mapped
+spec topics are covered, a handler emits `game-won` with the final score. Both
+end states are exited through `Session.newGame()`, which
+restores `GameState.createInitial()`.
 
 ## 7. Core interface sketches
 
@@ -331,7 +359,7 @@ export type GameEvent =
   | { readonly type: 'game-won'; readonly finalScore: number };
 
 export interface EventBus {
-  publish(event: GameEvent): void;
+  publish(events: readonly GameEvent[]): void;
   subscribe(listener: (event: GameEvent) => void): () => void;
 }
 ```
@@ -442,7 +470,8 @@ export interface SaveDto {
 - ScoreTracker: room visits, score totals, topic completion mapping, per-area
   progress, and that only `covered` topics with evidence score points.
 - Save DTO: round-trip `GameState → DTO → JSON → DTO → GameState`; rejection of
-  malformed, unknown-version and newer-version saves; migrations.
+  malformed, unknown-version and newer-version saves, plus acceptance of
+  additive v1 fields.
 - Lives: decrement, zero → `game-over`, restart resets state.
 - Win: `game-won` carries the final score and restart resets state.
 
@@ -462,53 +491,88 @@ suite.
 in-memory fakes and a fake clock rather than touching real `localStorage` or the
 system clock in unit tests; keep content fixtures small and deterministic.
 
-## 10. Deferred / out of scope
+## 10. Out of scope (undesigned)
 
-Content of any kind; NPCs and dialogue; combat, traps and other sources of life
-loss; the puzzle/quest and hint systems; light/dark and time-of-day mechanics;
-multiple save slots, autosave and undo; localisation; audio; mobile-specific
-layouts; leaderboards and multiplayer.
+Content of any kind; light/dark and time-of-day mechanics; multiple save slots,
+autosave and undo; localisation; audio; mobile-specific layouts; leaderboards and
+multiplayer.
 
-Seams that exist today: hazards can emit `lives-changed` → `Session` game-over;
-puzzles can emit `topic-completed`; conditional exits use `Precondition`.
-NPCs, undo, save slots and localisation have **no** hook yet and will need design
-work when they are introduced (for example a slot-key strategy, text IDs and
-dialogue events). Light/dark has no `LightSource` or "room lit?" precondition
-until that mechanic is brought in.
+NPCs, hazards, quiz combat, puzzles and hints are **planned for v1** and have
+designs in the documents listed in §12. They share the rule spine in
+[shared-rules.md](shared-rules.md): `lives-changed` → `Session` game-over,
+`topic-completed` → `ScoreTracker`, conditional exits using `Precondition`, and
+`Trigger`/`Effect` for everything else.
 
-## 11. Open questions and decision log
+Undo, save slots and localisation still have **no** hook and will need design work
+when introduced (for example a slot-key strategy and text IDs). Light/dark has no
+`LightSource` or "room lit?" precondition until that mechanic is brought in.
+
+## 11. Decision log
 
 **Decided**
 
 - Full architecture document (this file) rather than a mechanics-only sketch.
 - Versioned JSON saves in `localStorage`, with import/export of the full JSON
-  file and validation on load. The initial schema version is `1`.
-- NPCs, combat/hazards and puzzles explicitly deferred, with extension points
-  documented where they exist.
+  file and validation on load. `SCHEMA_VERSION` is `1`.
+- No schema migration while the game is unreleased: new state fields are added
+  directly to v1. Migration is revisited before public release.
+- NPCs, hazards, quiz combat, puzzles and hints each have their own design
+  document (§12), built on one shared rule spine.
+- **Build order:** puzzles and hazards first, then NPCs; quiz combat and hints
+  follow their dependencies.
 - Classic verb + noun parser with aliases and direction shortcuts; input that
   cannot be parsed gets a friendly error, not a crash. `Parser` produces a
   `ParsedCommand` (verb + raw noun phrases) and `NameResolver` turns that into a
-  `Command` by resolving nouns to object IDs.
+  `Command` by resolving nouns to object IDs. `TopicResolver` handles free-text
+  conversation topics.
 - `GameState.score` and `WorldProgress` are canonical; `ScoreTracker` is their
-  sole writer.
+  sole writer. Events are buffered per turn; `ScoreTracker` observes before
+  `Session` so end events carry the final score.
 - Save/load/download/import are application-level actions intercepted before
   core command dispatch, not core commands.
+- The save key is `compsciquest:save:v1`; a corrupt live save is quarantined,
+  not discarded. No undo, autosave or multiple slots.
+- Win condition: all mapped spec topics covered, which emits `game-won`.
+- Starting lives: `3`, reset when entering a new world/area.
+- Topic↔room mapping: `SpecTopic.roomIds` plus `status`/`evidence`, mirroring
+  `COVERAGE.md`.
+- NPCs: implicit conversation start via `ask`/`give`/`show`, no turn timeout, a
+  dedicated `transfer-item` effect, and globally unique object/NPC aliases.
+- Combat is an adversarial quiz: count-based `passMark`, no timer, seeded
+  question order; failure costs a life and teleports to a content-declared
+  level start; topic progress is not reset.
+- Hints: escalating levels, tied to spec topics, a small cooldown, never reveal
+  the answer, and any score penalty goes through `ScoreTracker`.
+- Puzzles: `unsolved`/`active`/`solved` phases, action-flag requirements, many
+  puzzles per topic, and Vitest validation of the dependency graph.
+- Hazards: fire after the room description, emit `hazard-triggered`, use
+  content-declared level starts, and never offer hints.
 
-**Still to decide**
+**Settled as implementation/data tasks (no design decision outstanding)**
 
-- Migration policy for versions after v1.
-- Exact scoring formula: points per room, per topic, and per-area maximums.
-- Final verb list, alias table, and noun-resolution ambiguity policy.
-- The win condition rule (and whether `game-won` is ever emitted).
-- Whether to offer undo, autosave and/or multiple save slots.
-- Maximum starting lives and how they are replenished.
-- How topic↔room relationships should be represented: `COVERAGE.md` uses
-  `## Topic: <name>` with a "Game content / room ID" field and a room index that
-  can list several topics per room; the proposed contract uses
-  `SpecTopic.roomIds` plus `status`/`evidence`.
-- File/module naming once the TypeScript ESLint setup is in place.
-- Save-key name and whether a corrupt live save should be quarantined or
-  discarded on boot.
+- Scoring values (points per room/topic, per-area maximums) live in content and
+  are filled in when rooms and topics are authored.
+- The verb list, alias table and ambiguity policy grow with content; unknown
+  input always degrades to a friendly message.
+- File/module naming follows the TypeScript lint setup when it is configured.
+- Migration mechanics are revisited only before public release; until then v1
+  is extended directly.
 
-This is a first draft: as implementation begins, update the decisions above and
-keep the class/flow sections in sync with the code.
+## 12. Subsystem design documents
+
+These documents extend this architecture; they are linked from the relevant
+sections above and must stay consistent with it. Implement in the order listed
+after the shared spine: hazards and puzzles first, NPCs second, quiz combat and
+hints last.
+
+| Document | What it specifies |
+| --- | --- |
+| [shared-rules.md](shared-rules.md) | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer, DTO additions and observer order. |
+| [hazards.md](hazards.md) | Traps and penalties as declarative, scheduled life-loss rules. |
+| [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation. |
+| [npcs.md](npcs.md) | Actors, actor states, conversation topics, `ConvNode`, knowledge gating and `TopicResolver`. |
+| [combat.md](combat.md) | Adversarial quizzes: questions, grading, pass/fail effects, retries and seeded question order. |
+| [hints.md](hints.md) | Escalating, adaptive hint sequences with optional score penalty. |
+
+As implementation begins, keep this file and the subsystem documents in sync
+with the code.
