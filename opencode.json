@@ -31,6 +31,12 @@
           "graphify-mcp",
           "/workspaces/CompSciQuest/docs/graphify-out/graph.json"
         ]
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "playwright-mcp"
+        ]
       }
     }
   }

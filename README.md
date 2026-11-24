@@ -11,6 +11,7 @@ Preinstalled in the container (versions verified online on 2026-11-24):
 | Node.js (LTS) + npm | 26.13.x | base image `mcr.microsoft.com/devcontainers/javascript-node:26-bookworm` |
 | opencode CLI (v2) | 2.4.x | `curl -fsSL https://opencode.ai/v2/install \| bash` |
 | Playwright | 1.65.1 (+ browsers & OS deps via `playwright install --with-deps`) | npm, pinned |
+| Playwright MCP (`@playwright/mcp`) | 0.0.86 (`playwright-mcp` binary) | npm, pinned |
 | vite | 8.3.8 | npm, pinned |
 | vitest | 5.1.1 | npm, pinned |
 | GitHub CLI (`gh`) | latest (v2.105.0 at setup time) | official apt repo `cli.github.com/packages` |
@@ -38,9 +39,10 @@ endpoint (`https://api.graphify.com/mcp`) is used or configured.
 
 The OpenCode integration is project-scoped in this repo:
 `.opencode/skills/graphify/`, `.opencode/plugins/graphify.js`, the `## graphify`
-section in `AGENTS.md`, and a local stdio MCP server (`graphify-local`) in
-`opencode.json` pointing at `graphify-out/graph.json`. To refresh after a CLI
-upgrade, re-run `graphify opencode install --project`.
+section in `AGENTS.md`, and local stdio MCP servers in `opencode.json`:
+`graphify-local` and `coverage-local` point at their respective `graph.json`
+files, and `playwright` runs `playwright-mcp` for browser interactions. To
+refresh after a CLI upgrade, re-run `graphify opencode install --project`.
 
 Build or refresh the local graph with:
 
@@ -69,7 +71,7 @@ Desktop (macOS/Windows) and is rejected/ignored by the Linux daemon.
 To bump the pinned npm packages later:
 
 ```sh
-npm install -g playwright@latest vite@latest vitest@latest
+npm install -g playwright@latest @playwright/mcp@latest vite@latest vitest@latest
 playwright install --with-deps   # refresh browsers if playwright changed
 ```
 

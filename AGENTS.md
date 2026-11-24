@@ -46,6 +46,76 @@ build/test commands.
   `eslint-plugin-unicorn` recommended, and `eslint-plugin-sonarjs` recommended.
   Don't add legacy `.eslintrc*` files.
 
+## Delegation protocol (code work)
+
+There are two separate workflows. `content-editor` owns narrative, content cards
+and `docs/coverage/COVERAGE.md`; `code-lead` owns code, tests and browser QA. Do
+not cross the boundary: content agents never write TypeScript, and code agents
+never write design cards or invent course facts. The default agent remains
+`content-editor`; select `code-lead` for code work. The five workers are
+subagents and are dispatched by `code-lead`, not used as primaries.
+
+### Agents and ownership
+
+| Agent              | Owns                             | Scratchpad output                          |
+| ------------------ | -------------------------------- | ------------------------------------------ |
+| `test-planner`     | `branch-matrix.md` only          | `branch-matrix.md`                         |
+| `test-writer`      | `tests/**`                       | `slices/<id>/red-report.md`                |
+| `code-implementer` | `src/**` plus build/lint config  | `slices/<id>/implementation.md`            |
+| `code-reviewer`    | nothing — read-only              | `slices/<id>/review.md`                    |
+| `browser-tester`   | `e2e/**`, `playwright.config.ts` | `slices/<id>/qa-report.md` and screenshots |
+
+All working artefacts go in `.opencode/scratchpad/`, which is gitignored except
+its README. Source, tests and configuration never go there. Every brief names
+its exact output path; no agent invents one.
+
+### Running a slice
+
+1. `code-lead` dispatches `test-planner` to create or extend the branch matrix.
+   Every row cites a canonical document section; no behaviour is invented.
+2. For each slice, brief workers in order: `test-writer` (red Vitest tests for
+   named matrix IDs), `code-implementer` (smallest compliant change to make them
+   green, then `graphify update .`), `code-reviewer` (independent findings), and
+   `browser-tester` for UI-affecting slices (MCP exploration, screenshots,
+   accessibility/aesthetics and e2e tests).
+3. Briefs must be self-contained: child agents have fresh context. Include the
+   slice ID, exact matrix IDs, document sections, permitted file paths, output
+   path and definition of done.
+4. Route every blocker and major finding back to the owning worker. Never accept
+   a FAIL verdict, never change a test or expectation to make it pass, and
+   escalate `BLOCKED: <reason> — needs <owner>` to the user after two revision
+   rounds.
+5. Verify with `npm test`, `npm run typecheck`, `npm run lint` and
+   `npx prettier --check` on the files the slice changed. The repo-wide
+   `npm run format:check` may be red on user-owned docs and configuration and is
+   not a gate. `code-lead`, not `test-writer`, owns the final green check.
+
+The workflow is contract-first, test-first: scaffolding (TypeScript lint support,
+`playwright.config.ts`, DTO types and the stub fixture) is exempt from red-first;
+the deterministic core is strictly red-green; UI and browser work is
+verification-led. `architecture.md` §12 sets the build order — persistence, then
+content registry and UI shell, then hazards and puzzles, NPCs, quiz combat and
+hints. Lint bootstrap, the parser slice and a final browser QA pass are lead
+additions, not §12 requirements.
+
+### Graphify in every code brief
+
+- Start with `graphify reflect --if-stale` and read
+  `graphify-out/reflections/LESSONS.md` when present.
+- Before the first grep or source read for a codebase question, expand it into
+  tokens taken literally from node labels in `graphify-out/graph.json` (there is
+  no guaranteed root `.vocab.txt`), print the expansion, run
+  `graphify query "<tokens>"` and cite `source_location`. Use `path`, `explain`,
+  `section`, `affected` and `god-nodes` for focus.
+- Every worker report includes a short "Graph trace" naming the tokens and cited
+  nodes. `code-implementer` and `code-reviewer` also include a full duplication
+  audit: canonical labels defined twice, hubs bypassed instead of reused,
+  unexpected new hubs and cross-layer edges. Graph edges are leads to confirm in
+  source, never verdicts; INFERRED edges are weaker than EXTRACTED ones.
+- Use `graphify save-result --outcome useful|dead_end|corrected` to feed lessons
+  back, except from the read-only reviewer. Keep the codebase and coverage graphs
+  separate as described below.
+
 ## Language and tone
 
 - Use **British English at all times** — in documentation, code comments, commit
