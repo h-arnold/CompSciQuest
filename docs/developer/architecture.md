@@ -123,7 +123,8 @@ src/
   content/                 # declarative definitions for all game content
     index.ts               # loadContent(): ContentBundle from typed catalogues
     validateContent.ts     # boot-time structural validation gates
-    stub/                  # temporary one-area, two-room fixture (replace with cards)
+    authored/              # generated TypeScript from validated YAML (committed)
+    stub/                  # temporary one-area, two-room fixture (replaced by generated content)
     README.md              # describes the contracts to fill in
   ui/
     GameWindow.ts          # creates the browser window/layout and mounts the app
@@ -144,6 +145,7 @@ src/
   types/                   # shared domain types (Direction, Position, interfaces)
 tests/                     # Vitest: engine, parser, scoring, save round-trips
 e2e/                       # Playwright: browser flows, storage, JSON import/export
+tools/content/             # YAML scaffolds, Zod shapes, validator and generator
 ```
 
 `tests` and `e2e` are already included by `tsconfig.json`; Vitest runs through
@@ -490,8 +492,8 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
   directly to v1. Migration is revisited before public release.
 - NPCs, hazards, quiz combat, puzzles and hints each have their own design
   document (§12), built on one shared rule spine.
-- **Build order:** puzzles and hazards first, then NPCs; quiz combat and hints
-  follow their dependencies.
+- **Mechanics order (within the full build order in §12):** hazards and puzzles
+  first, then NPCs; quiz combat and hints follow their dependencies.
 - Classic verb + noun parser with aliases and direction shortcuts; input that
   cannot be parsed gets a friendly error, not a crash. `Parser` produces a
   `ParsedCommand` (verb + raw noun phrases) and `NameResolver` turns that into a
@@ -557,7 +559,7 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
   itself awards nothing. No new persisted field is needed for idempotency.
 - Content is a single injected `ContentBundle` of typed catalogues validated at
   boot; a clearly marked one-area, two-room stub fixture keeps the skeleton
-  bootable until real cards are converted.
+  bootable until generated zone content is available.
 - `Game.getViewData()` is the state channel for `ScorePanel`; events drive the
   transcript and transient panels. Command history is bounded and in-memory.
 - `Session.observe` owns the in-play win check; `SaveManager.restore()` derives
@@ -578,14 +580,20 @@ when introduced (for example a slot-key strategy and text IDs). Light/dark has n
 
 These documents extend this architecture; they are linked from the relevant
 sections above and must stay consistent with it. Build the persistence layer,
-then the content registry and UI shell defined in
+then the content toolchain (scaffolds, Zod shapes, validator and generator under
+`tools/content/`, producing the committed `src/content/authored/*.ts`), then the
+content registry and UI shell defined in
 [application-and-ui.md](application-and-ui.md), then the mechanics in this order:
 hazards and puzzles first, NPCs second, quiz combat and hints last. The storage
-schema is the canonical definition of everything those systems persist.
+schema is the canonical definition of everything those systems persist. The
+authoring and generation contract is
+[content-toolchain.md](content-toolchain.md); no YAML is parsed at build or
+runtime.
 
 | Document                                       | What it specifies                                                                                                                                                  |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [application-and-ui.md](application-and-ui.md) | Canonical content bundle, boot/title flow, `Game` façade, `Command`/`GameEvent` unions, UI layout and view-model, behavioural signatures and effect/event mapping. |
+| [content-toolchain.md](content-toolchain.md)   | YAML card scaffolds, Zod shapes, validator and generator, committed generated TypeScript and the authoring-to-bundle handoff.                                      |
 | [storage-schema.md](storage-schema.md)         | Canonical DTOs, envelope, item ownership, validation and `LoadResult`, quarantine, restore-time derivation and API contracts.                                      |
 | [shared-rules.md](shared-rules.md)             | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer and observer order.                                                               |
 | [hazards.md](hazards.md)                       | Traps and penalties as declarative, scheduled life-loss rules.                                                                                                     |
