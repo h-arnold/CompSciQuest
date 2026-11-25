@@ -14,7 +14,11 @@ import {
   type CardEntry,
 } from './common.ts';
 
-const UNLOCK_PREFIXES: readonly string[] = ['failed-attempts:', 'turns-since:'];
+const UNLOCK_PREFIXES: readonly string[] = [
+  'failed-attempts:',
+  'hints-shown:',
+  'turns-since:',
+];
 const ANSWER_PATTERN = /the answer|answer is|correct option|correct answer/u;
 
 function levelFindings(

@@ -413,6 +413,69 @@ describe('structural gates at authoring time (content-toolchain.md §4)', () => 
       ).toBe(true);
     }
     expect(JSON.stringify(cards)).toBe(before);
+
+    // shared-rules.md §3 lists `hints-shown:<hintId>` as an agreed counter key
+    // (written by the `show-hint` effect), and hints.md §2 names it as one of
+    // the three defined prefixes. A verbatim-migrated card using it in an
+    // unlock condition must therefore produce no hint-content finding.
+    const conformingHintSet = (unlockKey: string) =>
+      parsedSet(
+        parsedCard(HINTS_PATH, {
+          kind: 'hint',
+          hintSequences: [
+            {
+              id: 'hint-sort-types',
+              targets: ['puzzle-sort-types'],
+              levels: [
+                {
+                  level: 1,
+                  text: 'Look for the label on the first bin.',
+                  unlock: {
+                    kind: 'counter-at-least',
+                    key: unlockKey,
+                    value: 1,
+                  },
+                },
+                {
+                  level: 2,
+                  text: 'Match each sample to its type bin.',
+                  unlock: {
+                    kind: 'counter-at-least',
+                    key: 'failed-attempts:quiz-data-types',
+                    value: 2,
+                  },
+                },
+              ],
+              cooldownTurns: 2,
+            },
+          ],
+        }),
+        parsedCard(`${AREA_ID}/puzzles.yaml`, {
+          kind: 'puzzle',
+          puzzles: [{ id: 'puzzle-sort-types' }],
+        }),
+      );
+
+    const agreed = conformingHintSet('hints-shown:hint-sort-types');
+    const agreedBefore = JSON.stringify(agreed);
+    const agreedFindings = validateCards(agreed);
+    expect(
+      gateFindings(agreedFindings, 'hint-content'),
+      'hints-shown:<hintId> is an agreed counter key (shared-rules.md §3, hints.md §2)',
+    ).toBe('');
+    expect(JSON.stringify(agreed)).toBe(agreedBefore);
+
+    const invented = conformingHintSet('invented-prefix:hint-sort-types');
+    const inventedBefore = JSON.stringify(invented);
+    const inventedFindings = validateCards(invented);
+    expect(
+      hasFinding(inventedFindings, 'hint-content', 'unlock key'),
+      'an invented unlock prefix must still be reported by hint-content',
+    ).toBe(true);
+    expect(gateFindings(inventedFindings, 'hint-content')).toContain(
+      'invented-prefix:hint-sort-types',
+    );
+    expect(JSON.stringify(invented)).toBe(inventedBefore);
   });
 
   it('CT-GATE-09: hazard-content checks telegraphs, effects and the level start', async () => {
