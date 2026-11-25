@@ -63,6 +63,13 @@ never write design cards or invent course facts. The default agent remains
 `content-editor`; select `code-lead` for code work. The five workers are
 subagents and are dispatched by `code-lead`, not used as primaries.
 
+For an accepted content area, `content-editor` hands the V4 trace in
+`docs/content/walkthrough.md` to `code-lead`, which dispatches `browser-tester`
+for the W7 browser walkthrough against the generated authored content
+(`content-rules.md` V5). Findings about content return to `content-editor`; code
+findings stay with `code-lead`. `content-editor` never drives or dispatches the
+browser itself.
+
 ### Agents and ownership
 
 | Agent              | Owns                                                     | Scratchpad output                          |
@@ -92,25 +99,31 @@ its exact output path; no agent invents one.
    green, then `graphify update .`), `code-reviewer` (independent findings), and
    `browser-tester` for UI-affecting slices (MCP exploration, screenshots,
    accessibility/aesthetics and e2e tests).
-3. Briefs must be self-contained: child agents have fresh context. Include the
+3. For an accepted content area, run the W7 walkthrough: `browser-tester` drives
+   the trace's ordered path through the running app with the generated authored
+   IDs, captures screenshots, and writes
+   `.opencode/scratchpad/slices/<id>/qa-report.md`. Content findings go to
+   `content-editor`, not to a writer directly.
+4. Briefs must be self-contained: child agents have fresh context. Include the
    slice ID, exact matrix IDs, document sections, permitted file paths, output
    path and definition of done.
-4. Route every blocker and major finding back to the owning worker. Never accept
+5. Route every blocker and major finding back to the owning worker. Never accept
    a FAIL verdict, never change a test or expectation to make it pass, and
    escalate `BLOCKED: <reason> — needs <owner>` to the user after two revision
    rounds.
-5. Verify with `npm test`, `npm run typecheck`, `npm run lint` and
+6. Verify with `npm test`, `npm run typecheck`, `npm run lint` and
    `npx prettier --check` on the files the slice changed. The repo-wide
    `npm run format:check` may be red on user-owned docs and configuration and is
    not a gate. `code-lead`, not `test-writer`, owns the final green check.
 
 The workflow is contract-first, test-first: scaffolding (TypeScript lint support,
-`playwright.config.ts`, DTO types and the stub fixture) is exempt from red-first;
-the deterministic core is strictly red-green; UI and browser work is
-verification-led. `architecture.md` §12 sets the build order — persistence, then
-content registry and UI shell, then hazards and puzzles, NPCs, quiz combat and
-hints. Lint bootstrap, the parser slice and a final browser QA pass are lead
-additions, not §12 requirements.
+`playwright.config.ts` and DTO types; the stub fixture was scaffolding until its
+retirement) is exempt from red-first; the deterministic core is strictly
+red-green; UI and browser work is verification-led. `architecture.md` §12 sets
+the build order — persistence, then content registry and UI shell, then hazards
+and puzzles, NPCs, quiz combat and hints. Lint bootstrap and the parser slice are
+lead additions; the final browser QA pass is the W7 walkthrough required for
+each accepted area by `content-rules.md` V5, not a §12 requirement.
 
 ### Graphify in every code brief
 
@@ -141,6 +154,13 @@ additions, not §12 requirements.
   and small cultural details. Keep them accurate and unobtrusive — they should
   enrich the setting, not become a lesson or obscure the GCSE content. The exam
   specification remains the authority for all course facts.
+- **BANNED WORDS/PHRASES:** You are banned from using the following words **unless** you plan on using them in the most literal sense **and** no other word would be appropriate.
+  - Quiet/quietly
+  - Honest, honestly
+  - Caveat/Caveats
+  - Delve/delveing/delves
+  - Tapestry/tapestries
+  - "The thing nobody..." (and variations on that)
 
 ## Host gotchas
 

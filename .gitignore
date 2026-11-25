@@ -4,8 +4,7 @@ playwright-report/
 test-results/
 *.log
 .DS_Store
-
-.opencode/scratchpad
+/.playwright-mcp/
 
 # graphify: commit graph.json / GRAPH_REPORT.md / graph.html, ignore rebuild state
 graphify-out/cache/
