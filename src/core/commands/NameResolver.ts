@@ -9,3 +9,54 @@ export interface NameResolver {
     bundle: ContentBundle,
   ): string | undefined;
 }
+
+function hasName(names: readonly string[], phrase: string): boolean {
+  return names.some((name) => name.trim().toLowerCase() === phrase);
+}
+
+// A single word may stand for the last word of a content-declared name or
+// alias (for example "key" for the alias "brass key"). It is still content
+// derived: no object ID is hard-coded and ambiguous short forms stay unresolved.
+function hasShortName(names: readonly string[], phrase: string): boolean {
+  return names.some(
+    (name) => name.trim().toLowerCase().split(/\s+/u).at(-1) === phrase,
+  );
+}
+
+// Content supplies the aliases (application-and-ui.md §5.2); visibility comes
+// from the live state. A phrase matching more than one visible object is
+// ambiguous and yields nothing — there is deliberately no disambiguation prompt.
+export function createNameResolver(): NameResolver {
+  return {
+    resolve(phrase, state, bundle) {
+      const normalised = phrase.trim().toLowerCase();
+      if (normalised.length === 0) return;
+
+      const roomId = state.player.position.roomId;
+      const inRoom = state.rooms[roomId]?.inventory ?? [];
+      const visible = new Set<string>([...state.player.inventory, ...inRoom]);
+      const candidates = [
+        ...bundle.items.all
+          .filter((item) => visible.has(item.id))
+          .map((item) => ({
+            id: item.id,
+            names: [item.name, ...item.aliases],
+          })),
+        ...bundle.actors.all
+          .filter((actor) => state.npcs[actor.id] !== undefined)
+          .map((actor) => ({ id: actor.id, names: actor.aliases })),
+      ];
+      const exact = candidates
+        .filter((candidate) => hasName(candidate.names, normalised))
+        .map((candidate) => candidate.id);
+      const matchesFound =
+        exact.length > 0
+          ? exact
+          : candidates
+              .filter((candidate) => hasShortName(candidate.names, normalised))
+              .map((candidate) => candidate.id);
+
+      return matchesFound.length === 1 ? matchesFound[0] : undefined;
+    },
+  };
+}
