@@ -2,6 +2,8 @@
 // argument is a test-owned injection seam: the static runtime cannot read
 // COVERAGE.md, so the `## Topic: <name>` index is supplied as data. The
 // one-argument boot-time signature is unchanged.
+import { hazardContentFindings } from '../core/hazards/HazardValidation.ts';
+import { puzzleGraphFindings } from '../core/puzzles/PuzzleGraph.ts';
 import type { SpecTopic } from '../core/scoring/SpecTopic';
 import type { Direction } from '../types/domain';
 import type { Catalogue } from './Catalogue';
@@ -20,13 +22,11 @@ const DIRECTIONS = new Set<Direction>([
   'out',
 ]);
 
-// Declared only. The mechanics rules behind these five gates belong to later
-// slices (content-rules.md §7); none is enforced here.
+// `hazard-content` and `puzzle-graph` now have runtime mirrors below. The
+// remaining three gates stay with their own mechanics slices (content-rules.md §7).
 export const DEFERRED_GATES = [
   'quiz-content',
-  'puzzle-graph',
   'hint-content',
-  'hazard-content',
   'npc-content',
 ] as const;
 
@@ -258,5 +258,7 @@ export function validateContent(
     ...scoreValidityProblems(bundle),
     ...budgetProblems(bundle, topics),
     ...coverageProblems(topics, coverageIds),
+    ...hazardContentFindings(bundle),
+    ...puzzleGraphFindings(bundle),
   ];
 }
