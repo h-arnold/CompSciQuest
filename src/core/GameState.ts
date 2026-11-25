@@ -1,5 +1,6 @@
 // Canonical persisted shape from storage-schema.md §3.1; sub-DTOs from §3.2.
 import { stubBundle } from '../content/stub/index';
+import type { ContentBundle } from '../content/ContentBundle';
 import type { Position } from '../types/domain';
 import type { AreaProgress } from './AreaProgress';
 import type { HazardStateDto } from './HazardStateDto';
@@ -93,26 +94,40 @@ export function createFromDto(dto: GameStateDto): RuntimeGameState {
   return runtime;
 }
 
-// The stub fixture is the only start data available to a no-argument factory;
-// the engine reads its IDs from the marked fixture rather than hard-coding them.
+// The start is resolved by ID from the supplied bundle, never by array
+// position (application-and-ui.md §3.3, content-rules.md §8). The no-argument
+// form keeps the marked stub seam until the first generated area is integrated.
 // The first command advances turn 0 to 1 (skeleton-decisions.md S-GAP-01).
-export function createInitial(): RuntimeGameState {
-  const world = stubBundle.worlds.all[0];
-  const area = stubBundle.areas.all[0];
-  const room = stubBundle.rooms.all[0];
-  if (!world || !area || !room) {
-    throw new Error('Stub content must declare a world, an area and a room.');
+export function createInitial(
+  bundle: ContentBundle = stubBundle,
+): RuntimeGameState {
+  const world = bundle.worlds.all[0];
+  if (world === undefined) {
+    throw new Error('Content must declare a start world.');
   }
-  const topics = stubBundle.specTopics.getByAreaId(world.id, area.id);
+  const area = bundle.areas.getById(world.startAreaId);
+  if (area === undefined) {
+    throw new Error(`World '${world.id}' has no area '${world.startAreaId}'.`);
+  }
+  const room = bundle.rooms.getById(area.startRoomId);
+  if (room === undefined) {
+    throw new Error(`Area '${area.id}' has no room '${area.startRoomId}'.`);
+  }
+  const topics = bundle.specTopics.getByAreaId(world.id, area.id);
+  const roomState: Record<string, { inventory: string[] }> = Object.fromEntries(
+    bundle.rooms.all.map((entry) => [entry.id, { inventory: [] as string[] }]),
+  );
+  for (const item of bundle.items.all) {
+    const owner = roomState[item.initialRoom];
+    if (owner !== undefined) owner.inventory.push(item.id);
+  }
   return createFromDto({
     player: {
       position: { worldId: world.id, areaId: area.id, roomId: room.id },
       inventory: [],
       lives: world.lives,
     },
-    rooms: Object.fromEntries(
-      stubBundle.rooms.all.map((entry) => [entry.id, { inventory: [] }]),
-    ),
+    rooms: roomState,
     npcs: {},
     hazards: {},
     puzzles: {},

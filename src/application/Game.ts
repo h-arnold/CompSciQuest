@@ -299,7 +299,8 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
-  let state: GameState = dependencies.initialState ?? createInitial(dependencies.bundle);
+  let state: GameState =
+    dependencies.initialState ?? createInitial(dependencies.bundle);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
   const isInjectedApply = dependencies.apply !== undefined;
