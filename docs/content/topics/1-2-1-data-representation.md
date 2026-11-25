@@ -51,7 +51,7 @@ Hub-and-spoke; every spoke reconverges at `room-binary-hall` (N2). Directions ar
 restricted to `north`, `south`, `east`, `west`, `up`, `down`, `in`, `out`
 (architecture.md §7). Every gated exit needs **two discoverable clues** in room
 descriptions, NPC dialogue or item text (N6); the room and NPC cards must supply
-them. Room descriptions stay at or under 80 words (N8).
+them. Room descriptions stay at or under 200 words (N8) — a ceiling, not a target.
 
 | Room ID | Purpose | Topic IDs | Exits |
 | --- | --- | --- | --- |

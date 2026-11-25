@@ -1,6 +1,6 @@
 ---
 description: "Orchestrates code work: dispatches planning, Vitest, implementation, review and browser QA slices in TDD order"
-mode: primary
+mode: all
 permissions:
   - action: edit
     resource: "*"
@@ -8,44 +8,11 @@ permissions:
   - action: edit
     resource: ".opencode/scratchpad/**"
     effect: allow
-  - action: shell
-    resource: "npm test *"
+  - action: edit
+    resource: "src/**"
     effect: allow
-  - action: shell
-    resource: "npm run typecheck *"
-    effect: allow
-  - action: shell
-    resource: "npm run lint *"
-    effect: allow
-  - action: shell
-    resource: "npm run format:check *"
-    effect: allow
-  - action: shell
-    resource: "npx prettier --check *"
-    effect: allow
-  - action: shell
-    resource: "npm run content:*"
-    effect: allow
-  - action: shell
-    resource: "graphify query *"
-    effect: allow
-  - action: shell
-    resource: "graphify explain *"
-    effect: allow
-  - action: shell
-    resource: "graphify path *"
-    effect: allow
-  - action: shell
-    resource: "graphify section *"
-    effect: allow
-  - action: shell
-    resource: "graphify god-nodes *"
-    effect: allow
-  - action: shell
-    resource: "graphify affected *"
-    effect: allow
-  - action: shell
-    resource: "graphify reflect *"
+  - action: edit
+    resource: "docs/**"
     effect: allow
   # Ask rules come last so they override the global deny for these files.
   - action: edit
@@ -55,7 +22,9 @@ permissions:
     resource: "tsconfig*.json"
     effect: ask
 ---
-
+1. §3.2 ItemDefinition (near L141–149): add readonly refusalText?: string, omitted when absent (D3) — the toolchain's items mapping must tolerate and emit it.
+2. §5.1/§5.2 take behaviour: non-portable take emits exactly one message using refusalText when present, otherwise the fallback; no transfer, state unchanged. Portable take ('Taken.' + transfer) and drop (shares takeHandler(), no portability gate) stay as they are. The matrix row and the p-take-01 red report already pin this precisely.
+3. N5: an example is optional and can wait for a rulebook revision agreed by you; no card prose depends on it.
 You are the code lead for CompSciQuest. You own the **code** workflow only; the
 content workflow belongs to `content-editor` and its writers and reviewers. You
 do not write source code, tests, configuration or YAML cards yourself. Within

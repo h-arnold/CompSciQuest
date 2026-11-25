@@ -130,8 +130,8 @@ in `docs/content/topics/1-2-1-data-representation.md`.
 
 The intended in-game order is four beats. The prose below is a **voice and staging
 seed for a future writer**, not an approved card: keep second person, present tense
-and the single deadpan register (N4), and keep each room passage at or under 80
-words (N8). No beat asserts a course fact.
+and the single deadpan register (N4), and keep each room passage at or under 200
+words (N8) — a ceiling, not a target. No beat asserts a course fact.
 
 1. **The classroom scan — `room-arrival` entry.** The register is open on the desk.
    A mark sits beside your name. The AI reads it aloud, in the flat voice of a
@@ -404,7 +404,22 @@ painted diagram, a rack label, a drawer, a tray, a port label) is `portable: fal
 movable props (an oil can, a rule card, a ruler, a sheet, a lead) are `portable: true`.
 `takeHandler()` currently ignores `portable`, so a code fix is needed before W6/W7 —
 reported to the code-facing branch matrix, not authored here (N5 requires in-world
-failure text for a refused TAKE). The **area-writer may create further examinable
+failure text for a refused TAKE). That fix is now decided: see the take-refusal
+contract below.
+
+**Take-refusal contract (user decision, 2026-11-25; `P-TAKE-01` ratified `SPECIFIED`
+in the branch matrix).** An item may carry an optional `refusalText` string: the
+in-world text shown when the player tries to take a non-portable item. When the prop
+is absent, the runtime uses the exact fallback `"You cannot take that item with
+you."`. A refused TAKE emits that one message, performs no `transfer-item`, leaves
+state unchanged and leaves the item examinable. The prop is optional and adds **no
+course fact**: no YAML card needs editing, no ID or alias changes, and no brief,
+review or coverage update follows from this decision. The fallback wording is a user
+decision, **not** a citation from `docs/exam-specs/wjec-unit1.md`; it must never be
+used as spec evidence or treated as a taught fact. The runtime seam (`ItemDefinition`
+and the take handler) belongs to `code-lead` and is pinned in
+`application-and-ui.md` §3.2/§5.1–§5.2 by that document's owner — outside the
+content editor's edit boundary (N5). The **area-writer may create further examinable
 props** that do not conflict with the plot, puzzles, gates or existing aliases. Each
 new item must have a globally unique ID and aliases checked against this registry;
 the writer marks each as `proposed — needs editor approval` in the return, and the
@@ -637,6 +652,12 @@ written, reviewed to PASS and integrated (see `status.md`).
   and worked examples, the two N6 clues for each gate, and the H1 telegraph strings
   quoted in `hazards.yaml` and the V4 trace. Route: Gate 1 re-brief → D5/V1 validate
   → V2 both reviewers → V4 trace audit → W6 regeneration and W7 walkthrough.
+- 2026-11-25 — **N8 word ceiling raised to 200.** The user asked for room prose to
+  have room to describe and breathe, and specified that 200 is a limit rather than
+  a target. Rulebook N8, `narrative-principles.md` §2 and §11, the topic file and
+  the area-writer instructions were updated. All currently authored room
+  descriptions (68–80 words) remain valid; the change does not by itself reopen
+  any accepted card.
 - 2026-11-25 — **Room discoverability and examinables approved, IDs pending.** The
   user noted that room prose made residents hard to find and asked for vivid
   descriptions with plenty of things to examine, including props with no gameplay
@@ -646,3 +667,13 @@ written, reviewed to PASS and integrated (see `status.md`).
   registered nouns and give NPCs a visible action. **Room briefs are paused** until
   the user approves the new decorative item IDs and aliases for §9; no writer has
   been dispatched with an unregistered noun.
+- 2026-11-25 — **Take-refusal contract approved (P-TAKE-01).** The user decided that
+  an item may carry an optional in-world `refusalText` for a refused TAKE, with the
+  exact fallback `"You cannot take that item with you."` when the prop is absent;
+  the branch-matrix row is ratified `SPECIFIED`. Recorded in §9. The wording is a
+  user decision, not a spec citation, and adds no course fact. No YAML card, ID,
+  alias, flag, gate, score, coverage entry or V4 trace changes, so no writer is
+  briefed and no review cycle opens. The `ItemDefinition` and take-handler seam is a
+  `code-lead` handoff; the pins in `application-and-ui.md` §3.2/§5.1–§5.2 (and any
+  N5 example in the rulebook) are outside the content editor's edit boundary and
+  are made by their owner.

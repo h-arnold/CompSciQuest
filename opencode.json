@@ -5,22 +5,6 @@
     { "action": "edit", "resource": "eslint.config.*", "effect": "ask" },
     { "action": "edit", "resource": "tsconfig*.json", "effect": "ask" }
   ],
-  "agents": {
-    "content-editor": {
-      "permissions": [
-        { "action": "subagent", "resource": "*", "effect": "deny" },
-        { "action": "subagent", "resource": "area-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "npc-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "quiz-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "puzzle-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "hazard-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "hint-writer", "effect": "allow" },
-        { "action": "subagent", "resource": "content-critic", "effect": "allow" },
-        { "action": "subagent", "resource": "pck-reviewer", "effect": "allow" },
-        { "action": "subagent", "resource": "browser-tester", "effect": "allow" }
-      ]
-    }
-  },
   "mcp": {
     "servers": {
       "graphify-local": {

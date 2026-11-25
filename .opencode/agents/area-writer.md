@@ -34,7 +34,7 @@ Rules you own: N1, N2, N3–N8, D1–D5. In particular, follow the confirmed
 `narrative-principles.md` §11: name registered nouns and give NPCs a visible
 action in room prose rather than a labelled inventory. For the card:
 
-- Every room has a title, a ≤80-word second-person present-tense description written as a block scalar, aliases from the registry, an `interesting` hook under `authoring:` and at least one `topicIds` entry (or `navigation-only`). Room `topicIds` are authoring references, not runtime fields.
+- Every room has a title, a second-person present-tense description written as a block scalar and capped at 200 words (N8), aliases from the registry, an `interesting` hook under `authoring:` and at least one `topicIds` entry (or `navigation-only`). The cap is a ceiling, not a target: most rooms should be shorter, and extra words go where they genuinely help the player picture the place. Room `topicIds` are authoring references, not runtime fields.
 - Exits use valid directions and targets from the registry; conditions use only the shared `Condition` union.
 - Put at least two discoverable clues in room or item text for each gate; no maze and no guess-the-verb or guess-the-noun traps.
 - Declare the area's `definition.startRoomId` once, unconditionally; hazards and quiz failures return there. Do not use `levelStart`.
@@ -49,7 +49,7 @@ Before finishing, check every ID against the registry, every topic ID against th
 ## Definition of done
 
 - Only `rooms.yaml` changed; document metadata is valid and every artifact is an entry in `definition`, `rooms` or `items` (and `worlds` where the area owns the world).
-- Each room has id, title, a ≤80-word second-person present-tense block-scalar description, registry aliases, `authoring.interesting`, ≥1 `topicIds` entry (or `navigation-only`), and exits whose directions and targets exist; optional fields are omitted.
+- Each room has id, title, a second-person present-tense block-scalar description of at most 200 words (ceiling, not a target), registry aliases, `authoring.interesting`, ≥1 `topicIds` entry (or `navigation-only`), and exits whose directions and targets exist; optional fields are omitted.
 - Every gate names ≥2 discoverable clue placements; no maze and no guess-the-verb or guess-the-noun trap.
 - `definition.startRoomId` is declared once and names an existing room; there is no `levelStart` key.
 - Every item has `portable` set by real-world plausibility and `authoring.useNotes` naming the action that sets the flag it depends on; purely decorative items say so in `useNotes` and declare no flag.
@@ -77,7 +77,7 @@ Target audience: GCSE Computer Science pupils in Wales aged 14–16. This calls 
 
 ### Examples (do this)
 
-**Room description (≤80 words):**
+**Room description (≤200 words; a ceiling, not a target):**
 
 > In front of you, sunlight through the blinds stripes six benches where old machines hum. A wall chart shows the parts of a computer, its labels curling at the corners. On the front bench a cardboard box holds a tangle of keyboards. A door north leads to the corridor; a notice by the west door reads "Storfa — staff only". Somewhere a printer clatters, then falls silent.
 
@@ -95,7 +95,7 @@ Target audience: GCSE Computer Science pupils in Wales aged 14–16. This calls 
 
 ### MUSTs
 
-- Count every description: ≤80 words, second person, present tense.
+- Count every description: ≤200 words (a ceiling, not a target), second person, present tense.
 - Give every room registry aliases, an `authoring.interesting` hook and ≥1 bible `topicIds` entry (or `navigation-only`).
 - Check every exit direction and target against the registry; use only the shared `Condition` union.
 - Place ≥2 discoverable clues per gate and name, in `authoring.useNotes`, the action that sets each flag.

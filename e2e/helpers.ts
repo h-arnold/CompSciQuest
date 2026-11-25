@@ -48,10 +48,20 @@ function requireById<T extends { id: string }>(
   return found;
 }
 
-// Start location and room records come from the authored bundle, never hard-coded.
-const authoredArea = firstEntry(areas, 'areas');
-const authoredWorld = requireById(worlds, authoredArea.worldId, 'world');
-const authoredStartRoom = requireById(rooms, authoredArea.startRoomId, 'room');
+// Start location comes from the world's startAreaId and that area's
+// startRoomId, resolved by ID rather than array position (walkthrough.md §2
+// boot chain). The authored bundles are the only source of these IDs.
+const authoredWorld = firstEntry(worlds, 'worlds');
+const authoredArea = requireById(
+  areas,
+  authoredWorld.startAreaId,
+  'start area',
+);
+const authoredStartRoom = requireById(
+  rooms,
+  authoredArea.startRoomId,
+  'start room',
+);
 
 export const START_POSITION = {
   worldId: authoredWorld.id,

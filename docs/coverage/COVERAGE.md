@@ -233,7 +233,14 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   reachable, and no soft-lock; its one trace minor (overheat at beat E rather than
   step 2) was closed, then PASS. No new spec topic is covered by this amendment;
   `ai-ethics-and-implications` stays `in progress` and outside the win set. W6
-  regeneration and W7 runtime verification are still owed.
+  regeneration landed (`b47f878`). W7 runtime verification ran but returned
+  **FAIL (2026-11-25)**: room-entry text, NPC conversation/quizzes and item
+  USE/SHOW/PUT are non-functional in the running app, so the six gated exits
+  never open and the authored path cannot reach `game-won`. The four blockers
+  (E2E-1..4) are code findings routed to `code-lead`; the V4 content audit is
+  unaffected. A W7 re-run is owed after those fixes land and the in-flight card
+  amendments are regenerated. Evidence:
+  `.opencode/scratchpad/slices/w7-opening-walkthrough/qa-report.md`.
 
 ## Open questions
 

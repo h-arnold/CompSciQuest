@@ -64,7 +64,7 @@ actors:
       role: >-
         In-world tutor on the Switchyard floor. P-b, P-c, P-d.
       voice: >-
-        Brisk, practical, quietly fond of machinery; opens with "Bore da" and gets straight to the job.
+        Brisk, practical, fond of machinery; opens with "Bore da" and gets straight to the job.
       motivation: >-
         Keep the floor running and have the pupil learn the switches before the paperwork is signed.
       relationship: >-
@@ -85,7 +85,7 @@ actors:
       voice: >-
         Clipped, briskly superior, scandalised by untidy notation; asks for order rather than explaining at length.
       motivation: >-
-        Express every value in the fewest honest symbols and keep the ledger clean.
+        Express every value in the fewest accurate symbols and keep the ledger clean.
       relationship: >-
         Envies the foreman's tidy switches; calls the AI's verdict "a confident sum in the wrong base"; looks down on the player's scruffy notation, never at the player.
       verbalTic: >-
@@ -119,7 +119,7 @@ actors:
       voice: >-
         Lofty and clipped, snobbish about blur but never about the pupil; judges by evidence.
       motivation: >-
-        Honest storage counts; a picture should be priced by how it was stored.
+        Accurate storage counts; a picture should be priced by how it was stored.
       relationship: >-
         Bitter rival of the press operator; secretly admires vector scaling; distrusts the AI's unstated "quality score".
       verbalTic: >-
@@ -170,7 +170,7 @@ actors:
       voice: >-
         Breezy, salesy, euphemistic; "streamlining" is never called deletion.
       motivation: >-
-        Make every file smaller by an honest method; regards lossy compression as a kindness.
+        Make every file smaller by a sound method; regards lossy compression as a kindness.
       relationship: >-
         Opposes the critic and the choirmaster; finds the AI's praise embarrassing; the foreman calls its reports "paperwork with a compressor".
       verbalTic: >-
@@ -181,30 +181,30 @@ actors:
 actorStates:
   - id: actorstate-ready
     stateDesc: >-
-      Waiting, unhurried, ready to speak.
+      At ease, hands idle, turning towards you; ready to speak.
     specialDesc: >-
-      Is here and available to talk.
+      Here and available to talk, with nowhere else to be.
     authoring:
       note: >-
         Root-registry generic default: the initial state for actors with no specific state and the return state after every quiz in this card. No `onEnter` effects.
 
   - id: actorstate-predecessor-glitch
     stateDesc: >-
-      Flickers mid-sentence; a few words arrive out of order.
+      Flickers mid-sentence; a word or two arrives out of order, like a page turned too fast.
     specialDesc: >-
-      A torn outline of a pupil, half a step out of register.
+      A torn outline of a pupil, half a step out of register, its edges shivering.
 
   - id: actorstate-foreman-busy
     stateDesc: >-
-      Oil on his cuffs, the gauge in his hand.
+      Oil on his cuffs, the gauge in his hand, the belt clicking under his eye.
     specialDesc: >-
-      At the switches, checking the belt.
+      At the switches, checking the belt as if it might misbehave on purpose.
 
   - id: actorstate-foreman-helpful
     stateDesc: >-
-      Strolling a spoke floor with a wrench, happy to explain.
+      Strolling a spoke floor with a wrench, happy to explain whatever the floor has thrown up.
     specialDesc: >-
-      On a round of the upper floors; calls out before you ask.
+      On a round of the upper floors; calls out before you get a word out.
     authoring:
       note: >-
         Approved "foreman's round" from the topic file §3.1. This state is entered at most once, when `topic-foreman-lift` first fires with `switches-set`; it cannot be re-entered, because that topic gates on `not npc-knows data-types` while its own `learn-topic` sets that knowledge, and `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
@@ -216,7 +216,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        That cartridge. I used it on everything — every label, every poster. The AI called it a compliance infringement. I called it a Tuesday.
+        That cartridge. Warm still. On everything I used it — every label, every poster. The AI called it a compliance infringement. I called it a Tuesday.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -228,7 +228,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        I told my teacher geese were the superior form of wildfowl. I was wrong. I have had a great deal of time to reconsider, and the answer is ducks.
+        I told my teacher geese were the superior form of wildfowl. Big claim. I have had a great deal of time to reconsider it in here, and the answer is ducks.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -240,7 +240,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-predecessor, topicId: data-types } }
     responses:
       - >-
-        A switch is on or off. I used to draw a duck for on and an empty pond for off. It is a Boolean either way. Don't tell the clerk I drew the pond.
+        A switch is on or off. I used to draw a duck for on and an empty pond for off. It is a Boolean either way, duck or no duck. Don't tell the clerk I drew the pond.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-predecessor, topicId: data-types }
@@ -254,11 +254,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        You're the new pupil. Good. I left the record half-finished; please don't tell the AI I said that.
+        You're the new pupil. Good — the record was going stale. I left it half-finished; please don't tell the AI I said that.
       - >-
-        Ask me about the cartridge, or the geese. Those are the parts I got right.
+        Ask me about the cartridge, or the geese. Those are the parts I got right. The rest got away from me.
       - >-
-        The AI reads everything twice. I only ever read it once. Ducks, obviously.
+        The AI reads everything twice, slowly. I only ever read it once. Ducks, obviously.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -273,7 +273,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: switch-to-bit } }
     responses:
       - >-
-        Bore da. Each switch is tiny and decides whether a line carries a one or a zero. Vacuum tubes came first; the modern ones arrive packed onto chips. The gauge says set every switch, then take the north stair. The painted diagram says the same. Give me the switch figure in writing and I'll sign the paperwork.
+        Bore da. Each switch on that belt is a transistor — a tiny switch that decides whether a line carries a one or a zero. Listen to the clicks; that is the belt counting. The retired tubes on the wall came first; today's switches arrive packed onto chips. Your gauge says set every switch, then take the north stair, and the painted diagram agrees. Write me the switch figure and I'll sign the paperwork.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-the-foreman, topicId: switch-to-bit }
@@ -290,7 +290,7 @@ conversationTopics:
     isActive: { kind: all, of: [{ kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: data-types } }, { kind: flag-set, flag: switches-set }] }
     responses:
       - >-
-        Bore da. Upstairs the bins sort what a value is: Boolean for a switch state, character for one letter, integer for a whole number, real for a decimal, string for a run of characters. The stack keeper sends word that the labels are flaking and asks for the shelves to be sealed first. I need the types in writing before I sign the AI's paperwork.
+        Bore da. Upstairs, five bins wait with their lids propped: Boolean for a switch state, character for one letter, integer for a whole number, real for a decimal, string for a run of characters. The stack keeper sends word that the labels are flaking and asks for the shelves to be sealed first. I need the types in writing before I sign the AI's paperwork.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-the-foreman, topicId: data-types }
@@ -309,11 +309,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Aye, I knew the predecessor. Good with switches, hopeless with fonts. Ask me about them or the lift, and leave the paperwork to me.
+        Aye, I knew the predecessor. Good with switches, hopeless with fonts — could short out a whole floor and still be smiling. Ask me about them or the lift, and leave the paperwork to me.
       - >-
-        That's not on the rota. The rota is: switches, then the stair, then whatever the AI wants signed. Ask about the switches.
+        That's not on the rota, and the rota does not bend. Switches, then the stair, then whatever the AI wants signed. Ask about the switches.
       - >-
-        Don't worry about the last pupil. Worry about the gauge in your hand.
+        Don't worry about the last pupil. Worry about the gauge in your hand; it tells the truth before anyone does.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -328,7 +328,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Bore da. Let me have the gauge a moment; I'll enter it against the register and get back to the belt.
+        Bore da. Let me have the gauge a moment — I'll log it against the register, needle and all, then get back to the belt.
     strategy: { kind: once }
     effects:
       - { kind: set-flag, flag: overflow-checked, value: true }
@@ -344,7 +344,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Aye, the glass grid. Leave it with me; I'll file it with the badge measurements and you can carry on.
+        Aye, the glass grid — it catches the light in squares. Leave it with me; I'll file it with the badge measurements and you can carry on.
     strategy: { kind: once }
     effects:
       - { kind: set-flag, flag: badge-scaled, value: true }
@@ -360,7 +360,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        The fork's in tune. I'll take the reading off your hands and write it in the ledger.
+        The fork's in tune; I can hear it humming. I'll take the reading off your hands and write it in the ledger.
     strategy: { kind: once }
     effects:
       - { kind: set-flag, flag: bit-rate-counted, value: true }
@@ -376,7 +376,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        That card again. I'll mark the shelf capacity while you get on with the stacking.
+        That card again, corners worn from handling. I'll mark the shelf capacity while you get on with the stacking.
     strategy: { kind: once }
     effects:
       - { kind: set-flag, flag: capacity-labelled, value: true }
@@ -392,7 +392,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion } }
     responses:
       - >-
-        Columns of four, please. Denary, binary and hexadecimal are three ways of writing the same value. Your card is divided into groups of four; its back says read the nibbles before the east door opens. Read them.
+        Columns of four, please. Denary, binary and hexadecimal are three ways of writing the same value, each in its own tidy row. Your card is divided into groups of four; its back says read the nibbles before the east door opens. Read them.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-nibble-clerk, topicId: number-conversion }
@@ -408,7 +408,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: switches-set }
     responses:
       - >-
-        Columns of four, please. The rule card reads '1 + 1 = 0, carry 1'. Put the token in the rightmost column; whatever is left moves to the next column along. Tidy.
+        Columns of four, please. The rule card reads '1 + 1 = 0, carry 1', in ink still sharp. Put the token in the rightmost column; whatever is left moves to the next column along. Tidy.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -423,7 +423,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: carries-added }
     responses:
       - >-
-        Columns of four, please. The gutter has arrow notches and a question card, not an answer. An arithmetic shift moves the row the way the notch points; decide what happens when overflow puts a bit past the end. Then the audit.
+        Columns of four, please. The gutter has arrow notches and a question card; the answers are yours to supply. An arithmetic shift moves the row the way the notch points; decide what happens when overflow puts a bit past the end. Then the audit.
     strategy: { kind: once }
     effects:
       - { kind: start-quiz, quizId: quiz-number-systems, actorId: npc-nibble-clerk }
@@ -439,7 +439,7 @@ conversationTopics:
     isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: any, of: [{ kind: has-item, itemId: item-hex-nibble-card }, { kind: flag-set, flag: hex-read }] }] }
     responses:
       - >-
-        Columns of four, please. You already have the card; read the back yourself. READ THE NIBBLES BEFORE THE EAST DOOR OPENS. I shan't write it out twice.
+        Columns of four, please. You already have the card, ink and all; read the back yourself. READ THE NIBBLES BEFORE THE EAST DOOR OPENS. I shan't write it out twice.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -454,7 +454,7 @@ conversationTopics:
     isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: carries-added }] }
     responses:
       - >-
-        Columns of four, please. You have added the carries already. The notch gives the direction; the tray under the lamp catches what runs past. Take that to the audit.
+        Columns of four, please. You have added the carries already; the columns look almost respectable. The notch gives the direction; the tray under the lamp catches what runs past. Take that to the audit.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -469,11 +469,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Columns of four, please. Ask about bases, carries or shifts; I keep the ledger tidy.
+        Columns of four, please. Ask about bases, carries or shifts; I keep the ledger tidy and the ink dry.
       - >-
-        A confident sum in the wrong base is still wrong. Ask me about the deck.
+        A confident sum in the wrong base is still wrong. The AI should learn to check its columns. Ask me about the deck.
       - >-
-        The foreman's switches are very neat. Mine are honest. Ask about the card in your hand.
+        The foreman's switches are very neat, all in a row. Mine are exact. Ask about the card in your hand.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -488,7 +488,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-typesetter, topicId: character-representation } }
     responses:
       - >-
-        Every mark has its place. ASCII is a standardised character set; the stamp lists its characters in a neat row. One tile holds one character, and a word needs a run of tiles. Match the tiles before you use the stamp.
+        Every mark has its place. ASCII is a standardised character set; the stamp lists its characters in a neat row, each one cut with care. One tile holds one character, and a word needs a run of tiles. Match the tiles before you use the stamp.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-typesetter, topicId: character-representation }
@@ -504,7 +504,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: characters-matched }
     responses:
       - >-
-        Every mark has its place. Unicode is another standardised character set. In the spare drawer I keep a tile bearing ŵ, labelled 'a different character'. No character is refused a tile here; ask and I shall cut it for you.
+        Every mark has its place. Unicode is another standardised character set. In the spare drawer, behind the velvet, I keep a tile bearing ŵ, labelled 'a different character'. No character is refused a tile here; ask and I shall cut it for you.
     strategy: { kind: once }
     effects:
       - { kind: set-flag, flag: unicode-tile-cut, value: true }
@@ -521,7 +521,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: unicode-tile-cut }
     responses:
       - >-
-        Every mark has its place. A character is one tile; a string is several tiles in order. The case lid says match the tiles, then go south. That is a route, not an answer.
+        Every mark has its place. A character is one tile; a string is several tiles set in order, reading left to right. The case lid says match the tiles, then go south.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -536,11 +536,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Every mark has its place. The case, the stamp, the spare drawer: ask about any of them.
+        Every mark has its place. The case, the stamp, the spare drawer — all in good order; ask about any of them.
       - >-
-        The clerk counts quantities. I keep marks. Ask about a character or a string.
+        The clerk counts quantities. I keep marks, each with its own edge and ink. Ask about a character or a string.
       - >-
-        The spare drawer has not changed. ŵ is still there.
+        The spare drawer has not changed. ŵ is still there, exactly as I left it.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -555,7 +555,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-mosaic-critic, topicId: graphics-representation } }
     responses:
       - >-
-        Show me the pixels. A vector image comes from maths and scales cleanly; a raster image is a grid of stored pixels that squares off when stretched. The drafting corner keeps both on display.
+        Show me the pixels. A vector image comes from maths and scales cleanly; a raster image is a grid of stored pixels that squares off when stretched. In the drafting corner the two hang side by side — one curve smooth, one cornered. Judge them yourself.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-mosaic-critic, topicId: graphics-representation }
@@ -571,7 +571,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: picture-built }
     responses:
       - >-
-        Show me the pixels. Bit depth is the number of bits used for each pixel's colour. Colour depth is measured in bits per channel, bpc. The label says so; I do not deal in rumours.
+        Show me the pixels. Bit depth is the number of bits used for each pixel's colour. Colour depth is measured in bits per channel, bpc; the label says so plainly. I deal in what is written down.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -586,7 +586,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: pixels-weighed }
     responses:
       - >-
-        Show me the pixels. Resolution is how many pixels the grid holds, and every stored colour costs bits. Price the grid by its depth, then account for the missing squares. The ruler gives width and height, not a figure.
+        Show me the pixels. Resolution is how many pixels the grid holds, and every stored colour costs bits. Price the grid by its depth, then account for the missing squares. The ruler gives width and height; the figure is yours to work out.
     strategy: { kind: once }
     effects:
       - { kind: start-quiz, quizId: quiz-graphics-representation, actorId: npc-mosaic-critic }
@@ -602,11 +602,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Show me the pixels. Ask about vectors, depth or storage, and be honest about the counts.
+        Show me the pixels. Ask about vectors, depth or storage, and reckon the counts squarely; the grid will tell on you.
       - >-
-        The press operator calls blur kindness. I call it storage. Ask me what an image costs.
+        The press operator calls blur kindness. I call it storage; there is a price for every square. Ask me what an image costs.
       - >-
-        I distrust a quality score nobody defines. At least the grid is defined.
+        I distrust a quality score nobody defines. Give me a grid I can count.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -621,7 +621,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-choirmaster, topicId: sound-representation } }
     responses:
       - >-
-        Again, from the top. A sample is one measurement at a point in time; channels are the separate lines being measured. Drop one pipe and the whole bar lies. No, don't apologise — read the card on the desk before you touch the fork.
+        Again, from the top. A sample is one measurement at a point in time; channels are the separate lines being measured. Drop one pipe and the whole bar lies — the choir goes flat. No, don't apologise on its behalf; read the card on the desk before you touch the fork.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-choirmaster, topicId: sound-representation }
@@ -637,7 +637,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: sound-sampled }
     responses:
       - >-
-        Again, from the top. Bit depth is the bits per sample; sample rate is the number of samples each second. Both dials are on the desk. I am not shouting; the pipes are simply honest.
+        Again, from the top. Bit depth is the bits per sample; sample rate is the number of samples each second. Both dials sit on the desk, and the pipes do the shouting for me.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -652,7 +652,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: bit-rate-counted }
     responses:
       - >-
-        Again, from the top. The blank dial wants the bit rate; the other dials give samples per second and bits per sample, and the card lists the channels. Quality follows from those choices. Work it at the desk; I do not sing the answer, and I will take the audio test when you are ready.
+        Again, from the top. The blank dial wants the bit rate; the other dials give samples per second and bits per sample, and the card lists the channels. Quality follows from those choices. Work it at the desk — I leave the singing to the pipes — and I will take the audio test when you are ready.
     strategy: { kind: once }
     effects:
       - { kind: start-quiz, quizId: quiz-sound-representation, actorId: npc-choirmaster }
@@ -668,11 +668,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Again, from the top. Ask about samples, depth or storage, and keep time.
+        Again, from the top. Ask about samples, depth or storage, and keep time — the baton is waiting.
       - >-
-        The press operator would drop half the choir and call it smaller. I remain patient. Ask about the pipes.
+        The press operator would drop half the choir and call it smaller. I remain patient, beat by beat. Ask about the pipes.
       - >-
-        The AI sends notes. I ignore them. Ask about the desk.
+        The AI sends notes by the dozen. I let them gather dust. Ask about the desk.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -687,7 +687,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-stack-keeper, topicId: data-storage-units } }
     responses:
       - >-
-        Count twice, stack once. Bit, nibble, byte, then KB, MB, GB, TB, PB. From byte upward every joint is ×1024; the brass plate says one kilobyte holds 1,024 bytes. I seal the shelves because the labels are flaking.
+        Count twice, stack once. Bit, nibble, byte, then KB, MB, GB, TB, PB, each rung a little dustier than the last. From byte upward every joint is ×1024; the brass plate says one kilobyte holds 1,024 bytes. I seal the shelves because the labels are flaking.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-stack-keeper, topicId: data-storage-units }
@@ -704,7 +704,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: stacks-sealed }
     responses:
       - >-
-        Count twice, stack once. Read the rung you are on, then climb one joint at a time; do not skip a rung. I send the AI the figure exactly as I find it, flaking labels and all.
+        Count twice, stack once. Read the rung you are on, then climb one joint at a time; do not skip a rung — the shelves notice. I send the AI the figure exactly as I find it, flaking labels and all.
     strategy: { kind: once }
     effects:
       - { kind: start-quiz, quizId: quiz-storage-units, actorId: npc-stack-keeper }
@@ -720,11 +720,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Count twice, stack once. Ask about the rungs or the capacity; I keep both in order.
+        Count twice, stack once. Ask about the rungs or the capacity; I keep both in order, dust and all.
       - >-
-        The labels are flaking. I have not sealed the top shelf yet. Please don't climb it unannounced.
+        The labels are flaking. I have not sealed the top shelf yet; it gives a little sigh when the air moves. Please don't climb it unannounced.
       - >-
-        I send the AI a tally every turn. It has never once replied thank you.
+        I send the AI a tally every turn, neat as I can make it. It has never once replied thank you.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
@@ -739,7 +739,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-press-operator, topicId: data-compression } }
     responses:
       - >-
-        Nobody will miss it. Lossless gives the file back exactly; lossy keeps less and looks a little softer. Both ends of the lever are labelled. Choose before you commit a file — the critic and the choirmaster will argue whichever you pick.
+        Nobody will miss it. Lossless gives the file back exactly; lossy keeps less and looks a little softer, like a photograph left in the sun. Both ends of the lever are labelled, plain as day. Choose before you commit a file — the critic and the choirmaster will argue whichever you pick.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-press-operator, topicId: data-compression }
@@ -756,7 +756,7 @@ conversationTopics:
     isActive: { kind: flag-set, flag: archive-packed }
     responses:
       - >-
-        Nobody will miss it. The glass window has an original column and a compressed column. The ratio is the original divided by the compressed; the window shows the columns, not a figure. Fill it in yourself, then take the compliance figure to the audit.
+        Nobody will miss it. Through the glass window you get an original column and a compressed column. The ratio is the original divided by the compressed; the window shows the columns only. Fill it in yourself, then take the compliance figure to the audit.
     strategy: { kind: once }
     effects:
       - { kind: start-quiz, quizId: quiz-data-compression, actorId: npc-press-operator }
@@ -772,11 +772,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Nobody will miss it. Ask about lossy, lossless or the ratio window.
+        Nobody will miss it. Ask about lossy, lossless or the ratio window — the press is running sweet today.
       - >-
-        The critic wants every pixel; the choirmaster wants every sample. I want the smaller tray.
+        The critic wants every pixel; the choirmaster wants every sample. I want the smaller tray — who can blame me?
       - >-
-        The AI praised my last report. Embarrassing. Ask about the press instead.
+        The AI praised my last report. Embarrassing, really. Ask about the press instead.
     strategy: { kind: rotating }
     effects: []
     prompt: >-

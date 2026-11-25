@@ -55,7 +55,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **N5 — Feedback for every command.** Every submitted command produces text. Failure text gives new information — a clue, a sensory detail, a character reaction — never a bare "you can't" or "nothing happens". This includes `use` on the wrong target and `answer` outside a quiz.
 - **N6 — Fair gates.** Every locked exit or puzzle has an in-fiction justification and at least two discoverable clues placed in room descriptions, NPC dialogue or item text. No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the editor's alias registry.
 - **N7 — Ancestor-only references.** A puzzle's prose may mention plot points only from that puzzle's ancestor set in the PDG, as guaranteed by [puzzles.md §4](puzzles.md#4-puzzle-dependency-graph). Never assume the player solved earlier nodes in a particular order.
-- **N8 — Prose length.** Room descriptions are at most 80 words. Longer passages are reserved for key nodes and NPC explanations. Avoid walls of text; vary rhythm between short traversal text and richer set pieces.
+- **N8 — Prose length.** Room descriptions are at most 200 words. This is a ceiling, not a target: most rooms should be shorter, and the extra room is for places where description genuinely helps the player. Longer passages are reserved for key nodes and NPC explanations. Avoid walls of text; vary rhythm between short traversal text and richer set pieces. (Ceiling raised from 80 to 200 by user decision, 2026-11-25.)
 
 ### P — Pedagogy and course mapping
 
@@ -176,7 +176,7 @@ rooms:
     title: The CPU Lab
     aliases: [lab, cpu lab]
     description: >-
-      ... # ≤80 words, second person present (N4, N8)
+      ... # ≤200 words (ceiling, not a target), second person present (N4, N8)
     topicIds: [cpu-components]
     exits:
       - direction: north

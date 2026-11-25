@@ -165,7 +165,7 @@ unavoidable losses.
 ## 3. Gate conditions and their in-world satisfaction
 
 The opening exits are ungated and need no completion source: `room-arrival` east →
-`room-network-hub` (signposted by "It offers an east route, not a door"); the hub's
+`room-network-hub` (signposted by "An east route glows"); the hub's
 east → `room-switch-floor` (the only live port, named in the hub description); the
 hub's `in` → `room-entry-interface` and that room's `out` → the hub (both named in
 their descriptions); `room-switch-floor` west → the hub (named in its description).
@@ -194,7 +194,7 @@ with no cycle (topic file §5).
 | --- | --- | --- |
 | Rooms | 11 (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the hub |
 | Exits | all declared in the four `rooms.yaml` cards | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
-| Items | switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic-sans cartridge | each `initialRoom` is a room on the path (steps 2, 6, 8, 10, 12, 16, 1); portable thereafter; each SHOW follows the item's last USE |
+| Items | 18 total: 7 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The seven gameplay items are portable and each SHOW follows the item's last USE; of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
 | NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; AltTopics on puzzle flags set on the path; four foreman `show` topics are always active |
 | Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
 | Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |

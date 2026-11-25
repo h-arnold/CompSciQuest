@@ -24,8 +24,9 @@ story develops; only `confirmed` entries influence writing.
   that the term stands alone.
 - Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
 - Keep second person, present tense and one consistent register (N4). Room
-  descriptions stay at or under 80 words (N8); longer passages are for key nodes
-  and NPC teaching beats only.
+  descriptions stay at or under 200 words (N8) — a ceiling, not a target. Most
+  rooms should be shorter; longer passages are for key nodes and NPC teaching
+  beats only.
 - Avoid repetition of sentence structures or writing effects. Especially cliches such as:
  - It's not x it y.
  - Repetitions of what something is not. This is appropriate when used sparingly.
@@ -257,8 +258,9 @@ worth promoting.
 - Non-example: "Items here: switch gauge, foreman. You can talk to the foreman."
   That is a labelled inventory, not a world (N3, §9).
 - Use in: all three rooms briefs in the 2026-11-25 revision. Keep H1 telegraph
-  strings and N6 clue strings byte-identical, and swap filler rather than adding
-  words, because rooms already sit at 66–80 words (N8).
+  strings and N6 clue strings byte-identical. N8's ceiling is now 200 words, a
+  limit rather than a target: write as much as the place needs, not as much as it
+  will hold.
 
 ## 12. Change control
 
@@ -287,6 +289,10 @@ worth promoting.
   YAML cards are re-briefed; `spec-topics.yaml` is evidence metadata and is excluded.
   IDs, aliases, flags, gates, scores, spec facts, the two N6 clues per gate and the
   H1 telegraph strings are frozen. Briefs cite N4, N5, N8, C1, C2, N3, P2, H1 and N6.
+- 2026-11-25 — **N8 ceiling raised from 80 to 200 words by the user**, with an
+  explicit instruction that 200 is a limit, not a target. §2, the pattern log and
+  downstream agent instructions were updated the same day. Existing descriptions,
+  all under 80 words, stay valid; no re-brief is triggered by the change alone.
 - 2026-11-25 — **World richness and examinables approved.** The user asked for vivid
   descriptions and "lots of items to examine", including props with no puzzle or
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in

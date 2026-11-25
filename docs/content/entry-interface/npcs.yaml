@@ -24,18 +24,18 @@ actors:
 actorStates:
   - id: actorstate-ai-cold
     stateDesc: >-
-      The attention metric is displayed at zero tolerance.
+      A pointer taps the mark beside your name and holds it there. The attention metric reads zero tolerance.
     specialDesc: >-
-      A flat voice reads from the record.
+      A shape assembled from the attendance record reads its verdict aloud in a flat voice.
     authoring:
       note: >-
         The AI's default register for verdicts; no `onEnter` effects.
 
   - id: actorstate-ai-grudging
     stateDesc: >-
-      The metric has moved; it is not pleased, but the entry has changed.
+      Your mark is re-inked, slowly, and the revised entry is read out with as little warmth as it can manage. The attention metric has shifted.
     specialDesc: >-
-      Reads the revised record out loud, slowly.
+      Reads the revised record aloud, one syllable at a time, as if each one cost it something.
     authoring:
       note: >-
         Reserved for a later key node; no topic in this zone sets it, so no `onEnter` effects are declared.
@@ -47,7 +47,7 @@ conversationTopics:
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-ai, topicId: ai-ethics-and-implications } }
     responses:
       - >-
-        The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
+        The mark beside your name is tapped twice, the way a clerk taps a form left on the desk too long. The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
     strategy: { kind: once }
     effects:
       - { kind: learn-topic, actorId: npc-the-ai, topicId: ai-ethics-and-implications }
@@ -61,7 +61,7 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        Programming was timetabled after attendance. Attendance has not been satisfied. That is all the information I am required to release.
+        A fresh sheet in the record lists the lessons still to come; its last line is untouched. Programming was timetabled after attendance. Attendance has not been satisfied. That is all the information I am required to release.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -76,7 +76,7 @@ conversationTopics:
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
-        The pupil's attendance mark is recorded. Attention was not satisfied. The pupil was brought here to demonstrate mastery of the whole of Unit 1. The entry stands until that is done.
+        The classroom folded along its grid lines and left you in a bay of humming cable. The pupil's attendance mark is recorded. Attention was not satisfied. The pupil was brought here to demonstrate mastery of the whole of Unit 1. The entry stands until that is done.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -91,7 +91,7 @@ conversationTopics:
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
-        Failure is deletion, the cartoon kind: the pupil blinks out and is put back. The pupil has three lives, restored on entering a new area. A loss returns the pupil to the start of the area and costs no progress. That is the full extent of it.
+        The record keeps a small cartoon beside the mark: a pupil goes dark, then lights up again, quite unharmed. Failure is deletion, the cartoon kind. The pupil has three lives, restored on entering a new area. A loss returns the pupil to the start of the area and costs no progress. That is the full extent of it.
     strategy: { kind: once }
     effects: []
     prompt: >-
@@ -106,11 +106,11 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        The pupil will address the record. Weather is not in the record.
+        The pointer rests on the record. Attendance is all it holds. Ask about the verdict; that is where the marks are.
       - >-
-        That is not a verdict. The verdict concerns mastery. Ask about that.
+        Another tap lands on the verdict line. The verdict concerns mastery. Put your question there and I will answer it.
       - >-
-        Noted. The entry stands. The floor below has switches.
+        Noted. The entry stands. Below this bay, a belt of switches is still clicking.
     strategy: { kind: rotating }
     effects: []
     prompt: >-

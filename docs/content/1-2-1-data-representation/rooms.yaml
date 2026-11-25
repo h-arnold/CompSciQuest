@@ -22,7 +22,7 @@ rooms:
     title: The Interface
     aliases: [interface, entry, hub]
     description: >-
-      A narrow interface glows around you, with a single arrow painted east. Somewhere beyond it, a machine clears its throat and reads out your attendance record. A strip of text repeats: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. An arrow east leads deeper in; another way out opens back to the Network Hub. The machine sounds as if it has said this many times before.
+      A narrow interface glows around you, a single arrow painted east on its rim. Beyond it, a machine clears its throat and reads out your attendance record in a flat, well-practised voice. A strip of text scrolls past: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. The arrow east points to the switch floor; behind you, another opening gives onto the Network Hub. The machine has clearly said all this before.
     topicIds: [ai-ethics-and-implications]
     exits:
       - { direction: east, to: room-switch-floor }
@@ -38,7 +38,7 @@ rooms:
     title: The Switch Floor
     aliases: [switch floor, foundry, workshop]
     description: >-
-      Heat haze shimmers off a belt of tiny black switches, and the clicks are getting faster. A rack of glass vacuum tubes stands retired against the wall, labelled "before". Each switch on the belt is no bigger than a speck, yet it decides whether a line carries a one or a zero. A sign says the modern ones arrive packed onto chips. A stair climbs up; a door west leads back to the Network Hub.
+      Heat haze shimmers off a belt of tiny black switches, and the clicks are getting faster. A brass gauge hangs by the belt, needle at red; the foreman checks the clicks, oil can in hand. Glass vacuum tubes carry a before label. Each switch is a transistor — a tiny switch that decides whether a line carries a one or a zero. A sign says modern ones arrive packed onto chips. A stair climbs up; west leads to the Network Hub.
     topicIds: [switch-to-bit]
     exits:
       - { direction: west, to: room-network-hub }
@@ -56,7 +56,7 @@ rooms:
     title: The Binary Hall
     aliases: [binary hall, hall, counting hall]
     description: >-
-      Five type bins: "if Valid = True", letter "A", age 15, temperature 36.4, email "computer.science@wjec.co.uk"; a sixth, unlabelled sample shows a decimal value with no type bin name. A painted route diagram gives each spoke and gate: north switches-set, east hex-read, south characters-matched, up picture-built, in sound-sampled, out stacks-sorted. Each arch repeats its gate: switches, nibbles, tiles, image, sound, stacks. A comic-sans cartridge warms and hums; its notice reads "Unauthorised font use is a compliance infringement".
+      Five type bins: "if Valid = True", letter "A", age 15, temperature 36.4, email "computer.science@wjec.co.uk"; a sixth unlabelled decimal sample has no bin name. A painted route diagram names each gate: north switches-set, east hex-read, south characters-matched, up picture-built, in sound-sampled, out stacks-sorted. The arches repeat: switches, nibbles, tiles, image, sound, stacks. The foreman ticks the bins. A comic sans cartridge warms and hums; its notice reads "Unauthorised font use is a compliance infringement". Down leads to the switch floor.
     topicIds: [data-types, number-conversion]
     exits:
       - { direction: down, to: room-switch-floor }
@@ -74,7 +74,7 @@ rooms:
       pillar: >-
         P-b, P-c, P-d; concepts are mechanisms, gates are conceptual, and the cartridge is a bounded joke.
       telegraph: >-
-        H1 — the comic-sans cartridge is warm and humming, as if it would like to be used, beside the compliance notice.
+        H1 — the comic sans cartridge is warm and humming, as if it would like to be used, beside the compliance notice.
       clues: |-
         N6 — two in-world clues per gated exit, both discoverable in this room before the gate opens:
         - `switches-set` (north): the painted route diagram names the gate "switches-set"; the north arch repeats "switches".
@@ -90,7 +90,7 @@ rooms:
     title: The Hex Deck
     aliases: [hex deck, deck, hexadecimal]
     description: >-
-      A carry track reads "1 + 1 = 0, carry 1"; a chained carry token waits by the rightmost column. A shift gutter has arrow notches and a shift lever for the row; its card reads: a left shift multiplies by a multiple of 2, a right shift divides by a multiple of 2; a bit pushed past the end is an overflow. A stuck carry lamp drips 1s into an OVERFLOW tray. South returns to the hall.
+      A carry track reads "1 + 1 = 0, carry 1"; a token waits at the rightmost column. Arrow notches and a lever line the shift gutter; its rule card reads: left shift multiplies by a multiple of 2, right shift divides by a multiple of 2; a bit past the end is overflow. A stuck carry lamp drips 1s into an OVERFLOW tray. The nibble card lies open; the clerk tidies its four-square groups. South returns to the hall.
     topicIds: [number-conversion]
     exits:
       - { direction: south, to: room-binary-hall }
@@ -109,7 +109,7 @@ rooms:
     title: The Character Tiles
     aliases: [character tiles, tiles, characters]
     description: >-
-      A character case lies open, its tiles each holding a single mark. The ASCII stamp beside it lists its characters in a neat row; in a spare drawer, a tile bearing ŵ waits, labelled only "a different character". One tile has lost the corner of its glyph. Grey dust coats the stamp. The door west leads back to the hall.
+      A character case lies open, each tile holding a single mark. The typesetter slides a tile into place with a courtly nod; beside it, the ASCII stamp lists its characters in a neat row. A spare drawer holds a tile bearing ŵ, labelled "a different character". One tile has lost the corner of its glyph. Grey dust coats the stamp. The door west leads back to the hall.
     topicIds: [character-representation]
     exits:
       - { direction: west, to: room-binary-hall }
@@ -126,7 +126,7 @@ rooms:
     title: The Picture Mosaic
     aliases: [picture mosaic, mosaic, gallery]
     description: >-
-      A pixel mosaic covers one wall, each square a stored colour value. In the drafting corner, smooth vector curves scale cleanly; a pixel grid squares off. A ruler marks width and height. A label glosses its terms: bit depth is the number of bits used for the colour of each pixel; colour depth is measured in bits per channel, or bpc. A patch of missing squares shows where resolution runs out. The door north leads back to the hall.
+      A pixel mosaic covers one wall, each square a stored colour value. A vector sheet in the drafting corner shows curves scaling cleanly; a pixel grid squares off, and a mosaic ruler marks width and height. A label states: bit depth is the number of bits used for the colour of each pixel; colour depth is measured in bits per channel, or bpc. The critic lifts the lens to missing squares where resolution runs out. North returns to the hall.
     topicIds: [graphics-representation]
     exits:
       - { direction: north, to: room-binary-hall }
@@ -141,7 +141,7 @@ rooms:
     title: The Sound Choir
     aliases: [sound choir, choir, sampling]
     description: >-
-      A choir of glass pipes sings in flat, evenly spaced bursts. At the bit-rate desk, one dial is marked "samples per second", another "bits per sample"; a third dial is blank, waiting for a patch lead. A card defines a sample as one measurement at a point in time, and lists channels, sample rate, bit depth and bit rate. The stair down returns to the hall.
+      A choir of glass pipes sings in flat, evenly spaced bursts. At the bit-rate desk, one dial is marked "samples per second", another "bits per sample"; a third dial is blank, waiting for a patch lead. A card defines a sample as one measurement at a point in time, and lists channels, sample rate, bit depth and bit rate. A sample fork lies on the desk; the choirmaster taps the time with his baton. Down returns to the hall.
     topicIds: [sound-representation]
     exits:
       - { direction: down, to: room-binary-hall }
@@ -156,14 +156,14 @@ rooms:
     title: The Storage Stacks
     aliases: [storage stacks, stacks, capacity]
     description: >-
-      A unit ladder rises in eight rungs: bit, nibble, byte, KB, MB, GB, TB, PB; from byte upward, each joint is marked ×1024. The labels flake at the corners, and the air is dry and dusty. A brass plate states that one kilobyte holds 1,024 bytes. Crates wait by the open arch. The way out returns to the hall.
+      A unit ladder rises in eight rungs: bit, nibble, byte, KB, MB, GB, TB, PB; from byte upward, each joint is marked ×1024. The labels flake at the corners, and the air is dry and dusty. A brass plate states that one kilobyte holds 1,024 bytes. The stack keeper wipes a rung and checks his tally; crates wait by the open arch. The way out returns to the hall.
     topicIds: [data-storage-units]
     exits:
       - { direction: out, to: room-binary-hall }
     score: 0
     authoring:
       interesting: >-
-        A ladder of capacities you can climb, with one honest plate among the flaking labels.
+        A ladder of capacities you can climb, with one exact plate among the flaking labels.
       pillar: >-
         P-b, P-c; capacity is a physical chain of shelves, and sorting it opens the press.
       telegraph: >-
@@ -173,7 +173,7 @@ rooms:
     title: The Compression Press
     aliases: [compression press, press, squash]
     description: >-
-      Two trays feed a press with a glass ratio window: one column reads "original", the other "compressed". The first sample comes back exactly as it went in; the second returns smaller and a little blurred. A lever is labelled lossless at one end and lossy at the other. The arch in leads back to the hall.
+      Two trays feed a press with a glass ratio window: one column reads "original", the other "compressed". A sample tray slides out with the file exactly as it went in; a second returns smaller and a little blurred. A lever is labelled lossless at one end and lossy at the other. The press operator sets the compression die and smiles at the smaller tray. The arch in leads back to the hall.
     topicIds: [data-compression]
     exits:
       - { direction: in, to: room-binary-hall }
@@ -196,6 +196,28 @@ items:
       useNotes: >-
         USE the switch gauge on the belt of tiny black switches sets `switch-cooled`, which disarms `hazard-switch-overheat`. SHOW the switch gauge to the foreman after a carry runs off the register sets `overflow-checked`. Taking the gauge sets no flag. SETTING every switch on the belt (USE the switch gauge on the belt of tiny black switches) also sets `switches-set`.
 
+  - id: item-before-label
+    name: before label
+    aliases: [before label, tube label]
+    portable: false
+    description: >-
+      A stiff paper label wired to the vacuum-tube rack, its ink bleached to "before". The wire is twisted tight; the label has hung here longer than the belt has run.
+    initialRoom: room-switch-floor
+    authoring:
+      useNotes: >-
+        EXAMINE the before label to read its faded lettering. Purely decorative: examining it sets no flag.
+
+  - id: item-oil-can
+    name: oil can
+    aliases: [oil can, oilcan]
+    portable: true
+    description: >-
+      A dented oil can with a long bent spout, warm from the foreman's hand. A dark smear on the belt marks where it has been set down between rounds.
+    initialRoom: room-switch-floor
+    authoring:
+      useNotes: >-
+        EXAMINE the oil can to see the bent spout and the oil smear. Purely decorative: examining or carrying it sets no flag.
+
   - id: item-hex-nibble-card
     name: nibble card
     aliases: [nibble card, hex card]
@@ -206,6 +228,28 @@ items:
     authoring:
       useNotes: >-
         USE the nibble card on the carry lamp sets `carry-cleared`, which disarms `hazard-carry-overflow`. USE the pixel lens on the nibble card sets `pixels-weighed`. SHOW the nibble card to the foreman sets `capacity-labelled`. READING the nibbles (USE the nibble card on the nibble groups) sets `hex-read`.
+
+  - id: item-rule-card
+    name: rule card
+    aliases: [rule card, sum card]
+    portable: true
+    description: >-
+      A dog-eared rule card pinned beside the shift gutter, its worked sum pressed deep into the paper. One corner is torn where a clip has held it for years.
+    initialRoom: room-hex-deck
+    authoring:
+      useNotes: >-
+        EXAMINE the rule card to read its worked sum. Purely decorative: examining or carrying it sets no flag.
+
+  - id: item-overflow-tray
+    name: overflow tray
+    aliases: [overflow tray, catch tray]
+    portable: false
+    description: >-
+      A shallow tin overflow tray beneath the carry lamp, scratched OVERFLOW along its rim. A few bright 1s have collected in its bottom.
+    initialRoom: room-hex-deck
+    authoring:
+      useNotes: >-
+        EXAMINE the overflow tray to see the scratches on its rim. Purely decorative: examining it sets no flag.
 
   - id: item-ascii-stamp
     name: ascii stamp
@@ -218,6 +262,17 @@ items:
       useNotes: >-
         EXAMINE the tiles in the character case to verify them before using the stamp sets `tiles-verified`, which disarms `hazard-glyph-corruption`; using the stamp before verifying triggers that hazard. USE the compression die on the ASCII stamp sets `compression-chosen`. MATCHING the tiles (USE the ASCII stamp on the tiles in the character case) sets `characters-matched`.
 
+  - id: item-spare-drawer
+    name: spare drawer
+    aliases: [spare drawer, drawer]
+    portable: false
+    description: >-
+      A shallow spare drawer slid into the base of the character case, lined with felt. A single tile rests in it, kept apart from the ordered rows above.
+    initialRoom: room-character-tiles
+    authoring:
+      useNotes: >-
+        EXAMINE the spare drawer to see its felt lining and the tile kept inside. Purely decorative: examining it sets no flag.
+
   - id: item-pixel-lens
     name: pixel lens
     aliases: [pixel lens, lens]
@@ -228,6 +283,28 @@ items:
     authoring:
       useNotes: >-
         USE the pixel lens in the drafting corner sets `mosaic-calibrated` (authoring note only: a proposed hazard has no card yet, so no hazard depends on this flag in this card). SHOW the pixel lens to the foreman sets `badge-scaled`. USE the pixel lens on the nibble card sets `pixels-weighed`. BUILDING the image (USE the pixel lens on the mosaic) sets `picture-built`.
+
+  - id: item-mosaic-ruler
+    name: mosaic ruler
+    aliases: [mosaic ruler, ruler]
+    portable: true
+    description: >-
+      A polished mosaic ruler with fine width-and-height marks, its edges worn from measuring grids. A notch marks where the missing squares begin.
+    initialRoom: room-picture-mosaic
+    authoring:
+      useNotes: >-
+        EXAMINE the mosaic ruler to read its width and height marks. Purely decorative: examining or carrying it sets no flag.
+
+  - id: item-vector-sheet
+    name: vector sheet
+    aliases: [vector sheet, curve sheet]
+    portable: true
+    description: >-
+      A translucent vector sheet of smooth curves, each drawn as one clean line. Held up to the light, the curves stay smooth however far you tilt it.
+    initialRoom: room-picture-mosaic
+    authoring:
+      useNotes: >-
+        EXAMINE the vector sheet to trace its clean curves. Purely decorative: examining or carrying it sets no flag.
 
   - id: item-sample-fork
     name: sample fork
@@ -240,6 +317,28 @@ items:
       useNotes: >-
         USE the sample fork on the bit-rate desk sets `sound-sampled`. SHOW the sample fork to the foreman sets `bit-rate-counted`. USING the fork on the unit ladder (USE the sample fork on the unit ladder) sets `stacks-sorted`.
 
+  - id: item-patch-lead
+    name: patch lead
+    aliases: [patch lead, lead]
+    portable: true
+    description: >-
+      A short patch lead with two brass plugs, one end taped where the insulation has frayed. It lies beside the blank dial on the bit-rate desk.
+    initialRoom: room-sound-choir
+    authoring:
+      useNotes: >-
+        EXAMINE the patch lead to see its taped plug. Purely decorative: examining or carrying it sets no flag.
+
+  - id: item-brass-plate
+    name: brass plate
+    aliases: [brass plate, plate]
+    portable: false
+    description: >-
+      A small brass plate bolted to the unit ladder, its engraving polished by passing thumbs. It gives the byte count for one kilobyte.
+    initialRoom: room-storage-stacks
+    authoring:
+      useNotes: >-
+        EXAMINE the brass plate to read its engraved capacity. Purely decorative: examining it sets no flag.
+
   - id: item-compression-die
     name: compression die
     aliases: [compression die, die]
@@ -250,6 +349,17 @@ items:
     authoring:
       useNotes: >-
         USE the compression die sets `archive-packed`. USE the compression die on the ASCII stamp sets `compression-chosen`.
+
+  - id: item-sample-tray
+    name: sample tray
+    aliases: [sample tray, output tray]
+    portable: false
+    description: >-
+      A metal sample tray fixed below the press, its lip bent from years of use. A faint ghost of an older, smaller file marks its base.
+    initialRoom: room-compression-press
+    authoring:
+      useNotes: >-
+        EXAMINE the sample tray to see its bent lip and faint mark. Purely decorative: examining it sets no flag.
 
   - id: item-comic-sans-cartridge
     name: comic sans cartridge

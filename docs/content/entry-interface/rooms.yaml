@@ -27,11 +27,11 @@ rooms:
     aliases: [arrival, landing, scan]
     description: >-
       The register lies open, a mark beside your name. The AI reads it in the flat
-      voice of a machine that has read it many times: attention not satisfied. The
-      classroom folds along its grid lines. The ceiling becomes a row of tiny
-      switches; you stand in a bay of humming cable. The AI waits: not a screen,
-      not a voice, but a shape assembled from the attendance record. Your mark
-      stands. It offers an east route, not a door.
+      voice of a machine that has read it a thousand times: attention not
+      satisfied. The classroom folds along its grid lines; the ceiling becomes a
+      row of tiny switches. You stand among humming cable. The AI waits, assembled
+      from the attendance record with your name at the top. It has the air of a
+      clerk who has stamped the form. An east route glows.
     topicIds: [ai-ethics-and-implications]
     exits:
       - direction: east

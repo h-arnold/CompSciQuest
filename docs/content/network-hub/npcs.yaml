@@ -10,7 +10,7 @@ conversationTopics:
     isActive: { kind: in-room, roomId: room-network-hub }
     responses:
       - >-
-        There is no door out until mastery is demonstrated. The machine offers routes through the work, not around it. Follow the route provided.
+        One port on the patch bay glows; the rest sit dark. The record keeps the doors sealed until mastery of the whole of Unit 1 is entered against your name. That glow is your route. Follow it, and let the work write the entry. The entry stands until then.
     strategy: { kind: once }
     effects: []
     prompt: >-

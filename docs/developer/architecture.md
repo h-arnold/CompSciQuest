@@ -342,7 +342,7 @@ export interface Serialisable<TDto> {
 
 ```ts
 // src/core/commands/ParsedCommand.ts — between Parser and NameResolver
-export interface ParsedCommand {
+export interface ParsedCommand {P-TAKE-01
   readonly verb: string; // canonical verb, e.g. 'take'
   readonly nounPhrases: readonly string[]; // raw words, e.g. ['brass key']
   readonly raw: string; // original input for friendly errors

@@ -1,6 +1,6 @@
 # area card for network-hub
 # Applicable rules: D2, D3, D4, N6, V1
-# Rules in scope for this brief: N1, N2, N4, N5, N8, P1, P6, D2, D3, D4, D5, V1, V4
+# Rules in scope for this brief: N1, N3, N4, N5, N6, N8, P1, D2, D3, D4, D5, V1
 kind: area
 areaId: network-hub
 status: draft
@@ -21,12 +21,12 @@ rooms:
     title: The Network Hub
     aliases: [patch bay, broadcast bay, concourse]
     description: >-
-      You stand in a hub older than the rest of the machine. A yellowed label
-      says it has been here since the 1990s. It copies everything to every
-      port, so all routes show at once: one live, the rest dark. The AI says
-      the hub is on the record, so nobody switched it off. Only the east port
-      is live, towards the Switchyard; west returns to arrival, and in to the
-      interface. The AI waits for you to choose.
+      Around you, brass sockets crowd the hub, each with a little label, all
+      humming one low note. A yellowed card reads 'since the 1990s' in fading
+      ink. The hub copies every packet to every port, so all routes show at
+      once: one bright, the rest dark. The AI calls it 'on the record'; nobody
+      unplugged it. A port label on the east socket reads LIVE; that route goes
+      to the Switchyard. West leads to arrival; in, to the interface.
     topicIds: []
     exits:
       - direction: west
@@ -37,8 +37,25 @@ rooms:
         to: room-entry-interface
     score: 0
     authoring:
-      interesting: Every route shows at once, yet only the east port carries a signal.
+      interesting: >-
+        A bank of humming sockets under worn little labels; every route shows
+        at once, yet only the east one carries a signal.
       note: Navigation-only zone-choice starting point; no teaching topic is scoped here (P1).
 
 # items: id, name, aliases, portable, description, initialRoom (D2, D3)
-items: []
+items:
+  - id: item-port-label
+    name: port label
+    aliases: [port label, live port]
+    portable: false
+    description: >-
+      A small port label fixed to the east socket, its paper yellowed at the
+      corners. LIVE is stamped across it in block capitals, the ink rubbed pale
+      by old fingers. The AI has initialled one corner in blue pen, the way it
+      signs a verdict. It will not come away.
+    initialRoom: room-network-hub
+    authoring:
+      useNotes: >-
+        Purely decorative and examinable only. EXAMINING the port label sets no
+        flag and opens no gate; it simply lets you read the worn LIVE stamp. The
+        label is fixed to its socket, so it is never a required item.

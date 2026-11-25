@@ -1,7 +1,6 @@
-// Browser checks for the committed, generated zone-1 content bundle.
-// These tests deliberately target the already-running dev server on port 5199,
-// so the shared config's port 5173 webServer and the concurrent UI slice stay
-// undisturbed. No YAML is fetched at runtime: the catalogues are TS modules.
+// Browser checks for the committed, generated authored content bundle.
+// The shared Playwright config owns test-time server startup and baseURL.
+// No YAML is fetched at runtime: the catalogues are TS modules.
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from 'playwright/test';
 import { actorStates } from '../src/content/authored/actor-states';
@@ -19,14 +18,13 @@ import { rooms } from '../src/content/authored/rooms';
 import { specTopics } from '../src/content/authored/spec-topics';
 import { worlds } from '../src/content/authored/worlds';
 
-test.use({ baseURL: 'http://127.0.0.1:5199/CompSciQuest/' });
-
 // Canonical storage keys from docs/developer/storage-schema.md §2 and §9.
 const SAVE_KEY = 'compsciquest:save:v1';
 const QUARANTINE_KEY = 'compsciquest:save:v1:corrupt';
 
 const world = worlds[0];
-const area = areas[0];
+// The boot area is the world's startAreaId (walkthrough.md §2), not areas[0].
+const area = areas.find((entry) => entry.id === world?.startAreaId);
 const startRoom = rooms.find((room) => room.id === area?.startRoomId);
 if (startRoom === undefined) throw new Error('Generated start room is missing');
 
@@ -99,12 +97,12 @@ test.describe('generated zone-1 content', () => {
 
   test('E2E-CONTENT-01 — committed generated catalogues have the zone-1 counts and start room', async () => {
     expect(worlds).toHaveLength(1);
-    expect(areas).toHaveLength(1);
-    expect(rooms).toHaveLength(9);
+    expect(areas).toHaveLength(3);
+    expect(rooms).toHaveLength(11);
     expect(items).toHaveLength(7);
     expect(actors).toHaveLength(9);
     expect(actorStates).toHaveLength(6);
-    expect(conversationTopics).toHaveLength(38);
+    expect(conversationTopics).toHaveLength(41);
     expect(nodes).toHaveLength(4);
     expect(quizzes).toHaveLength(8);
     expect(questions).toHaveLength(32);
@@ -113,13 +111,13 @@ test.describe('generated zone-1 content', () => {
     expect(hints).toHaveLength(6);
     expect(specTopics).toHaveLength(8);
 
-    expect(world?.id).toBe('world-1-2-1-data-representation');
-    expect(world?.startAreaId).toBe('area-1-2-1-data-representation');
-    expect(area?.id).toBe('area-1-2-1-data-representation');
-    expect(area?.startRoomId).toBe('room-binary-hall');
+    expect(world?.id).toBe('world-wjec-gcse-computer-science-2025-spec');
+    expect(world?.startAreaId).toBe('area-entry-interface');
+    expect(area?.id).toBe('area-entry-interface');
+    expect(area?.startRoomId).toBe('room-arrival');
     expect(area?.lives).toBe(3);
     expect(rooms.some((room) => room.id === 'room-stub-start')).toBe(false);
-    expect(startRoom.title).toBe('The Binary Hall');
+    expect(startRoom.title).toBe('The Arrival Bay');
   });
 
   test('E2E-CONTENT-02 — boot and the first game view use the bundled generated text', async ({
@@ -137,12 +135,12 @@ test.describe('generated zone-1 content', () => {
     expect(lines).toContain(startRoom.title);
     expect(output).toContain(startRoom.description);
     expect(output).toContain('Exits:');
-    // A Welsh detail from the authored start-room card, not a stub string.
-    expect(output).toContain('computer.science@wjec.co.uk');
+    // Authored arrival prose, not a stub string.
+    expect(output).toContain('attention not satisfied');
     await expect(page.locator('.score-panel')).toContainText('Score: 0');
     await expect(page.locator('.score-panel')).toContainText('Lives: 3');
     await expect(page.locator('.score-panel')).toContainText(
-      'Rooms visited: 1 / 9',
+      'Rooms visited: 1 / 1',
     );
     expect(yamlRequests).toEqual([]);
   });
