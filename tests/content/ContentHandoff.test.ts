@@ -194,16 +194,18 @@ describe('runtime handoff (application-and-ui.md §3.3)', () => {
       areaId: declared.areaId,
       roomId: declared.roomId,
     });
-    expect(
-      Object.keys(state.rooms).toSorted((left, right) =>
-        left < right ? -1 : Number(left > right),
-      ),
-      'the room inventory comes from the same generated bundle',
-    ).toEqual(
-      [...declared.roomIds].toSorted((left, right) =>
-        left < right ? -1 : Number(left > right),
-      ),
+    const actualRoomIds = Object.keys(state.rooms);
+    actualRoomIds.sort((left: string, right: string): number =>
+      left < right ? -1 : Number(left > right),
     );
+    const expectedRoomIds = [...declared.roomIds];
+    expectedRoomIds.sort((left: string, right: string): number =>
+      left < right ? -1 : Number(left > right),
+    );
+    expect(
+      actualRoomIds,
+      'the room inventory comes from the same generated bundle',
+    ).toEqual(expectedRoomIds);
 
     const injected = asRuntime(createInitial(makeBundle())).toDto();
     expect(

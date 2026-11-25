@@ -1,12 +1,12 @@
 # Graph Report - CompSciQuest  (2026-11-25)
 
 ## Corpus Check
-- 191 files · ~89,614 words
+- 192 files · ~90,691 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: (none) 5, .jsonc 1, .css 1)
 
 ## Summary
-- 1196 nodes · 3274 edges · 59 communities (36 shown, 23 thin omitted)
+- 1203 nodes · 3310 edges · 74 communities (46 shown, 28 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 68 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
@@ -44,7 +44,7 @@
 - Free-text Topic Resolver
 - Content Catalogues
 - Event Bus
-- FakeElement
+- ui.ts
 - SchemaModule
 - vitest
 - SaveManager.ts
@@ -53,22 +53,37 @@
 - finding
 - contentToolchain.ts
 - parser.ts
+- vitest
 - Condition
 - GameState.ts
 - Game.ts
 - ContentGeneration.test.ts
 - persistence.ts
+- GameStateDto
+- Effect
 - cli.ts
 - NpcGates.test.ts
 - ConversationTopic.ts
+- main.ts
 - GameWindow.ts
-- turn.ts
+- TurnPipeline.test.ts
+- FakeElement
+- validateContent.ts
+- EffectApplier.ts
 - content/index.ts
 - uiSetup.ts
 - ValidationModule
+- content-generated.spec.ts
 - GameState
 - ContentBundle
 - GameEvent
+- adapt.ts
+- formatEvent.ts
+- FakeBus
+- CommandHandler
+- RecordingBus
+- TokenizerLike
+- .apply
 
 ## God Nodes (most connected - your core abstractions)
 1. `ContentBundle` - 54 edges
@@ -78,21 +93,21 @@
 5. `Effect` - 43 edges
 6. `GameState` - 43 edges
 7. `collection()` - 39 edges
-8. `vitest` - 38 edges
+8. `vitest` - 39 edges
 9. `StorageAdapter` - 25 edges
 10. `compilerOptions` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `EffectApplierDependencies` --references--> `Random`  [EXTRACTED]
+  tests/fixtures/persistence.ts → src/core/Random.ts
+- `PublishRecord` --references--> `GameEvent`  [EXTRACTED]
+  tests/fixtures/ui.ts → src/core/events/GameEvent.ts
 - `MemoryStorage` --implements--> `StorageAdapter`  [EXTRACTED]
   tests/fixtures/persistence.ts → src/storage/StorageAdapter.ts
 - `RecordingGame` --implements--> `Game`  [EXTRACTED]
   tests/fixtures/ui.ts → src/application/Game.ts
-- `RecordingGame` --references--> `GameViewData`  [EXTRACTED]
-  tests/fixtures/ui.ts → src/application/GameViewData.ts
-- `RecordingGame` --references--> `GameEvent`  [EXTRACTED]
-  tests/fixtures/ui.ts → src/core/events/GameEvent.ts
-- `FakeSaveManager` --implements--> `SaveManager`  [EXTRACTED]
-  tests/fixtures/uiSetup.ts → src/application/SaveManager.ts
+- `RecordingGame` --references--> `SaveDto`  [EXTRACTED]
+  tests/fixtures/ui.ts → src/application/SaveDto.ts
 
 ## Import Cycles
 - None detected.
@@ -105,7 +120,7 @@
 - **One-command turn pipeline** — docs_developer_architecture_turnpipeline, docs_developer_application_and_ui_command, docs_developer_application_and_ui_gameevent, docs_developer_application_and_ui_eventbus, docs_developer_application_and_ui_effecteventmapping, docs_developer_application_and_ui_scoretracker, docs_developer_application_and_ui_session [INFERRED 0.75]
 - **Save lifecycle flow** — docs_developer_storage_schema_savedto, docs_developer_storage_schema_persistedshape, docs_developer_architecture_savemanager, docs_developer_storage_schema_storageadapter, docs_developer_storage_schema_quarantine, docs_developer_storage_schema_loadresult, docs_developer_storage_schema_restoretimederivation [INFERRED 0.75]
 
-## Communities (59 total, 23 thin omitted)
+## Communities (74 total, 28 thin omitted)
 
 ### Community 0 - "package.json"
 Cohesion: 0.05
@@ -128,12 +143,12 @@ Cohesion: 0.11
 Nodes (17): agents, content-editor, permissions, command, type, default_agent, command, type (+9 more)
 
 ### Community 5 - "GameState.ts"
-Cohesion: 0.08
-Nodes (32): ExitDefinition, aliasProblems(), budgetProblems(), catalogueIds(), coverageProblems(), DEFERRED_GATES, DIRECTIONS, Identified (+24 more)
+Cohesion: 0.12
+Nodes (17): ExitDefinition, DIRECTION_NAMES, DIRECTION_SHORTCUTS, isDirection(), MULTIWORD_ALIASES, MultiwordAlias, parseRaw(), SINGLE_ALIASES (+9 more)
 
 ### Community 6 - "ContentBundle.ts"
-Cohesion: 0.13
-Nodes (15): ActorDefinition, actorStates, actors, questions, quizzes, Catalogue, RoomDefinition, Quiz (+7 more)
+Cohesion: 0.16
+Nodes (14): actorStates, items, quizzes, Catalogue, ContentBundle, ItemDefinition, Quiz, QuizQuestion (+6 more)
 
 ### Community 7 - "Persistence and Save Schema"
 Cohesion: 0.29
@@ -159,57 +174,69 @@ Nodes (3): content-critic reviewer, Content rule catalogue (N/P/C/H/D/V), Counte
 Cohesion: 0.67
 Nodes (3): Hazard types (entry trap, timed hazard, action trap), ScheduledEvent (fuse / daemon), Scheduler
 
-### Community 34 - "FakeElement"
-Cohesion: 0.07
-Nodes (30): absentElement(), allText(), Bootstrap, BootstrapDependencies, descendants(), documentState, FakeDocument, FakeElement (+22 more)
+### Community 34 - "ui.ts"
+Cohesion: 0.12
+Nodes (15): absentElement(), documentState, FakeDocument, FakeEvent, FakeKeyboardEvent, findButton(), findByClass(), findFirstByClass() (+7 more)
 
 ### Community 36 - "vitest"
 Cohesion: 0.11
 Nodes (25): generatedRoomIds(), zone1Cards(), zone1Generation(), CONTENT_SOURCES, RETIRED_STUB_PATH, SRC_SOURCES, TEST_SOURCES, CardSet (+17 more)
 
 ### Community 37 - "SaveManager.ts"
-Cohesion: 0.13
-Nodes (32): QuarantineDto, LoadFailureReason, createSaveManager(), ENTITY_RECORD_KEYS, hasOptionalNumber(), hasUniqueItemOwnership(), hasUniqueProgress(), hasValidFlagReferences() (+24 more)
+Cohesion: 0.15
+Nodes (31): createSaveManager(), ENTITY_RECORD_KEYS, hasOptionalNumber(), hasUniqueItemOwnership(), hasUniqueProgress(), hasValidFlagReferences(), hasValidHazards(), hasValidHints() (+23 more)
 
 ### Community 38 - "content.ts"
-Cohesion: 0.14
-Nodes (31): CreateInitial, BASE_AREA, BASE_ITEM, BASE_ROOM, BASE_WORLD, bundleWithTopic(), COVERAGE_TOPIC_IDS, CoverageTopicIds (+23 more)
+Cohesion: 0.12
+Nodes (32): CreateInitial, BASE_AREA, BASE_ITEM, BASE_ROOM, BASE_WORLD, bundleWithTopic(), COVERAGE_TOPIC_IDS, CoverageTopicIds (+24 more)
 
 ### Community 39 - "helpers.ts"
 Cohesion: 0.11
-Nodes (28): authoredArea, authoredStartRoom, authoredWorld, DOWNLOAD_NAME, expectWorkspace(), makeQuarantine(), makeSave(), makeState() (+20 more)
+Nodes (27): authoredArea, authoredStartRoom, authoredWorld, DOWNLOAD_NAME, expectWorkspace(), makeQuarantine(), makeSave(), makeState() (+19 more)
 
 ### Community 40 - "finding"
 Cohesion: 0.05
-Nodes (134): sharedFindings(), CONTENT_ROOT, COVERAGE_PATH, coverageOptions(), diskIo(), main(), printFindings(), readCards() (+126 more)
+Nodes (133): CONTENT_ROOT, COVERAGE_PATH, coverageOptions(), diskIo(), main(), printFindings(), readCards(), ROOT (+125 more)
 
 ### Community 41 - "contentToolchain.ts"
 Cohesion: 0.09
 Nodes (28): Data, PER_AREA_PATHS, ParsedRoom, AREA_ID, CardFile, cardText(), conformingCardSet(), expectSameMembers() (+20 more)
 
 ### Community 42 - "parser.ts"
-Cohesion: 0.09
-Nodes (29): Command, CommandHandler, ParsedCommand, RuleEngine, CHEST_ID, DOOR_ID, KEY_A, KEY_B (+21 more)
+Cohesion: 0.13
+Nodes (24): ParsedCommand, CHEST_ID, DOOR_ID, KEY_A, loadNameResolver(), loadParser(), loadTokenizer(), loadVerbTable() (+16 more)
+
+### Community 43 - "vitest"
+Cohesion: 0.21
+Nodes (19): vitest, makeEnvelope(), SAVE_KEY, allText(), Bootstrap, BootstrapDependencies, descendants(), flush() (+11 more)
 
 ### Community 44 - "Condition"
-Cohesion: 0.17
-Nodes (10): hazards, hints, puzzles, Hazard, HintLevel, HintSequence, Puzzle, Condition (+2 more)
+Cohesion: 0.29
+Nodes (6): hints, puzzles, HintLevel, HintSequence, Puzzle, Condition
 
 ### Community 45 - "GameState.ts"
-Cohesion: 0.09
-Nodes (20): AreaProgress, QuizSystem, Effect, GameState, GameStateDto, RuntimeGameState, HazardSystem, HazardStateDto (+12 more)
+Cohesion: 0.16
+Nodes (9): AreaProgress, RuntimeGameState, HazardStateDto, HintStateDto, NpcStateDto, PuzzlePhase, PuzzleStateDto, QuizStateDto (+1 more)
 
 ### Community 46 - "Game.ts"
-Cohesion: 0.07
-Nodes (38): createGame(), DIRECTION_NAMES, doubleIdCommand(), END_STATE_COMMANDS, initialBatch(), isDirection(), noArgumentCommand(), putCommand() (+30 more)
+Cohesion: 0.12
+Nodes (18): createGame(), DIRECTION_NAMES, doubleIdCommand(), END_STATE_COMMANDS, initialBatch(), isDirection(), noArgumentCommand(), putCommand() (+10 more)
 
 ### Community 47 - "ContentGeneration.test.ts"
 Cohesion: 0.18
 Nodes (14): CardData, cleanParsedSet(), definition(), roomData(), npcCards(), TopicEntry, topicsCard(), GENERATED_PATHS (+6 more)
 
 ### Community 48 - "persistence.ts"
+Cohesion: 0.14
+Nodes (20): asRuntime(), EffectApplierDependencies, envelopeText(), FIXED_ISO, FixedClock, IMPORTED_ISO, loadEffectApplier(), loadGame() (+12 more)
+
+### Community 49 - "GameStateDto"
 Cohesion: 0.19
-Nodes (20): vitest, asRuntime(), envelopeText(), FakeRandom, FIXED_ISO, IMPORTED_ISO, loadGame(), loadInitialState() (+12 more)
+Nodes (5): QuarantineDto, LoadFailureReason, SaveDto, GameStateDto, MESSAGES
+
+### Community 50 - "Effect"
+Cohesion: 0.24
+Nodes (8): hazards, rooms, RoomDefinition, Effect, Hazard, Trigger, ScheduledEvent, Scheduler
 
 ### Community 51 - "cli.ts"
 Cohesion: 0.18
@@ -223,60 +250,88 @@ Nodes (12): gateFindings(), actor(), Data, EmittedNode, EmittedTopic, node(), NO
 Cohesion: 0.21
 Nodes (8): conversationTopics, nodes, TopicResolver, ConversationNode, ConversationTopic, ResolvedTopic, ResponseStrategy, TopicMatch
 
-### Community 55 - "GameWindow.ts"
-Cohesion: 0.06
-Nodes (26): Game, AreaProgressView, ConversationView, GameViewData, HintView, QuizView, SpecTopicView, SpecStatus (+18 more)
+### Community 54 - "main.ts"
+Cohesion: 0.21
+Nodes (10): loadContent(), createEventBus(), bootstrap(), browserDownload(), browserOpenSaveFile(), seededRandom(), startBrowserApp(), systemClock() (+2 more)
 
-### Community 56 - "turn.ts"
+### Community 55 - "GameWindow.ts"
+Cohesion: 0.05
+Nodes (22): Game, AreaProgressView, ConversationView, HintView, QuizView, SpecTopicView, SpecStatus, SessionStatus (+14 more)
+
+### Community 56 - "TurnPipeline.test.ts"
 Cohesion: 0.15
-Nodes (11): Session, loadEffectApplier(), loadSession(), EventBusFactory, FormatEventFunction, loadEventBus(), loadFormatEvent(), loadGameWithPhases() (+3 more)
+Nodes (9): KEY_B, FakeRandom, makeGameDependencies(), makeRuntimeState(), noop(), loadEventBus(), loadGameWithPhases(), makeTurnDependencies() (+1 more)
+
+### Community 57 - "FakeElement"
+Cohesion: 0.13
+Nodes (3): FakeElement, press(), press()
+
+### Community 58 - "validateContent.ts"
+Cohesion: 0.24
+Nodes (14): aliasProblems(), budgetProblems(), catalogueIds(), coverageProblems(), DEFERRED_GATES, DIRECTIONS, Identified, ownerProblems() (+6 more)
+
+### Community 59 - "EffectApplier.ts"
+Cohesion: 0.23
+Nodes (10): applyEffect(), applyEntityEffect(), applyItemEffect(), applyStateEffect(), applySystemEffect(), EffectApplier, EffectApplierDependencies, inventoryOf() (+2 more)
 
 ### Community 60 - "content/index.ts"
-Cohesion: 0.12
-Nodes (21): AreaDefinition, areas, items, specTopics, worlds, catalogueOf(), assembled, specTopics (+13 more)
+Cohesion: 0.18
+Nodes (10): ActorDefinition, actors, specTopics, worlds, assembled, specTopics, WorldDefinition, SpecTopic (+2 more)
 
 ### Community 61 - "uiSetup.ts"
-Cohesion: 0.09
-Nodes (13): LoadResult, SaveDto, FixedClock, MemoryStorage, installFakeDocument(), makeViewData(), RecordingGame, BootSetupOptions (+5 more)
+Cohesion: 0.13
+Nodes (7): GameViewData, LoadResult, RecordingGame, RecordingGameOptions, BootSetupOptions, DownloadCall, FakeSaveManager
+
+### Community 63 - "content-generated.spec.ts"
+Cohesion: 0.19
+Nodes (5): START_POSITION, startRoom, AreaDefinition, areas, questions
 
 ### Community 64 - "GameState"
-Cohesion: 0.27
-Nodes (4): ContentBundle, NameResolver, TurnContext, PutFixture
+Cohesion: 0.17
+Nodes (7): QuizSystem, Command, NameResolver, GameState, ConditionEvaluator, RuleEngine, TurnContext
 
 ### Community 65 - "ContentBundle"
-Cohesion: 0.13
-Nodes (16): Clock, GameDependencies, SaveManager, SaveManagerDependencies, EventBus, Random, ScoreTracker, BootResult (+8 more)
+Cohesion: 0.27
+Nodes (13): Clock, GameDependencies, SaveManager, SaveManagerDependencies, EventBus, BootResult, BootstrapDependencies, StorageAdapter (+5 more)
 
 ### Community 66 - "GameEvent"
-Cohesion: 0.17
-Nodes (7): GameEvent, EffectApplierLike, RecordingBus, MemoryBus, FakeBus, PublishRecord, RecordingGameOptions
+Cohesion: 0.11
+Nodes (12): GameEvent, RoomSummary, HazardSystem, HintSystem, DialogueSystem, PuzzleSystem, ScoreTracker, EventBusFactory (+4 more)
+
+### Community 67 - "adapt.ts"
+Cohesion: 0.32
+Nodes (10): catalogueOf(), bundleOf(), gateOf(), isTrue(), number(), numbers(), sharedFindings(), strings() (+2 more)
+
+### Community 68 - "formatEvent.ts"
+Cohesion: 0.83
+Nodes (3): formatEvent(), label(), topicLabel()
 
 ## Knowledge Gaps
 - **46 isolated node(s):** `content-critic reviewer`, `Counters and stuckness keys`, `Hazard types (entry trap, timed hazard, action trap)`, `Scheduler`, `hint-penalty-applied` (+41 more)
-  These have ≤1 connection - possible missing edges. (Counts symbols only; 308 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **23 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges. (Counts symbols only; 314 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **28 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `validateContent()` (3× useful, score=2.977713451)
-- `Turn pipeline (buffered events)` (2× useful, score=1.980149999)
-- `NameResolver` (2× useful, score=1.980149999)
-- `validateContent` (2× useful, score=1.964961861)
-- `Structural validation gates` (2× useful, score=1.964961861)
-- `eslint.config.js` (2× useful, score=1.959124309)
+- `validateContent()` (3× useful, score=2.977345052)
+- `Turn pipeline (buffered events)` (2× useful, score=1.979905018)
+- `NameResolver` (2× useful, score=1.979905018)
+- `validateContent` (2× useful, score=1.964718759)
+- `Structural validation gates` (2× useful, score=1.964718759)
+- `eslint.config.js` (2× useful, score=1.958881929)
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `vitest` connect `persistence.ts` to `package.json`, `FakeElement`, `vitest`, `SaveManager.ts`, `content.ts`, `contentToolchain.ts`, `parser.ts`, `ContentGeneration.test.ts`, `NpcGates.test.ts`, `turn.ts`?**
-  _High betweenness centrality (0.125) - this node is a cross-community bridge._
+- **Why does `vitest` connect `vitest` to `package.json`, `GameEvent`, `ui.ts`, `vitest`, `content.ts`, `contentToolchain.ts`, `parser.ts`, `ContentGeneration.test.ts`, `persistence.ts`, `GameStateDto`, `NpcGates.test.ts`, `TurnPipeline.test.ts`?**
+  _High betweenness centrality (0.132) - this node is a cross-community bridge._
 - **What connects `content-critic reviewer`, `Counters and stuckness keys`, `Hazard types (entry trap, timed hazard, action trap)` to the rest of the system?**
   _46 weakly-connected nodes found - possible missing edges._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.050072568940493466 - nodes in this community are weakly interconnected._
-- **Why does `ContentBundle` connect `GameState` to `ContentBundle`, `FakeElement`, `vitest`, `SaveManager.ts`, `ContentBundle.ts`, `GameState.ts`, `content.ts`, `parser.ts`, `Condition`, `GameState.ts`, `Game.ts`, `persistence.ts`, `ConversationTopic.ts`, `GameWindow.ts`, `turn.ts`, `content/index.ts`, `uiSetup.ts`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
+- **Why does `ContentBundle` connect `ContentBundle.ts` to `ui.ts`, `vitest`, `SaveManager.ts`, `content.ts`, `parser.ts`, `vitest`, `Condition`, `GameState.ts`, `Game.ts`, `persistence.ts`, `Effect`, `ConversationTopic.ts`, `main.ts`, `GameWindow.ts`, `validateContent.ts`, `content/index.ts`, `uiSetup.ts`, `content-generated.spec.ts`, `GameState`, `ContentBundle`, `GameEvent`, `adapt.ts`, `formatEvent.ts`?**
+  _High betweenness centrality (0.095) - this node is a cross-community bridge._
 - **Should `Strict TypeScript Settings` be split into smaller, more focused modules?**
   _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
 - **Should `Mechanics Data Models` be split into smaller, more focused modules?**

@@ -83,14 +83,13 @@ export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
 ];
 
 export function zone1CardSet(): CardSet {
-  const files = Object.entries(RAW_YAML)
-    .map(([key, text]) => ({
-      path: key.slice(CARD_PREFIX.length),
-      text: String(text),
-    }))
-    .toSorted((left, right) =>
-      left.path < right.path ? -1 : Number(left.path > right.path),
-    );
+  const files = Object.entries(RAW_YAML).map(([key, text]) => ({
+    path: key.slice(CARD_PREFIX.length),
+    text: String(text),
+  }));
+  files.sort((left, right) =>
+    left.path < right.path ? -1 : Number(left.path > right.path),
+  );
   expect(
     files.map((file) => file.path),
     'the clean zone-1 card set must declare the seven migrated cards',

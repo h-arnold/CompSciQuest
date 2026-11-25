@@ -37,10 +37,10 @@
     "semantic_hash": "35e8d16a4c6377d6df4b052b60759f56"
   },
   "vite.config.ts": {
-    "mtime": 1795514841.994328,
-    "seen": 1795522170.1652038,
-    "ast_hash": "f3e34f4b8b7822012f8f0ebdac4cbb7e",
-    "semantic_hash": "f3e34f4b8b7822012f8f0ebdac4cbb7e"
+    "mtime": 1795602300.501993,
+    "seen": 1795602335.6998262,
+    "ast_hash": "a7b61119b5fe2660699b4e66491c6df8",
+    "semantic_hash": ""
   },
   "docs/developer/architecture.md": {
     "mtime": 1795535418.0977302,
@@ -1438,6 +1438,30 @@
     "mtime": 1795601868.491751,
     "seen": 1795602010.2976186,
     "ast_hash": "51ec0249f5ed98ed4dbf7059844e93a0",
+    "semantic_hash": ""
+  },
+  "e2e/content-generated.spec.ts": {
+    "mtime": 1795602329.8153486,
+    "seen": 1795602335.69765,
+    "ast_hash": "13a0dd6169ff7f298e452926e772c2c2",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_102045_48c03f59_which_ui_nodes_own_the_boot_title_overlay_geometry.md": {
+    "mtime": 1795602045.5848386,
+    "seen": 1795602335.7000303,
+    "ast_hash": "4f139ec32cb098b42d45c59b0efc73f7",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_102400_7223b328_where_do_the_generated_zone_1_catalogues__title_sc.md": {
+    "mtime": 1795602240.4459174,
+    "seen": 1795602335.7000353,
+    "ast_hash": "f3bbf2ffcb53188ea343a676b8d39089",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_102442_696668b9_where_is_vitest_test_collection_configured_and_how.md": {
+    "mtime": 1795602282.7317772,
+    "seen": 1795602335.7000382,
+    "ast_hash": "7728e413d12898a8d9efd9814654ad2f",
     "semantic_hash": ""
   },
   "package-lock.json": {

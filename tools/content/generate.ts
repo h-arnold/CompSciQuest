@@ -188,7 +188,8 @@ export function generateContent(
   const outputs = new Map<string, Data[]>(
     OUTPUTS.map((output) => [output.name, []] as const),
   );
-  const ordered = normalised.cards.toSorted((left, right) => {
+  const ordered = [...normalised.cards];
+  ordered.sort((left: ParsedCard, right: ParsedCard): number => {
     const a = directoryOf(left.path);
     const b = directoryOf(right.path);
     return a < b ? -1 : Number(a > b);
