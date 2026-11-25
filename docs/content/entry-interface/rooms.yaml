@@ -1,0 +1,44 @@
+# area card for entry-interface
+# Applicable rules: D2, D3, D4, N6, V1
+kind: area
+areaId: entry-interface
+status: draft
+topicIds: [ai-ethics-and-implications]
+
+definition:
+  id: area-entry-interface
+  worldId: world-wjec-gcse-computer-science-2025-spec
+  name: The Arrival
+  startRoomId: room-arrival
+  lives: 3
+
+# A world is declared once, by the area whose startAreaId it names (D3).
+worlds:
+  - id: world-wjec-gcse-computer-science-2025-spec
+    name: The Machine
+    areaIds: [area-entry-interface, area-network-hub, area-1-2-1-data-representation]
+    startAreaId: area-entry-interface
+    lives: 3
+
+# rooms: id, title, description (block scalar), exits, score (D3, N8)
+rooms:
+  - id: room-arrival
+    title: The Arrival Bay
+    aliases: [arrival, landing, scan]
+    description: >-
+      The register lies open, a mark beside your name. The AI reads it in the flat
+      voice of a machine that has read it many times: attention not satisfied. The
+      classroom folds along its grid lines. The ceiling becomes a row of tiny
+      switches; you stand in a bay of humming cable. The AI waits: not a screen,
+      not a voice, but a shape assembled from the attendance record. Your mark
+      stands. It offers an east route, not a door.
+    topicIds: [ai-ethics-and-implications]
+    exits:
+      - direction: east
+        to: room-network-hub
+    score: 0
+    authoring:
+      interesting: A verdict delivered by the very attendance record that made it.
+
+# items: id, name, aliases, portable, description, initialRoom (D2, D3)
+items: []

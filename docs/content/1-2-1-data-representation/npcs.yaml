@@ -55,7 +55,7 @@ actors:
       verbalTic: >-
         "The entry stands."
       topics: >-
-        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-default.
+        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-default, topic-ai-why-here, topic-ai-escape, topic-ai-failure.
 
   - id: npc-predecessor
     aliases: [predecessor, former pupil, glitch]
@@ -274,6 +274,51 @@ conversationTopics:
       note: >-
         Flavour only (bible §2). No spec topic covers programming in this area, so there is no `learn-topic` here; this topic never assesses programming and is not a gate.
 
+  - id: topic-ai-why-here
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [why here, why am i here, reason, attendance, mark] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        The pupil's attendance mark is recorded. Attention was not satisfied. The pupil was brought here to demonstrate mastery of the whole of Unit 1. The entry stands until that is done.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask why you are here.)
+    authoring:
+      note: >-
+        Arrival-conversation flavour only (bible §12, 2026-11-25). No flag, gate, quiz or spec fact; mastery of Unit 1 is the premise's verdict, not course content. In the AI's third-person, clipped, bureaucratic register with its verbal tic.
+
+  - id: topic-ai-escape
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [escape, exit, leave, get out, route, door] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        There is no door out until mastery is demonstrated. The machine offers routes through the work, not around it. Follow the route provided.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask how to get out.)
+    authoring:
+      note: >-
+        Arrival-conversation flavour only (bible §12, 2026-11-25). No zone is named and no route beyond "the route provided" is promised, so nothing is asserted that the cards do not contain. No flag, gate, quiz or course fact.
+
+  - id: topic-ai-failure
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [fail, failure, deletion, delete, die, lives] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Failure is deletion, the cartoon kind: the pupil blinks out and is put back. The pupil has three lives, restored on entering a new area. A loss returns the pupil to the start of the area and costs no progress. That is the full extent of it.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what failure means.)
+    authoring:
+      note: >-
+        Arrival-conversation flavour only (bible §12, 2026-11-25). Deletion is an in-fiction cartoon threat, not realistic harm; the three lives, area-change reset and no-progress loss restate the fixed mechanics in content-rules.md §8. No save-file or fourth-wall reference, no flag, gate, quiz or course fact.
+
   - id: topic-ai-default
     actorId: npc-the-ai
     match: { kind: askTell, objectIds: [] }
@@ -288,7 +333,7 @@ conversationTopics:
     strategy: { kind: rotating }
     effects: []
     prompt: >-
-      (You could ask about the verdict, or what it never taught.)
+      (You could ask about the verdict, what it never taught, why you are here, how to leave, or what failure means.)
     authoring:
       note: >-
         Free-text DefaultAskTellTopic: any unmatched input lands here in voice (C2).

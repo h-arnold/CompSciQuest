@@ -200,9 +200,11 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 
 | Room ID | Purpose | Exits | Spec topics |
 | --- | --- | --- | --- |
-| `room-entry-interface` | Opening; AI's verdict | east: `room-switch-floor` | ai-ethics-and-implications (framing) |
-| `room-switch-floor` | Prologue: transistor as a tiny switch | west: `room-entry-interface`, up: `room-binary-hall` | switch-to-bit |
-| `room-binary-hall` | Zone hub and `startRoomId`; type bins and route diagram | down: `room-switch-floor`, west: `room-entry-interface`, north: `room-hex-deck` (switches-set), east: `room-character-tiles` (hex-read), south: `room-picture-mosaic` (characters-matched), up: `room-sound-choir` (picture-built), in: `room-storage-stacks` (sound-sampled), out: `room-compression-press` (stacks-sorted) | data-types, number-conversion |
+| `room-arrival` | World boot start: classroom scan, AI meeting and three in-character AI topics | east: `room-network-hub` | ai-ethics-and-implications (framing) |
+| `room-network-hub` | Zone-choice starting point; one live port, others dark | west: `room-arrival`, east: `room-switch-floor`, in: `room-entry-interface` | none (navigation-only) |
+| `room-entry-interface` | Older interface; AI's verdict strip | east: `room-switch-floor`, out: `room-network-hub` | ai-ethics-and-implications (framing) |
+| `room-switch-floor` | Prologue: transistor as a tiny switch | west: `room-network-hub`, up: `room-binary-hall` | switch-to-bit |
+| `room-binary-hall` | Switchyard hub and area `startRoomId`; type bins and route diagram | down: `room-switch-floor`, west: `room-network-hub`, north: `room-hex-deck` (switches-set), east: `room-character-tiles` (hex-read), south: `room-picture-mosaic` (characters-matched), up: `room-sound-choir` (picture-built), in: `room-storage-stacks` (sound-sampled), out: `room-compression-press` (stacks-sorted) | data-types, number-conversion |
 | `room-hex-deck` | Hexadecimal nibbles; denary ↔ binary ↔ hex | south: `room-binary-hall` | number-conversion |
 | `room-character-tiles` | ASCII, Unicode, characters and strings | west: `room-binary-hall` | character-representation |
 | `room-picture-mosaic` | Vector/raster, resolution, bit and colour depth | north: `room-binary-hall` | graphics-representation |
@@ -219,9 +221,24 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   teaching, retrieval and application sources, and no soft-lock remains. Entry-hazard
   counterplay is reachable (`once: true` on the three room-entry hazards). A
   whole-game verdict is not yet applicable: only the first zone is integrated.
+- **Opening amendment (2026-11-25): not yet signed off.** The arrival and Network Hub
+  rooms and the three new AI topics are validated and reviewed with no blockers or
+  majors, but the extended V4 trace awaits a final critic pass. That pass is paused
+  while code-lead implements per-room/area conversation scoping (bible §11 item 14);
+  the AI topics are globally addressable until then. No new spec topic is covered by
+  this amendment.
 
 ## Open questions
 
+- **Opening-sequence amendment (2026-11-25, approved).** The
+  zone-choice starting point is a new zone, The Network Hub (`area-network-hub`,
+  `room-network-hub`), reached after a classroom scan and a meeting with the AI in
+  `room-arrival`. It is not a teaching zone yet: no spec topic is mapped to it and
+  it contributes nothing to this zone's win set. `network-hardware` (1.3.1) is a
+  separate, unscoped zone. As new topics are created in this map, new zones and the
+  routes between them must be created in the bible, their topic files, cards and the
+  V4 walkthrough; only The Switchyard is currently authored. See
+  `docs/content/content-bible.md` §4.1 and §5.
 - All "code location" entries are planned paths under `src/content/authored/`: the
   code-lead must confirm the actual generated module names when validated YAML is
   generated to TypeScript (W6).

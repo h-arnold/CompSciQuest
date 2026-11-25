@@ -5,7 +5,7 @@ topicIds: [switch-to-bit, data-types, number-conversion, character-representatio
 
 definition:
   id: area-1-2-1-data-representation
-  worldId: world-1-2-1-data-representation
+  worldId: world-wjec-gcse-computer-science-2025-spec
   name: The Switchyard
   startRoomId: room-binary-hall
   lives: 3
@@ -15,24 +15,18 @@ definition:
     notes: >-
       `startRoomId` is the runtime successor to the old `levelStart: true` authoring note (content-rules D4; application-and-ui §3.2). It is declared once, here. Rooms are navigation and setting, so every room declares `score: 0` (P6; topic file §3). Entry effects are empty and therefore omitted (D3).
     worldIdNote: >-
-      `worldId: world-1-2-1-data-representation` is derived from the area ID and awaits editor confirmation.
-
-worlds:
-  - id: world-1-2-1-data-representation
-    name: The Switchyard
-    areaIds: [area-1-2-1-data-representation]
-    startAreaId: area-1-2-1-data-representation
-    lives: 3
+      `worldId: world-wjec-gcse-computer-science-2025-spec` is the single world for the machine, resolved and declared once by `area-entry-interface` (decision 2026-11-25). This area names it only.
 
 rooms:
   - id: room-entry-interface
     title: The Interface
     aliases: [interface, entry, hub]
     description: >-
-      A narrow interface glows around you, with a single arrow painted east. Somewhere beyond it, a machine clears its throat and reads out your attendance record. A strip of text repeats: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. The arrow east is the only way off this screen. The machine sounds as if it has said this many times before.
+      A narrow interface glows around you, with a single arrow painted east. Somewhere beyond it, a machine clears its throat and reads out your attendance record. A strip of text repeats: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. An arrow east leads deeper in; another way out opens back to the Network Hub. The machine sounds as if it has said this many times before.
     topicIds: [ai-ethics-and-implications]
     exits:
       - { direction: east, to: room-switch-floor }
+      - { direction: out, to: room-network-hub }
     score: 0
     authoring:
       interesting: >-
@@ -44,10 +38,10 @@ rooms:
     title: The Switch Floor
     aliases: [switch floor, foundry, workshop]
     description: >-
-      Heat haze shimmers off a belt of tiny black switches, and the clicks are getting faster. A rack of glass vacuum tubes stands retired against the wall, labelled "before". Each switch on the belt is no bigger than a speck, yet it decides whether a line carries a one or a zero. A sign says the modern ones arrive packed onto chips. A stair climbs up; a door west leads back to the interface.
+      Heat haze shimmers off a belt of tiny black switches, and the clicks are getting faster. A rack of glass vacuum tubes stands retired against the wall, labelled "before". Each switch on the belt is no bigger than a speck, yet it decides whether a line carries a one or a zero. A sign says the modern ones arrive packed onto chips. A stair climbs up; a door west leads back to the Network Hub.
     topicIds: [switch-to-bit]
     exits:
-      - { direction: west, to: room-entry-interface }
+      - { direction: west, to: room-network-hub }
       - { direction: up, to: room-binary-hall }
     score: 0
     authoring:
@@ -66,7 +60,7 @@ rooms:
     topicIds: [data-types, number-conversion]
     exits:
       - { direction: down, to: room-switch-floor }
-      - { direction: west, to: room-entry-interface }
+      - { direction: west, to: room-network-hub }
       - { direction: north, to: room-hex-deck, conditions: [{ kind: flag-set, flag: switches-set }] }
       - { direction: east, to: room-character-tiles, conditions: [{ kind: flag-set, flag: hex-read }] }
       - { direction: south, to: room-picture-mosaic, conditions: [{ kind: flag-set, flag: characters-matched }] }

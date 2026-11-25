@@ -1,0 +1,44 @@
+# area card for network-hub
+# Applicable rules: D2, D3, D4, N6, V1
+# Rules in scope for this brief: N1, N2, N4, N5, N8, P1, P6, D2, D3, D4, D5, V1, V4
+kind: area
+areaId: network-hub
+status: draft
+
+definition:
+  id: area-network-hub
+  worldId: world-wjec-gcse-computer-science-2025-spec
+  name: The Network Hub
+  startRoomId: room-network-hub
+  lives: 3
+
+# A world is declared once, by the area whose startAreaId it names (D3).
+# This area is not that owner: it sets only definition.worldId and omits worlds.
+
+# rooms: id, title, description (block scalar), exits, score (D3, N8)
+rooms:
+  - id: room-network-hub
+    title: The Network Hub
+    aliases: [patch bay, broadcast bay, concourse]
+    description: >-
+      You stand in a hub older than the rest of the machine. A yellowed label
+      says it has been here since the 1990s. It copies everything to every
+      port, so all routes show at once: one live, the rest dark. The AI says
+      the hub is on the record, so nobody switched it off. Only the east port
+      is live, towards the Switchyard; west returns to arrival, and in to the
+      interface. The AI waits for you to choose.
+    topicIds: []
+    exits:
+      - direction: west
+        to: room-arrival
+      - direction: east
+        to: room-switch-floor
+      - direction: in
+        to: room-entry-interface
+    score: 0
+    authoring:
+      interesting: Every route shows at once, yet only the east port carries a signal.
+      note: Navigation-only zone-choice starting point; no teaching topic is scoped here (P1).
+
+# items: id, name, aliases, portable, description, initialRoom (D2, D3)
+items: []
