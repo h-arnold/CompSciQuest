@@ -4,6 +4,7 @@ import type { TurnContext } from '../../TurnContext';
 import type { Effect } from '../../effects/Effect';
 import type { Command } from '../Command';
 import type { CommandHandler } from '../CommandHandler';
+import { npcHandler } from './npcHandlers';
 
 function message(text: string): Effect {
   return { kind: 'message', text };
@@ -225,12 +226,12 @@ const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
     'Try a direction, take, drop, examine, open, close, unlock, put, look, inventory, score or help.',
   ),
   unknown: fixedMessage("I don't understand that."),
-  'talk-to': fixedMessage('There is no reply.'),
-  ask: fixedMessage('There is no reply.'),
-  tell: fixedMessage('There is no reply.'),
-  give: fixedMessage('That is not accepted.'),
-  show: fixedMessage('There is no reaction.'),
-  bye: fixedMessage('Farewell.'),
+  'talk-to': npcHandler,
+  ask: npcHandler,
+  tell: npcHandler,
+  give: npcHandler,
+  show: npcHandler,
+  bye: npcHandler,
   answer: fixedMessage('There is no question to answer.'),
   hint: fixedMessage('No hint is available.'),
 };

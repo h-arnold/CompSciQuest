@@ -1,13 +1,15 @@
 // Sole mutator for effect-driven fields (shared-rules.md §5). This slice
 // implements the effects the persistence contracts exercise and gives every
 // other documented effect its canonical event without inventing mechanics.
+import type { ContentBundle } from '../../content/ContentBundle';
 import type { GameState, RoomStateDto } from '../GameState';
-import type { GameEvent } from '../events/GameEvent';
+import type { GameEvent, RoomSummary } from '../events/GameEvent';
 import type { Random } from '../Random';
 import type { Effect } from './Effect';
 
 export interface EffectApplierDependencies {
   readonly random: Random;
+  readonly bundle?: ContentBundle;
 }
 
 export interface EffectApplier {
@@ -118,9 +120,25 @@ function applyStateEffect(
   return undefined;
 }
 
+function roomSummary(
+  bundle: ContentBundle | undefined,
+  roomId: string,
+): RoomSummary {
+  const room = bundle?.rooms.getById(roomId);
+  return room === undefined
+    ? { id: roomId, title: roomId, description: '', exits: [] }
+    : {
+        id: room.id,
+        title: room.title,
+        description: room.description,
+        exits: room.exits.map((exit) => exit.direction),
+      };
+}
+
 function applyEntityEffect(
   state: GameState,
   effect: Effect,
+  bundle: ContentBundle | undefined,
 ): readonly GameEvent[] | undefined {
   if (effect.kind === 'move-player') {
     (state.player as { position: { roomId: string } }).position.roomId =
@@ -128,12 +146,7 @@ function applyEntityEffect(
     return [
       {
         type: 'room-entered',
-        room: {
-          id: effect.roomId,
-          title: effect.roomId,
-          description: '',
-          exits: [],
-        },
+        room: roomSummary(bundle, effect.roomId),
       },
     ];
   }
@@ -235,11 +248,16 @@ function applyBookkeepingEffect(
     : undefined;
 }
 
-function applyEffect(state: GameState, effect: Effect): readonly GameEvent[] {
+function applyEffect(
+  state: GameState,
+  effect: Effect,
+  bundle: ContentBundle | undefined,
+): readonly GameEvent[] {
   const handlers = [
     applyItemEffect,
     applyStateEffect,
-    applyEntityEffect,
+    (current: GameState, candidate: Effect) =>
+      applyEntityEffect(current, candidate, bundle),
     applySystemEffect,
     applyBookkeepingEffect,
   ];
@@ -257,7 +275,7 @@ export function createEffectApplier(
   // The injected source of randomness is retained for mechanic slices.
   const applier = {
     apply(effect: Effect): readonly GameEvent[] {
-      return applyEffect(state, effect);
+      return applyEffect(state, effect, dependencies.bundle);
     },
     random: dependencies.random,
   };

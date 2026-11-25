@@ -1,7 +1,7 @@
 // Canonical façade from application-and-ui.md §4. The façade owns the turn
 // counter and the event buffer; it never computes game rules or scores itself.
 import type { ContentBundle } from '../content/ContentBundle';
-import { createInitial } from '../core/GameState';
+import { createFromDto, createInitial } from '../core/GameState';
 import type { GameState } from '../core/GameState';
 import type { Direction } from '../types/domain';
 import type { Command } from '../core/commands/Command';
@@ -16,6 +16,8 @@ import { createSession } from '../core/lifecycle/Session';
 import type { Session } from '../core/lifecycle/Session';
 import type { Random } from '../core/Random';
 import { createHazardSystem } from '../core/hazards/HazardSystem';
+import { createDialogueSystem } from '../core/npcs/DialogueSystem';
+import { TALKING_STATE } from '../core/npcs/ConversationFlow';
 import { createPuzzleSystem } from '../core/puzzles/PuzzleSystem';
 import { createConditionEvaluator } from '../core/rules/ConditionEvaluator';
 import { createRuleEngine } from '../core/rules/RuleEngine';
@@ -142,26 +144,14 @@ function isDirection(value: string | undefined): value is Direction {
 }
 
 function noArgumentCommand(kind: string): Command | undefined {
-  switch (kind) {
-    case 'look': {
-      return { kind: 'look' };
-    }
-    case 'inventory': {
-      return { kind: 'inventory' };
-    }
-    case 'score': {
-      return { kind: 'score' };
-    }
-    case 'help': {
-      return { kind: 'help' };
-    }
-    case 'bye': {
-      return { kind: 'bye' };
-    }
-    default: {
-      return undefined;
-    }
-  }
+  const commands: Readonly<Record<string, Command>> = {
+    look: { kind: 'look' },
+    inventory: { kind: 'inventory' },
+    score: { kind: 'score' },
+    help: { kind: 'help' },
+    bye: { kind: 'bye' },
+  };
+  return commands[kind];
 }
 
 function singleIdCommand(kind: string, id: string): Command | undefined {
@@ -309,8 +299,12 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
+  // The façade owns its own top-level state copy (notably the turn counter);
+  // entity records stay shared by reference so callers observe entity changes.
   let state: GameState =
-    dependencies.initialState ?? createInitial(dependencies.bundle);
+    dependencies.initialState === undefined
+      ? createInitial(dependencies.bundle)
+      : createFromDto(dependencies.initialState);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
   const isInjectedApply = dependencies.apply !== undefined;
@@ -321,7 +315,13 @@ export function createGame(dependencies: GameDependencies): Game {
     dependencies.session ?? createSession(state, dependencies.bundle);
   let apply: (effect: Effect) => readonly GameEvent[] =
     dependencies.apply ??
-    createEffectApplier(state, { random: dependencies.random }).apply;
+    createEffectApplier(state, {
+      random: dependencies.random,
+      bundle: dependencies.bundle,
+    }).apply;
+  // The current suggestion is view state, not persisted game state. It comes
+  // only from the NPC event stream; the panel never computes a prompt itself.
+  let conversationPrompt: string | undefined;
 
   const evaluator = createConditionEvaluator();
   const ruleEngine = createRuleEngine({
@@ -345,6 +345,7 @@ export function createGame(dependencies: GameDependencies): Game {
   const productionReaction = (current: GameState): ComposedReaction => {
     const applier = createEffectApplier(current, {
       random: dependencies.random,
+      bundle: dependencies.bundle,
     });
     return createComposedReaction({
       scheduler: createScheduler({ applier }),
@@ -354,7 +355,12 @@ export function createGame(dependencies: GameDependencies): Game {
         random: dependencies.random,
         applier,
       }),
-      npcs: { react: () => [] },
+      npcs: createDialogueSystem({
+        bundle: dependencies.bundle,
+        evaluator,
+        random: dependencies.random,
+        applier,
+      }),
       puzzles: createPuzzleSystem({
         bundle: dependencies.bundle,
         evaluator,
@@ -373,11 +379,23 @@ export function createGame(dependencies: GameDependencies): Game {
       session = createSession(state, dependencies.bundle);
     }
     if (!isInjectedApply) {
-      apply = createEffectApplier(state, { random: dependencies.random }).apply;
+      apply = createEffectApplier(state, {
+        random: dependencies.random,
+        bundle: dependencies.bundle,
+      }).apply;
     }
   };
 
   const publish = (events: readonly GameEvent[]): readonly GameEvent[] => {
+    for (const event of events) {
+      if (event.type === 'topic-suggested') {
+        conversationPrompt = event.text;
+        continue;
+      }
+      if (event.type === 'conversation-ended') {
+        conversationPrompt = undefined;
+      }
+    }
     dependencies.bus.publish(events);
     return events;
   };
@@ -387,6 +405,7 @@ export function createGame(dependencies: GameDependencies): Game {
     shouldResetSession: boolean,
   ): readonly GameEvent[] => {
     state = next;
+    conversationPrompt = undefined;
     rebind();
     dependencies.clearViews?.();
     if (shouldResetSession) session.newGame();
@@ -407,6 +426,7 @@ export function createGame(dependencies: GameDependencies): Game {
     const result = dependencies.saveManager.validate(text);
     if (result.ok) {
       state = dependencies.saveManager.restore(result.dto);
+      conversationPrompt = undefined;
       rebind();
       dependencies.clearViews?.();
     }
@@ -524,12 +544,25 @@ export function createGame(dependencies: GameDependencies): Game {
       publish(replaceState(createInitial(dependencies.bundle), true));
     },
     continueGame(dto: SaveDto): void {
-      publish(replaceState(dependencies.saveManager.restore(dto), false));
+      publish(replaceState(createFromDto(dto.state), false));
     },
     restart(): void {
       publish(replaceState(createInitial(dependencies.bundle), true));
     },
     getViewData(): GameViewData {
+      const speaking = Object.entries(state.npcs).find(
+        ([, npc]) => npc.stateId === TALKING_STATE,
+      );
+      const conversation =
+        speaking === undefined
+          ? undefined
+          : {
+              actorId: speaking[0],
+              actorName:
+                dependencies.bundle.actors.getById(speaking[0])?.aliases[0] ??
+                speaking[0],
+              ...(conversationPrompt && { prompt: conversationPrompt }),
+            };
       return {
         status: state.status,
         position: state.player.position,
@@ -537,6 +570,7 @@ export function createGame(dependencies: GameDependencies): Game {
         lives: state.player.lives,
         score: state.score,
         areas: areaViews(state, dependencies.bundle),
+        ...(conversation && { conversation }),
         hints: [],
       };
     },
@@ -548,14 +582,10 @@ export function createGame(dependencies: GameDependencies): Game {
     },
     importSave(text: string): LoadResult {
       const result = importGame(text);
-      publish([
-        {
-          type: 'message',
-          text: result.ok
-            ? 'Game imported.'
-            : 'That save could not be imported.',
-        },
-      ]);
+      const message = result.ok
+        ? 'Game imported.'
+        : 'That save could not be imported.';
+      publish([{ type: 'message', text: message }]);
       return result;
     },
   };

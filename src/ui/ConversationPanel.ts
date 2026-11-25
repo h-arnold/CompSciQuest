@@ -19,7 +19,9 @@ export class ConversationPanel {
     if (conversation === undefined) {
       return;
     }
-    appendLine(this.element, `Talking with ${conversation.actorName}.`);
+    const name = conversation.actorName;
+    const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+    appendLine(this.element, `Talking with ${displayName}.`);
     if (conversation.prompt !== undefined) {
       appendLine(this.element, conversation.prompt);
     }
