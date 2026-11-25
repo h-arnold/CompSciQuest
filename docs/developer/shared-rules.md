@@ -1,6 +1,6 @@
 # Shared rule spine (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
@@ -77,6 +77,8 @@ export type Condition =
   | { readonly kind: 'flag-set'; readonly flag: string }
   | { readonly kind: 'has-item'; readonly itemId: string }
   | { readonly kind: 'visited-room'; readonly roomId: string }
+  | { readonly kind: 'in-room'; readonly roomId: string }
+  | { readonly kind: 'in-area'; readonly worldId: string; readonly areaId: string }
   | { readonly kind: 'topic-complete'; readonly topicId: string }
   | {
       readonly kind: 'npc-knows';
@@ -103,6 +105,23 @@ export type Condition =
   | { readonly kind: 'all' | 'any'; readonly of: readonly Condition[] }
   | { readonly kind: 'not'; readonly of: Condition };
 ```
+
+`in-room` and `in-area` are the only position-sensitive kinds. They compare the
+player's **current** `Position` (`worldId`/`areaId`/`roomId`) with the named IDs:
+`in-room` is true only in that room; `in-area` is true only when BOTH `worldId`
+and `areaId` match, because area IDs are unique only together with `worldId`
+([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions))
+and `AreaProgress` is keyed by the pair. `visited-room` and `topic-complete` are
+deliberately different: they are true once the room or topic has ever been seen
+and must scan **every** `AreaProgress` row, not only `progress[0]`; the earlier
+single-row lookup was a multi-area bug, corrected with this decision
+(2026-11-25). Missing IDs evaluate to `false` for all four kinds.
+
+A **location scope** is an `in-room`/`in-area` condition, or an `all` containing
+at least one such condition. A `not` or `any` shape is not a single location
+scope: a check that needs to extract one reports a gap rather than guessing.
+Conversation topics use these kinds through their existing `isActive`
+([npcs.md §2](npcs.md#2-model)).
 
 `counter-at-least` is deliberately generic. The agreed key namespace is:
 
@@ -132,8 +151,14 @@ export type Trigger =
   | { readonly kind: 'on-schedule'; readonly eventId: string };
 ```
 
-Triggers are checked in phase 4 against the turn's buffered events and final
-state. A definition may have one trigger; multiple conditions combine with `all`.
+Triggers are checked in phase 4 against the turn's buffered events, final state
+and the command being handled. The command carrier is `TurnContext.command`,
+pinned in [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures):
+`on-verb` matches `command.kind === trigger.verb`, and `on-item-used` matches an
+`itemId` on the command equal to `trigger.itemId`. `Command` is the single
+canonical union in
+[application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs).
+A definition may have one trigger; multiple conditions combine with `all`.
 
 ## 5. Effect and EffectApplier
 
@@ -193,8 +218,16 @@ export type Effect =
       readonly hintId: string;
       readonly level: number;
       readonly text: string;
+    }
+  | {
+      readonly kind: 'announce-hazard';
+      readonly hazardId: string;
+      readonly reason: string;
     };
 ```
+
+This is the complete pinned `Effect` union; `announce-hazard` was added by user
+decision on 2026-11-25.
 
 Conventions:
 
@@ -209,6 +242,9 @@ Conventions:
 - Every effect produces at least one buffered event, so every state change is
   explainable in the output log. The complete effect → event mapping is
   canonical in [application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping).
+- `announce-hazard` emits `hazard-triggered`
+  ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping));
+  there is deliberately no score-carrying effect variant.
 - `change-lives` emits `lives-changed`; `Session` owns game-over.
 - `complete-topic` emits `topic-completed`, which records completion only; the
   score comes from the separate achievement event
@@ -234,8 +270,11 @@ export interface ScheduledEvent {
 - A **fuse** counts down by one each turn and fires at `0`, then is removed.
 - A **daemon** fires whenever `remainingTurns` reaches `0` and is reset to
   `repeatEveryTurns` (defaulting to the initial `remainingTurns`).
-- `Scheduler.tick(turn, state)` runs first in phase 4 (signature pinned in
-  [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
+- Authoring rejects `remainingTurns: 0` (decision: 2026-11-25); `1` fires on the
+  next turn's phase 4.
+- `Scheduler.tick(context: TurnContext)` runs first in phase 4 (signature pinned
+  in [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures),
+  corrected by user decision of 2026-11-25).
   All scheduled state is serialised in `GameStateDto.schedule`, so a reload
   resumes timers accurately.
 - Fire order is array order in the save.
@@ -317,6 +356,8 @@ so `NameResolver` never has to guess.
 ## 12. Tests
 
 - `ConditionEvaluator`: every kind, nested combinators, missing IDs → `false`.
+  `in-room`/`in-area` match only the current `Position`; `visited-room` and
+  `topic-complete` find their ID in **any** area's progress, not only the first.
 - `EffectApplier`: each effect mutates only its declared field and emits the
   expected event; `ScoreTracker` still owns score.
 - `Scheduler`: fuse countdown, daemon repeat with a differing interval,
@@ -340,3 +381,5 @@ so `NameResolver` never has to guess.
 - `give`/`show` use a dedicated `transfer-item` effect.
 - Object and NPC aliases must be globally unique, enforced by content validation.
 - Schema versioning/migration is revisited before public release, not now.
+- Room/area locality uses `in-room`/`in-area` in `isActive`, not topic fields
+  (2026-11-25).

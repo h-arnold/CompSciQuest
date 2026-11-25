@@ -1,6 +1,6 @@
 # Application and UI contracts (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) ·
 [storage schema](storage-schema.md) · [shared rule spine](shared-rules.md) ·
@@ -167,7 +167,7 @@ export function validateContent(bundle: ContentBundle): readonly string[];
 `loadContent()` returns the `ContentBundle` assembled from the committed generated
 files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
-means valid. It runs the eight shared structural gates in
+means valid. It runs the five shared structural gates in
 [content-rules.md §7](content-rules.md#7-structural-validation-gates) against the
 bundle at boot, including:
 
@@ -178,13 +178,17 @@ bundle at boot, including:
 - topic IDs, puzzle dependencies and hazard/quiz/hint targets exist;
 - per-topic score budgets hold (§10 of this document).
 
-NPC actor binding is pending the user-owned runtime-type decision recorded in
-[content-rules.md §8](content-rules.md#8-decisions-content-must-not-assume), so
-that clause of the `npc-content` gate is not yet enforced. Authoring-only checks
+NPC actor binding is resolved: every authored topic and node carries an
+`actorId` that resolves to one actor, and the authoring-time `npc-content` gate
+enforces it ([content-rules.md §4.3 point 2](content-rules.md#43-npc-card),
+[§8](content-rules.md#8-decisions-content-must-not-assume)). Its runtime mirror
+is deferred with the other mechanics gates
+([content-toolchain.md §4](content-toolchain.md#4-validation)). Authoring-only checks
 (stray keys outside `authoring:`, document status, unresolved `todo` placeholders)
 run in `npm run content:validate` on the YAML and cannot run on the runtime
-bundle. Apart from that split, authoring-time, test-time and boot-time validation
-use the same gate functions and cannot drift. Vitest runs `validateContent`
+bundle. Apart from authoring-only checks and the three deferred mechanics gates,
+authoring-time, test-time and boot-time validation use the same gate functions
+and cannot drift. Vitest runs `validateContent`
 against small deterministic fixtures and against the real catalogues.
 
 `GameState.createInitial()` takes its world, area, room and room inventory from
@@ -363,7 +367,8 @@ export type CommandHandler = (
 
 Handlers **return** effects and emit no events directly; `EffectApplier` is the
 only state mutator. `TurnContext` carries the read-only state, the injected
-`Random`, the content bundle and the turn number. Ambiguity is avoided by
+`Random`, the content bundle, the turn number and the `Command` being handled
+(§8). Ambiguity is avoided by
 globally unique object/NPC aliases ([npcs.md §3](npcs.md#3-commands-and-topic-resolution));
 there is **no disambiguation prompt**. The verb and alias tables are engine
 constants (not content), but individual item/actor aliases come from content.
@@ -665,6 +670,7 @@ export interface TurnContext {
   readonly state: GameState;
   readonly bundle: ContentBundle;
   readonly random: Random;
+  readonly command: Command;
 }
 
 // src/core/rules/ConditionEvaluator.ts
@@ -726,9 +732,10 @@ export interface Exit {
   readonly preconditions: readonly Precondition[];
 }
 
-// src/core/scheduling/Scheduler.ts
+// src/core/scheduling/Scheduler.ts — constructed with an injected EffectApplier
 export interface Scheduler {
-  tick(turn: number, state: GameState): readonly Effect[];
+  // reads context.turn and context.state
+  tick(context: TurnContext): readonly GameEvent[];
 }
 
 // src/application/Clock.ts, src/core/Random.ts
@@ -749,26 +756,83 @@ export interface Session {
   newGame(): void;
 }
 
-// Phase-4 systems (shared-rules.md §2)
+// Phase-4 systems (shared-rules.md §2). Each of the five below is constructed
+// with an injected EffectApplier (its dependencies carry a shared
+// `readonly applier: EffectApplier`), applies its own effects in declaration
+// order and returns the resulting GameEvent[]; none emits to the EventBus.
 export interface HazardSystem {
-  react(state: GameState, events: readonly GameEvent[]): readonly Effect[];
+  react(
+    context: TurnContext,
+    events: readonly GameEvent[],
+  ): readonly GameEvent[];
 }
 export interface DialogueSystem {
-  react(state: GameState, events: readonly GameEvent[]): readonly Effect[];
+  react(
+    context: TurnContext,
+    events: readonly GameEvent[],
+  ): readonly GameEvent[];
 }
 export interface PuzzleSystem {
-  react(state: GameState, events: readonly GameEvent[]): readonly Effect[];
+  react(
+    context: TurnContext,
+    events: readonly GameEvent[],
+  ): readonly GameEvent[];
 }
 export interface HintSystem {
-  react(state: GameState, events: readonly GameEvent[]): readonly Effect[];
+  react(
+    context: TurnContext,
+    events: readonly GameEvent[],
+  ): readonly GameEvent[];
 }
+
+// Phase 3 still returns effects; only phase 4 is event-returning.
 export interface QuizSystem {
   handle(command: Command, state: GameState): readonly Effect[];
 }
+
+// src/application/ComposedReaction.ts — holds the five constructed systems
+// described above (decision: 2026-11-25)
+export interface ComposedReactionDependencies {
+  readonly scheduler: Scheduler;
+  readonly hazards: HazardSystem;
+  readonly npcs: DialogueSystem;
+  readonly puzzles: PuzzleSystem;
+  readonly hints: HintSystem;
+}
+
+export type ComposedReaction = (
+  context: TurnContext,
+  events: readonly GameEvent[],
+) => readonly GameEvent[];
+
+export function createComposedReaction(
+  dependencies: ComposedReactionDependencies,
+): ComposedReaction;
 ```
 
 `EventBus`, `Random` and `EffectApplier.apply(effect): GameEvent[]` are already
 pinned in the existing documents and are not restated as new contracts.
+
+`TurnContext.command` carries the command being handled: `on-verb` matches
+`command.kind === trigger.verb`, and `on-item-used` matches an `itemId` on the
+command equal to `trigger.itemId`
+([shared-rules.md §4](shared-rules.md#4-trigger)). `Command` is the single
+canonical union in §5. This carrier was added by user decision on 2026-11-25.
+
+`Game` builds a single `TurnContext` per turn (including the resolved `Command`)
+and passes it to `createComposedReaction`'s reaction; phase-4 systems read state
+and command from that context rather than constructing their own (decision:
+2026-11-25).
+
+The phase-4 contract is uniform by the same decision: `Scheduler`,
+`HazardSystem`, `DialogueSystem`, `PuzzleSystem` and `HintSystem` each apply
+their effects through their injected `EffectApplier` and return
+`readonly GameEvent[]`. `createComposedReaction` calls them in the order
+scheduler → hazards → npcs → puzzles → hints and concatenates the returned
+events; it has no effect buffer and applies no effects itself. `Game` still owns
+the per-turn event buffer and the single publication at the end of the turn
+([shared-rules.md §2](shared-rules.md#2-turn-pipeline-amends-architecturemd-62)).
+Phase 3 handlers continue to **return** `Effect[]` (§5.2).
 
 `SpecTopicCatalogue` is canonical here (the sketch in `architecture.md` now
 links to this section). Its `getByAreaId` lookup is what restore and the
@@ -809,11 +873,16 @@ buffered event per effect. The complete mapping is:
 | `schedule`                                   | `scheduled`           |
 | `start-quiz`                                 | `quiz-started`        |
 | `show-hint`                                  | `hint-shown`          |
+| `announce-hazard`                            | `hazard-triggered`    |
 
 An effect that legitimately needs to say something to the player includes its
 own `message` effect alongside the state-changing one. `ScoreTracker` consumes
 `topic-completed`, `hint-penalty-applied`, `room-entered`, `puzzle-solved` and
 `quiz-ended`; `Session` consumes `lives-changed` and the win condition (§11).
+Per-puzzle points are awarded by `ScoreTracker` from `puzzle-solved` using the
+declared `Puzzle.score`, so no score-carrying effect kind exists;
+`score-changed.total` remains owned and emitted by `ScoreTracker` (§6). The
+`announce-hazard` row was added by user decision on 2026-11-25.
 
 ## 10. Scoring with many puzzles per topic
 

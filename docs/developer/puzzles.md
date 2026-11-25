@@ -1,6 +1,6 @@
 # Puzzles (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
@@ -40,13 +40,14 @@ in the dependency graph, but a puzzle may be activated before it is solved).
 after hazards and NPC reactions, before auto-hints:
 
 1. For each puzzle in declaration order, if it is `unsolved` and at least one
-   requirement is true, return a `set-puzzle-active` effect. `EffectApplier` sets
-   the phase and emits `puzzle-activated`; the `turns-since:<puzzleId>` counter
-   starts on the next turn.
-2. If all `requirements` hold, return a `set-puzzle-solved` effect. `EffectApplier`
-   sets the phase to `solved` **before** emitting `puzzle-solved`, which prevents
-   double-firing.
-3. Apply `onSolve` effects through `EffectApplier`. If `topicId` is set, include a
+   requirement is true, `PuzzleSystem` applies a `set-puzzle-active` effect
+   through its injected `EffectApplier`. The applier sets the phase and emits
+   `puzzle-activated`; the `turns-since:<puzzleId>` counter starts on the next
+   turn.
+2. If all `requirements` hold, it applies a `set-puzzle-solved` effect through
+   the same applier. The phase is set to `solved` **before** `puzzle-solved` is
+   emitted, which prevents double-firing.
+3. Apply `onSolve` effects through that applier. If `topicId` is set, include a
    `complete-topic` effect; that emits `topic-completed` and records completion
    for the win check. Points come from the puzzle's own `score` on the
    `puzzle-solved` event. The settled rule is **per-puzzle scoring**: several
@@ -56,6 +57,10 @@ after hazards and NPC reactions, before auto-hints:
    Only covered topics with evidence are scoreable.
 4. A solved puzzle stays solved. A hazard teleport or flag reset does **not**
    revert it — puzzle progress is owned solely by `PuzzleSystem`.
+
+`PuzzleSystem` is event-returning like the other phase-4 systems: it returns the
+`GameEvent[]` produced by its applier, while `Game` owns the turn buffer
+([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
 
 **Critical authoring rule:** requirements must be _action-set flags_, not mere
 possession. "Has the brass key" must not auto-solve "unlock the door"; the

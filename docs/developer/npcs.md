@@ -1,6 +1,6 @@
 # NPCs and conversation (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
@@ -48,14 +48,25 @@ export type ResponseStrategy =
 
 export interface ConversationTopic {
   readonly id: string;
+  readonly actorId?: string; // optional binding; an unbound topic stays global
   readonly match: TopicMatch;
-  readonly isActive: Condition; // shared spine §3
+  readonly isActive: Condition; // shared rule spine §3
   readonly responses: readonly string[];
   readonly strategy: ResponseStrategy;
   readonly effects: readonly Effect[]; // learn-topic, set-flag, enter-node, start-quiz…
   readonly prompt?: string; // "(You could ask why.)"
 }
+```
 
+The optional `actorId` binding was approved in
+[content-rules.md §4.3 point 2](content-rules.md#43-npc-card): a topic is bound to
+one actor rather than reachable from every actor. Room or area locality is **not**
+a field on the topic: use `isActive` with the `in-room` or `in-area` conditions
+from [shared-rules.md §3](shared-rules.md#3-condition). An unscoped topic remains
+globally reachable; a room-bound actor's default or catch-all topic must carry the
+same scope.
+
+```ts
 // src/core/npcs/ConversationNode.ts
 export interface ConversationNode {
   readonly id: string;
@@ -108,7 +119,8 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
    `ready` state's greeting effects and switch the actor to `talking`.
 2. In **phase 3 (Execute)**, `DialogueSystem` finds the best matching topic:
    active node topics first, then the actor's state topics, then defaults.
-   `isActive` gates topics on world state.
+   `isActive` gates topics on world state, including `in-room`/`in-area` checks
+   against the player's current `Position` for room-scoped dialogue.
 3. The response is emitted as `npc-spoke`; effects are returned to the turn's
    effect buffer. `topic-suggested` events carry prompt strings so the UI can
    show "(You could ask why.)".
@@ -165,6 +177,9 @@ quiz's `onPass`/`onFail` effects.
 - Global alias uniqueness is enforced at content load.
 - `isActive` gating: topic hidden until `learn-topic` fires; alternative topic
   chosen when the player already has the item.
+- Room-scoped dialogue: `in-room`/`in-area` gate topics against the current
+  `Position`, and a scoped actor's default or catch-all topic stays scoped
+  ([shared-rules.md §12](shared-rules.md#12-tests)).
 - ConvNode: one-turn expiry vs sticky; default topic keeps node open; special
   keyword exits it.
 - Implicit start via `ask`/`give`/`show`; `give` transfers the item atomically.

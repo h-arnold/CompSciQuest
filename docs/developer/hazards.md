@@ -1,6 +1,6 @@
 # Hazards (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
@@ -56,9 +56,15 @@ after the scheduler and before NPC reactions:
 3. Skip if `cooldownTurns` is set and `lastFiredTurn !== undefined` and
    `turn - lastFiredTurn < cooldownTurns`.
 4. Evaluate `trigger` against the turn's context and buffered events, then
-   evaluate `when` against final state.
-5. Apply `effects` through `EffectApplier`; emit `hazard-triggered`; increment
-   `timesFired` and set `lastFiredTurn` in the same pass.
+   evaluate `when` against the state **as updated by earlier hazards' effects in
+   declaration order**. Effects are applied before the next hazard's `when` is
+   evaluated; this is how mid-phase state is reached (user decision of
+   2026-11-25).
+5. Apply `effects` through the injected `EffectApplier`, including an
+   `announce-hazard` effect that emits `hazard-triggered`; increment `timesFired`
+   and set `lastFiredTurn` in the same pass. `HazardSystem` returns the resulting
+   `GameEvent[]`; it neither emits to the `EventBus` nor buffers events itself
+   ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
 6. A rule ID can fire at most once per turn (shared spine rule 4).
 
 Damage always goes through `change-lives`, which emits `lives-changed`.
@@ -91,8 +97,10 @@ world/area in content**, not derived from the world graph: it is the runtime
 
 ## 6. Events and UI
 
-- New event: `hazard-triggered { hazardId, reason }`, part of the canonical union
-  in [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
+- New event: `hazard-triggered { hazardId, reason }`, emitted by the
+  `announce-hazard` effect ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping))
+  and part of the canonical union in
+  [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
   The `message` event carries the player-facing text.
 - `OutputLog` renders both as text via `textContent`. No hazard-specific UI panel.
 
@@ -106,7 +114,8 @@ world/area in content**, not derived from the world graph: it is the runtime
   normal first-visit rule: returning to an already visited room awards no further
   points ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 - A registered schedule survives JSON save/load mid-countdown.
-- Two hazards firing in the same turn are applied in declaration order.
+- Two hazards firing in the same turn are applied in declaration order, and the
+  second hazard's `when` sees the first hazard's applied state.
 - A hazard failure does not change puzzle phase.
 
 ## 8. Decisions resolved
@@ -116,3 +125,6 @@ world/area in content**, not derived from the world graph: it is the runtime
 - Level-start rooms are declared in content per world/area.
 - Hints are never offered during a hazard penalty.
 - Failed hazards do not reset puzzle progress.
+- Later hazards' `when` checks see earlier hazards' applied state; effects are
+  applied in declaration order before the next `when` (user decision of
+  2026-11-25).

@@ -112,10 +112,36 @@ source of truth; keeping both formats would allow them to drift.
 `npm run content:scaffold -- <area-id>` writes any missing YAML files for that
 area from the schema, with `todo` placeholder entries and comments naming the
 required fields and applicable rule IDs. It refuses to overwrite an existing
-file unless `--force` is given. It adds a `worlds:` placeholder only to the area
-that owns `startAreaId`; every other area receives only `definition.worldId`.
-The editor populates scaffolds by briefing writers; writers never edit the
-schema, the validator or the generator.
+file unless `--force` is given.
+
+Two optional flags describe a world explicitly:
+
+- `--world <world-id>` sets the world ID recorded in `definition.worldId` and,
+  for the owning area, in the `worlds:` entry.
+- `--start-area <area-id>` sets that world's `startAreaId` and marks the area
+  as the world's owner.
+
+Use both flags when creating the start area of a multi-area world:
+
+```sh
+npm run content:scaffold -- entry-interface --world world-wjec-gcse-computer-science-2025-spec --start-area area-entry-interface
+```
+
+Only the area whose ID is named by `--start-area` receives a `worlds:` block;
+every other area in that world receives only `definition.worldId`. This is the
+single-declaration rule in [§2](#2-authoring-format) and rule D3: a world is
+declared once, by the area whose `startAreaId` it names, and a second `worlds`
+entry is invalid. When `--world` is omitted the world ID defaults to
+`world-<area-id>`; when `--start-area` is omitted the start area defaults to
+`area-<area-id>`. A plain `npm run content:scaffold -- <area-id>` uses those
+defaults.
+
+The mechanism is `worldOption()` in `tools/content/cli.ts` (lines 94–103),
+which parses the two flags and supplies the defaults, and `roomsScaffold()` in
+`tools/content/scaffold.ts` (lines 41–90), which adds `worlds:` only when
+`world?.startAreaId` matches the prefixed area ID `area-${areaId}` (lines 47 and
+59–74). The editor populates scaffolds by briefing writers; writers never edit
+the schema, the validator or the generator.
 
 ## 4. Validation
 
@@ -126,21 +152,24 @@ as plain TypeScript checks: `content-ids`, `quiz-content`, `puzzle-graph`,
 `world-graph`, `hint-content`, `hazard-content`, `npc-content` and
 `score-content`. These checks cover unique IDs and globally unique aliases,
 valid ID prefixes, existing topic IDs, exit and `move-player` targets, quiz and
-puzzle rules, acyclic and reachable PDG, at least two clues per gate, hint
-ladders and counter keys, hazard telegraphs and a declared level start, NPC
-default topics and topic matches, score budgets per topic, and reachability of
-every `covered` topic to `game-won`.
+puzzle rules, acyclic and reachable PDG, at least two clues per puzzle
+(decision: 2026-11-25), hint ladders and counter keys, hazard telegraphs and a
+declared level start, NPC default topics and topic matches, score budgets per
+topic, and reachability of every `covered` topic to `game-won`.
 
 Findings print as `path/to/file.yaml:entry — what is wrong — gate ID`. A single
 finding fails the command with a non-zero exit code.
 
 Two classes of check are distinguished:
 
-- **Shared structural gates** — the eight gates above operate on parsed data and
-  on the generated `ContentBundle`. The same functions back Vitest and the
-  boot-time check in
+- **Shared structural gates** — `content-ids`, `puzzle-graph`, `world-graph`,
+  `hazard-content` and `score-content` operate on both parsed data and the
+  generated `ContentBundle`. The same functions back Vitest and the boot-time
+  check in
   [application-and-ui.md §3.3](application-and-ui.md#33-loading-and-validation),
-  so authoring-time, test-time and boot-time validation cannot drift.
+  so authoring, test and boot validation cannot drift for those five.
+  `quiz-content`, `hint-content` and `npc-content` are authoring-time only until
+  their runtime mirrors land (`DEFERRED_GATES`).
 - **Authoring-only checks** — stray keys outside `authoring:`, document
   `status`, and unresolved `todo` placeholders apply only to YAML and cannot run
   against the runtime bundle.
