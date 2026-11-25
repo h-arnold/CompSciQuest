@@ -27,5 +27,11 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src", "vite.config.ts", "tests", "e2e"],
-  "exclude": ["node_modules", "dist", "coverage", "playwright-report", "test-results"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "playwright-report",
+    "test-results"
+  ]
 }
