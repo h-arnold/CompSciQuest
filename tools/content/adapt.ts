@@ -143,6 +143,11 @@ export function bundleOf(cards: ParsedCardSet): ContentBundle {
         portable: isTrue(item['portable']),
         description: text(item['description']),
         initialRoom: text(item['initialRoom']),
+        // Preserve the optional §5.2 refusal only when the card supplies one;
+        // never materialise an explicit `undefined` under exactOptionalPropertyTypes.
+        ...(typeof item['refusalText'] === 'string' && {
+          refusalText: item['refusalText'],
+        }),
       })) as unknown as readonly ItemDefinition[],
     ),
     actors: catalogueOf(

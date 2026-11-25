@@ -145,6 +145,17 @@ function takeHandler(
   context: TurnContext,
 ): readonly Effect[] {
   if (command.kind !== 'take' && command.kind !== 'drop') return [];
+  // §5.2: only `take` is gated by portability; `drop` shares this handler but
+  // must always hand the item back to the room. A refusal is in-voice feedback
+  // (content-rules.md §3 N5) and changes no state.
+  if (command.kind === 'take') {
+    const item = context.bundle.items.getById(command.itemId);
+    if (item?.portable === false) {
+      return [
+        message(item.refusalText || 'You cannot take that item with you.'),
+      ];
+    }
+  }
   const from =
     command.kind === 'take' ? context.state.player.position.roomId : 'player';
   const to =

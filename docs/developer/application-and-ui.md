@@ -144,6 +144,7 @@ export interface ItemDefinition {
   readonly name: string;
   readonly aliases: readonly string[];
   readonly portable: boolean;
+  readonly refusalText?: string; // in-world take refusal for a non-portable item; omit when absent (§5.2)
   readonly description: string;
   readonly initialRoom: string; // starting owner; ownership lives in state
 }
@@ -372,6 +373,17 @@ only state mutator. `TurnContext` carries the read-only state, the injected
 globally unique object/NPC aliases ([npcs.md §3](npcs.md#3-commands-and-topic-resolution));
 there is **no disambiguation prompt**. The verb and alias tables are engine
 constants (not content), but individual item/actor aliases come from content.
+
+`take` transfers a visible portable item to the player and emits "Taken.". A
+visible item whose `portable` is `false` is never transferred: it stays in the
+room and remains examinable, and the handler emits exactly one `message` effect
+using the item's `refusalText` when present and non-empty, otherwise the exact
+fallback "You cannot take that item with you." An empty `refusalText` is treated
+as absent. This is in-world feedback under
+[content-rules.md §3 N5](content-rules.md#3-rule-catalogue), not a parser-style
+denial; the fallback wording is a user decision recorded in the branch matrix,
+not a design-document citation. `drop` shares `takeHandler()` and is unaffected
+by `portable`: it transfers from the player to the room and emits "Dropped.".
 
 ## 6. Canonical event union and rendering
 
