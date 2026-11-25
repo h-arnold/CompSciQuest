@@ -7,12 +7,12 @@ contradict them. Course facts come from `docs/exam-specs/wjec-unit1.md` §1.2.1 
 §1.1.1 for the prologue), never from memory. All six design cards have since been
 written and approved (see `status.md`).
 
-> **Format migration.** Those approved cards are being migrated verbatim to YAML
-> under `docs/content/1-2-1-data-representation/`, as specified in
-> `docs/developer/content-toolchain.md`. Any `*.md` card name cited in this topic
-> file is historical provenance; it resolves on migration to the corresponding
-> `.yaml` card. Migration changes format only — never narrative, IDs, flags,
-> dependencies or scores.
+> **Format migration.** Those approved cards were migrated verbatim to YAML under
+> `docs/content/1-2-1-data-representation/`, and the Markdown originals were
+> retired, as specified in `docs/developer/content-toolchain.md`. Any `*.md` card
+> name cited in this topic file is historical provenance; it resolves to the
+> corresponding `.yaml` card. Migration changed format only — never narrative,
+> IDs, flags, dependencies or scores; later amendments are made to the YAML.
 
 ## 1. Scope and area
 

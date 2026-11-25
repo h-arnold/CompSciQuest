@@ -40,6 +40,7 @@ Rules you own: C1–C6, N3–N5, D1–D5. In particular:
 - Bind every topic and node with `actorId`. The runtime `ConversationTopic` has the optional field and the decision is resolved (content-rules.md §8); an unbound topic stays globally reachable only when the brief says so.
 - Keep the `ready` state silent: greetings live in topic responses, never in `onEnter` effects (content-rules.md §8).
 - Scope locality in `isActive`, never as a topic field: use `{ kind: in-room, roomId: ... }` or `{ kind: in-area, worldId: ..., areaId: ... }` from shared-rules.md §3 and npcs.md §2 (C6). An unscoped topic stays globally reachable, and a room-bound actor's catch-all must carry the same scope.
+- **Card ownership follows the area that uses the entity** (bible §4.2, user-directed). A game-wide actor's states, node and topics may be split between area cards; a topic bound to that actor can live in another area's `npcs.yaml` because `actorId` resolves across the whole card set. Never move an artefact into an unrelated area for convenience.
 - Mark a deliberately unentered node with `authoring.reserved: true` and its reason. A catch-all may be any active topic, not only one named `*-default` — the foreman uses `topic-foreman-predecessor`.
 - Accept all match, condition, effect and strategy variants from `npcs.md` §2, including `sequence`; unused variants are not errors. Encode a node's topics as `topicIds` for the generator to resolve.
 

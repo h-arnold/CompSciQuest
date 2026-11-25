@@ -21,12 +21,13 @@ then approved the amendment and authorised the card update in a second decision;
 that revision is briefed separately and recorded in `status.md`. The Network Hub
 teaching batch is **not** part of this work: it stays described only.
 
-> **Format migration.** The six approved first-zone cards are being migrated
-> verbatim to YAML under `docs/content/1-2-1-data-representation/`, as described
-> in `status.md` and specified in `docs/developer/content-toolchain.md`. Any
-> `*.md` card name cited in this bible is historical provenance; it resolves on
-> migration to the corresponding `.yaml` card. Migration changes format only — never
-> narrative, IDs, flags, dependencies or scores.
+> **Format migration.** The six approved first-zone cards have been migrated
+> verbatim to YAML under `docs/content/1-2-1-data-representation/`, and the Markdown
+> originals have been retired, as described in `status.md` and specified in
+> `docs/developer/content-toolchain.md`. Any `*.md` card name cited in this bible
+> is historical provenance; it resolves to the corresponding `.yaml` card.
+> Migration changed format only — never narrative, IDs, flags, dependencies or
+> scores. Later amendments are made to the YAML cards.
 
 ## 1. Authority and file map
 
@@ -156,10 +157,35 @@ words (N8). No beat asserts a course fact.
    are covered in `docs/coverage/COVERAGE.md`, further zones and the routes between
    them must be created (§5).
 
-The accepted zone-1 cards still start at `room-binary-hall` and place the AI in
-`room-entry-interface`. Bringing them into line with this sequence is a later card
-revision, listed in `status.md`; this amendment does not change those cards or the
-V4 trace.
+The zone-1 area's `startRoomId` remains `room-binary-hall` for hazard and
+quiz-failure returns; the world boots at `room-arrival` (§4.1 beats A–E). The AI is
+no longer owned by a zone-1 card: its artefacts are in the arrival and hub NPC
+cards by the area-ownership rule (§4.2). The V4 trace records this aligned
+sequence and was re-audited on 2026-11-25.
+
+### 4.2 Card ownership by area — user-directed structure
+
+**This is the file structure the user wants and it overrides any habit of putting
+shared entities wherever a card already exists.** Every entity's YAML lives in the
+folder of the area (and, where practical, the room) that uses it. A game-wide
+actor is not parked in whichever zone happened to declare it first: its actor,
+states, node and topics are split across the area cards where they are actually
+available. Concretely:
+
+- `docs/content/entry-interface/npcs.yaml` owns `npc-the-ai`, `actorstate-ai-cold`,
+  `actorstate-ai-grudging`, `node-ai-verdict` and the five arrival/global AI topics.
+- `docs/content/network-hub/npcs.yaml` owns `topic-ai-escape`, the one AI topic
+  scoped to `room-network-hub`.
+- `docs/content/1-2-1-data-representation/npcs.yaml` owns the predecessor and all
+  Switchyard teaching; it no longer owns any AI artefact.
+
+The one-file-per-(area, kind) convention is unchanged (content-rules.md §4.1), so
+no rulebook or toolchain change is required. Cross-card `actorId` binding is
+permitted: the `npc-content` gate resolves actor IDs across the whole card set,
+so the hub topic can bind to an actor declared in the arrival card. Briefs must
+name the owning area card for every artefact and must not place an entity in an
+unrelated zone for convenience. When a new topic is scoped to a room in another
+area, its topic card moves with the room.
 
 ## 5. Area index
 
@@ -432,23 +458,38 @@ explicitly expendable items; `compsciquest:save:v1` is never touched.
 13. ~~**Network Hub teaching.**~~ **Resolved 2026-11-25:** describe only. The user
     chose not to scope `network-hardware` (1.3.1) in this batch; the hub is a
     starting point with no assessed content.
-14. **Per-room/area conversation scoping — DECIDED 2026-11-25, implementation
-    pending.** The user wants game-wide actors to carry options that apply only in
-    their own areas or rooms. The current contracts have no such seam:
-    `NpcStateDto` has no room field (`storage-schema.md` L98–104);
-    `ConversationTopic` has optional `actorId` but no `roomIds`/`areaIds`
-    (`src/core/npcs/ConversationTopic.ts` L7–17); the condition union has
-    `visited-room` but no current-room condition (shared-rules.md §3); and exits
-    carry preconditions only, not effects (`ExitDefinition.ts`). The agreed design
-    is an **optional `roomIds` and/or `areaIds` on `ConversationTopic`**, with
-    `TopicResolver` filtering by the player's current `Position`, and matching
-    updates to the Zod shape, `npc-content` gate, generator and `ConversationTopic`
-    runtime type. Code-lead owns that implementation; no content brief may rely on
-    the field until it exists. Moving an actor between area cards does **not**
-    provide scoping: catalogues are global and card location is authoring
-    ownership only, so the AI topics stay in the zone-1 `npcs.yaml` until the
-    field is implemented and a re-brief allocates their scopes. The content-only
-    flag workaround was rejected.
+14. **Per-room/area conversation scoping — DECIDED 2026-11-25; runtime now
+    landed.** The user wants game-wide actors to carry options that apply only in
+    their own rooms or areas. The agreed seam is **not** a field on
+    `ConversationTopic`: code-lead added two position-sensitive condition kinds
+    to the shared union, `in-room` (`roomId`) and `in-area` (`worldId`, `areaId`)
+    (`src/core/rules/Condition.ts`; `ConditionEvaluator` compares the player's
+    current `Position`; shared-rules.md §3, npcs.md §2). Locality is authored as
+    `isActive: { kind: in-room, roomId: ... }` or `in-area` on a topic; an
+    unscoped topic stays globally reachable. `ConversationTopic` therefore keeps
+    only its optional `actorId` binding. Moving an actor between area cards does
+    **not** provide scoping, because catalogues are global and card location is
+    authoring ownership only; the entry-effect flag workaround was rejected.
+
+    **Final allocation, approved 2026-11-25:** `topic-ai-why-here` and
+    `topic-ai-failure` are scoped to `room-arrival`; `topic-ai-escape` is scoped
+    to `room-network-hub`, where the route ports are visible; the pre-existing
+    `topic-ai-verdict`, `topic-ai-unit-two-taunt` and `topic-ai-default` stay
+    global so the AI keeps a catch-all in every room and `node-ai-verdict` keeps
+    its global default (C6). This relocates the escape question from the arrival
+    beat to the hub beat in the V4 trace; no ID, flag, gate, score or spec claim
+    changes.
+
+    **Card ownership, approved 2026-11-25:** the user also asked for YAML files to
+    be grouped by area so entity data is not scattered. The AI actor, its two
+    states, `node-ai-verdict` and the four arrival/global topics (`topic-ai-verdict`,
+    `topic-ai-unit-two-taunt`, `topic-ai-default`, `topic-ai-why-here`,
+    `topic-ai-failure`) move to a new `docs/content/entry-interface/npcs.yaml`;
+    `topic-ai-escape` moves to a new `docs/content/network-hub/npcs.yaml`; the zone-1
+    `npcs.yaml` keeps only the predecessor and the Switchyard teaching. Cross-card
+    `actorId` binding is safe: `npc-content` resolves actor IDs over the whole card
+    set, so the hub topic can bind to an actor declared in the arrival card. The
+    one-file-per-(area, kind) rule (content-rules.md §4.1) is unchanged.
 
 Zone-specific questions are in the owning topic file.
 
@@ -534,8 +575,19 @@ written, reviewed to PASS and integrated (see `status.md`).
   `topic-ai-failure` — covering why the pupil is there, how to get out, and what
   failure means. They are flavour only: no flags, gates, quizzes or spec facts.
   Briefed to the NPC writer as an addition to `npcs.yaml`.
-- 2026-11-25 — **Room-scoping design decision (implementation pending).** The user
-  chose a proper runtime seam over moving card ownership or using entry-effect
-  flags. Optional `roomIds`/`areaIds` on `ConversationTopic`, filtered by
-  `TopicResolver` against `Position`; validator, generator and runtime type follow.
-  This is code-lead work (§11 item 14); content cards are paused until it lands.
+- 2026-11-25 — **Room-scoping design decision.** The user chose a proper runtime
+  seam over moving card ownership or using entry-effect flags. Code-lead landed
+  `in-room`/`in-area` conditions in the shared condition union and evaluator;
+  locality is authored in `isActive`, not as topic fields (§11 item 14).
+- 2026-11-25 — **AI topics split by room.** The user approved re-briefing the AI
+  content now the seam exists. `topic-ai-why-here` and `topic-ai-failure` take an
+  `in-room room-arrival` scope, `topic-ai-escape` takes `in-room room-network-hub`,
+  and the three pre-existing AI topics stay global. No new ID or alias; the
+  escape beat moves from arrival to the hub in the V4 trace.
+- 2026-11-25 — **AI cards moved by area.** The user asked for YAML to be grouped
+  by area rather than scattered. A new `entry-interface/npcs.yaml` owns the AI
+  actor, its states, its node and the five arrival/global topics; a new
+  `network-hub/npcs.yaml` owns the hub-scoped escape topic; zone-1 `npcs.yaml`
+  keeps the predecessor and all Switchyard teaching. No toolchain or rulebook
+  change is needed because the generator and gates merge collections across
+  cards.

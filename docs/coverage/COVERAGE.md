@@ -221,12 +221,19 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   teaching, retrieval and application sources, and no soft-lock remains. Entry-hazard
   counterplay is reachable (`once: true` on the three room-entry hazards). A
   whole-game verdict is not yet applicable: only the first zone is integrated.
-- **Opening amendment (2026-11-25): not yet signed off.** The arrival and Network Hub
-  rooms and the three new AI topics are validated and reviewed with no blockers or
-  majors, but the extended V4 trace awaits a final critic pass. That pass is paused
-  while code-lead implements per-room/area conversation scoping (bible §11 item 14);
-  the AI topics are globally addressable until then. No new spec topic is covered by
-  this amendment.
+- **Opening amendment PASS (2026-11-25).** The arrival and Network Hub rooms and
+  the AI topics are validated with no findings. Code-lead landed the
+  `in-room`/`in-area` seam; why-here and failure are active in `room-arrival`,
+  escape in `room-network-hub`, with the catch-all global (C2/C6). The AI artefacts
+  live in the arrival and hub NPC cards under the user-directed area ownership rule
+  (bible §4.2). Both reviewers returned PASS on the moved cards after one stale-prompt
+  minor was closed. The final whole-set `content-critic` pass (V4, N2, N6, N7, D3)
+  verified the complete path from world boot `room-arrival` to `game-won`, all 11
+  rooms, 41 NPC topics, 8 quizzes, 17 puzzles, 5 hazards and 6 hint ladders
+  reachable, and no soft-lock; its one trace minor (overheat at beat E rather than
+  step 2) was closed, then PASS. No new spec topic is covered by this amendment;
+  `ai-ethics-and-implications` stays `in progress` and outside the win set. W6
+  regeneration and W7 runtime verification are still owed.
 
 ## Open questions
 

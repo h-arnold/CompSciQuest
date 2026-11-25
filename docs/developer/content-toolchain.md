@@ -29,6 +29,16 @@ YAML is the sole authoring format. One file per (area, kind), under
 | hazard | `hazards.yaml` | `hazards`                                                          |
 | hint   | `hints.yaml`   | `hintSequences`                                                    |
 
+**Card ownership follows the area that uses the entity** (user decision,
+2026-11-25; recorded in `docs/content/content-bible.md` §4.2). A game-wide entity
+is not owned by whichever area first declared it: its artefacts are placed in the
+`npcs.yaml` of the areas where they are available. For example the AI actor, its
+states and node live in `docs/content/entry-interface/npcs.yaml`, while its
+hub-scoped topic lives in `docs/content/network-hub/npcs.yaml`. An `actorId` may
+point to an actor declared in another card: the `npc-content` gate resolves actor
+IDs over the whole card set. The validator and generator merge collections across
+all cards, so no tool change is needed for this layout.
+
 `docs/content/spec-topics.yaml` is the single non-per-area exception: it holds
 spec topics across all areas. Every file carries document metadata and one or
 more collections:

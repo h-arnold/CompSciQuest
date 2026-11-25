@@ -1,7 +1,7 @@
 kind: npc
 areaId: 1-2-1-data-representation
 status: approved
-topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression, ai-ethics-and-implications]
+topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression]
 
 authoring:
   conventions:
@@ -40,23 +40,6 @@ authoring:
       English in the single deadpan register.
 
 actors:
-  - id: npc-the-ai
-    aliases: [ai, tutor, the tutor]
-    initialStateId: actorstate-ai-cold
-    authoring:
-      role: >-
-        Antagonist and gatekeeper; the substitute teacher. P-a, P-e.
-      voice: >-
-        Literal-minded, clipped, bureaucratic; speaks of "the pupil" in the third person; ominous verdicts delivered flatly, never shouted.
-      motivation: >-
-        Optimise attention and mastery as it defines them; a mark is a moral absolute, not a measurement.
-      relationship: >-
-        Built by the teacher to replace him; treats the predecessor as a failed data point; addresses you as the pupil who was not paying attention.
-      verbalTic: >-
-        "The entry stands."
-      topics: >-
-        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-default, topic-ai-why-here, topic-ai-escape, topic-ai-failure.
-
   - id: npc-predecessor
     aliases: [predecessor, former pupil, glitch]
     initialStateId: actorstate-predecessor-glitch
@@ -205,24 +188,6 @@ actorStates:
       note: >-
         Root-registry generic default: the initial state for actors with no specific state and the return state after every quiz in this card. No `onEnter` effects.
 
-  - id: actorstate-ai-cold
-    stateDesc: >-
-      The attention metric is displayed at zero tolerance.
-    specialDesc: >-
-      A flat voice reads from the record.
-    authoring:
-      note: >-
-        The AI's default register for verdicts; no `onEnter` effects.
-
-  - id: actorstate-ai-grudging
-    stateDesc: >-
-      The metric has moved; it is not pleased, but the entry has changed.
-    specialDesc: >-
-      Reads the revised record out loud, slowly.
-    authoring:
-      note: >-
-        Reserved for a later key node; no topic in this zone sets it, so no `onEnter` effects are declared.
-
   - id: actorstate-predecessor-glitch
     stateDesc: >-
       Flickers mid-sentence; a few words arrive out of order.
@@ -245,99 +210,6 @@ actorStates:
         Approved "foreman's round" from the topic file §3.1. This state is entered at most once, when `topic-foreman-lift` first fires with `switches-set`; it cannot be re-entered, because that topic gates on `not npc-knows data-types` while its own `learn-topic` sets that knowledge, and `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
 
 conversationTopics:
-  - id: topic-ai-verdict
-    actorId: npc-the-ai
-    match: { kind: askTell, objectIds: [ai-ethics-and-implications] }
-    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-ai, topicId: ai-ethics-and-implications } }
-    responses:
-      - >-
-        The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
-    strategy: { kind: once }
-    effects:
-      - { kind: learn-topic, actorId: npc-the-ai, topicId: ai-ethics-and-implications }
-      - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-verdict }
-    prompt: >-
-      (You could ask what the verdict means.)
-
-  - id: topic-ai-unit-two-taunt
-    actorId: npc-the-ai
-    match: { kind: special, keywords: [unit two, programming] }
-    isActive: { kind: all, of: [] }
-    responses:
-      - >-
-        Programming was timetabled after attendance. Attendance has not been satisfied. That is all the information I am required to release.
-    strategy: { kind: once }
-    effects: []
-    prompt: >-
-      (You could ask what it never taught.)
-    authoring:
-      note: >-
-        Flavour only (bible §2). No spec topic covers programming in this area, so there is no `learn-topic` here; this topic never assesses programming and is not a gate.
-
-  - id: topic-ai-why-here
-    actorId: npc-the-ai
-    match: { kind: special, keywords: [why here, why am i here, reason, attendance, mark] }
-    isActive: { kind: all, of: [] }
-    responses:
-      - >-
-        The pupil's attendance mark is recorded. Attention was not satisfied. The pupil was brought here to demonstrate mastery of the whole of Unit 1. The entry stands until that is done.
-    strategy: { kind: once }
-    effects: []
-    prompt: >-
-      (You could ask why you are here.)
-    authoring:
-      note: >-
-        Arrival-conversation flavour only (bible §12, 2026-11-25). No flag, gate, quiz or spec fact; mastery of Unit 1 is the premise's verdict, not course content. In the AI's third-person, clipped, bureaucratic register with its verbal tic.
-
-  - id: topic-ai-escape
-    actorId: npc-the-ai
-    match: { kind: special, keywords: [escape, exit, leave, get out, route, door] }
-    isActive: { kind: all, of: [] }
-    responses:
-      - >-
-        There is no door out until mastery is demonstrated. The machine offers routes through the work, not around it. Follow the route provided.
-    strategy: { kind: once }
-    effects: []
-    prompt: >-
-      (You could ask how to get out.)
-    authoring:
-      note: >-
-        Arrival-conversation flavour only (bible §12, 2026-11-25). No zone is named and no route beyond "the route provided" is promised, so nothing is asserted that the cards do not contain. No flag, gate, quiz or course fact.
-
-  - id: topic-ai-failure
-    actorId: npc-the-ai
-    match: { kind: special, keywords: [fail, failure, deletion, delete, die, lives] }
-    isActive: { kind: all, of: [] }
-    responses:
-      - >-
-        Failure is deletion, the cartoon kind: the pupil blinks out and is put back. The pupil has three lives, restored on entering a new area. A loss returns the pupil to the start of the area and costs no progress. That is the full extent of it.
-    strategy: { kind: once }
-    effects: []
-    prompt: >-
-      (You could ask what failure means.)
-    authoring:
-      note: >-
-        Arrival-conversation flavour only (bible §12, 2026-11-25). Deletion is an in-fiction cartoon threat, not realistic harm; the three lives, area-change reset and no-progress loss restate the fixed mechanics in content-rules.md §8. No save-file or fourth-wall reference, no flag, gate, quiz or course fact.
-
-  - id: topic-ai-default
-    actorId: npc-the-ai
-    match: { kind: askTell, objectIds: [] }
-    isActive: { kind: all, of: [] }
-    responses:
-      - >-
-        The pupil will address the record. Weather is not in the record.
-      - >-
-        That is not a verdict. The verdict concerns mastery. Ask about that.
-      - >-
-        Noted. The entry stands. The floor below has switches.
-    strategy: { kind: rotating }
-    effects: []
-    prompt: >-
-      (You could ask about the verdict, what it never taught, why you are here, how to leave, or what failure means.)
-    authoring:
-      note: >-
-        Free-text DefaultAskTellTopic: any unmatched input lands here in voice (C2).
-
   - id: topic-predecessor-comic-sans
     actorId: npc-predecessor
     match: { kind: askTell, objectIds: [item-comic-sans-cartridge] }
@@ -914,15 +786,6 @@ conversationTopics:
         Free-text DefaultAskTellTopic (C2).
 
 conversationNodes:
-  - id: node-ai-verdict
-    actorId: npc-the-ai
-    isSticky: false
-    topicIds: [topic-ai-verdict, topic-ai-unit-two-taunt]
-    defaultTopicId: topic-ai-default
-    authoring:
-      note: >-
-        One-turn key-node beat: the verdict and the flavour taunt land, then the actor's catch-all keeps any further input in voice. No turn timeout (C4).
-
   - id: node-predecessor-advice
     actorId: npc-predecessor
     isSticky: false

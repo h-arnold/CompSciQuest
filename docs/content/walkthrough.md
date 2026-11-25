@@ -21,11 +21,12 @@ area declares `startRoomId: room-arrival`. `GameState.createInitial()` resolves
 (`application-and-ui.md` §3.2, `src/core/GameState.ts` L104–115). Lives start at 3
 and reset on area change (content-rules.md §8).
 
-> **Format migration.** Those six cards are being migrated verbatim to the
-> corresponding `.yaml` files under `docs/content/1-2-1-data-representation/`
-> (see `status.md`). The `.md` names above and elsewhere in this trace are
-> historical provenance; they resolve on migration to the YAML cards. Migration
-> changes format only, so this trace remains the V4 oracle.
+> **Format migration.** Those six cards were migrated verbatim to the
+> corresponding `.yaml` files under `docs/content/1-2-1-data-representation/`, and
+> the Markdown originals were retired (see `status.md`). The `.md` names above and
+> elsewhere in this trace are historical provenance; they resolve to the YAML
+> cards. Migration changed format only, so this trace remains the V4 oracle;
+> later amendments are made to the YAML cards.
 
 ## 1. Win set and completion sources
 
@@ -57,35 +58,40 @@ they can fire.
 
 - **A — `room-arrival`.** The classroom mark is read, the room folds into switches
   and you land in the cable bay. The AI is present and states the verdict.
-- **B — Conversation with `npc-the-ai`.** `topic-ai-why-here` (keywords such as
-  "why here", "attendance") explains the mark and the mastery demand;
-  `topic-ai-escape` ("escape", "route", "door") says there is no door until mastery
-  and to follow the route provided; `topic-ai-failure` ("fail", "deletion", "lives")
-  states the cartoon deletion, three lives, area-change reset and no progress loss.
-  All six AI topics are always active or once-only; none sets a flag, starts a quiz
-  or gates an exit. The existing `topic-ai-verdict`, `topic-ai-unit-two-taunt` and
-  `topic-ai-default` remain available and in voice (C2).
-- **C — East → `room-network-hub`.** The hub shows every route at once with only the
-  east port live. It is navigation-only and owns no teaching topic or score.
+- **B — Conversation with `npc-the-ai` in `room-arrival`.** `topic-ai-why-here`
+  (keywords such as "why here", "attendance") explains the mark and the mastery
+  demand; `topic-ai-failure` ("fail", "deletion", "lives") states the cartoon
+  deletion, three lives, area-change reset and no progress loss. Both carry
+  `isActive: { kind: in-room, roomId: room-arrival }`, so they are answerable only
+  at the verdict beat. The existing `topic-ai-verdict`, `topic-ai-unit-two-taunt`
+  and `topic-ai-default` remain globally available and in voice (C2).
+- **C — East → `room-network-hub`.** The hub shows every route at once with only
+  the east port live. Ask `npc-the-ai` about "escape", "route" or "door":
+  `topic-ai-escape` carries `isActive: { kind: in-room, roomId: room-network-hub }`
+  and says there is no door until mastery and to follow the route provided. The
+  hub itself is navigation-only and owns no teaching topic or score.
 - **D — Optional `in` → `room-entry-interface` → `out` → `room-network-hub`.** The
   older interface room remains reachable: its east arrow goes to the Switch Floor
   and its `out` exit returns to the hub. This detour gates nothing.
-- **E — East → `room-switch-floor`.** The verified Switchyard path below begins here.
+- **E — East → `room-switch-floor` (first entry).** The heat-haze telegraph is read,
+  then `hazard-switch-overheat` fires on entry (`switch-cooled` is unset, `once: true`),
+  costing one life and ejecting you to `room-binary-hall`. The verified Switchyard
+  path resumes from that room.
 
 **Life budget:** the only unavoidable losses on this path are the two
-first-entry hazard firings (steps 2 and 6), leaving one life; `bit-rot` and
+first-entry hazard firings (step E and step 6), leaving one life; `bit-rot` and
 `glyph-corruption` are disarmed before their rooms are entered, the cartridge is left
 unused, and all eight quizzes are passed, so a clean run reaches `game-won` with one
-life remaining. No opening beat costs a life.
+life remaining. Beats A–D cost no life; step E costs the first of the two
+unavoidable losses.
 
-1. **Up → `room-binary-hall` (entered from `room-switch-floor`).** Read the five type bins, the sixth unlabelled
-   decimal sample and the painted route diagram (all gates and their two clues).
-   `item-comic-sans-cartridge` is present but expendable; leave it unused.
-2. **Down → `room-switch-floor`** (ungated, first visit). The room text gives the
-   heat-haze telegraph; `hazard-switch-overheat` then fires on entry (it has
-   `once: true` and `switch-cooled` is unset), costing one life and ejecting you to
-   `room-binary-hall`. **Down again** on the safe re-entry — the hazard cannot fire a
-   second time — and take `item-switch-gauge`.
+1. **`room-binary-hall` (returned here by the step E ejection).** Read the five type
+   bins, the sixth unlabelled decimal sample and the painted route diagram (all
+   gates and their two clues). `item-comic-sans-cartridge` is present but
+   expendable; leave it unused.
+2. **Down → `room-switch-floor` (safe re-entry).** The heat-haze telegraph is still
+   in the room text, but the hazard has fired once and cannot fire again. Take
+   `item-switch-gauge`.
 3. **USE the switch gauge on the belt.** Sets `switch-cooled` and `switches-set`
    together (item useNotes). This solves `puzzle-set-the-switches` →
    `complete-topic number-conversion` and opens the north arch. Talk to the foreman:
@@ -163,7 +169,11 @@ The opening exits are ungated and need no completion source: `room-arrival` east
 east → `room-switch-floor` (the only live port, named in the hub description); the
 hub's `in` → `room-entry-interface` and that room's `out` → the hub (both named in
 their descriptions); `room-switch-floor` west → the hub (named in its description).
-The three AI conversation topics set no flag and gate no exit. None of this changes
+The three room-scoped AI conversation topics set no flag and gate no exit:
+`topic-ai-why-here` and `topic-ai-failure` are active only in `room-arrival` (step
+B) and `topic-ai-escape` only in `room-network-hub` (step C), each via `in-room` in
+`isActive`; the three older AI topics and `topic-ai-default` stay global. None of
+this changes
 the win set or the eight scored topics.
 
 | Room exit / gate | Condition | Satisfied by | Two discoverable clues (N6) |
@@ -185,10 +195,10 @@ with no cycle (topic file §5).
 | Rooms | 11 (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the hub |
 | Exits | all declared in the four `rooms.yaml` cards | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
 | Items | switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic-sans cartridge | each `initialRoom` is a room on the path (steps 2, 6, 8, 10, 12, 16, 1); portable thereafter; each SHOW follows the item's last USE |
-| NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | The three new AI topics are addressable in `room-arrival` (step B) via their `special` keywords; actors are globally addressable; default topics always active; primary topics gate on `not npc-knows`; AltTopics on puzzle flags set on the path; four foreman `show` topics are always active |
+| NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; AltTopics on puzzle flags set on the path; four foreman `show` topics are always active |
 | Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
 | Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |
-| Hazard triggers | 5 | overheat at step 2, carry-overflow at step 6, bit-rot at step 14, glyph-corruption on stamp use at step 9, detention-bell on optional cartridge use at step 1 (`once: true`) |
+| Hazard triggers | 5 | overheat at step E (first entry), carry-overflow at step 6 (first entry), bit-rot at step 14, glyph-corruption on stamp use at step 9, detention-bell on optional cartridge use at step 1 (`once: true`) |
 | Hint targets | 6 ladders (`hint-switchyard` … `hint-compression-ratio`) | every target topic/quiz/puzzle ID exists on the path; unlock counters use the approved keys only |
 
 ## 5. Per-topic evidence completion
@@ -228,14 +238,15 @@ majors; the editor routed fixes to the owning writers, recorded below. Three fur
 passes closed successive findings, and the fourth returned PASS.
 
 1. **Entry-hazard counterplay reachability — RESOLVED.** `hazard-switch-overheat`
-   (step 2) and `hazard-carry-overflow` (step 6) are `on-room-enter` ejectors whose
+   (step E) and `hazard-carry-overflow` (step 6) are `on-room-enter` ejectors whose
    disarms are in-room item uses; they had no `once`/cooldown, so the player never
    owned a turn inside the room and the game was unwinnable. The hazard writer added
    `once: true` to both (and to `hazard-bit-rot`): the first entry is a telegraphed
-   one-life penalty that ejects to the hub, and a later entry is safe, so the
-   counterplay item action can set `switch-cooled`/`switches-set` and
-   `carry-cleared`/`hex-read`. The trace's step 2 and step 6 now assume the safe
-   re-entry; the first entry costs one life each.
+   one-life penalty that ejects to the level start (`room-binary-hall`), and a later
+   entry is safe, so the counterplay item action can set `switch-cooled`/`switches-set`
+   and `carry-cleared`/`hex-read`. The trace places the overheat firing at step E and
+   the overflow firing at step 6; steps 2 and 6 continue with the safe re-entry where
+   the counterplay item is taken.
 2. **`bit-rot` hub disarm lifetime — RESOLVED.** `stacks-sealed` is set from the hub by
    `topic-foreman-lift` (gated on `switches-set`, before `quiz-data-types` closes the
    topic), so it is obtainable before step 14. `hazard-bit-rot` now also has
@@ -250,9 +261,11 @@ passes closed successive findings, and the fourth returned PASS.
    globally addressable by alias in this engine (`NpcStateDto` has no room field), so
    the SHOW works in any room. The trace now places the SHOW actions in their legs:
    gauge in step 7, lens in step 11, fork and nibble card in step 15.
-4. **AI / predecessor placement — confirmed.** Game-wide actors appear in the entry
-   interface and switch floor; their topics are flavour or the duck-as-bit teaching
-   beat and gate no flag, quiz, puzzle or exit.
+4. **AI / predecessor placement — confirmed.** Game-wide actors appear in the
+   arrival, hub and switch areas; topics are flavour or the duck-as-bit teaching
+   beat and gate no flag, quiz, puzzle or exit. Three AI topics now carry `in-room`
+   locality (two in arrival, escape in the hub); the AI catch-all stays global so
+   the actor remains answerable in every room (C6).
 5. **SHOW item transfer — RESOLVED.** The second pass noted that `show` uses
    `transfer-item` (npcs.md §4/§9), so showing an item could move it into the actor's
    inventory and strand a later USE. Every SHOW in the trace now follows that item's

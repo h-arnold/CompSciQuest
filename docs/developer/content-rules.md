@@ -23,6 +23,10 @@ Definitions used throughout:
 - **Bible** — `docs/content/content-bible.md`: the premise, pillars, area list, cast, hazard themes, topic allocation, Puzzle Dependency Graph (PDG) and ID/alias registry. Co-authored with the user; changed only with their approval.
 - **Card** — a YAML file under `docs/content/<area-id>/` specifying one kind of content, or `docs/content/spec-topics.yaml` for the cross-area spec topics. Markdown cards are retired after migration; see [content-toolchain.md](content-toolchain.md) for file names, scaffolds and generation.
 - **Artifact** — one defined object inside a card (a room, an NPC, a quiz, a hint level…).
+- **Ownership** — an artefact belongs in the card of the area that uses it, never
+  in an unrelated zone for convenience. A game-wide actor's artefacts may be split
+  between area cards; cross-card `actorId` binding is valid. This is a user-directed
+  structure (2026-11-25, `docs/content/content-bible.md` §4.2).
 - **Brief** — the self-contained task the editor sends to a writer. Subagents start with fresh context, so a brief must contain everything the writer needs.
 - **Validator** — `npm run content:validate`: parses cards with the `yaml` package, applies the Zod shapes and runs the §7 gates as plain TypeScript. Its findings are structural; it does not judge prose or subject accuracy.
 - **Generator** — `npm run content:generate`: emits the committed `src/content/authored/*.ts` files from validated YAML. It is mechanical and never changes content.
@@ -32,7 +36,7 @@ Definitions used throughout:
 
 - **W1 — Ideation (editor + user).** No content is written yet. The editor co-develops the bible with the user, offering concrete options and resolving conflicts against the exam spec. The bible is written to `docs/content/content-bible.md`.
 - **W2 — Approval.** The editor summarises the bible and asks the user to approve it. **No writer is launched before approval.** Revision requests update the bible, not individual cards.
-- **W3 — Dispatch.** The editor sends one brief per (area, kind) to the relevant writer. Briefs name the YAML scaffold path, the relevant schema slice, assigned IDs and aliases, topic IDs and the applicable rule IDs. Independent briefs may run in parallel; one writer owns each output file to avoid conflicts.
+- **W3 — Dispatch.** The editor sends one brief per (area, kind) to the relevant writer. Briefs name the YAML scaffold path, the relevant schema slice, assigned IDs and aliases, topic IDs and the applicable rule IDs. Each brief also names the owning area card for every artefact, following the ownership definition above. Independent briefs may run in parallel; one writer owns each output file to avoid conflicts.
 - **W4 — Review.** `npm run content:validate` must pass on the card set before either reviewer runs; findings route back to the owning writer like any other blocker (D5). The editor then launches `content-critic` and `pck-reviewer` in parallel on the returned cards and resolves every blocker and major finding from **both** by sending the card back to its writer. Cross-artifact contradictions are fixed by updating the bible and re-briefing. A card is not accepted until both reviewers return `PASS` or `PASS WITH MINORS` with no blockers or majors. When every card in the area is accepted, the editor drafts the walkthrough trace (V4) from the same validated data and launches a final `content-critic` pass over the whole card set **plus** that trace; blockers and majors are routed back to the owning writer or into the bible and re-briefed.
 - **W5 — Integration.** The editor writes the accepted trace to `docs/content/walkthrough.md` (V4), updates `docs/coverage/COVERAGE.md` and `docs/content/status.md`, then reports to the user what changed, what is blocked and the open questions. Only then is the area considered done. When the last zone is integrated the editor extends the trace across all areas and records a final whole-game verdict before sign-off. The editor then hands the accepted area to `code-lead` for W6. Scratchpad entries are working notes only: whenever a state, verdict, ID, flag, topic or coverage fact changes, the relevant canonical docs (`docs/content/status.md`, `docs/coverage/COVERAGE.md`, `docs/content/walkthrough.md` and `docs/content/content-bible.md` as appropriate) must be updated as well, because a scratchpad file alone is not the record.
 - **W6 — Generate.** `code-lead` runs `npm run content:validate`, `npm run content:generate`, `npm test`, `npm run typecheck`, `npm run lint` and `npx prettier --check` on the changed files, and commits the generated TypeScript. This replaces the former "conversion out of scope" step; it is a mechanical handoff, not a second authoring pass.
@@ -98,8 +102,10 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 ### 4.1 Common conventions
 
 One YAML file per (area, kind), named as in the table below, under
-`docs/content/<area-id>/`. Every file carries document metadata, then one or more
-named collections:
+`docs/content/<area-id>/`. An artefact goes in the card of the area that uses it
+(the ownership definition in §1); a shared actor may therefore have artefacts in
+several area cards without changing this one-file-per-(area, kind) rule. Every
+file carries document metadata, then one or more named collections:
 
 ```yaml
 kind: npc # area | npc | quiz | puzzle | hazard | hint

@@ -1,0 +1,20 @@
+kind: npc
+areaId: network-hub
+status: draft
+topicIds: []
+
+conversationTopics:
+  - id: topic-ai-escape
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [escape, exit, leave, get out, route, door] }
+    isActive: { kind: in-room, roomId: room-network-hub }
+    responses:
+      - >-
+        There is no door out until mastery is demonstrated. The machine offers routes through the work, not around it. Follow the route provided.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask how to get out.)
+    authoring:
+      note: >-
+        Scoped to `room-network-hub` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's flavour content, flags and mechanics are unchanged. No zone is named and no route beyond "the route provided" is promised, so nothing is asserted that the cards do not contain. No flag, gate, quiz or course fact.
