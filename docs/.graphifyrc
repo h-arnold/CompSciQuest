@@ -1,0 +1,6 @@
+# The coverage graph is built from docs/. Authored content cards are YAML, but
+# graphify classifies .yaml as code and its config extractor emits only generic
+# key nodes. Remap them to documents so the semantic pass indexes card prose and
+# preserves card-derived topic, puzzle and hint nodes after migration.
+language.yaml=.md
+language.yml=.md

@@ -248,3 +248,16 @@ YAML. If it does not, add an explicit extraction configuration or a small
 Markdown index stored outside `docs/content` and generated from the YAML, so it
 cannot become a second source of truth. After any code change to the toolchain,
 run `graphify update .` from the repository root.
+
+**Resolved (C0).** Plain graphify classifies `.yaml` as code: its config
+extractor emits only generic key nodes (`id`, `description`, …), with no
+artefact IDs and no prose, so a YAML card would lose the concept nodes the
+Markdown card supplied. The chosen fallback is the explicit extraction
+configuration option: `docs/.graphifyrc` remaps `.yaml` and `.yml` to document
+classification for builds rooted at `docs/`, so migrated cards reach the
+semantic pass. This was verified by running graphify's detector on a sample
+card with that config — it is classified as a document, not code. The repo-root
+codebase graph is unaffected: it has no `.graphifyrc` and already excludes
+`docs/content/`. Re-check semantic nodes after the first zone is migrated; if
+the remap does not yield usable card-derived nodes, fall back to a generated
+Markdown index outside `docs/content`, never a hand-maintained duplicate.
