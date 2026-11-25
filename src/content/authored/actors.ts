@@ -2,7 +2,6 @@
 import type { ActorDefinition } from '../ActorDefinition';
 
 export const actors: readonly ActorDefinition[] = [
-  {"id":"npc-the-ai","aliases":["ai","tutor","the tutor"],"initialStateId":"actorstate-ai-cold"},
   {"id":"npc-predecessor","aliases":["predecessor","former pupil","glitch"],"initialStateId":"actorstate-predecessor-glitch"},
   {"id":"npc-the-foreman","aliases":["foreman","gaffer"],"initialStateId":"actorstate-foreman-busy"},
   {"id":"npc-nibble-clerk","aliases":["nibble clerk","clerk","abacus"],"initialStateId":"actorstate-ready"},
@@ -10,5 +9,6 @@ export const actors: readonly ActorDefinition[] = [
   {"id":"npc-mosaic-critic","aliases":["mosaic critic","critic","curator"],"initialStateId":"actorstate-ready"},
   {"id":"npc-choirmaster","aliases":["choirmaster","conductor","maestro"],"initialStateId":"actorstate-ready"},
   {"id":"npc-stack-keeper","aliases":["stack keeper","stacker","custodian"],"initialStateId":"actorstate-ready"},
-  {"id":"npc-press-operator","aliases":["press operator","operator","compactor"],"initialStateId":"actorstate-ready"}
+  {"id":"npc-press-operator","aliases":["press operator","operator","compactor"],"initialStateId":"actorstate-ready"},
+  {"id":"npc-the-ai","aliases":["ai","tutor","the tutor"],"initialStateId":"actorstate-ai-cold"}
 ];

@@ -43,9 +43,9 @@ export const ZONE1_CATALOGUES: readonly {
   readonly name: string;
   readonly count: number;
 }[] = [
-  { path: 'src/content/authored/rooms.ts', name: 'rooms', count: 9 },
+  { path: 'src/content/authored/rooms.ts', name: 'rooms', count: 11 },
   { path: 'src/content/authored/items.ts', name: 'items', count: 7 },
-  { path: 'src/content/authored/areas.ts', name: 'areas', count: 1 },
+  { path: 'src/content/authored/areas.ts', name: 'areas', count: 3 },
   { path: 'src/content/authored/worlds.ts', name: 'worlds', count: 1 },
   { path: 'src/content/authored/actors.ts', name: 'actors', count: 9 },
   {
@@ -56,7 +56,7 @@ export const ZONE1_CATALOGUES: readonly {
   {
     path: 'src/content/authored/conversation-topics.ts',
     name: 'conversationTopics',
-    count: 38,
+    count: 41,
   },
   { path: 'src/content/authored/nodes.ts', name: 'nodes', count: 4 },
   { path: 'src/content/authored/quizzes.ts', name: 'quizzes', count: 8 },
@@ -92,7 +92,7 @@ export function zone1CardSet(): CardSet {
   );
   expect(
     files.map((file) => file.path),
-    'the clean zone-1 card set must declare the seven migrated cards',
+    'the authored card set must declare every area card',
   ).toEqual([
     `${AREA_ID}/hazards.yaml`,
     `${AREA_ID}/hints.yaml`,
@@ -100,6 +100,10 @@ export function zone1CardSet(): CardSet {
     `${AREA_ID}/puzzles.yaml`,
     `${AREA_ID}/quizzes.yaml`,
     `${AREA_ID}/rooms.yaml`,
+    'entry-interface/npcs.yaml',
+    'entry-interface/rooms.yaml',
+    'network-hub/npcs.yaml',
+    'network-hub/rooms.yaml',
     'spec-topics.yaml',
   ]);
   return { files };
@@ -118,6 +122,13 @@ function idsOf(value: unknown): readonly string[] {
     const id = entry['id'];
     return typeof id === 'string' ? [id] : [];
   });
+}
+
+// Collections are merged across cards in path order by the generator, so the
+// expected IDs must be aggregated the same way rather than read from zone 1
+// alone (areas own their own room, NPC and definition artefacts).
+function allIds(cards: ParsedCardSet, key: string): readonly string[] {
+  return cards.cards.flatMap((card) => idsOf(card.data[key]));
 }
 
 function cardData(
@@ -140,7 +151,11 @@ export interface Zone1Start {
 }
 
 export function zone1DeclaredStart(cards: ParsedCardSet): Zone1Start {
-  const data = cardData(cards, '/rooms.yaml');
+  // The world is declared once, by the area card whose startAreaId it names.
+  // Do not assume that is the first rooms card in path order.
+  const owner = cards.cards.find((card) => recordsOf(card.data['worlds'])[0]);
+  expect(owner, 'an area card must declare the world').toBeDefined();
+  const data = owner?.data ?? {};
   const definition = isRecord(data['definition']) ? data['definition'] : {};
   const world = recordsOf(data['worlds'])[0] ?? {};
   const worldId = world['id'];
@@ -156,30 +171,33 @@ export function zone1DeclaredStart(cards: ParsedCardSet): Zone1Start {
     worldId: String(worldId),
     areaId: String(areaId),
     roomId: String(roomId),
-    roomIds: idsOf(data['rooms']),
+    roomIds: allIds(cards, 'rooms'),
   };
 }
 
 export function expectedZone1Ids(
   cards: ParsedCardSet,
 ): Readonly<Record<string, readonly string[]>> {
-  const rooms = cardData(cards, '/rooms.yaml');
-  const npcs = cardData(cards, '/npcs.yaml');
   const quizzes = cardData(cards, '/quizzes.yaml');
   const puzzles = cardData(cards, '/puzzles.yaml');
   const hazards = cardData(cards, '/hazards.yaml');
   const hints = cardData(cards, '/hints.yaml');
   const spec = cardData(cards, 'spec-topics.yaml');
-  const definition = isRecord(rooms['definition']) ? rooms['definition'] : {};
   return {
-    rooms: idsOf(rooms['rooms']),
-    items: idsOf(rooms['items']),
-    areas: typeof definition['id'] === 'string' ? [definition['id']] : [],
-    worlds: idsOf(rooms['worlds']),
-    actors: idsOf(npcs['actors']),
-    actorStates: idsOf(npcs['actorStates']),
-    conversationTopics: idsOf(npcs['conversationTopics']),
-    nodes: idsOf(npcs['conversationNodes']),
+    rooms: allIds(cards, 'rooms'),
+    items: allIds(cards, 'items'),
+    areas: cards.cards.flatMap((card) => {
+      const declared = idsOf(card.data['areas']);
+      const own = isRecord(card.data['definition'])
+        ? idsOf([card.data['definition']])
+        : [];
+      return [...declared, ...own];
+    }),
+    worlds: allIds(cards, 'worlds'),
+    actors: allIds(cards, 'actors'),
+    actorStates: allIds(cards, 'actorStates'),
+    conversationTopics: allIds(cards, 'conversationTopics'),
+    nodes: allIds(cards, 'conversationNodes'),
     quizzes: idsOf(quizzes['quizzes']),
     questions: idsOf(quizzes['questions']),
     puzzles: idsOf(puzzles['puzzles']),
