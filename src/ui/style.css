@@ -1,0 +1,113 @@
+/* Single stylesheet for the windowed UI shell (application-and-ui.md §7.1). */
+:root {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #1d2430;
+  background: #0f1620;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.window {
+  position: relative;
+  width: min(72rem, 100%);
+  /* The title overlay is absolutely positioned and the workspace is hidden at
+     boot, so reserve enough height for the overlay to sit inside the chrome. */
+  min-height: 24rem;
+  border: 1px solid #4b5a70;
+  border-radius: 0.5rem;
+  background: #f4f1e8;
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 40%);
+}
+
+.titlebar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #4b5a70;
+  font-weight: bold;
+}
+
+.save-status {
+  font-weight: normal;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.workspace[hidden] {
+  display: none;
+}
+
+/* Prevent a grid item's min-content width from pushing the panels past the
+   viewport (application-and-ui.md §7.1). */
+.workspace > main,
+.workspace > aside {
+  min-width: 0;
+}
+
+/* Narrow viewports cannot sustain the desktop 3fr/1fr split: reflow the panels
+   into one column so the score and every save control stay visible. */
+@media (max-width: 48rem) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.output-log {
+  min-height: 20rem;
+  max-height: 32rem;
+  overflow-y: auto;
+  padding: 0.75rem;
+  border: 1px solid #b9b2a1;
+  background: #fffdf7;
+}
+
+.conversation-panel,
+.quiz-panel,
+.hint-panel {
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #6b7f96;
+}
+
+.terminal input {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.score-panel,
+.save-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.save-controls button {
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+}
+
+.title-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: #f4f1e8;
+}

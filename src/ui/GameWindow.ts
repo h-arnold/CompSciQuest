@@ -1,0 +1,240 @@
+// Window chrome and single mount point for all views (application-and-ui.md
+// §2, §7.1). Panels are created once and toggled, never destroyed mid-turn.
+import type { Clock } from '../application/Clock';
+import type { Game } from '../application/Game';
+import type { LoadResult } from '../application/SaveDto';
+import type { QuarantineDto } from '../application/QuarantineDto';
+import type { ContentBundle } from '../content/ContentBundle';
+import type { EventBus } from '../core/events/EventBus';
+import type { GameEvent } from '../core/events/GameEvent';
+import type { StorageAdapter } from '../storage/StorageAdapter';
+import { ConversationPanel } from './ConversationPanel';
+import { formatEvent } from './formatEvent';
+import { HintPanel } from './HintPanel';
+import { loadFailureMessage } from './loadFailureMessage';
+import { OutputLog } from './OutputLog';
+import { QuizPanel } from './QuizPanel';
+import { SaveControls, type SaveActions } from './SaveControls';
+import { ScorePanel } from './ScorePanel';
+import { Terminal } from './Terminal';
+import { TitleScreen } from './TitleScreen';
+
+// Storage key from storage-schema.md §9; SaveManager holds the same literal
+// privately. This UI copy only reads the slot for the recovery download.
+const QUARANTINE_KEY = 'compsciquest:save:v1:corrupt';
+
+export interface GameWindowDependencies {
+  readonly game: Game;
+  readonly bundle: ContentBundle;
+  readonly bus: EventBus;
+  readonly storage: StorageAdapter;
+  readonly clock: Clock;
+  readonly loadResult: LoadResult;
+  readonly downloadFile: (filename: string, text: string) => void;
+  readonly openSaveFile: () => Promise<string>;
+}
+
+export class GameWindow {
+  private readonly game: Game;
+  private readonly bundle: ContentBundle;
+  private readonly storage: StorageAdapter;
+  private readonly clock: Clock;
+  private readonly downloadFile: (filename: string, text: string) => void;
+  private readonly loadResult: LoadResult;
+  private readonly actions: SaveActions;
+  private readonly outputLog = new OutputLog();
+  private readonly conversationPanel = new ConversationPanel();
+  private readonly quizPanel = new QuizPanel();
+  private readonly hintPanel = new HintPanel();
+  private readonly scorePanel: ScorePanel;
+  private readonly workspace: HTMLElement;
+  private readonly statusElement: HTMLElement;
+  private readonly titleScreen: TitleScreen;
+  private overlayDismissed = false;
+  private publishCount = 0;
+  readonly element: HTMLElement;
+
+  constructor(dependencies: GameWindowDependencies) {
+    this.game = dependencies.game;
+    this.bundle = dependencies.bundle;
+    this.storage = dependencies.storage;
+    this.clock = dependencies.clock;
+    this.downloadFile = dependencies.downloadFile;
+    this.loadResult = dependencies.loadResult;
+
+    this.element = document.createElement('div');
+    this.element.className = 'window';
+
+    const titlebar = document.createElement('div');
+    titlebar.className = 'titlebar';
+    const title = document.createElement('span');
+    title.textContent = 'CompSciQuest';
+    this.statusElement = document.createElement('span');
+    this.statusElement.className = 'save-status';
+    titlebar.append(title, this.statusElement);
+
+    this.actions = this.makeActions(dependencies.openSaveFile);
+    this.scorePanel = new ScorePanel(this.game);
+    this.workspace = document.createElement('div');
+    this.workspace.className = 'workspace';
+    this.workspace.hidden = true;
+    this.mountWorkspace();
+
+    this.titleScreen = new TitleScreen(
+      this.loadResult.ok,
+      () => {
+        this.continueGame();
+      },
+      () => {
+        this.game.newGame();
+      },
+    );
+    this.element.append(titlebar, this.workspace, this.titleScreen.element);
+
+    dependencies.bus.subscribe((event) => {
+      this.publishCount += 1;
+      this.renderBatch([event]);
+      this.dismissOverlayAfterFirstBatch();
+    });
+    this.refreshPanels();
+  }
+
+  private mountWorkspace(): void {
+    const terminal = new Terminal((raw) => {
+      this.handleCommand(raw);
+    });
+    const main = document.createElement('main');
+    main.append(
+      this.outputLog.element,
+      this.conversationPanel.element,
+      this.quizPanel.element,
+      this.hintPanel.element,
+      terminal.element,
+    );
+    const aside = document.createElement('aside');
+    aside.append(
+      this.scorePanel.element,
+      new SaveControls(this.actions).element,
+    );
+    this.workspace.append(main, aside);
+  }
+
+  private makeActions(openSaveFile: () => Promise<string>): SaveActions {
+    const setStatus = (message: string): void => {
+      this.statusElement.textContent = message;
+    };
+    return {
+      setStatus,
+      save: () => {
+        this.game.save();
+      },
+      load: () => {
+        this.game.submit('load');
+      },
+      download: () => {
+        this.game.download();
+      },
+      openImport: async (): Promise<void> => {
+        try {
+          const text = await openSaveFile();
+          // The façade's import result is the single source for status copy.
+          const result = this.game.importSave(text);
+          setStatus(
+            result.ok ? 'Game imported.' : loadFailureMessage(result.reason),
+          );
+        } catch {
+          setStatus(loadFailureMessage('invalid-json'));
+        }
+      },
+      restart: () => {
+        this.game.restart();
+      },
+      downloadQuarantine: () => {
+        this.downloadQuarantine();
+      },
+    };
+  }
+
+  private continueGame(): void {
+    if (this.loadResult.ok) {
+      this.game.continueGame(this.loadResult.dto);
+    }
+  }
+
+  private downloadQuarantine(): void {
+    const text = this.storage.read(QUARANTINE_KEY);
+    if (text === null) {
+      this.actions.setStatus('There is no quarantined save to download.');
+      return;
+    }
+    try {
+      const record = JSON.parse(text) as Partial<QuarantineDto>;
+      const raw = typeof record['raw'] === 'string' ? record['raw'] : text;
+      const stamp = this.clock.now().replaceAll(/[:.]/gu, '-');
+      this.downloadFile(`compsciquest-quarantine-${stamp}.json`, raw);
+      this.actions.setStatus('Quarantined save downloaded.');
+    } catch {
+      this.actions.setStatus(loadFailureMessage('invalid-json'));
+    }
+  }
+
+  private handleCommand(raw: string): void {
+    const lowered = raw.trim().toLowerCase();
+    const isImport = lowered === 'import' || lowered.startsWith('import ');
+    this.outputLog.append([`> ${isImport ? 'import' : raw}`]);
+    if (isImport) {
+      void this.actions.openImport();
+      return;
+    }
+    switch (lowered) {
+      case 'save': {
+        this.actions.save();
+        return;
+      }
+      case 'load': {
+        this.actions.load();
+        return;
+      }
+      case 'download': {
+        this.actions.download();
+        return;
+      }
+      case 'restart': {
+        this.actions.restart();
+        return;
+      }
+      default: {
+        break;
+      }
+    }
+    const before = this.publishCount;
+    const events = this.game.submit(raw);
+    if (this.publishCount === before) {
+      this.renderBatch(events);
+    }
+  }
+
+  private renderBatch(events: readonly GameEvent[]): void {
+    for (const event of events) {
+      this.outputLog.append(formatEvent(event, this.bundle));
+    }
+    this.refreshPanels();
+  }
+
+  private refreshPanels(): void {
+    const data = this.game.getViewData();
+    this.scorePanel.refresh();
+    this.conversationPanel.refresh(data);
+    this.quizPanel.refresh(data);
+    this.hintPanel.refresh(data);
+  }
+
+  private dismissOverlayAfterFirstBatch(): void {
+    if (this.overlayDismissed) {
+      return;
+    }
+    this.overlayDismissed = true;
+    this.titleScreen.element.remove();
+    this.workspace.hidden = false;
+  }
+}
