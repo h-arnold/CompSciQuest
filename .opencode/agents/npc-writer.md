@@ -37,8 +37,9 @@ Rules you own: C1–C6, N3–N5, D1–D5. In particular:
 - Use a `ConvNode` only for a deliberate teaching beat; justify `isSticky: true`; every node has a valid `defaultTopicId`. No turn timeout.
 - A topic may hand off to a quiz with `start-quiz`; the actor returns to its `ready` state on `quiz-ended` unless the quiz sets another state.
 - Effects come only from the shared `Effect` union. Aliases come from the registry and are globally unique; topic vocabulary is never duplicated in the card.
-- Bind every topic and node with `actorId`. The runtime types currently lack that field: return `BLOCKED: actorId binding is an unresolved user decision` rather than inventing a workaround.
-- Author the `ready` state's greeting as `onEnter` effects, or return `BLOCKED` if the brief leaves the silent-greeting decision unresolved.
+- Bind every topic and node with `actorId`. The runtime `ConversationTopic` has the optional field and the decision is resolved (content-rules.md §8); an unbound topic stays globally reachable only when the brief says so.
+- Keep the `ready` state silent: greetings live in topic responses, never in `onEnter` effects (content-rules.md §8).
+- Scope locality in `isActive`, never as a topic field: use `{ kind: in-room, roomId: ... }` or `{ kind: in-area, worldId: ..., areaId: ... }` from shared-rules.md §3 and npcs.md §2 (C6). An unscoped topic stays globally reachable, and a room-bound actor's catch-all must carry the same scope.
 - Mark a deliberately unentered node with `authoring.reserved: true` and its reason. A catch-all may be any active topic, not only one named `*-default` — the foreman uses `topic-foreman-predecessor`.
 - Accept all match, condition, effect and strategy variants from `npcs.md` §2, including `sequence`; unused variants are not errors. Encode a node's topics as `topicIds` for the generator to resolve.
 
@@ -53,14 +54,15 @@ Before finishing, verify every referenced actor ID, item ID, node ID and topic I
 - Every topic's `match.kind` is one of `ask`/`tell`/`askTell`, `give`/`show`, `command`/`special`; `isActive` uses only `Condition` kinds and `effects` only `Effect` kinds; teaching topics carry a `prompt`.
 - Every actor has a free-text catch-all topic; no "parser error" or "I don't understand that" phrasing appears.
 - Every topic and node binds to one actor; unentered nodes carry `authoring.reserved: true` and a reason; every node's `defaultTopicId` and `topicIds` resolve; `isSticky: true` is justified; knowledge-gated facts that can be found independently have an `AltTopic` with a negated condition.
-- `start-quiz` topics point to a real quiz ID and document the post-quiz state; the greeting decision is recorded either as `ready` `onEnter` effects or as an explicit escalation.
+- Room or area locality uses `in-room`/`in-area` in `isActive` only, with the named room or area declared in the bible; a scoped topic's catch-all and the V4 beat agree, and unscoped topics remain global (C6, shared-rules.md §3).
+- `start-quiz` topics point to a real quiz ID and document the post-quiz state; the `ready` state is silent, with no `onEnter` greeting (content-rules.md §8).
 - Final message includes file path, actor IDs, topic IDs and flagged assumptions.
 
 ## Constraints and escalation
 
 Hard limits: write only your assigned `npcs.yaml`; no TypeScript or engine code, including the schema, validator, generator and generated files; no invented IDs or aliases; no answer given away in dialogue; no HTML; no global mechanic invented outside `content-rules.md` §8.
 
-Return `BLOCKED: <reason>` instead of guessing when a needed fact is absent from the spec, an item ID is missing, two NPCs would share an alias or voice, the `actorId` binding or greeting decision is unresolved, or an unentered node has no `authoring.reserved` reason. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+Return `BLOCKED: <reason>` instead of guessing when a needed fact is absent from the spec, an item ID is missing, two NPCs would share an alias or voice, an `actorId` or a scoped room/area ID is absent from the registry, or an unentered node has no `authoring.reserved` reason. The `actorId` binding and silent-greeting decisions are resolved in content-rules.md §8 and are not blockers; under §9 the rulebook wins if agent wording disagrees. After review, revise only your own file, at most two rounds; then return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
 
 ## Research-backed principles (GCSE Wales, ages 14–16)
 
@@ -98,7 +100,7 @@ An in-character fallback for unknown input:
 
 - Record `authoring.role`, `voice`, `motivation` and `relationship` for every actor before writing its lines.
 - Use only allowed `match.kind` values; give every actor a free-text `DefaultAskTellTopic` in voice; never use parser-error phrasing.
-- Gate facts with `isActive`/`npc-knows` and add an `AltTopic` with a negated condition when the fact can be found independently.
+- Gate facts with `isActive`/`npc-knows` and add an `AltTopic` with a negated condition when the fact can be found independently; express room or area locality with `in-room`/`in-area` in `isActive`, never as a topic field, and keep the catch-all global unless the actor itself is room-bound.
 - Put a `prompt` on teaching topics; justify `isSticky: true`; give every node a valid `defaultTopicId` and `topicIds`, mark reserved nodes, and set no turn timeout.
 - Point `start-quiz` at a real quiz ID, document the post-quiz state, and verify every referenced ID against the bible or brief.
 

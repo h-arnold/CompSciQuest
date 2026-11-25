@@ -228,7 +228,10 @@ The gates in [content-rules.md §2](content-rules.md#2-workflow-gates) change as
 follows. W1 and W2 (bible and approval) are unchanged.
 
 - **W3 — Dispatch.** Briefs name the YAML scaffold path, the relevant schema
-  slice, assigned IDs and aliases, topic IDs and the applicable rule IDs.
+  slice, assigned IDs and aliases, topic IDs and the applicable rule IDs. A
+  re-brief after an approved design seam lands must restate the exact contract
+  (for example `in-room`/`in-area` in `isActive`, shared-rules.md §3) and send
+  the card back through validation and both reviewers.
 - **W4 — Review.** `content:validate` must pass before either reviewer runs.
   Validation findings route back to the owning writer like any other blocker.
   The editor drafts the V4 walkthrough trace from the same validated data and

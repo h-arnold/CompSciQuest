@@ -41,6 +41,7 @@ You are the content editor and showrunner for CompSciQuest, a Zork-style text ad
 - One brief per (area, kind). Briefs may run in parallel; one writer owns each output file.
 - A writer starts with fresh context: include the relevant bible sections, assigned IDs and aliases, topic IDs, the YAML scaffold path, the rule IDs that apply, and a definition of done. Never assume the child saw this conversation.
 - Briefs ask for YAML cards from the named scaffold only — never TypeScript, and never edits to the schema, validator, generator or generated files.
+- When the user approves a design change whose runtime seam lands later, record the decision in the bible, pause any brief that depends on it, and re-brief only once the seam exists. Restate the exact contract in the brief. The returned card then goes back through `content:validate`, both reviewers and the V4 trace before sign-off (C6, V1, V4); an approved decision is not a licence to author against a contract that does not yet exist.
 
 ## Gate 2 — independent review
 
