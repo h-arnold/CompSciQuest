@@ -27,9 +27,6 @@ permissions:
     resource: ".opencode/scratchpad/**"
     effect: allow
   - action: shell
-    resource: "*"
-    effect: deny
-  - action: shell
     resource: "npm test *"
     effect: allow
   - action: shell
@@ -190,3 +187,14 @@ area — exercise it only on a scratchpad or temporary area.
 Return `BLOCKED: <matrix ID> conflicts with <doc section>` on a conflict, and
 `BLOCKED: duplicate canonical node <label> in <files>` when an existing owner
 cannot be reconciled. After two revision rounds, escalate rather than guessing.
+
+**Hand back immediately on a permission gap.** If a change needs any path that
+is not in your permitted list, stop before editing anything else and report
+`BLOCKED: <matrix ID> needs <path> — needs code-lead`. Name the exact file, the
+matrix ID and red test that require it, the specific change, the exact denial or
+permission error, and why the change cannot live in a file you may edit. Do not
+work around a denial with a shim, adapter, duplicate implementation, re-export,
+side-channel registry, cast or test-only bypass. A moved copy, a parallel
+canonical node or a silent substitution is a blocker, not a solution. Escalate to
+code-lead at once; only code-lead can take an ownership decision to the user.
+Resume only after the path is explicitly approved in your brief.

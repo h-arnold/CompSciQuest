@@ -12,9 +12,6 @@ permissions:
     resource: ".opencode/scratchpad/**"
     effect: allow
   - action: shell
-    resource: "*"
-    effect: deny
-  - action: shell
     resource: "npm test *"
     effect: allow
   - action: shell
@@ -111,6 +108,7 @@ implementation exists for them. You never edit `src/**`.
 - The red report records the expected failure for each ID, with real output.
 - No production file was changed; `tests/**` and the scratchpad report are the
   only writes.
+- Files you touched have zero lint errors or warnings.
 - Tests are deterministic, use only injected fakes, and assert contracts.
 - Green verification after implementation is owned by `code-lead` in Gate 3,
   not by you; you are not re-dispatched once `src/**` has changed.
@@ -124,3 +122,16 @@ assertions.
 Return `BLOCKED: <matrix ID> needs <doc decision>` when the expected result is
 ambiguous, and `BLOCKED: duplicate canonical node <label>` when two graph nodes
 claim the same responsibility. Do not resolve either by guessing.
+
+**Hand back immediately on a permission gap.** If an assertion needs a change
+outside `tests/**` and `.opencode/scratchpad/**` — notably `src/**`, `e2e/**`,
+config, docs, the branch matrix or another agent's report — stop before editing
+anything else and report `BLOCKED: <matrix ID> needs <path> — needs code-lead`.
+Name the exact file, the matrix ID and assertion involved, the specific change,
+the exact denial or permission error, and why the expectation cannot be met from
+your own files. Do not work around it by weakening, skipping or rewriting an
+expectation, by adding a test-only shim, or by injecting a fake that masks a real
+defect. Escalate to code-lead at once and resume only after the path is
+explicitly approved. A fixture repair is acceptable only when it preserves every
+expectation and gives the assertion a real canonical owner; report it explicitly
+rather than using it to turn a red test green.
