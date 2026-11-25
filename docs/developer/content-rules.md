@@ -1,6 +1,6 @@
 # Content authoring rules (design)
 
-Status: draft · Last updated: 2026-11-24
+Status: draft · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) · [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md) · [content toolchain](content-toolchain.md).
 
@@ -68,7 +68,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **C3 — Knowledge gating.** Use `isActive` and `npc-knows` to hide information until it has been mentioned. Where the player could discover the fact independently, define a second topic with a negated condition (the TADS `AltTopic` pattern) ([npcs.md §4](npcs.md#4-conversation-flow)).
 - **C4 — Conversation nodes.** A `ConvNode` is used only for a deliberate forced teaching beat. Default nodes expire after one turn; `isSticky: true` needs an explicit reason in the card. There is no turn timeout: conversation ends on `bye`, leaving the room, or starting a quiz.
 - **C5 — Effects and aliases.** All conversation state changes go through the shared `Effect` union. Aliases come from the editor's global registry and must be unique across objects and NPCs ([shared-rules.md §10](shared-rules.md#10-content-registration)).
-- **C6 — Complete conversation data.** Topic vocabulary comes from the bible alias registry, never from a duplicate table in the card. Every topic and node binds to one actor; the ready state's greeting is either authored or its silence explicitly decided; a node with no producer is marked reserved with a reason; and every default topic exists. The schema admits all runtime match, condition, effect and strategy variants, including ones zone 1 does not use. See §4.3 and the `npc-content` gate in §7.
+- **C6 — Complete conversation data.** Topic vocabulary comes from the bible alias registry, never from a duplicate table in the card. Every topic and node binds to one actor; the silent ready-state greeting is the recorded decision, so no unauthored greeting is added; a node with no producer is marked reserved with a reason; and every default topic exists. The schema admits all runtime match, condition, effect and strategy variants, including ones zone 1 does not use. See §4.3 and the `npc-content` gate in §7.
 
 ### H — Hazards and hints
 
@@ -267,20 +267,26 @@ The six points to design into the schema and gates:
    A topic records `objectIds`, `itemIds` or `keywords`; it never duplicates the
    alias table. The `npc-content` gate checks that every referenced ID exists in
    the bible registry and `COVERAGE.md`.
-2. **BLOCKER — actor binding.** Both topics and nodes in the card carry
-   `actorId`, but `ConversationTopic` and `ConversationNode` in `src/core/npcs/`
-   have no such field and `ContentBundle.conversationTopics` is a global
-   catalogue. The YAML schema must accept `actorId` so the validator can bind a
-   topic or node to its actor; relying on node membership alone would leave
-   always-active topics reachable from every actor. Adding the field to the
-   runtime types is a user-owned design change and must be resolved before the
-   NPC schema is finalised. Escalate, do not work around it.
-3. **Greeting needs a decision.** [npcs.md §4](npcs.md#4-conversation-flow) says
+2. **RESOLVED — actor binding.** Topics and nodes in the card carry `actorId`,
+   but neither `ConversationTopic` nor `ConversationNode` in `src/core/npcs/`
+   has that field, and both catalogues are global. The user decided to add an
+   optional `actorId` to the runtime **`ConversationTopic`** type: the generator
+   emits it and the validator checks it names a declared actor, so a topic is
+   bound to its actor rather than left reachable from every actor. Conversation
+   resolution must filter topics by actor when that code is built. **Node**
+   `actorId` stays authoring-only metadata: the validator checks it names a
+   declared actor and that the node's `defaultTopicId` belongs to that actor,
+   while runtime node membership is established by `enter-node` effects, which
+   already carry `actorId`. Node `actorId` is a top-level YAML key: the validator
+   reads it and the generator drops it, so it is never emitted into the runtime
+   `ConversationNode`. Do not work around topic binding with node membership
+   alone.
+3. **RESOLVED — silent greeting.** [npcs.md §4](npcs.md#4-conversation-flow) says
    `talk-to` applies the `ready` state's greeting effects, but the zone-1
-   `actorstate-ready` declares no `onEnter` effects. The schema must admit
-   greeting effects on that state; whether a silent greeting is acceptable is a
-   decision for the user before the NPC schema is finalised. A card must not
-   imply a greeting that no effect delivers.
+   `actorstate-ready` declares no `onEnter` effects. The user decided to keep
+   the card verbatim: greetings remain in each topic's responses and no greeting
+   is authored on state entry. The schema still admits `onEnter` effects for
+   other states, but a writer must not add a greeting the card does not declare.
 4. **Reserved nodes.** A node with no `enter-node` producer must carry
    `authoring.reserved: true` and a reason, or it is a finding. The zone-1
    `node-foreman-switch-lesson` is deliberately unentered for the reason recorded
@@ -502,14 +508,13 @@ bundle.
 | `world-graph`    | Exactly one `worlds` declaration per world and every `definition.worldId` resolves; the start world's `startAreaId` and that area's `startRoomId` resolve by ID, never by array position; every room reachable from its area's `startRoomId`; every item's `initialRoom` or owning actor reachable; every quiz, NPC topic, hazard trigger and hint target reachable or triggerable; every `covered` topic with evidence has a completion source on some valid path, so `game-won` is achievable. The V4 walkthrough remains the human audit of the same conditions.                                                                                                                                                                                |
 | `hint-content`   | 2–4 levels in ascending order; unlock keys from the agreed namespace; targets exist; no answer-revealing level; penalty absent or zero by default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `hazard-content` | Telegraph text present; effects only from the shared union; no `set-puzzle-*` effects; level-start room declared for the area.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `npc-content`    | Every `actorId` on a topic or node resolves to an actor and binds that artifact to that actor, with no cross-actor topic leakage; every `objectId`, `itemId` and keyword resolves in the bible registry and `COVERAGE.md`; every `defaultTopicId` exists in the same actor's topics; a catch-all may be any active topic, not only one named `*-default`; a node with no `enter-node` producer carries `authoring.reserved: true` with a reason; `ready` greeting effects are present or the silent-greeting decision is recorded; all `TopicMatch`, `Condition`, `Effect` and `ResponseStrategy` kinds are accepted, including unused `sequence`; node `topicIds` resolve to concrete topics; effects only from the shared union; aliases unique. |
+| `npc-content`    | Every `actorId` on a topic or node resolves to an actor and binds that artefact to that actor, with no cross-actor topic leakage; every `objectId`, `itemId` and keyword resolves in the bible registry and `COVERAGE.md`; every `defaultTopicId` exists in the same actor's topics; a catch-all may be any active topic, not only one named `*-default`; a node with no `enter-node` producer carries `authoring.reserved: true` with a reason; no greeting is authored on `actorstate-ready` (the recorded silent-greeting decision); all `TopicMatch`, `Condition`, `Effect` and `ResponseStrategy` kinds are accepted, including unused `sequence`; node `topicIds` resolve to concrete topics; effects only from the shared union; aliases unique. |
 | `score-content`  | Every room, puzzle and quiz defines a non-negative integer `score`; each entry in `spec-topics.yaml` carries the `SpecTopic` fields (`id`, `title`, `specReference`, `codeLocation`, `status`, `evidence`, `roomIds`, `maxScore`); for each spec topic, the sum of scores of its mapped rooms, puzzles and quizzes is at most that topic's `maxScore` ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)); every area declares a valid `startRoomId`.                                                                                                                                                                                                                                                      |
 
-The actor-binding clause of `npc-content` is specified but blocked on the
-user-owned runtime-type decision recorded in §4.3 point 2 and §8. Until that
-decision is made, the NPC schema cannot be signed off and this clause is not
-enforced; every other gate above is enforced. A validator that cannot check a
-clause must report the gap rather than silently pass it.
+The actor-binding decision recorded in §4.3 point 2 and §8 is resolved, so
+`npc-content` enforces the topic and node binding checks along with every other
+gate above. A validator that cannot check any clause must report the gap rather
+than silently pass it.
 
 ## 8. Decisions content must not assume
 
@@ -529,7 +534,7 @@ unavoidable assumption in the card. Authority is
 | Content registration                 | Validated YAML cards generate committed `src/content/authored/*.ts`, assembled into one injected `ContentBundle`; areas declare `startRoomId` as a runtime field. There is no runtime or build-time YAML parsing.                                                                             |
 | Boot start position                  | `GameState.createInitial()` resolves the start from the injected bundle's world `startAreaId` and that area's `startRoomId`, and builds room inventory from the same bundle; it never selects by array position. Unit tests use a separate deterministic fixture.                             |
 | Validation                           | `content:validate` runs before review and generation; `content-critic` and `pck-reviewer` remain independent read-only gates.                                                                                                                                                                 |
-| NPC actor binding                    | Unresolved: the zone-1 card binds topics and nodes with `actorId`, but the runtime types have no such field. Escalate to the user before finalising the NPC schema; do not work around it with node membership.                                                                               |
+| NPC actor binding and greeting       | Resolved by the user: add an optional `actorId` to runtime `ConversationTopic` (generated and validated); node `actorId` stays authoring-only, with runtime membership via `enter-node` effects. The ready state keeps the card's silence — greetings remain in topic responses, never added as `onEnter`. |
 
 ## 9. Agent acceptance contract
 
@@ -554,6 +559,6 @@ Every agent file contains two sections: **Definition of done** (binary checks th
 
 ### 9.3 Stop-and-escalate and the review loop
 
-Return `BLOCKED: <reason>` rather than guessing when: a required ID, alias or topic ID is missing; the brief conflicts with the bible, the spec or this rulebook; a structural validation gate fails and the fix belongs to another owner; the NPC `actorId` binding or ready-state greeting decision is unresolved; an unentered node has no `authoring.reserved` reason; a subject claim is unverifiable; a mechanic outside the §8 decisions and the bible is unclear; a dependency would create a cycle or an unreachable puzzle, room, item, topic, quiz, hazard trigger or hint target; the walkthrough cannot reach `game-won` or a `covered` topic has no completion source on any valid path; or no counterplay can be designed for a hazard.
+Return `BLOCKED: <reason>` rather than guessing when: a required ID, alias or topic ID is missing; the brief conflicts with the bible, the spec or this rulebook; a structural validation gate fails and the fix belongs to another owner; a topic or node `actorId` names no declared actor; a greeting is added to the silent ready state; an unentered node has no `authoring.reserved` reason; a subject claim is unverifiable; a mechanic outside the §8 decisions and the bible is unclear; a dependency would create a cycle or an unreachable puzzle, room, item, topic, quiz, hazard trigger or hint target; the walkthrough cannot reach `game-won` or a `covered` topic has no completion source on any valid path; or no counterplay can be designed for a hazard.
 
 After a review round, a writer may revise **only its own file, at most two rounds**. If the finding requires another agent's file or a bible change, it returns `BLOCKED: <finding> requires <owner>` (owner = editor, another writer or the bible). The editor reconciles by updating the bible and re-briefing; it never edits a writer's card itself. Reviewers do not enter this loop — they return findings and the editor routes them.
