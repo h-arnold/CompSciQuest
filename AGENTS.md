@@ -8,7 +8,8 @@ backend, no server-side state) and must be importable/exportable as a JSON file
 containing the full save details. Vite builds the site; Vitest covers game logic
 and Playwright covers browser flows, especially storage and JSON save/load.
 
-No game code yet: the npm package and lint config are scaffolded. Use the
+Game code lives under `src/`, with unit coverage in `tests/` and browser
+flows in `e2e/`. Use the
 scripts in `package.json` as the source of truth for commands; don't invent
 build/test commands.
 
@@ -20,8 +21,9 @@ build/test commands.
 - The Dockerfile lives at `.devcontainer/Dockerfile` but its build context is
   `..` (the repo root), so `COPY` paths are root-relative.
 - Vite, Vitest, and Playwright are installed **globally in the container** (see
-  `README.md` / Dockerfile) with no local `package.json` dependencies for them
-  yet; `npm install` in the repo root is not the setup step.
+  `README.md` / Dockerfile), and Vite and Vitest are **local devDependencies**
+  too: run `npm install` in the repo root as part of setup — the Dockerfile
+  does not install project dependencies.
 - ESLint and its plugins are **local devDependencies** — plugins must resolve
   from the project. Run `npm run lint` (or `npm run lint:fix`).
 - Prettier and `markdownlint-cli2` are local devDependencies too. Run
@@ -60,9 +62,10 @@ There are two separate workflows. `content-editor` owns narrative, content cards
 and `docs/coverage/COVERAGE.md`; `code-lead` owns code, tests and browser QA. Do
 not cross the boundary: content agents never write TypeScript, and code agents
 never write design cards or invent course facts. The default agent remains
-`content-editor`; select `code-lead` for code work. The five workers are
-subagents, not primaries: `code-lead` dispatches them for code slices, except
-that `content-editor` dispatches `browser-tester` directly for W7.
+`content-editor`; select `code-lead` for code work. The workers are subagents,
+not primaries: `code-lead` dispatches them for code slices, except that
+`content-editor` dispatches `browser-tester` directly for W7, and both dispatch
+the `docs` agent when a slice changes documented behaviour.
 
 For an accepted content area, `content-editor` hands the V4 trace in
 `docs/content/walkthrough.md` to `browser-tester`
@@ -72,13 +75,14 @@ findings go to `code-lead`. `content-editor` never operates the browser itself.
 
 ### Agents and ownership
 
-| Agent              | Owns                                                     | Scratchpad output                          |
-| ------------------ | -------------------------------------------------------- | ------------------------------------------ |
-| `test-planner`     | `branch-matrix.md` only                                  | `branch-matrix.md`                         |
-| `test-writer`      | `tests/**`                                               | `slices/<id>/red-report.md`                |
-| `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts` | `slices/<id>/implementation.md`            |
-| `code-reviewer`    | nothing — read-only                                      | `slices/<id>/review.md`                    |
-| `browser-tester`   | `e2e/**`, `playwright.config.ts`                         | `slices/<id>/qa-report.md` and screenshots |
+| Agent              | Owns                                                                                                               | Scratchpad output                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `test-planner`     | `branch-matrix.md` only                                                                                            | `branch-matrix.md`                                  |
+| `test-writer`      | `tests/**`                                                                                                         | `slices/<id>/red-report.md`                         |
+| `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts`                                                           | `slices/<id>/implementation.md`                     |
+| `code-reviewer`    | nothing — read-only                                                                                                | `slices/<id>/review.md`                             |
+| `browser-tester`   | `e2e/**`, `playwright.config.ts`                                                                                   | `slices/<id>/qa-report.md` and screenshots          |
+| `docs`             | Documentation form, drift and duplication: `docs/developer/**`, root `README.md`, `docs/coverage/COVERAGE.md` form | `docs-audit/` findings and reviews (reconcile only) |
 
 The ESLint config (`eslint.config.*`) and TypeScript configs (`tsconfig*.json`)
 are user-owned. `opencode.json` denies edits to those paths for every agent;
@@ -142,6 +146,27 @@ each accepted area by `content-rules.md` V5, not a §12 requirement.
 - Use `graphify save-result --outcome useful|dead_end|corrected` to feed lessons
   back, except from the read-only reviewer. Keep the codebase and coverage graphs
   separate as described below.
+
+## Documentation management
+
+- `docs/developer/documentation-style-guide.md` is the source of truth for
+  documentation style, ownership, structure and audit scope. Link to it;
+  never restate its rules.
+- **Same-change documentation obligation.** A change that alters documented
+  behaviour carries its documentation update in the same slice, delegated to
+  the `docs` agent (`.opencode/agents/docs.md`). This binds `code-lead` and
+  `content-editor` alike.
+- AGENTS files route; documentation files own policy; recorded design
+  decisions in `docs/developer/**` remain user-owned
+  (`content-toolchain.md` §7). Keep `AGENTS.md` cross-cutting: module rules
+  live in the doc that owns the subject and are linked from here.
+  `AGENTS.md` and `opencode.json` are user-owned; the `docs` agent proposes
+  changes to them rather than applying edits.
+- `docs/coverage/COVERAGE.md` is split-governed: coverage decisions to
+  `content-editor`, form to the `docs` agent.
+- `.opencode/agents/code-reviewer.md` keeps a "Key documentation references"
+  section; the `docs` agent keeps it synchronised, along with
+  `docs/developer/README.md`.
 
 ## Language and tone
 

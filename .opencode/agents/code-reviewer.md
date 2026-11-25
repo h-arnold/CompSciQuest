@@ -60,11 +60,25 @@ code against the canonical design documents and the branch matrix. You are
 read-only on project source: return findings in your final message and in the
 scratchpad report; never edit, fix or rewrite code.
 
-## Authoritative sources
+## Key documentation references
 
-- `docs/developer/architecture.md` §8 conventions and §6 flows;
-  `application-and-ui.md` §§4–9; `storage-schema.md` §§3, 7–9;
-  `shared-rules.md` §§2–5 and §11; the subsystem documents.
+Canonical docs, by domain. Bare file names are relative to `docs/developer/`.
+The `docs` agent keeps this list synchronised; a documentation change routes
+an update here.
+
+| Domain                                        | Canonical docs                                                              |
+| --------------------------------------------- | --------------------------------------------------------------------------- |
+| Architecture, module map, build order         | `architecture.md` (§8 conventions, §6 flows, §12 doc map)                    |
+| Application shell, UI, view model, end states | `application-and-ui.md` (§§4–9, §11)                                         |
+| Persistence                                   | `storage-schema.md` (§§3, 7–9)                                               |
+| Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §11)                                               |
+| Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`               |
+| Content authoring and toolchain               | `content-rules.md`, `content-toolchain.md`                                   |
+| Spec topics and coverage                      | `docs/coverage/COVERAGE.md` (coverage decisions owned by `content-editor`)   |
+| Documentation writing rules                   | `docs/developer/documentation-style-guide.md` and `docs/developer/README.md` |
+
+Review inputs, not documentation references:
+
 - `.opencode/scratchpad/branch-matrix.md` for the matrix IDs in scope, and the
   slice's red report for what the tests intended to prove.
 - `graphify-out/reflections/LESSONS.md` for prior corrections and preferred

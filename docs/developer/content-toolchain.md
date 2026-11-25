@@ -156,7 +156,7 @@ the schema, the validator or the generator.
 ## 4. Validation
 
 `npm run content:validate` parses every card with the `yaml` package, applies
-Zod shape checks, then runs all eight cross-artifact gates from
+Zod shape checks, then runs all eight cross-artefact gates from
 [content-rules.md §7](content-rules.md#7-structural-validation-gates)
 as plain TypeScript checks: `content-ids`, `quiz-content`, `puzzle-graph`,
 `world-graph`, `hint-content`, `hazard-content`, `npc-content` and
@@ -270,14 +270,16 @@ follows. W1 and W2 (bible and approval) are unchanged.
 
 ## 7. Ownership
 
-| Artefact                                                | Owner                                      |
-| ------------------------------------------------------- | ------------------------------------------ |
-| `docs/content/**/*.yaml` and `spec-topics.yaml`         | `content-editor` via writers               |
-| `tools/content/**`, validator and generator             | `code-lead` via `code-implementer`         |
-| `src/content/authored/*.ts` (generated)                 | `code-lead`                                |
-| `package.json` dependencies (`zod`, `yaml`) and scripts | `code-lead`                                |
-| `e2e/**` and `slices/<id>/qa-report.md`                 | `browser-tester` (W7 via `content-editor`) |
-| `docs/developer/*.md`, `AGENTS.md`, `opencode.json`     | user-owned design authority                |
+| Artefact                                                | Owner                                       |
+| ------------------------------------------------------- | ------------------------------------------- |
+| `docs/content/**/*.yaml` and `spec-topics.yaml`         | `content-editor` via writers                |
+| `tools/content/**`, validator and generator             | `code-lead` via `code-implementer`          |
+| `src/content/authored/*.ts` (generated)                 | `code-lead`                                 |
+| `package.json` dependencies (`zod`, `yaml`) and scripts | `code-lead`                                 |
+| `e2e/**` and `slices/<id>/qa-report.md`                 | `browser-tester` (W7 via `content-editor`)  |
+| `docs/developer/**` — design decisions                  | user-owned design authority                 |
+| `docs/developer/**` — style, drift, duplication         | `docs` agent (documentation-style-guide.md) |
+| `AGENTS.md`, `opencode.json`                            | user-owned design authority                 |
 
 Code agents never write cards or invent course facts; content agents never
 write TypeScript, schema or tooling.
