@@ -101,7 +101,9 @@ time, and you may proceed only after they explicitly approve that edit.
   test → smallest implementation → review.
 - UI and browser work is verification-led. Behavioural expectations come from
   `docs/developer/application-and-ui.md` §12; accessibility and aesthetics are
-  judged by the `browser-tester` once something renders.
+  judged by the `browser-tester` once something renders. For an accepted content
+  area, the ordered path in `docs/content/walkthrough.md` is the behavioural
+  contract for the W7 browser walkthrough (content-rules.md V5).
 
 ## Gate 1 — plan the branches
 
@@ -134,14 +136,24 @@ For an accepted content area handed over by `content-editor` in W6, run
 files, and commit the generated TypeScript. This is a mechanical handoff, not a
 second authoring pass: do not rewrite YAML cards or invent course facts.
 
+For that area's W7 browser walkthrough, dispatch `browser-tester` with the
+accepted area's ordered path, gate table and reachability table from
+`docs/content/walkthrough.md`. The walkthrough uses the generated authored
+content and its real IDs, not a stub fixture. Its QA report and screenshots go
+to `.opencode/scratchpad/slices/<slice-id>/qa-report.md` and
+`.opencode/scratchpad/slices/<slice-id>/screenshots/`. Route findings about
+cards, IDs, flags or prose to `content-editor`, and code findings to the owning
+code slice.
+
 Recommended scheduling (my own orchestration, consistent with the build order
 in `docs/developer/architecture.md` §12: persistence → content toolchain →
 content registry and UI shell → hazards and puzzles → NPCs → quiz combat and
 hints): lint bootstrap and matrix → persistence → content toolchain → content
-bundle, validation, stub and boot shell → parser and turn pipeline → hazards
-and puzzles → NPCs → quizzes and hints → browser QA.
-Section 12 does not prescribe lint bootstrap, the parser slice or a final QA
-pass; those are my additions, not a citation from that section.
+bundle, validation and boot shell → parser and turn pipeline → hazards and
+puzzles → NPCs → quizzes and hints → browser QA.
+Section 12 does not prescribe lint bootstrap or the parser slice; those are my
+additions. The final browser QA pass is the W7 walkthrough required for each
+accepted area by content-rules.md V5, not a citation from §12.
 
 ## Gate 3 — route findings
 
@@ -152,6 +164,9 @@ pass; those are my additions, not a citation from that section.
   `npx prettier --check` on the files the slice changed. The test-writer is not
   re-dispatched after implementation and cannot edit `src`, so it does not own
   this check.
+- For W7, a V5 finding about cards, IDs, flags or prose goes to `content-editor`
+  for the owning writer or the bible; a code finding goes back to the owning
+  code slice. Never rewrite a card to make a walkthrough step pass.
 - Cross-artefact contradictions that the documents do not settle go to the user
   with the affected documents named; do not send them to `test-planner`, whose
   brief forbids choosing between interpretations.
@@ -182,6 +197,9 @@ pass; those are my additions, not a citation from that section.
 - Each non-scaffolding slice has a red report; scaffolding slices are labelled
   as such in the report instead. Every slice has a verification run, a review
   verdict and, where relevant, a QA report with screenshot evidence.
+- Each accepted content area has a W6 verification run and a W7 browser-walkthrough
+  QA report with screenshot evidence, or an explicit `BLOCKED` escalation naming
+  the owner.
 - No blocker or major finding remains open; all `BLOCKED` items are surfaced to
   the user with the owning agent named.
 - The final report lists the changed files, the matrix IDs covered and the open

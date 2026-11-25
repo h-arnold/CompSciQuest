@@ -218,6 +218,12 @@ follows. W1 and W2 (bible and approval) are unchanged.
   and `npx prettier --check` on the changed files. This replaces the former
   "conversion out of scope" step; it is a mechanical handoff, not a second
   authoring pass.
+- **W7 — Browser walkthrough.** `code-lead` dispatches `browser-tester` to walk
+  the accepted area's V4 trace in the running app against the generated
+  authored bundle (content-rules.md V5), writing a QA report and screenshots
+  into the slice scratchpad. The stub fixture has been retired, so the walkthrough
+  uses the area's real content IDs. Content findings return to `content-editor`;
+  code findings return to `code-lead`.
 
 ## 7. Ownership
 
@@ -227,6 +233,7 @@ follows. W1 and W2 (bible and approval) are unchanged.
 | `tools/content/**`, validator and generator             | `code-lead` via `code-implementer` |
 | `src/content/authored/*.ts` (generated)                 | `code-lead`                        |
 | `package.json` dependencies (`zod`, `yaml`) and scripts | `code-lead`                        |
+| `e2e/**` and `slices/<id>/qa-report.md`                 | `code-lead` via `browser-tester`   |
 | `docs/developer/*.md`, `AGENTS.md`, `opencode.json`     | user-owned design authority        |
 
 Code agents never write cards or invent course facts; content agents never
