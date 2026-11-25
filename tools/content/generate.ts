@@ -14,6 +14,7 @@ import {
   normalisedCards,
   stringList,
 } from './gates/common.ts';
+import { bundleOf } from './adapt.ts';
 import { cleanEntry, emitCatalogue, type CatalogueEmit } from './emit.ts';
 import { validateCards } from './validate.ts';
 
@@ -116,11 +117,9 @@ const TARGET_OF: Readonly<Record<string, string>> = {
   topics: 'specTopics',
 };
 
+// The canonical-mapped kinds (worlds, areas, rooms, items) come from bundleOf;
+// these collections are copied from YAML after authoring blocks are stripped.
 const COLLECTION_KEYS: readonly string[] = [
-  'worlds',
-  'areas',
-  'rooms',
-  'items',
   'actors',
   'actorStates',
   'conversationTopics',
@@ -133,20 +132,12 @@ const COLLECTION_KEYS: readonly string[] = [
 ];
 
 function directoryOf(path: string): string {
-  return path.slice(0, path.lastIndexOf('/'));
+  const separator = path.lastIndexOf('/');
+  return separator === -1 ? '' : path.slice(0, separator);
 }
 
 function push(outputs: Map<string, Data[]>, name: string, data: Data): void {
   outputs.get(name)?.push(data);
-}
-
-function areaEntry(card: ParsedCard): Data | undefined {
-  const definition = card.data['definition'];
-  if (typeof definition !== 'object' || definition === null) return undefined;
-  const roomIds = collection({ cards: [card] }, 'rooms').map((room) =>
-    asText(room.data['id']),
-  );
-  return { ...cleanEntry(definition as Data), roomIds };
 }
 
 function nodeEntry(node: Data, topics: ReadonlyMap<string, Data>): Data {
@@ -175,17 +166,10 @@ function collectCard(
   topics: ReadonlyMap<string, Data>,
 ): void {
   const one = { cards: [card] };
-  const area = areaEntry(card);
-  if (area !== undefined) push(outputs, 'areas', area);
   for (const key of COLLECTION_KEYS) {
     const target = TARGET_OF[key] ?? key;
     for (const item of collection(one, key)) {
-      // Room topicIds are an authoring reference, not a runtime field (D4).
-      const clean =
-        key === 'rooms'
-          ? cleanEntry(item.data, 'topicIds')
-          : cleanEntry(item.data);
-      push(outputs, target, clean);
+      push(outputs, target, cleanEntry(item.data));
     }
   }
   for (const node of collection(one, 'conversationNodes')) {
@@ -209,6 +193,21 @@ export function generateContent(
     const b = directoryOf(right.path);
     return a < b ? -1 : Number(a > b);
   });
+  // The canonical adapter is the one owner of YAML shorthand → DTO mapping
+  // (exit conditions, entry effects, area roomIds). Feeding it declaration-
+  // ordered cards keeps generated entries in the same canonical order.
+  const canonical = bundleOf({ cards: [...ordered] });
+  const canonicalKinds = [
+    ['worlds', canonical.worlds.all],
+    ['areas', canonical.areas.all],
+    ['rooms', canonical.rooms.all],
+    ['items', canonical.items.all],
+  ] as const;
+  for (const [name, entries] of canonicalKinds) {
+    for (const entry of entries) {
+      push(outputs, name, cleanEntry(entry as unknown as Data));
+    }
+  }
   const topics = new Map(ordered.flatMap((card) => collectTopics(card)));
   for (const card of ordered) collectCard(outputs, card, topics);
 

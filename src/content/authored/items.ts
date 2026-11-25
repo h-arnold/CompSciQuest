@@ -1,4 +1,12 @@
-// AUTHORED CONTENT — replace with real declarations
+// GENERATED FILE — do not edit. Regenerate with npm run content:generate.
 import type { ItemDefinition } from '../ItemDefinition';
 
-export const items: readonly ItemDefinition[] = [];
+export const items: readonly ItemDefinition[] = [
+  {"id":"item-switch-gauge","name":"switch gauge","aliases":["switch gauge","gauge"],"portable":true,"description":"A brass gauge on a leather strap. Its needle rests against a stamped line: SET EVERY SWITCH, THEN TAKE THE NORTH STAIR. A small dial marked COOL is stuck at red. A stamped tab reads \"denary 37 — what binary pattern?\"","initialRoom":"room-switch-floor"},
+  {"id":"item-hex-nibble-card","name":"nibble card","aliases":["nibble card","hex card"],"portable":true,"description":"A card divided into nibble groups of four squares, one group per line. Its back is stamped READ THE NIBBLES BEFORE THE EAST DOOR OPENS. A hollow at the top fits the carry token.","initialRoom":"room-hex-deck"},
+  {"id":"item-ascii-stamp","name":"ascii stamp","aliases":["ascii stamp","stamp"],"portable":true,"description":"A wooden stamp with a character list on its case lid: \"ASCII and Unicode: standardised character sets.\" The case is scratched MATCH THE TILES, THEN GO SOUTH. Grey dust sits in the grooves.","initialRoom":"room-character-tiles"},
+  {"id":"item-pixel-lens","name":"pixel lens","aliases":["pixel lens","lens"],"portable":true,"description":"A glass lens in a cork holder, ground with a fine square grid. Its cap reads BUILD THE IMAGE, THEN CLIMB. Through it, the mosaic squares turn into a tidy row of numbers.","initialRoom":"room-picture-mosaic"},
+  {"id":"item-sample-fork","name":"sample fork","aliases":["sample fork","fork"],"portable":true,"description":"A tuning fork with two patch prongs and a paper tag: SAMPLE A SOUND, THEN GO IN. Its handle lists \"samples per second, bits per sample, channels\" in faded ink.","initialRoom":"room-sound-choir"},
+  {"id":"item-compression-die","name":"compression die","aliases":["compression die","die"],"portable":true,"description":"A steel die with two settings cut into its rim, LOSSLESS and LOSSY. A small window shows an original column beside a compressed one.","initialRoom":"room-compression-press"},
+  {"id":"item-comic-sans-cartridge","name":"comic sans cartridge","aliases":["comic sans cartridge","cursed cartridge"],"portable":true,"description":"A warm, humming cartridge in a paper sleeve. A handwritten sticker reads \"Unauthorised font use is a compliance infringement\". It looks as if it would like to be used.","initialRoom":"room-binary-hall"}
+];

@@ -7,6 +7,7 @@ test-results/
 **/graphify-out/
 docs/exam-specs/
 .opencode/
+src/content/authored/
 
 # Machine-generated lockfile.
 package-lock.json

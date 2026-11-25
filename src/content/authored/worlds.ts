@@ -1,6 +1,6 @@
-// AUTHORED CONTENT — placeholder bridge until the first YAML zone is generated.
-// The deterministic stub fixture remains the single source of these declarations.
+// GENERATED FILE — do not edit. Regenerate with npm run content:generate.
 import type { WorldDefinition } from '../WorldDefinition';
-import { stubWorlds } from '../stub/worlds';
 
-export const worlds: readonly WorldDefinition[] = stubWorlds;
+export const worlds: readonly WorldDefinition[] = [
+  {"id":"world-1-2-1-data-representation","name":"The Switchyard","areaIds":["area-1-2-1-data-representation"],"startAreaId":"area-1-2-1-data-representation","lives":3}
+];

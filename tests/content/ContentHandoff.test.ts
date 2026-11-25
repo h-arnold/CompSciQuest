@@ -3,8 +3,10 @@
 // toolchain and boot share src/content/validateContent.ts instead of defining a
 // second validator; CT-HAND-03 supplies a deterministic bundle by injection.
 import { describe, expect, it } from 'vitest';
+import gameStateSource from '../../src/core/GameState.ts?raw';
 import indexSource from '../../src/content/index.ts?raw';
 import type { ContentBundle } from '../../src/content/ContentBundle';
+import { parseCardSet } from '../../tools/content/schema.ts';
 import {
   COVERAGE_TOPIC_IDS,
   loadValidator,
@@ -36,9 +38,10 @@ import {
   parsedCard,
   parsedSet,
 } from '../fixtures/contentToolchain';
+import { zone1CardSet, zone1DeclaredStart } from '../fixtures/zone1';
 
 interface CreateInitial {
-  (bundle: ContentBundle): RuntimeGameState;
+  (bundle?: ContentBundle): RuntimeGameState;
 }
 
 describe('runtime handoff (application-and-ui.md §3.3)', () => {
@@ -156,5 +159,60 @@ describe('runtime handoff (application-and-ui.md §3.3)', () => {
     const game = await loadGame(makeGameDependencies({ bundle }));
     game.newGame();
     expect(game.getViewData().position).toEqual(expected);
+  });
+
+  it('CT-HAND-06: createInitial() defaults to the generated bundle and its declared start', async () => {
+    const parsed = parseCardSet(zone1CardSet());
+    expect(
+      parsed.findings,
+      'the clean zone-1 card set must parse without findings',
+    ).toEqual([]);
+    const declared = zone1DeclaredStart({
+      cards: Object.entries(parsed.parsed).map(([path, data]) => ({
+        path,
+        data,
+      })),
+    });
+    expect(
+      gameStateSource,
+      'createInitial must default to loadContent(), never the retired stub',
+    ).not.toContain(['content', 'stub'].join('/'));
+
+    const module = await importModule('../../src/core/GameState');
+    expect(
+      module['createInitial'],
+      'createInitial must stay exported (application-and-ui.md §3.3)',
+    ).toBeTypeOf('function');
+    const createInitial = module['createInitial'] as CreateInitial;
+
+    const state = asRuntime(createInitial()).toDto();
+    expect(
+      state.player.position,
+      'the default start follows world.startAreaId then area.startRoomId',
+    ).toEqual({
+      worldId: declared.worldId,
+      areaId: declared.areaId,
+      roomId: declared.roomId,
+    });
+    expect(
+      Object.keys(state.rooms).toSorted((left, right) =>
+        left < right ? -1 : Number(left > right),
+      ),
+      'the room inventory comes from the same generated bundle',
+    ).toEqual(
+      [...declared.roomIds].toSorted((left, right) =>
+        left < right ? -1 : Number(left > right),
+      ),
+    );
+
+    const injected = asRuntime(createInitial(makeBundle())).toDto();
+    expect(
+      injected.player.position,
+      'the bundle parameter must remain injectable',
+    ).toEqual({
+      worldId: 'world-stub',
+      areaId: 'area-stub',
+      roomId: 'room-stub-start',
+    });
   });
 });

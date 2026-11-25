@@ -3,7 +3,7 @@
 // AND that the injected bundle is left untouched.
 import { describe, expect, it } from 'vitest';
 import {
-  COVERAGE_TOPIC_IDS,
+  LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,
   ITEM_ALIAS,
   MISSING_ID,
   NPC_ALIAS,
@@ -27,11 +27,13 @@ describe('content-ids validation gates', () => {
   it('C-CONTENT-05: validateContent returns human-readable problems', async () => {
     const validate = await loadValidator();
 
-    expect(validate(makeBundle(), COVERAGE_TOPIC_IDS)).toEqual([]);
+    expect(validate(makeBundle(), LOCAL_FIXTURE_COVERAGE_TOPIC_IDS)).toEqual(
+      [],
+    );
 
     const problems = validate(
       withRooms(makeBundle(), [makeRoom(), makeRoom()]),
-      COVERAGE_TOPIC_IDS,
+      LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,
     );
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.every((problem) => typeof problem === 'string')).toBe(true);
@@ -43,7 +45,7 @@ describe('content-ids validation gates', () => {
     const bundle = withWorlds(makeBundle(), [makeWorld(), makeWorld()]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain('world-stub');
@@ -58,7 +60,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(ITEM_ALIAS);
@@ -73,7 +75,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(NPC_ALIAS);
@@ -91,7 +93,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(MISSING_ID);
@@ -105,7 +107,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(MISSING_ID);
@@ -119,7 +121,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(MISSING_ID);
@@ -137,7 +139,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(MISSING_ID);
@@ -151,7 +153,7 @@ describe('content-ids validation gates', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ').toLowerCase()).toContain('direction');
@@ -163,7 +165,7 @@ describe('content-ids validation gates', () => {
     const bundle = withRooms(makeBundle(), []);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ').toLowerCase()).toContain('rooms');

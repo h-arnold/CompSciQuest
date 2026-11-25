@@ -3,7 +3,7 @@
 // missing level starts must be reported without mutating the bundle.
 import { describe, expect, it } from 'vitest';
 import {
-  COVERAGE_TOPIC_IDS,
+  LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,
   MISSING_ID,
   bundleWithTopic,
   loadValidator,
@@ -25,7 +25,7 @@ describe('score-content validation gate', () => {
     );
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain('topic-1');
@@ -39,7 +39,7 @@ describe('score-content validation gate', () => {
       scoredRooms(10),
     );
 
-    expect(validate(bundle, COVERAGE_TOPIC_IDS)).toEqual([]);
+    expect(validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS)).toEqual([]);
   });
 
   it('C-CONTENT-10: a topic below its score budget passes', async () => {
@@ -49,7 +49,7 @@ describe('score-content validation gate', () => {
       scoredRooms(10),
     );
 
-    expect(validate(bundle, COVERAGE_TOPIC_IDS)).toEqual([]);
+    expect(validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS)).toEqual([]);
   });
 
   it('C-CONTENT-16: a negative score is reported', async () => {
@@ -57,7 +57,7 @@ describe('score-content validation gate', () => {
     const bundle = withRooms(makeBundle(), scoredRooms(-1));
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ').toLowerCase()).toContain('score');
@@ -69,7 +69,7 @@ describe('score-content validation gate', () => {
     const bundle = withRooms(makeBundle(), scoredRooms(1.5));
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ').toLowerCase()).toContain('score');
@@ -83,7 +83,7 @@ describe('score-content validation gate', () => {
     ]);
     const before = snapshot(bundle);
 
-    const problems = validate(bundle, COVERAGE_TOPIC_IDS);
+    const problems = validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS);
 
     expect(problems.length).toBeGreaterThan(0);
     expect(problems.join(' ')).toContain(MISSING_ID);
@@ -94,6 +94,6 @@ describe('score-content validation gate', () => {
     const validate = await loadValidator();
     const bundle = withRooms(makeBundle(), scoredRooms(0));
 
-    expect(validate(bundle, COVERAGE_TOPIC_IDS)).toEqual([]);
+    expect(validate(bundle, LOCAL_FIXTURE_COVERAGE_TOPIC_IDS)).toEqual([]);
   });
 });

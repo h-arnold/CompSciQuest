@@ -1,6 +1,6 @@
 // Canonical persisted shape from storage-schema.md §3.1; sub-DTOs from §3.2.
-import { stubBundle } from '../content/stub/index';
 import type { ContentBundle } from '../content/ContentBundle';
+import { loadContent } from '../content/index';
 import type { Position } from '../types/domain';
 import type { AreaProgress } from './AreaProgress';
 import type { HazardStateDto } from './HazardStateDto';
@@ -96,10 +96,10 @@ export function createFromDto(dto: GameStateDto): RuntimeGameState {
 
 // The start is resolved by ID from the supplied bundle, never by array
 // position (application-and-ui.md §3.3, content-rules.md §8). The no-argument
-// form keeps the marked stub seam until the first generated area is integrated.
+// form uses the committed generated bundle; the parameter stays injectable.
 // The first command advances turn 0 to 1 (skeleton-decisions.md S-GAP-01).
 export function createInitial(
-  bundle: ContentBundle = stubBundle,
+  bundle: ContentBundle = loadContent(),
 ): RuntimeGameState {
   const world = bundle.worlds.all[0];
   if (world === undefined) {

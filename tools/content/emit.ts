@@ -29,18 +29,15 @@ export function cleanEntry(
   );
 }
 
+// Each entry is one compact JSON line with a leading indent; multi-line
+// pretty-printing would break the 600-line source cap (content-toolchain.md §5).
 function indentJson(value: unknown, spaces: number): string {
-  const prefix = ' '.repeat(spaces);
-  return JSON.stringify(value, undefined, 2)
-    .split('\n')
-    .map((line, index) => (index === 0 ? line : `${prefix}${line}`))
-    .join('\n');
+  return `${' '.repeat(spaces)}${JSON.stringify(value)}`;
 }
 
 export function emitCatalogue(spec: CatalogueEmit): string {
   const entries = spec.entries.map((entry) => indentJson(entry, 2));
-  const indented = entries.map((entry) => `  ${entry}`).join(',\n');
-  const body = entries.length === 0 ? '[]' : `[\n${indented}\n]`;
+  const body = entries.length === 0 ? '[]' : `[\n${entries.join(',\n')}\n]`;
   return [
     '// GENERATED FILE — do not edit. Regenerate with npm run content:generate.',
     `import type { ${spec.typeName} } from '${spec.importPath}';`,

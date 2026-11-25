@@ -7,7 +7,6 @@ import type { SaveDto } from '../../src/application/SaveDto';
 import type { SaveManager } from '../../src/application/SaveManager';
 import type { ContentBundle } from '../../src/content/ContentBundle';
 import type { Catalogue } from '../../src/content/Catalogue';
-import { stubBundle } from '../../src/content/stub/index';
 import type { GameState, GameStateDto } from '../../src/core/GameState';
 import type { Effect } from '../../src/core/effects/Effect';
 import type { EventBus } from '../../src/core/events/EventBus';
@@ -17,6 +16,7 @@ import type { Random } from '../../src/core/Random';
 import type { SpecTopic } from '../../src/core/scoring/SpecTopic';
 import type { SpecTopicCatalogue } from '../../src/core/scoring/SpecTopicCatalogue';
 import type { StorageAdapter } from '../../src/storage/StorageAdapter';
+import { localBundle } from './localBundle';
 
 export const FIXED_ISO = '2026-11-24T12:06:00.000Z';
 export const IMPORTED_ISO = '2026-11-20T09:30:00.000Z';
@@ -257,7 +257,7 @@ export function makeBundle(
 
   if (options.emptyContent === true) {
     return {
-      ...stubBundle,
+      ...localBundle,
       rooms: catalogueOf([]),
       items: catalogueOf([]),
       actors: catalogueOf([]),
@@ -267,7 +267,7 @@ export function makeBundle(
   }
 
   return {
-    ...stubBundle,
+    ...localBundle,
     items: catalogueOf([
       {
         id: 'lamp',

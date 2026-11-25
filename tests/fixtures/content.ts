@@ -10,7 +10,7 @@ import type { ItemDefinition } from '../../src/content/ItemDefinition';
 import type { RoomDefinition } from '../../src/content/RoomDefinition';
 import type { WorldDefinition } from '../../src/content/WorldDefinition';
 import type { SpecTopic } from '../../src/core/scoring/SpecTopic';
-import { stubBundle } from '../../src/content/stub/index';
+import { localBundle } from './localBundle';
 import { catalogueOf, importModule, makeBundle } from './persistence';
 
 export { makeBundle } from './persistence';
@@ -18,14 +18,34 @@ export { makeBundle } from './persistence';
 // The coverage index is an injected representation of the `## Topic: <name>`
 // headings in COVERAGE.md (already converted to topic IDs). Static-first means
 // the runtime cannot read that Markdown file, so validation takes the index as
-// data. The exact seam is an open question recorded in red-report.md.
+// data (application-and-ui.md §3.3; content-rules.md §7). The last heading is
+// `in progress` in COVERAGE.md but is still a canonical coverage heading.
 export type CoverageTopicIds = readonly string[];
 
 export interface ValidateContent {
   (bundle: ContentBundle, coverage?: CoverageTopicIds): readonly string[];
 }
 
-export const COVERAGE_TOPIC_IDS: CoverageTopicIds = ['topic-1', 'stub-topic'];
+export const COVERAGE_TOPIC_IDS: CoverageTopicIds = [
+  'switch-to-bit',
+  'data-types',
+  'number-conversion',
+  'character-representation',
+  'graphics-representation',
+  'sound-representation',
+  'data-storage-units',
+  'data-compression',
+  'ai-ethics-and-implications',
+];
+
+// Coverage index for the local deterministic fixture only. `makeTopic()` and
+// `makeSpecTopic()` carry one synthetic `topic-1` that is not a real coverage
+// heading; structural and score gate tests inject it explicitly so they isolate
+// their own gate. Generated data always uses COVERAGE_TOPIC_IDS above.
+export const LOCAL_FIXTURE_COVERAGE_TOPIC_IDS: CoverageTopicIds = [
+  ...COVERAGE_TOPIC_IDS,
+  'topic-1',
+];
 export const MISSING_ID = 'room-missing';
 export const ITEM_ALIAS = 'glow';
 export const NPC_ALIAS = 'guide';
@@ -138,7 +158,7 @@ export function bundleWithTopic(topic: SpecTopic): ContentBundle {
 
 // Both stub rooms are kept so exit targets stay present; only the score varies.
 export function scoredRooms(score: number): readonly RoomDefinition[] {
-  return stubBundle.rooms.all.map((room, index) => ({
+  return localBundle.rooms.all.map((room, index) => ({
     ...room,
     score: index === 0 ? score : 0,
   }));
