@@ -1,0 +1,842 @@
+# quizzes card for 1-4-programming-constructs (Zone A: The Pattern Mill)
+# All course facts from docs/exam-specs/wjec-unit1.md §1.4.1 (L1161-1516).
+# Mill colour sits in prompts only; every option key uses the formal spec term.
+
+kind: quiz
+areaId: 1-4-programming-constructs
+status: draft
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+quizzes:
+  - id: quiz-pattern-bureau
+    actorId: npc-the-loomwright
+    topicId: algorithms-and-pseudocode
+    score: 2
+    passMark: 3
+    questionIds: [q-pc-01, q-pc-02, q-pc-03, q-pc-04]
+    hintSequenceId: hint-pattern-bureau
+    onPass:
+      - { kind: complete-topic, topicId: algorithms-and-pseudocode }
+      - { kind: set-flag, flag: quiz-passed:quiz-pattern-bureau, value: true }
+      - { kind: set-flag, flag: demo-on-record, value: true }
+      - kind: message
+        text: >-
+          The Loomwright stamps the Demonstration Book: a demonstration is
+          on record. The Warp Walk door may yet be argued with.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Loomwright blots the failed demonstration and prices it one
+          life.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Loomwright walks you back to the Bureau counter to try again.
+
+  - id: quiz-threading-order
+    actorId: npc-the-warp-dresser
+    topicId: programming-constructs
+    score: 2
+    passMark: 3
+    questionIds: [q-pc-05, q-pc-06, q-pc-07, q-pc-08]
+    hintSequenceId: hint-threading-order
+    onPass:
+      - { kind: complete-topic, topicId: programming-constructs }
+      - { kind: set-flag, flag: quiz-passed:quiz-threading-order, value: true }
+      - { kind: grant-item, itemId: item-pattern-card-sequence }
+      - kind: message
+        text: >-
+          The Warp Dresser's standing rule signs it: the Loomwright's stamp
+          travels with the demonstration, so the pattern card for sequence
+          is granted under his authority.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Warp Dresser counts the snarled order and shakes her head:
+          one life is owed for the crossing.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Warp Dresser walks you back to the Bureau to study the
+          sequence beat again.
+
+  - id: quiz-colour-court
+    actorId: npc-the-shed-opener
+    topicId: programming-constructs
+    score: 2
+    passMark: 3
+    questionIds: [q-pc-09, q-pc-10, q-pc-11, q-pc-12]
+    hintSequenceId: hint-colour-court
+    onPass:
+      - { kind: complete-topic, topicId: programming-constructs }
+      - { kind: set-flag, flag: quiz-passed:quiz-colour-court, value: true }
+      - { kind: grant-item, itemId: item-pattern-card-selection }
+      - kind: message
+        text: >-
+          The demonstration is on record and the pattern card is in your
+          hands. File it back with me - and, said once and never again,
+          thank you.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Shed Opener lifts a thread that never should have risen and
+          marks one life against your demonstration.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Shed Opener sends you back to the Bureau counter to read the
+          selection plate once more.
+
+  - id: quiz-weft-tally
+    actorId: npc-the-weft-tally
+    topicId: programming-constructs
+    score: 2
+    passMark: 3
+    questionIds: [q-pc-13, q-pc-14, q-pc-15, q-pc-16]
+    hintSequenceId: hint-weft-tally
+    onPass:
+      - { kind: complete-topic, topicId: programming-constructs }
+      - { kind: set-flag, flag: quiz-passed:quiz-weft-tally, value: true }
+      - { kind: grant-item, itemId: item-pattern-card-count-iteration }
+      - kind: message
+        text: >-
+          Counted and checked, and the demonstration stands: a count is a
+          promise kept. The pattern card is yours, and the tally closes
+          even.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Weft Tally counts aloud, books the miscount, and clips one
+          life from your tally.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Weft Tally points you back to the Bureau to count again from
+          the beginning.
+
+  - id: quiz-selvedge
+    actorId: npc-the-selvedge-warden
+    topicId: programming-constructs
+    score: 2
+    passMark: 3
+    questionIds: [q-pc-17, q-pc-18, q-pc-19, q-pc-20]
+    hintSequenceId: hint-selvedge
+    onPass:
+      - { kind: complete-topic, topicId: programming-constructs }
+      - { kind: set-flag, flag: quiz-passed:quiz-selvedge, value: true }
+      - { kind: grant-item, itemId: item-pattern-card-condition-iteration }
+      - kind: message
+        text: >-
+          The edge passed my inspection. File the pattern card back with
+          me, and the line ends where it should.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Selvedge Warden declines to argue twice and turns one life
+          over to the book.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Selvedge Warden walks you back to the Bureau, patience
+          budgeted and spent.
+
+  - id: quiz-finished-rail
+    actorId: npc-the-loomwright
+    topicId: algorithms-and-pseudocode
+    score: 3
+    passMark: 3
+    questionIds: [q-pc-21, q-pc-22, q-pc-23, q-pc-24]
+    hintSequenceId: hint-finished-rail
+    onPass:
+      - { kind: complete-topic, topicId: algorithms-and-pseudocode }
+      - { kind: set-flag, flag: quiz-passed:quiz-finished-rail, value: true }
+      - { kind: set-flag, flag: master-demonstrated, value: true }
+      - kind: message
+        text: >-
+          The Loomwright reads your final demonstration against the plate
+          PREDICT. THEN WEAVE. - and it holds. The master cloth is posted on
+          the Finished Rail for the whole mill to see.
+    onFail:
+      - kind: change-lives
+        delta: -1
+        reason: >-
+          The Loomwright blots the failed capstone demonstration and prices
+          it one life; the rail wants a better reading.
+      - kind: move-player
+        roomId: room-pattern-bureau
+        reason: >-
+          The Loomwright walks you back to the Bureau counter to rehearse
+          the pattern cards before the rail again.
+
+questions:
+  - id: q-pc-01
+    prompt: >-
+      The Bureau's common terms card calls pseudo-code an informal way of
+      writing an algorithm. What does pseudo-code demand of the writer?
+    options:
+      - >-
+        No strict programming-language syntax at all
+      - >-
+        A strict programming-language syntax, or the loom refuses the card
+      - >-
+        Syntax exactly matching one real programming language
+      - >-
+        A working program that already runs on the mill's loom
+    correctOptionIds: [0]
+    explanation: >-
+      Pseudo-code is an informal way of writing an algorithm: plain words
+      that record the steps, with no strict programming-language syntax to
+      satisfy. It is a draft to be read and corrected by people, never code
+      for the loom to run.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Learners often treat pseudo-code as code that must compile or run.
+        Per the spec it is an informal outline that excludes any underlying
+        details and needs no strict programming-language syntax.
+
+  - id: q-pc-02
+    prompt: >-
+      On the Bureau's stencilled shapes, the slanted rectangle stands for one
+      job only. What does a parallelogram mean on a flowchart?
+    options:
+      - >-
+        A decision
+      - >-
+        Input or output
+      - >-
+        Start or end of the procedure
+      - >-
+        The flow of control
+    correctOptionIds: [1]
+    explanation: >-
+      The slanted parallelogram is the flowchart's symbol for input and
+      output. The diamond asks a question, the rounded terminator marks
+      start or end, and the plain rectangle carries an operation or process -
+      judge each symbol by the meaning the table gives it, never by which
+      shape looks busiest.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Symbols judged by silhouette: learners guess diamond for every
+        special-looking shape. The slanted parallelogram is input/output; the
+        diamond is the decision; the terminator is start/end; arrows carry
+        the flow of control (L1227-1233).
+
+  - id: q-pc-03
+    prompt: >-
+      A pattern card reads "call calcAverage" mid-algorithm, and the
+      subroutine calcAverage was declared earlier. What does that single
+      line do?
+    options:
+      - >-
+        It declares a brand-new subroutine
+      - >-
+        It runs the named subroutine and returns to the main algorithm
+      - >-
+        It stores the word calcAverage in a variable
+      - >-
+        It ends the whole algorithm
+    correctOptionIds: [1]
+    explanation: >-
+      The line call calcAverage runs the subroutine named calcAverage and
+      returns to the main algorithm at the point it left. Calling is
+      different from declaring: Declare ... End sets the sub-program up,
+      and call simply hands control to it where its work is needed.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Calling is confused with declaring or with ending. "Call" asks an
+        already-declared subroutine to run; it neither declares (that is
+        "Declare ... End") nor terminates anything.
+
+  - id: q-pc-04
+    prompt: >-
+      In the Bureau's pseudo-code, a line inside braces such as "{Comment
+      on code}" appears. What is it?
+    options:
+      - >-
+        An annotation for the human reader that the algorithm ignores
+      - >-
+        An instruction the loom weaves like any other line
+      - >-
+        A value the algorithm keeps and outputs later
+      - >-
+        A hidden condition that must be true before the algorithm runs
+    correctOptionIds: [0]
+    explanation: >-
+      Braces mark an annotation: a note for the human reader that sits
+      outside the algorithm's work. The loom carries out the lines around
+      it; the note is there to be read, never to be carried out.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Learners read braces as active code - a condition or hidden
+        instruction. The common terms table lists annotation/comments as a
+        note for the reader, not part of the algorithm's work.
+
+  - id: q-pc-05
+    prompt: >-
+      The Warp Dresser's terms card names the first construct. What does
+      sequence ask of an algorithm's steps?
+    options:
+      - >-
+        The steps may run in any order the weaver finds tidy
+      - >-
+        The steps run one after another, in the order they are written
+      - >-
+        All the steps run at the same time on parallel looms
+      - >-
+        The steps run only when a condition becomes true
+    correctOptionIds: [1]
+    explanation: >-
+      Sequence keeps the steps one after another, each carried out in the
+      order the card writes them. Change the order and the cloth changes
+      with it, even though every step is still on the card - that is the
+      lesson the cousin's crossed dressing lines left behind (L1253).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Order treated as cosmetic: learners read the written order as a
+        suggestion. Sequence is the construct that carries out instructions
+        one after another, in the order they are written (L1253).
+
+  - id: q-pc-06
+    prompt: >-
+      A test card reads: hue = 2, then hue = hue + 3, then hue = hue * 2,
+      then output hue. What appears on the loom's read-out?
+    options:
+      - >-
+        2
+      - >-
+        5
+      - >-
+        7
+      - >-
+        10
+    correctOptionIds: [3]
+    explanation: >-
+      Dry-run the card in order: 2, then 2 + 3 = 5, then the doubling line
+      turns the 5 into 10. A trace that stops at the second line gives 5,
+      and one that re-adds the first value gives 7; each line works on
+      whatever the line before it left stored.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Traces that stop early or reuse a stale value (L1253, dry-run work
+        under L1169). The final line doubles the stored 5, not the first 2,
+        because assignment replaces the value before the next line reads it.
+
+  - id: q-pc-07
+    prompt: >-
+      The Bobbin Window's despatch printer prints Average: and then no
+      number. Which line fault leaves the value empty at the moment it is
+      printed?
+    options:
+      - >-
+        The card prints the average before it reads any weight in
+      - >-
+        The card reads the weights in before it adds them up
+      - >-
+        The card counts the weights with a loop before printing
+      - >-
+        The card declares its variables before it uses them
+    correctOptionIds: [0]
+    explanation: >-
+      An output line shows only what is stored when it runs. If the card
+      prints the average before any weight has been read in, nothing is
+      stored for it to show, so the heading stands alone. Reading in,
+      totalling, then printing last is the order that fills the value.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Output assumed to wait for the values it names (L1251, the spec's
+        own empty print). Output shows the variables exactly as they stand
+        when it runs, so a print placed before the input shows an empty
+        value.
+
+  - id: q-pc-08
+    prompt: >-
+      A crossed card at the Bureau's desk reads output shade first, then
+      input shade. Which two lines mend it, in the right order?
+    options:
+      - >-
+        input shade, then input shade again
+      - >-
+        output shade first, so the loom knows what to expect
+      - >-
+        input shade, then output shade
+      - >-
+        declare shade, then output shade, and let the input wait
+    correctOptionIds: [2]
+    explanation: >-
+      The value has to be read in before there is anything to show: input
+      shade stores what the window hands over, and only then does output
+      shade print it. Declaring sets a name up but never stores a window's
+      value, and no number of outputs conjures one.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Input-before-output discipline (L1251, L1253): declare treated as
+        input, or output assumed to summon a value. Only an input line
+        stores a value from outside the algorithm.
+
+  - id: q-pc-09
+    prompt: >-
+      Which pseudo-code lines give the Shed Opener exactly two routes to
+      pick between?
+    options:
+      - >-
+        for i = 1 to 10 ... next i
+      - >-
+        repeat ... until the pick is done
+      - >-
+        if ... else ... end if
+      - >-
+        while the loom runs ... repeat
+    correctOptionIds: [2]
+    explanation: >-
+      Selection offers a choice of two routes: if the condition holds one
+      part runs, otherwise the else part runs. The for and repeat forms
+      repeat work, and while tests a condition to keep a loop turning, not
+      to route a single pick between two sheds (L1255).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Loop keywords offered where selection is asked for (L1255 against
+        L1217-1221). The if-else pair is the two-route construct; iteration
+        repeats work rather than choosing between routes.
+
+  - id: q-pc-10
+    prompt: >-
+      The shed plate lifts every pick whose shade register reads 50 or
+      more. A pick's register reads exactly 50. Which condition sends it
+      up?
+    options:
+      - >-
+        shade > 50
+      - >-
+        shade >= 50
+      - >-
+        shade <> 50
+      - >-
+        shade < 50
+    correctOptionIds: [1]
+    explanation: >-
+      The rule lifts 50 or more, so the condition must include 50 itself,
+      and >= does that. A strict > stops just short and leaves the 50 pick
+      below, <> picks out everything except 50, and < keeps the low
+      registers down.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        >= read as strictly greater (L1287). The boundary value belongs to
+        >= and <= as well: a register of 50 satisfies shade >= 50 even
+        though it fails shade > 50.
+
+  - id: q-pc-11
+    prompt: >-
+      The case rail reads: case select shade, case "madder", case "morpho",
+      case "weld", end case select. A tray's shade is madder. Which case
+      takes the tray?
+    options:
+      - >-
+        The madder case and the morpho case both
+      - >-
+        The first case on the rail, whatever it reads
+      - >-
+        No case, and the tray waits at the rail's end
+      - >-
+        The case that names madder, and only that one
+    correctOptionIds: [3]
+    explanation: >-
+      A case select compares the value once and runs the single case that
+      matches it. No neighbouring case opens, and a matched shade never
+      falls through to the cases after it; the other trays stay exactly
+      where their own shades send them (L1255).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Case fall-through assumed (L1255, case select). Learners expect
+        several cases to open or the first to take everything; a case
+        select runs the one matching case alone.
+
+  - id: q-pc-12
+    prompt: >-
+      The cousin's plate keeps the if for the urgent pick but the else for
+      the routine one is gone. What happens to a routine pick?
+    options:
+      - >-
+        No branch runs, so the pick is never routed
+      - >-
+        The if part runs, and the pick stamps urgent
+      - >-
+        The algorithm stops and waits for the routine branch
+      - >-
+        Both branches run, urgent and routine together
+    correctOptionIds: [0]
+    explanation: >-
+      Selection runs exactly one branch, and only when its condition
+      holds. With no else, a routine pick satisfies no condition, so no
+      branch runs and the pick waits unsorted - the pile that grew into
+      the shed's trouble (L1255).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Both arms assumed to run, or a missing else assumed harmless
+        (L1255). Without else, a failed if leaves the whole selection
+        empty-handed; the two arms never both run.
+
+  - id: q-pc-13
+    prompt: >-
+      The counting ratchet's card reads for i = 1 to 10 ... next i, and the
+      shuttle makes one pass for each value i takes. How many passes?
+    options:
+      - >-
+        9
+      - >-
+        10
+      - >-
+        11
+      - >-
+        The loom never stops passing
+    correctOptionIds: [1]
+    explanation: >-
+      i takes every value from 1 to 10, counting both ends, so the shuttle
+      passes exactly ten times. Reading the to as leaving the end value
+      out gives 9 - the very slip the ratchet's missing tooth made look
+      true (L1217).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        To excludes the end value (L1217). for i = 1 to 10 runs for every
+        value including 10: the count is 10, not 9, and it stops when the
+        span is spent.
+
+  - id: q-pc-14
+    prompt: >-
+      Which line, placed inside the loop, raises the Weft Tally's count by
+      one on every pass?
+    options:
+      - >-
+        count = count + 1
+      - >-
+        count = 1
+      - >-
+        count = i
+      - >-
+        if count = 1 then
+    correctOptionIds: [0]
+    explanation: >-
+      The incremental count takes the value count already holds, adds one,
+      and stores the result back in count, so it grows once per pass.
+      count = 1 holds it at one, count = i stores the pass number instead
+      of a tally, and if count = 1 then asks a question rather than storing
+      anything (L1259).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        = read as a comparison on one line and as a fixed set on another
+        (L1291 against L1259). On a stored line the variable on the left
+        receives the result worked out on the right, using its own old
+        value where the line names it.
+
+  - id: q-pc-15
+    prompt: >-
+      The bailing beat loads 26 sacks into bundles of 4. What does
+      26 MOD 4 tell the Weft Tally?
+    options:
+      - >-
+        6, the whole bundles
+      - >-
+        6.5, the exact share
+      - >-
+        2, the sacks left over
+      - >-
+        4, the bundle size
+    correctOptionIds: [2]
+    explanation: >-
+      Four into 26 goes six whole times, and six bundles of four hold 24
+      sacks, so 2 sacks stay loose - MOD answers exactly that left-over
+      part. DIV would answer 6, the whole bundles, and no operator here
+      reports the decimal share (L1292-1293).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        MOD and DIV swapped (L1292-1293). DIV keeps the whole-number share
+        and MOD keeps the remainder; neither returns the exact quotient.
+
+  - id: q-pc-16
+    prompt: >-
+      A tally card reads count = 0, then for i = 1 to 10 ... next i with
+      the line count = count + 2 inside it. What does count hold after the
+      loop?
+    options:
+      - >-
+        10
+      - >-
+        12
+      - >-
+        20
+      - >-
+        100
+    correctOptionIds: [2]
+    explanation: >-
+      The loop runs ten times and every pass adds 2, so the tally climbs
+      2, 4, 6 ... up to 20. Reading only the pass count gives 10, adding
+      the 2 a single time gives 12, and multiplying the ten passes by
+      themselves gives 100; none of those follows 2 added ten times over
+      (L1259).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        The running total mis-traced (L1259): pupils read the pass count
+        or add the increment once. Each of the ten passes stores the new
+        count + 2, so the increments accumulate across the whole span.
+
+  - id: q-pc-17
+    prompt: >-
+      The Warden's corridor-loom must weave its edge at least once before
+      any test. Which construct tests its condition after the body has
+      run?
+    options:
+      - >-
+        for i = 1 to 10 ... next i
+      - >-
+        repeat ... until
+      - >-
+        while ... repeat
+      - >-
+        case select ... end case select
+    correctOptionIds: [1]
+    explanation: >-
+      repeat ... until runs its body first and tests at the end, so the
+      body always runs at least once. while ... repeat tests before the
+      body, so a false condition on the first test leaves the body unrun,
+      and a for loop fixes its span before it starts (L1218-1221).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        repeat ... until assumed skippable (L1218 against L1221). The until
+        test comes after the body, so the body cannot be skipped; a while
+        loop's first test can leave its body unrun.
+
+  - id: q-pc-18
+    prompt: >-
+      A thread dyed a colour that never arises in this pattern carries the
+      reading -1, and the pick loop stops when it reaches it. What does
+      the -1 mean to the loom?
+    options:
+      - >-
+        A shade darker than any natural dye
+      - >-
+        A counting mistake the loom must never meet
+      - >-
+        A signal the pattern chose, meaning the line may end
+      - >-
+        A strength reading to add into the pass tally
+    correctOptionIds: [2]
+    explanation: >-
+      The -1 is a rogue value: a signal the pattern's writer chose that
+      never arrives as real data, its only work to end the line. It is not
+      a shade to store or a strength to tally, and the loop tests for it
+      rather than stumbling on it (L1261).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        The rogue value refused as a data error, or accepted as a datum
+        (L1261). A rogue value is a chosen signal that ends input; it is
+        neither a real value to record nor a fault to reject.
+
+  - id: q-pc-19
+    prompt: >-
+      The compound plate reads until the pick is done AND the edge is
+      signed. The pick is done; the edge is not signed. What does the loop
+      do?
+    options:
+      - >-
+        The loop goes round again
+      - >-
+        The loop ends, because one job is finished
+      - >-
+        The loop ends only if the pick was the last one
+      - >-
+        The loop halts and files a fault with the board
+    correctOptionIds: [0]
+    explanation: >-
+      AND holds only when both sides are true. The finished pick is true
+      but the unsigned edge is false, so the whole condition is false, the
+      until is not satisfied, and the loop goes round again (L1299).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        AND read as OR (L1295-1302). With AND every part must be true
+        before the condition holds; with OR one finished job would end the
+        line, and the compound until wants both.
+
+  - id: q-pc-20
+    prompt: >-
+      The Warden asks: which loop can end having woven nothing at all, if
+      its condition is false on the first test?
+    options:
+      - >-
+        repeat ... until, because the until test comes first
+      - >-
+        for i = 1 to 10 ... next i, for any span the card names
+      - >-
+        case select, when no case matches the shade
+      - >-
+        while ... repeat, whose test comes before the body
+    correctOptionIds: [3]
+    explanation: >-
+      A while loop tests before the body and skips the body entirely if
+      the condition is false on the first test. The until test sits after
+      the body, so a repeat always weaves at least one pass, and a for
+      loop's span fixes its passes before it starts (L1221 against L1218).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Every loop assumed to run at least once (L1221 against L1218). A
+        while loop may run zero passes; the repeat ... until body cannot be
+        skipped because its test comes after the body.
+
+  - id: q-pc-21
+    prompt: >-
+      The rail's fresh problem: check all 60 named pegs in turn, the count
+      is known in advance, and the card must count its own passes one to
+      sixty. Which construct heads the card?
+    options:
+      - >-
+        repeat the check ... until every peg is checked
+      - >-
+        for i = 1 to 60 ... next i
+      - >-
+        case select peg ... end case select
+      - >-
+        if peg is checked ... else ... end if
+    correctOptionIds: [1]
+    explanation: >-
+      The count is known before the loom starts and the card must name its
+      passes one to sixty, so the count-controlled for loop fits: its
+      control variable walks the pegs in order. Repeat and while wait on a
+      condition and never name a pass count, and case select routes a
+      single value rather than repeating work (L1257-1261).
+    authoring:
+      assessmentObjective: AO3
+      difficulty: medium
+      misconception: >-
+        A condition-controlled loop chosen where a known count governs
+        (L1257-1261). When the number of repetitions is known in advance,
+        the for loop is the matching construct; repeat and while answer
+        conditions, not counts.
+
+  - id: q-pc-22
+    prompt: >-
+      The rail's card reads total = 0, then for i = 1 to 4 ... next i with
+      total = total + i inside the loop, then output total. What is
+      printed?
+    options:
+      - >-
+        4
+      - >-
+        6
+      - >-
+        10
+      - >-
+        15
+    correctOptionIds: [2]
+    explanation: >-
+      The tally folds in each pass number as the loop counts: 1, then 3,
+      then 6, then 10. Printing the pass count (4), stopping after the
+      third pass (6), or folding a fifth pass into the tally (15) all walk
+      past the 10 the four passes reach (L1259).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        The pass count printed in place of the running total, or a trace
+        stopped early (L1259). total = total + i adds each pass number onto
+        the tally, so four passes give 1 + 2 + 3 + 4 = 10.
+
+  - id: q-pc-23
+    prompt: >-
+      The Finished Rail joins the day's work into one algorithm. Which
+      order does the joined card follow?
+    options:
+      - >-
+        Input, compute, output
+      - >-
+        Output, compute, input
+      - >-
+        Compute, input, output
+      - >-
+        Input, output, compute
+    correctOptionIds: [0]
+    explanation: >-
+      The joined algorithm reads its values in, works on them, then shows
+      the result. Every other order asks the card to show or to work on
+      values it has not yet read - the empty Average: print on the cousin's
+      despatch card is what that order leaves (L1167, L1251).
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        The join order assumed flexible (L1167, L1251). Input precedes
+        compute and compute precedes output; a card that prints before it
+        reads has nothing to show.
+
+  - id: q-pc-24
+    prompt: >-
+      The cousin's despatch card prints Average: and no number, ten times
+      over. Which card mends it?
+    options:
+      - >-
+        Print the average before the first weight is read, then read the
+        ten weights in
+      - >-
+        Read all ten weights in, adding each to the total, then print the
+        average once at the end
+      - >-
+        Print a partial average after each weight, so ten averages appear
+      - >-
+        Read the first weight in, print the average, then add the other
+        nine to it
+    correctOptionIds: [1]
+    explanation: >-
+      The average belongs after the totalling: read every weight, add each
+      into the total as it arrives, then print the average once. The
+      cousin's order prints before anything is read, the partial averages
+      leave nine unfinished figures on the cloth, and a print based on one
+      weight arrives before the other nine can join the total (L1251).
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Output before anything is input (L1251, the spec's own empty
+        Average: print). The print that names the average must come after
+        the input and the totalling that fill the variables it prints.

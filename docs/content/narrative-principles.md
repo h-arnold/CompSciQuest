@@ -32,6 +32,17 @@ story develops; only `confirmed` entries influence writing.
  - Repetitions of what something is not. This is appropriate when used sparingly.
 - Technical language and plain language are not in competition: the term carries
   the marks, the gloss carries the meaning, and neither is padded out.
+- **A world term rides with the formal term (added by user instruction, 2026-11-25).**
+  On first use, pair the world's name for a thing with the technical term it carries —
+  "the rogue thread — the **rogue value**, the mill's name for it — reads −1". After the
+  pairing, either may lead, but quizzes, hint targets and coverage evidence always use
+  the formal term, so the world never becomes the only route to the marks.
+- **Craft and cultural vocabulary is explained in passing (added by user instruction,
+  2026-11-25).** Where a pupil may reasonably not know the word — warp, weft, shed,
+  selvedge, heddle, carthen, paned — the area, the items and the NPC conversations
+  give a short in-voice explanation on first use: one clause, deadpan, never a lesson
+  (N8 discipline still applies). The explanation never displaces a technical term and
+  never becomes the joke.
 
 **Example:** "The fetch–decode–execute cycle — fetch an instruction, decode it,
 then carry it out — has stalled mid-step. The control unit is still pointing at
@@ -293,6 +304,13 @@ worth promoting.
   explicit instruction that 200 is a limit, not a target. §2, the pattern log and
   downstream agent instructions were updated the same day. Existing descriptions,
   all under 80 words, stay valid; no re-brief is triggered by the change alone.
+- 2026-11-25 — **World-term pairing and craft/cultural glossing added to §2 by user
+  instruction** (during Zone A, The Pattern Mill scoping): world terms pair with the
+  formal terms on first use (rogue thread = rogue value); weaving and Welsh vocabulary
+  (warp, weft, shed, selvedge, carthen, paned) each get a short in-voice explanation
+  where a pupil may reasonably not know the word. Quizzes and evidence always use the
+  formal term. The Zone A topic file carries the glossary list; the bible's tone guide
+  records the same instruction.
 - 2026-11-25 — **World richness and examinables approved.** The user asked for vivid
   descriptions and "lots of items to examine", including props with no puzzle or
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in

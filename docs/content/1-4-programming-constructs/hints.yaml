@@ -1,0 +1,244 @@
+# hints card for 1-4-programming-constructs — The Pattern Mill, Zone A of 1.4
+# Seven ladders, one per ratified beacon hint (bible §9). Shape per H2/H3:
+# level 1 nudges in-world, level 2 shows the route's structure with the formal
+# spec term paired, level 3 names the fixtures a worked route would use — and
+# still leaves the final step to the player (no answer, no key, no leak).
+
+kind: hint
+areaId: 1-4-programming-constructs
+status: draft
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+hintSequences:
+  # ──────────────────────────────────────────────────────────────────────────
+  # 1. The Bureau demonstration — pseudo-code and flowchart, two forms of one
+  #    algorithm.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-pattern-bureau
+    targets: [algorithms-and-pseudocode, quiz-pattern-bureau]
+    levels:
+      - level: 1
+        text: >-
+          The Loomwright's counter is where the demonstration runs. The card on
+          it shows one mill pattern written two ways at once: lines of
+          pseudo-code down the page, and the same routine drawn as a flowchart.
+          Read the paper once for the run of it, then again line by line before
+          you commit to anything. The shapes stencilled into the Bureau's
+          woodwork are the flowchart's five working symbols, and the
+          demonstration can be heard again whenever you ask.
+        unlock: { kind: counter-at-least, key: failed-attempts:quiz-pattern-bureau, value: 1 }
+      - level: 2
+        text: >-
+          Sit with the card and say what each line is for. Pseudo-code runs one
+          instruction to a line, top to bottom, and the flowchart tells the
+          same story in shapes: a rounded end to begin and end it,
+          parallelograms where bobbins or figures come in and go out,
+          rectangles for the work done between them. A diamond is a question
+          the cloth must settle before the run goes on.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-pattern-bureau, value: 1 }
+      - level: 3
+        text: >-
+          A diamond asks its question and both of its exits matter: one arm
+          runs, the other waits, and the cloth must not walk both. When the
+          quiz asks what the pattern will produce, walk the arrows the loom
+          would, from the rounded start to the rounded end, and let each shape
+          say the one thing shapes say; then say what sits on the rail at the
+          end, in your own words, one figure to a line.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-pattern-bureau, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. The Threading Order — sequence: one step after another, ground to hem.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-threading-order
+    targets: [programming-constructs, puzzle-dress-the-warp]
+    levels:
+      - level: 1
+        text: >-
+          The Warp Dresser hangs the steps in the order the pattern numbers
+          them. Sequence is the mill's whole case here: every step present,
+          every step after the one that must precede it, and none before.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-dress-the-warp, value: 3 }
+      - level: 2
+        text: >-
+          Sequence is the formal name; the dressing order is how the mill says
+          it. Read the pattern paper's numbers first, then hang each shade card
+          to match its number, ground to first stripe to cross-stripe to border
+          to hem, and let no later step jump the queue.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-threading-order, value: 1 }
+      - level: 3
+        text: >-
+          Order is kindness in this room: a card hung out of turn is worn by
+          the whole cloth. When every hanger carries the number the paper
+          gives it, the Warp Walk counts the threading proof and lights it.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-threading-order, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 3. The Colour Court — selection: a condition lifts some threads and drops
+  #    others; the case rail holds both arms.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-colour-court
+    targets: [programming-constructs, puzzle-lift-the-shed]
+    levels:
+      - level: 1
+        text: >-
+          The court routes every pick urgent, and not one of them says routine
+          on its face. Selection is the work here: a condition lifts some
+          threads and drops the rest, and no pick runs both arms of a branch.
+          The shed plate wants its diamond slot and the else plate its plain
+          rectangular one; neither arm runs until both plates sit home.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-lift-the-shed, value: 3 }
+      - level: 2
+        text: >-
+          The plate's condition chooses, and the pick obeys it. A pick that
+          satisfies the condition takes the if arm; a pick that fails it takes
+          the else arm; and a pick offered where no arm waits is filed with
+          no arm at all. Read the condition before you route the tray's
+          picks 9, 12 and 15 — the numbers are the court's rehearsals, not
+          the cloth itself.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-colour-court, value: 1 }
+      - level: 3
+        text: >-
+          Return the shed plate to its diamond slot and seat the else plate in
+          the plain rectangular one, then route the tray by the plate's
+          condition, one pick at a time, before you call the court done. The
+          arm a pick takes is the condition's decree, never the pick's wish —
+          and the avalanche stays armed until the discipline holds.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-colour-court, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 4. The Weft Counter — the bound of ten and the slip tooth.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-weft-tally
+    targets: [programming-constructs, puzzle-seat-the-ratchet]
+    levels:
+      - level: 1
+        text: >-
+          The Weft Tally counts everything, including her own passes and
+          Tuesdays, and a bound of ten means ten to the pattern, no more, no
+          fewer. Ask her to count aloud again before you run the loom, and let
+          the chalk on the bailing bench show what the bound divides: whole
+          bundles only, the remainder posted over.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-seat-the-ratchet, value: 3 }
+      - level: 2
+        text: >-
+          Count-controlled iteration keeps its promise with an incremental
+          count: each pass asks one more of itself, and the bound stops the
+          asking. The slip tooth — the cousin's addition — has been telling
+          the ratchet otherwise, which is why the loom cannot hold ten.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-weft-tally, value: 1 }
+      - level: 3
+        text: >-
+          Pry the slip tooth from the counting ratchet before you run the loom
+          again, then re-seat the ratchet so one tooth serves one pass. Make
+          your prediction to the Weft Tally BEFORE the run: seat the bound at
+          ten, and let chalk say what the remainder does — the bundles a
+          pattern posts are whole ones, never the drift a tooth slips in.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-weft-tally, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 5. The Endless Selvedge — condition-controlled: the until, and the rogue
+  #    thread that ends it.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-selvedge
+    targets: [programming-constructs, puzzle-close-the-selvedge]
+    levels:
+      - level: 1
+        text: >-
+          The corridor-loom weaves its edge on and on because the exit plate
+          wants its until back: a run of repeats with no ending is a queue
+          without a desk. The counterfoil drawer at the Warden's end of the
+          room holds paperwork that ends a loop; the rogue thread is a signal,
+          not a datum, and filings go where filings go.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-close-the-selvedge, value: 3 }
+      - level: 2
+        text: >-
+          Condition-controlled iteration runs the body first and asks the
+          condition after — while the cloth is nice is how the cousin left
+          it, which is no condition at all. The until plate restores the
+          bound; the rogue thread, the dyed colour that never arises in this
+          pattern, reads −1 and goes to the counterfoil drawer, filed like
+          any other signal the mill cannot weave.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-selvedge, value: 1 }
+      - level: 3
+        text: >-
+          Set the condition plate so the loom asks its question at the end of
+          each pass, and file the rogue thread where signals are kept — both
+          halves, or the selvedge never ends and the whist evening at the
+          back of the weft never closes either. The edge stops because the
+          work says so; the Warden's patience, budgeted as it is, thanks you.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-selvedge, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 6. The Finished Rail — prediction, then weave.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-finished-rail
+    targets: [algorithms-and-pseudocode, quiz-finished-rail]
+    levels:
+      - level: 1
+        text: >-
+          The rail's rule is PREDICT. THEN WEAVE. — the rail will not despatch
+          until a prediction is on record, and neither will the quiz behind
+          it. Say what the final cloth will read, in your own words, before
+          you ask the mill to weave it.
+        unlock: { kind: counter-at-least, key: failed-attempts:quiz-finished-rail, value: 1 }
+      - level: 2
+        text: >-
+          The master cloth joins the four mended procedures: sequence lays
+          the ground, selection lifts by condition, the tally's bound holds
+          at ten, and the until plate ends the edge — one algorithm drawn
+          twice, once in pseudo-code, once in shapes, input to output in a
+          straight run. The joining is the synthesis: each construct is the
+          same algorithm seen from a different room.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-finished-rail, value: 1 }
+      - level: 3
+        text: >-
+          Walk the questions one at a time: for each, find the construct that
+          carries it — sequence, selection, a bound of iteration, or the
+          input–output seam itself — and say what each shape commits before
+          you commit with it. The rail stamps no cloth it has not seen
+          predicted; the mill is the butt of its own machinery, never the
+          learner's, and the rail holds to that bargain even now.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-finished-rail, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 7. The Bobbin Window — the stray-card navigation beacon.
+  # ──────────────────────────────────────────────────────────────────────────
+  - id: hint-bobbin-window
+    targets: [programming-constructs, puzzle-dress-the-warp]
+    levels:
+      - level: 1
+        text: >-
+          The window trades both ways: bobbins in, cloth out — input and
+          output, as the mill puts it. A pattern card offered where the bobbin
+          should go is posted back untaught, and no card leaves this window a
+          pattern the mill has not seen demonstrated first.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-dress-the-warp, value: 3 }
+      - level: 2
+        text: >-
+          The window tells you which; the room tells you how. A construct's
+          card is filed in the room that teaches it, and each mended room
+          re-opens its teaching — the Bureau's demonstration, the dresser's
+          hangers, the court's plates, the tally's bound, the Warden's
+          endings.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-bobbin-window, value: 2 }
+      - level: 3
+        text: >-
+          Route, then give: carry each card to the resident whose teaching it
+          demonstrates, and let them file it — the mill keeps records, and so
+          does the window. A card the mill has seen run is a pattern the loom
+          can weave; a card it has not is a bobbin of air.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-bobbin-window, value: 2 }
+    autoOfferAfter: 1
+    cooldownTurns: 2

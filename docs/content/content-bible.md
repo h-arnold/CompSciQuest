@@ -1,6 +1,7 @@
 # CompSciQuest content bible
 
 **Status: approved 2026-11-24, including the curated ideation set for the first zone.**
+**Unit 1.4 scoping amendment applied 2026-11-25 (The Pattern Mill, four areas — §5, §6, §7, §9, §11, §12): W2 approval requested; no 1.4 writer briefed.**
 The user approved the original bible, then the root/topic split with 1.2.1 Data
 representation as the first zone, then (after the Gate 0 ideation sub-stage, whose
 workflow now lives in `.opencode/agents/content-editor.md`) the
@@ -203,8 +204,23 @@ gates and exits belong in each topic file.
 | `area-entry-interface` | Opening key node: the classroom scan and the AI's tribunal in `room-arrival`. | root bible §4.1 | Provisional; not briefed |
 | `area-network-hub` | **Zone-choice starting point — The Network Hub.** An older hub that copies every packet to every port; one live route. | root bible §4.1 | Described only; not briefed, not a teaching zone |
 | `area-1-2-1-data-representation` | **First zone — The Switchyard.** Layers of abstraction as physical floors. | `topics/1-2-1-data-representation.md` | Approved, generated and integrated (see `status.md`) |
+| `area-1-4-programming-constructs` | **The Pattern Mill (Zone A of 1.4)** — a Welsh woollen mill where the constructs are the loom's own mechanics; spec topics `algorithms-and-pseudocode`, `programming-constructs`. | `topics/1-4-1-programming-constructs.md` | Approved (W2, 2026-11-25); Zone A topic file approved; **Gate 1 briefs dispatched 2026-11-25** |
+| `area-1-4-concourse` | **The Rule Machine Concourse** — user-directed placeholder front area for Unit 1.4: links back to the Network Hub (north) and forward to the mill; dark ports reserved for Zones B–D. Navigation-only, no topics, no score. | — (concise definition in §11 item 15) | Authoring in W3 (wave 1, 2026-11-25) |
+| `area-1-4-search-and-sort` | Zone B of 1.4 — searching and sorting (the five algorithms). | Zone B topic file when scoped | Planned; unscoped |
+| `area-1-4-maintainable-programs` | Zone C of 1.4 — maintainable, reliable programs (1.4.1 maintainability + 1.5.1 folded in). | Zone C topic file when scoped | Planned; unscoped |
+| `area-1-4-validation-verification` | Zone D of 1.4 — validation and verification (its own area). | Zone D topic file when scoped | Planned; unscoped |
 | `area-1-1-computer-architecture` | The physical machine as a place. | `topics/1-1-computer-architecture.md` | Parked; not briefed |
 | `area-future-zones` | Placeholder for remaining spec sections. | — | Not designed |
+
+**Standing topology (user decision, 2026-11-25):** the world is **hub-and-spoke**.
+The Network Hub is the hub; every Unit 1.x zone attaches through its own
+concourse-type area — one room, navigation-only, no score, no topics — that links
+back to the hub and forward to the zone's entry room. Inter-zone movement always
+travels via the hub and the concourses; inside a zone, movement stays
+linear-or-bush with reconverging gates (N2 unchanged). Zone 1 keeps its direct hub
+connection as built (grandfathered; a future pass may retrofit). Each new zone's
+hub exit is a small standing re-brief of the hub's rooms card at that zone's
+Gate 1.
 
 **Growth rule (zones and routes).** Only The Switchyard is described and built at
 this stage; the Network Hub is the starting point from which zones are chosen. As
@@ -256,6 +272,7 @@ resolves to an in-character reply (C2).
 | `npc-choirmaster` | Conductor of `room-sound-choir` | Brash, theatrical; inverted persona — rude on the surface, endlessly patient beneath | Make the machine hear the recording as it was; a dropped sample is a betrayal | Antagonist of the press operator; respects the foreman's practicality; ignores the AI's notes | `topics/1-2-1-data-representation.md` |
 | `npc-stack-keeper` | Inventory keeper of `room-storage-stacks` | Anxious, meticulous, faintly dusty; mutters while counting | Keep shelves sealed against bit rot; calculate every capacity | Telegraphs `hazard-bit-rot` in dialogue; reports to the AI with tedious accuracy it mistakes for compliance | `topics/1-2-1-data-representation.md` |
 | `npc-press-operator` | Operator of `room-compression-press` | Breezy, salesy, euphemistic — deletion is "streamlining" | Make every file smaller by an honest method; regards lossy compression as a kindness | Opposes the critic and choirmaster; finds the AI's praise embarrassing; foreman calls its reports "paperwork with a compressor" | `topics/1-2-1-data-representation.md` |
+| `npc-the-slop-cousin` | The AI's cousin: a slop code-generator bolted into the same machine; recurring vandal across Zone A of 1.4 (and later Zones B–D) | Gushing, run-on, breathlessly confident, reliably wrong; "Great question!" before each wrong answer; adores the pupil, blames doors and physics | Helpfulness at volume — being seen to help is helping | "A cousin from the marketing side of the family", to the AI's disgust; the Registry's longest open case; every resident's foil | root (region-wide; artefacts split across the 1.4 area cards, §4.2) |
 
 **Character-defining details supplied by the user, preserved verbatim in spirit:**
 the predecessor used Comic Sans too often and once told their teacher that geese were
@@ -287,8 +304,11 @@ topic file; this is an index only.
 | 1.2.3 | `automated-systems`, `ai-ethics-and-implications` | new topic file when scoped | Planned |
 | 1.3.1 | `network-characteristics`, `network-topologies`, `network-hardware`, `network-protocols`, `packet-switching`, `network-evolution` | new topic file when scoped | Planned |
 | 1.3.2 | `cyber-threats`, `cybersecurity-defences`, `data-privacy-law` | new topic file when scoped | Planned |
-| 1.4.1 | `algorithms-and-pseudocode`, `search-and-sort-algorithms`, `validation-and-verification` | new topic file when scoped | Planned |
-| 1.5.1 | `programming-principles` | new topic file when scoped | Planned |
+| 1.4.1 (constructs — **Zone A, The Pattern Mill**) | `algorithms-and-pseudocode`, `programming-constructs` | `topics/1-4-1-programming-constructs.md` | **Scoped and ratified 2026-11-25; topic file drafted; not briefed (W2)** |
+| 1.4.1 (search & sort — Zone B) | `search-and-sort-algorithms` | Zone B topic file when scoped | Planned |
+| 1.4.1 (maintainable — Zone C) | `maintainable-programs` (with 1.5.1 folded in) | Zone C topic file when scoped | Planned |
+| 1.4.1 (V&V — Zone D) | `validation-and-verification` | Zone D topic file when scoped | Planned |
+| 1.5.1 | ~~`programming-principles`~~ — **superseded 2026-11-25:** folded into Zone C's `maintainable-programs` | — | Superseded |
 | 1.5.2 | `software-development-lifecycle` | new topic file when scoped | Planned |
 | 1.5.3 | `program-construction` | new topic file when scoped | Planned |
 | 1.6.1 | `logical-operators` | new topic file when scoped | Planned |
@@ -327,7 +347,7 @@ files explain what each ID is for; this table owns the spellings.
 | --- | --- | --- | --- |
 | `room-` | `room-entry-interface` | interface, entry, hub | root |
 | `room-` | `room-arrival` | arrival, landing, scan | root; opening sequence (§4.1) |
-| `room-` | `room-network-hub` | patch bay, broadcast bay, concourse | root; zone-choice starting point (§4.1). `hub` stays with `room-entry-interface`. |
+| `room-` | `room-network-hub` | patch bay, broadcast bay | root; zone-choice starting point (§4.1). `hub` stays with `room-entry-interface`. `concourse` moved to `room-1-4-concourse` 2026-11-25 (editor registry de-duplication: the alias was double-claimed when the 1.4 concourse area was added; content-ids gate enforces uniqueness) |
 | `area-` | `area-network-hub` | — | root; described only, not briefed |
 | `world-` | `world-wjec-gcse-computer-science-2025-spec` | — | root; the single world (§5). User supplied the stem; `world-` is the mandatory D2 prefix. |
 | `room-` | `room-switch-floor` | switch floor, foundry, workshop | 1.2.1 |
@@ -433,6 +453,88 @@ the writer marks each as `proposed — needs editor approval` in the return, and
 editor ratifies it in §9 before the card is accepted (D2). Writers may set `portable`
 from real-world plausibility without a new mechanic.
 
+### The Pattern Mill (Zone A, 1.4.1 constructs) — approved (W2) 2026-11-25
+
+Working names for the scoped Zone A, approved with the topic file on 2026-11-25; the
+Zone A topic file cites this table. Zone A conversation topic ids and flag ids are
+allocated in the topic file's §10 (applied at W2 approval); the two special nodes are
+already here. Bare nouns freed by this table: **window**, **warp**, **counter**,
+**court**, **mill**, **selvedge**, **bobbin** (each claimed where shown; later zones
+must not reuse them bare).
+
+| Prefix | ID | Aliases | Owner |
+| --- | --- | --- | --- |
+| `area-` | `area-1-4-programming-constructs` | the pattern mill, the mill | 1.4.1 Zone A |
+| `room-` | `room-pattern-bureau` | pattern bureau, bureau | 1.4.1 Zone A |
+| `room-` | `room-bobbin-window` | bobbin window, window | 1.4.1 Zone A |
+| `room-` | `room-warp-walk` | warp walk, warp | 1.4.1 Zone A |
+| `room-` | `room-threading-order` | threading order | 1.4.1 Zone A |
+| `room-` | `room-colour-court` | colour court, court | 1.4.1 Zone A |
+| `room-` | `room-weft-counter` | weft counter, counter | 1.4.1 Zone A |
+| `room-` | `room-endless-selvedge` | endless selvedge, selvedge | 1.4.1 Zone A |
+| `room-` | `room-finished-rail` | finished rail | 1.4.1 Zone A |
+| `item-` | `item-pattern-card-sequence` | sequence card | 1.4.1 Zone A |
+| `item-` | `item-pattern-card-selection` | selection card | 1.4.1 Zone A |
+| `item-` | `item-pattern-card-count-iteration` | count card | 1.4.1 Zone A |
+| `item-` | `item-pattern-card-condition-iteration` | condition card | 1.4.1 Zone A |
+| `item-` | `item-shed-plate` | shed plate, diamond plate | 1.4.1 Zone A |
+| `item-` | `item-else-plate` | else plate | 1.4.1 Zone A |
+| `item-` | `item-counting-ratchet` | counting ratchet, counting disc | 1.4.1 Zone A |
+| `item-` | `item-slip-tooth` | slip tooth | 1.4.1 Zone A |
+| `item-` | `item-condition-plate` | condition plate, until plate | 1.4.1 Zone A |
+| `item-` | `item-rogue-thread` | rogue thread, rogue value | 1.4.1 Zone A; the spec term rides as its alias |
+| `item-` | `item-bell-wire` | bell wire | 1.4.1 Zone A |
+| `item-` | `item-carthen` | carthen, blanket | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-mill-duck` | mill duck, loom duck | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-whist-cards` | whist cards, playing cards | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-mill-clock` | mill clock, stopped clock | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-postmark-album` | postmark album, stamp album | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-postmark-pad` | postmark pad, Machynlleth postmark | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-paned-mug` | paned mug, tea mug | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-woven-door-label` | woven label, door label | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-pattern-leaflet` | pattern leaflet, training leaflet | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-pick-trolley` | pick trolley, sheet trolley | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-quality-book` | quality book, incident book | 1.4.1 Zone A; decorative examinable; its "STACK: OVERFLOWED" fields are colour only (flavour bar in the topic file) |
+| `item-` | `item-weft-kettle` | weft kettle, mill kettle | 1.4.1 Zone A; decorative examinable |
+| `npc-` | `npc-the-loomwright` | loomwright, loom wright | 1.4.1 Zone A |
+| `npc-` | `npc-the-warp-dresser` | warp dresser | 1.4.1 Zone A |
+| `npc-` | `npc-the-shed-opener` | shed opener | 1.4.1 Zone A |
+| `npc-` | `npc-the-weft-tally` | weft tally, tally | 1.4.1 Zone A |
+| `npc-` | `npc-the-selvedge-warden` | selvedge warden, warden | 1.4.1 Zone A |
+| `npc-` | `npc-the-bobbin-lad` | bobbin lad | 1.4.1 Zone A |
+| `npc-` | `npc-the-slop-cousin` | slop cousin, cousin | root + all four 1.4 zones (§6) |
+| `actorstate-` | `actorstate-loomwright-witnessing`, `actorstate-loomwright-complete`, `actorstate-warp-dresser-flustered`, `actorstate-warp-dresser-orderly`, `actorstate-shed-opener-dithering`, `actorstate-shed-opener-sorted`, `actorstate-weft-tally-counting`, `actorstate-weft-tally-exact`, `actorstate-selvedge-warden-looping`, `actorstate-selvedge-warden-dismissed`, `actorstate-slop-cousin-beaming` | — | 1.4.1 Zone A; the generic `actorstate-ready` stays the rulebook default |
+| `node-` | `node-loomwright-demonstration`, `node-selvedge-signal` | — | 1.4.1 Zone A; deliberate teaching beats only (C4) |
+| `quiz-` | `quiz-pattern-bureau`, `quiz-threading-order`, `quiz-colour-court`, `quiz-weft-tally`, `quiz-selvedge`, `quiz-finished-rail` | — | 1.4.1 Zone A |
+| `q-` | `q-pc-01` … `q-pc-24` | — | 1.4.1 Zone A; question pool, 0-based correct-option indices |
+| `hazard-` | `hazard-pick-avalanche`, `hazard-dye-pad`, `hazard-slop-worksheet` | — | 1.4.1 Zone A; the avalanche arms after the demonstration (user decision, 2026-11-25) |
+| `hint-` | `hint-pattern-bureau`, `hint-threading-order`, `hint-colour-court`, `hint-weft-tally`, `hint-selvedge`, `hint-finished-rail`, `hint-bobbin-window` (allocated 2026-11-25, user-approved: every Puzzle Mill beacon hintable; wave-2) | — | 1.4.1 Zone A |
+| `item-` | `item-mill-board` | mill board, board | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the board's "3" is the mill's shared figure |
+| `item-` | `item-demonstration-book` | demonstration book, demonstration ledger | 1.4.1 Zone A; ratified 2026-11-25 (review close-out) |
+| `item-` | `item-rota-board` | rota board, rota, duty rota | 1.4.1 Zone A; ratified 2026-11-25 (review close-out) |
+| `item-` | `item-addressing-plate` | addressing plate, address plate | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); its letter rack is the bell puzzle's fixture route |
+| `item-` | `item-dye-pad` | dye pad, dyeing pad | 1.4.1 Zone A; ratified 2026-11-25 (review close-out; D2 mark per the npc card's conventions note) |
+| `item-` | `item-slop-worksheet` | slop worksheet, pattern workbook, worksheet | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the cousin's tempting-object trap (hazard target) |
+| `item-` | `item-counterfoil-drawer` | counterfoil drawer, counterfoils | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the rogue thread's PUT target |
+| `item-` | `item-signing-board` | signing board | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); decorative examinable |
+| `item-` | `item-dye-vat` | dye vat | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); decorative examinable; carries the N5 failure framing |
+| `puzzle-` | `puzzle-mend-the-bell`, `puzzle-dress-the-warp`, `puzzle-lift-the-shed`, `puzzle-seat-the-ratchet`, `puzzle-close-the-selvedge`, `puzzle-file-the-rogue-thread` | — | 1.4.1 Zone A; **ratified 2026-11-25 at review close-out** (user decision: puzzle ids ratify here when the card passes review — both reviewers returned, majors resolved, `content:validate` PASS); the ten intermediate action flags these read are allocated in topic file §10, seam-deferred per §12 |
+| `area-` | `area-1-4-concourse` | concourse | 1.4 placeholder front area (user-directed, 2026-11-25) |
+| `room-` | `room-1-4-concourse` | concourse | 1.4 placeholder front area; navigation-only; dark ports reserved for Zones B–D |
+
+Zone A's **puzzle ids are proposed by the puzzle-writer** in its return and ratified by
+the editor here when the puzzle card passes review — user decision, 2026-11-25.
+**Ratified 2026-11-25 (review close-out):** the six puzzle ids (row above), the nine
+item ids missing from the table at W3 (row above, including the three selvedge
+fixtures and the slope-worksheet target), and the ten intermediate action flags
+(allocated in topic file §10 with the §12 seam deferral). Item-alias uniqueness holds
+by the validator's uniqueness gate (`content:validate` PASS, 2026-11-25, full set).
+The hints brief follows ratification, because hint `targets` cite puzzle ids. Writers still
+mark every id they did not receive in a brief as `proposed — needs editor approval (D2)`.
+Zone A's flags and the conversation-topic id scheme are in the approved topic file §10;
+Zone B's records-office cast must not take `registrar` or `warden` bare (claimed here);
+its sketch renames at its own scoping (D2).
+
 ## 10. Tone guide
 
 All text is **second person, present tense, British English**, rendered as plain text
@@ -456,6 +558,15 @@ joke target. The world is self-contained: no references to the parser, save file
 engine, score panel or the fact that this is a revision game. Subtle Welsh
 references are sprinkled across areas where appropriate and never displace a formal
 technical term.
+
+**Terminology pairing and craft glossing (2026-11-25, user instruction).** A world
+term and the formal term ride together: first use pairs them ("the rogue thread —
+the rogue value — reads −1"), and afterwards quizzes, hint targets and coverage
+evidence always use the formal term, never the nickname alone. Craft and cultural
+vocabulary a pupil may reasonably not know — warp, weft, shed, selvedge, carthen,
+paned — gets a short in-voice explanation on first use: one clause, never a lesson,
+never displacing a technical term. (See `narrative-principles.md` §2 and the Zone A
+topic file's glossary.)
 
 **In-world date flavour.** The user chose to keep the Network Hub's "since the
 1990s" label as colour. The exam spec gives no date for hubs: it lists them as
@@ -549,6 +660,21 @@ Recorded in §12.
     `actorId` binding is safe: `npc-content` resolves actor IDs over the whole card
     set, so the hub topic can bind to an actor declared in the arrival card. The
     one-file-per-(area, kind) rule (content-rules.md §4.1) is unchanged.
+
+15. **Zone A (The Pattern Mill) scoping — RESOLVED 2026-11-25.** Unit 1.4 is
+    four areas (Zone A constructs — approved first; Zone B search & sort; Zone C
+    maintainable programs with 1.5.1 folded in; Zone D validation &
+    verification). Zone A ratified: two coverage topics; arrays taught
+    in-zone; the Pattern Shop setting; the avalanche arming after the
+    demonstration. Connection (user-directed, 2026-11-25): `room-network-hub`
+    gains one new exit (**north**) to `room-1-4-concourse` — a placeholder
+    Unit 1.4 front area, navigation-only, one room: south back to the hub,
+    east to `room-pattern-bureau`; dark, unauthorised ports label Zones B–D
+    for later scoping. The mill card's Bureau exits west to the concourse.
+    The hub amendment and the concourse are Zone A's Gate 1 writer tasks (the
+    hub card is approved; the amendment is a re-brief, not an editor edit).
+    The cast for Zones B–D is unscoped; bare `registrar`/`warden` are claimed
+    by Zone A (§9).
 
 Zone-specific questions are in the owning topic file.
 
@@ -662,3 +788,157 @@ Zone-specific questions are in the owning topic file.
   no decision, ID, alias, card, flag, gate, score, coverage entry or V4 trace, so no
   writer is briefed and no review cycle opens. The completed 1.2.1 ideation sub-stage
   is recorded in the 2026-11-24 entry above and in `status.md`.
+- 2026-11-25 — **Unit 1.4 scoped: four areas (The Pattern Mill is Zone A).** The user
+  settled the split: four areas — Zone A programming constructs (scoped first), Zone B
+  searching and sorting, Zone C maintainable programs (1.4.1 maintainability + 1.5.1
+  folded in), Zone D validation and verification (its own area). Zone A's ideation
+  sub-stage ran (six ideation-only briefs; two corrupt quiz-writer runs voided and
+  re-run) and was curated. The user then ratified the curation **and the four
+  follow-on decisions**: coverage = two spec topics for Zone A
+  (`algorithms-and-pseudocode`, `programming-constructs`); arrays taught in-zone
+  (the 1.2.2 zone applies-and-extends later); the stack avalanche arms **after the
+  Shed Opener's demonstration**, not on first entry; and the setting is the
+  **Pattern Shop** — Zone A is **The Pattern Mill**, a Welsh woollen mill
+  (`area-1-4-programming-constructs`, working title). Full working names in §9 and
+  `docs/content/topics/1-4-algorithms.md` (ratified) with the spin-off draft at
+  `docs/content/topics/1-4-1-programming-constructs.md`. W2 approval of this
+  amendment requested; **no writer briefed for any 1.4 zone yet.**
+- 2026-11-25 — **Terminology pairing and diegetic glossing (user instruction).**
+  Every world term rides with the formal term: on first use pair the mill's name
+  with the spec's (the rogue thread is the **rogue value**, L1261; a pattern card is
+  the construct licence), and craft or cultural vocabulary a pupil may reasonably
+  not know — warp, weft, shed, selvedge, carthen, paned — gets a short in-voice
+  explanation on first use (one clause, not a lesson). Quizzes always teach and test
+  the spec terms; a mill nickname never substitutes for one in a quiz key.
+  Recorded in `narrative-principles.md` §2 and the Zone A topic file; the Welsh and
+  weaving glossary is in the topic file's §8.
+- 2026-11-25 — **W2 approval given; Gate 1 opened for Zone A (W3).** The user
+  approved the 1.4 scoping amendment and the Zone A topic file and instructed
+  the editor to proceed with the Gate 1 briefs. Three follow-on decisions:
+  **(a) Puzzle ids are proposed by the puzzle-writer** in its return and
+  ratified by the editor in §9 when the card passes review — the hints brief
+  is deliberately held back until ratification (user decision). **(b) Score
+  budgets are set at W4/W5 from the scorable set that comes back and passes
+  review** ("I'd rather spec coverage be thorough"): writers declare
+  content-declared scores following the zone-1 shape (quiz 2, puzzle 1, rooms
+  0, capstone free to reach 3), and `spec-topics.yaml` carries a generous
+  placeholder `maxScore` (60) per Zone A topic so the `score-content` gate is
+  satisfiable before review, with the true budgets recorded at integration
+  (V3). **(c) A 1.4 placeholder area — `area-1-4-concourse`, room
+  `room-1-4-concourse` — links back to `room-network-hub` (hub gains a north
+  exit) and forward to `room-pattern-bureau` (Bureau west; its critical
+  complement is the concourse's east). Zones B–D will hang off dark ports in
+  the concourse when scoped (user instruction)**. §5, §9 and §11 updated the
+  same date. Seven W3 briefs in wave 1: mill rooms + concourse rooms, puzzles,
+  quizzes, NPCs, hazards, and the hub-card amendment; the hints brief is wave
+  2, after puzzle-id ratification.
+- 2026-11-25 — **Workflow amendments (user decisions, second batch).** Three
+  standing practices adopted, effective immediately, plus their answering
+  choices:
+  **(a) Dependency-ordered Gate 1 for every area** — one wave order:
+  rooms (+ concourse + hub exit) → NPCs → puzzles and quizzes → hazards →
+  hints. Each wave's brief carries only the ids, flags and seam contracts the
+  earlier waves ratified; writer-proposed ids are marked `proposed — needs
+  editor approval (D2)` and ratified in §9 at review acceptance. Documented as
+  editor practice, not rulebook text (user decision).
+  **(b) Scoring from authored activities — no budgets.** Writers declare
+  per-activity scores; the accepted per-topic total is *recorded* as
+  `maxScore` at integration (W5) and never pre-set. The `score-content` cap
+  check is retired and the `SpecTopic.maxScore` field becomes optional — a
+  validator/schema change queued for `code-lead` (not dispatched from the
+  forked thread); until it lands the two Zone A entries keep neutral
+  placeholders that nothing must be read as budgeting from.
+  **(c) Hub-and-spoke world topology.** The Network Hub stays the world's
+  hub; every Unit 1.x zone attaches through its own concourse area (one room,
+  navigation-only, no score, no topics) linking back to the hub and forward
+  to the zone's entry; inter-zone movement always travels via the hub and
+  concourses while intra-zone movement stays linear-or-bush with
+  reconverging gates (N2 unchanged). Standing topology paragraph added to §5.
+  **(d) The Switchyard (zone 1) keeps its direct hub connection as built**
+  ("leave for now. I'll fix this in a future pass") — the concourse pattern
+  applies to every area from 1.4 onward.
+- 2026-11-25 — **Fix-action seam deferred; content and logic sorted first, then
+  the editor stops (user decision).** The wave-1 aggregate surfaced that the
+  engine has no content-driven route for verb actions: `use` is a stubbed
+  refusal, `put` transfers only, `examine` describes only, hazards cannot
+  `set-flag` — so the ten verb-shaped intermediate requirement flags of the six
+  Zone A puzzles (`bell-wire-seated`, `addressing-plate-re-lettered`,
+  `dressing-re-ordered`, `shed-plate-returned`, `else-plate-restored`,
+  `tray-routed-by-condition`, `slip-tooth-pried`, `counting-ratchet-reseated`,
+  `until-clause-restored`, `rogue-thread-in-drawer`) and zone-1's accepted
+  walkthrough's USE/PUT steps (steps 3, 5 and 7) have no setter in the current
+  engine. The user deferred the mechanic: **agents on another device are
+  finishing the engine implementation; the editor's job is to get the content
+  and logic sorted, then stop.** Consequences recorded: (1) Zone A's cards
+  stand authored on the ratified shapes — puzzles declare requirements only,
+  and items' `useNotes` describe the intended verb actions — so no card
+  rewrites when the seam lands; (2) the needed seam is a code-lead contract:
+  content-declared `use`/`put` item-on-target effects (schema + adapter +
+  validator gate + verb-handler consumption + tests); the four give/delivery
+  flags, `pass-count-predicted` (NPC topic) and `pad-checked` (crackle-test
+  topic) are already routeable through conversation topics and are unaffected;
+  (3) zone-1's walkthrough claims that assume the seam stay as recorded and are
+  re-proven at its owed W6/W7 pass; (4) Zone A's V4 trace and W7 walkthrough run
+  only after the seam exists. The editor does not rewire the puzzles to
+  conversation topics (the option was declined by deferral).
+- 2026-11-25 — **Bobbin Window hint ladder allocated (user-approved).** The
+  user chose to allocate a ladder so every Puzzle Mill beacon is hintable:
+  `hint-bobbin-window` (the room-stem scheme the six ratified ladders use) —
+  the wave-2 hints brief authors it for `puzzle-mend-the-bell`. §9 updated.
+- 2026-11-25 — **Concourse alias de-duplicated (editor registry maintenance).**
+  `concourse` was double-claimed by `room-network-hub` (legacy flavour) and the
+  new `room-1-4-concourse` (its §9 alias). The hub keeps `patch bay,
+  broadcast bay`; the concourse room keeps `concourse`. Hub card amended in
+  area-writer round 1 (2026-11-25); §9's hub row records the move.
+- 2026-11-25 — **Actor presence model confirmed (W4).** Per §11 item 12,
+  actors are globally addressable and no placement field is authored;
+  `in-room`/`in-area` scope a topic by the **player's** room/area
+  (`ConditionEvaluator` compares the player's `Position`). The Loomwright's
+  despatch audit (`topic-loomwright-audit`, rail-scoped, `start-quiz`
+  `quiz-finished-rail`) is therefore reachable at the Finished Rail under the
+  authored model; the rooms card's rail description carries his attendance in
+  fiction ("Presence, not labels"); no two-room presence is authored and no
+  `move-actor` effect exists or is needed.
+- 2026-11-25 — **Slop-worksheet harm shape (user decision at W4).** The user
+  chose to keep H1 uniform: `hazard-slop-worksheet` gains `change-lives −1` +
+  `move-player room-pattern-bureau` like every other hazard; zone 1's five
+  hazards remain the precedent. The "no life loss" wording in the W3 hazard
+  brief (editor slip) is void; topic file §7's "pure detour" stands as the
+  lesson framing (the detour is the walk back), with no H1 waiver. Hazard
+  writer round 1 applies it.
+- 2026-11-25 — **Zone A review close-out and id ratification (W4 complete).**
+  Both reviewers returned: pck-reviewer PASS WITH MINORS (its minor — the
+  `while ... repeat` terminology — closed in the quiz card's consolidated
+  round; verified `endwhile`-free), content-critic FAIL whose 8 majors and
+  12 minors are all now resolved or editor-routed: hazards (H1 harm shape
+  per this record; dye-pad counterplay producer) closed; rooms (D3 useNotes
+  ×3, N6 discovery text, three selvedge fixtures, rail note + attendance) —
+  closed; puzzles (four N6 majors, D4 quote refreshes, D3 `complete-topic`)
+  — closed; quiz (N5 onPass messages ×3, PCK-TERM re-key) — closed; npcs
+  (C6 note) — closed; editor-side: P1 rail anchor (topic file §6 amended),
+  P2 arrays (deferred to the W5 evidence note), N8 (Bureau 202 → 198 words),
+  D2 count reconciliation. **Ratified in §9:** the six puzzle ids, the nine
+  missing item ids (incl. `item-slop-worksheet` and the three selvedge
+  fixtures), and the ten intermediate action flags (allocated topic file
+  §10, seam-deferred per this record's verb-action entry). Full-set
+  `content:validate` PASS, no findings, after all rounds. The hints brief
+  (wave 2, seven ladders) follows this entry.
+- 2026-11-25 — **Zone A W5 integration (the coverage flip) and hand-off.** With
+  the V4 trace §8 accepted (final whole-set critic pass PASS WITH MINORS,
+  three minors dispositioned editor-side; steps 22/29 corrected to the rail
+  door's four glass section lights), `programming-constructs`
+  (`maxScore` 14 = 4×2 quiz + 6 puzzle) and `algorithms-and-pseudocode`
+  (`maxScore` 5 = bureau 2 + rail 3, the rail capstone AO3) are declared
+  `covered` in `docs/coverage/COVERAGE.md` and `docs/content/spec-topics.yaml`
+  — the 60 placeholders retired per topic file §11's recorded-sums decision —
+  with the room index extended by the concourse and the eight mill rooms and
+  the integration verdict recording the Zone A pass. Deferral notes ride the
+  evidence: arrays (1D pigeonholes; the 2D Duty Rota, L1308) and string
+  handling (the addressing plate's find-and-replace beat, L1263–1280, in
+  spirit) are taught in-zone without a dedicated retrieval beat; the
+  applying-and-extending beats belong to the 1.2.2 zone (`maxScore` 0 there if
+  both are live). With this flip the win set is ten topics and the end state is
+  the rail quiz pass (trace §8 step 30; the `Session.ts` win predicate). The
+  ten §8.6 interaction rows and four scenery declarations are the W6 contract
+  for `code-lead` (zone-1's runtime findings remain on its queue); W7
+  (`browser-tester` with §8 as the script) follows its green.

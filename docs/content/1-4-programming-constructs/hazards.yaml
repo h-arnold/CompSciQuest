@@ -1,0 +1,72 @@
+kind: hazard
+areaId: 1-4-programming-constructs
+status: draft
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+# Three hazards for The Pattern Mill (ids verbatim from bible §9; design ratified
+# in topics/1-4-1-programming-constructs.md §7). Every failure returns to the
+# area's startRoomId, room-pattern-bureau (declared on the area card).
+
+hazards:
+  - id: hazard-pick-avalanche
+    trigger: { kind: on-room-enter, roomId: room-colour-court }
+    when:
+      {
+        kind: all,
+        of:
+          [
+            { kind: quiz-passed, quizId: quiz-colour-court },
+            { kind: not, of: { kind: flag-set, flag: colours-lifted } },
+          ],
+      }
+    effects:
+      - { kind: message, text: "The pick-pile leans, holds its own opinion for one long moment, and comes over all at once: a slow, papery slide of picks that buries the work table and most of the Shed Opener's stool." }
+      - { kind: message, text: "Digging for daylight, you pull out a fallen pick: stamped URGENT, corner to corner. So is the next, and the one under that. Every pick in the heap says urgent; not one of them says routine. All of the court's sorting has been pouring into one shout of a stamp, and the whole symptom has just landed in your hands. The Shed Opener reads it over your shoulder and turns economical with words; you are back at the Bureau, one life lighter." }
+      - { kind: change-lives, delta: -1, reason: "the pick-pile went over" }
+      - { kind: move-player, roomId: room-pattern-bureau, reason: "returned to the level start after the pick-pile went over" }
+    once: true
+    authoring:
+      telegraph: >-
+        H1 — two in-room telegraphs, both readable before this hazard can arm; the risky moment is the first re-entry after the Colour Court's demonstration passes. (1) The yellowed tally card in the `room-colour-court` description, warning that the pile is "one sheet from going over" (rooms card, wave 1; topic file §7). (2) The Shed Opener's line about the pile, carried in the rooms card and in her NPC dialogue (npcs card, wave 1). Neither telegraph is authored in this card; the rooms and NPC cards own the exact strings. Because the hazard arms only once `quiz-colour-court` has been passed, the player has always had a full visit in which to read both clues before any armed entry; room-entry hazards also fire after the initial room description (hazards.md §8), so the clues are read in the same turn even then.
+      counterplay: >-
+        Real counterplay sits in staying with the work: once `quiz-colour-court` is passed the player is already in the court, and finishing the give-back and the selection puzzle there sets `colours-lifted` (topic file §10, the selection fix flag) without a room-enter event firing, so the avalanche never trips. A player who leaves with the mending half-done steps back into a telegraphed room; `once: true` bounds the penalty to that single armed entry, re-entry after the burial is safe (the pile leans but holds), and no puzzle progress or topic state is touched (H1). Staying out of the court between demonstration and mending also avoids it.
+      pillar: >-
+        P-b, P-d — selection is the shed, decided by a plate; the avalanche is the mill's own stuck verdict, buried deadpan. The failure text is the written record of the room's own lesson (every pick urgent, routine never offered) and never names the stacking, the incident book's fields or any incident wording (flavour bar, topic file §7).
+      hintsNote: >-
+        No hint is offered during or for this hazard: hazards are brief penalties, not puzzles (H1; hazards.md §4). This card attaches no hint sequence and cites no hint id; the area's hint ladders stay with the wave-2 hints card.
+
+  - id: hazard-dye-pad
+    trigger: { kind: on-room-enter, roomId: room-weft-counter }
+    when: { kind: not, of: { kind: flag-set, flag: pad-checked } }
+    effects:
+      - { kind: message, text: "The dye pad has dried to the colour of weak tea and its label has flaked to a brown ghost, so the fresh impression pressed through it crackles like an old biscuit: the pass count comes up wrong by one, then wrong again, every figure pressed in crumbs. Counted is counted, dry or not; the mill adds its one whether the pad records it or not, and the Weft Tally closes her ledger with a click that means trouble. You are back at the Bureau, one life lighter." }
+      - { kind: change-lives, delta: -1, reason: "the dried dye pad miscounted the weft" }
+      - { kind: move-player, roomId: room-pattern-bureau, reason: "returned to the level start after the dye pad miscounted" }
+    once: true
+    authoring:
+      telegraph: >-
+        H1 — two in-room telegraphs, read on any entry before this hazard can fire. (1) The flaked label on the pad in the `room-weft-counter` description (rooms card, wave 1; the pad has dried to weak tea and its label has flaked, topic file §7). (2) The Weft Tally's line, "if the impression crackles, stop pressing", in her NPC dialogue (npcs card, wave 1). Room-entry hazards fire after the initial room description (hazards.md §8), so both are read before the penalty lands. Neither telegraph is authored in this card; the rooms and NPC cards own the exact strings.
+      counterplay: >-
+        D2 — the disarm is authored on the ratified flag `pad-checked` (topic file §10, 2026-11-25), and its producer is the Weft Tally's crackle-test topic `topic-weft-tally-pad`: ask her about the dried pad and her topic's effects set `pad-checked`; examining the pad in-room is the in-fiction route the player walks to reach her (the Weft Counter's prose already telegraphs the pad; the rooms card owns that string, not this card). The trigger wires on room entry, so the single armed entry cannot be preceded by the test; `once: true` bounds the whole hazard to one firing, so the miscount never repeats, and no puzzle or topic progress is touched (H1). No hint is offered during or for this hazard (hazards.md §4).
+      pillar: >-
+        P-b, P-d — a count is a promise kept by the machinery; corruption here is the pad giving out while the count goes on, delivered deadpan. The failure text teaches the miscount as world behaviour (counted is counted, dry or not) and costs only the single once-bounded life.
+      hintsNote: >-
+        No hint is offered during or for this hazard: hazards are brief penalties, not puzzles (H1; hazards.md §4). This card attaches no hint sequence and cites no hint id; the area's hint ladders stay with the wave-2 hints card.
+
+  - id: hazard-slop-worksheet
+    trigger: { kind: on-item-used, itemId: item-slop-worksheet }
+    when: { kind: not, of: { kind: flag-set, flag: threading-ordered } }
+    effects:
+      - { kind: message, text: "The PATTERN WORKBOOK (mandatory! fun!) opens to a page of empty blanks and a nib already wet with red ink. Without waiting for a word from you, it writes GREAT QUESTION! beside the first blank, then, for depth, GREAT QUESTION! again underneath. You fill the page; the ink rules on every line, and its ruling is always the same: enthusiasm, bucketfuls; answers, unnecessary; marks, none to speak of. The nib dries up, satisfied, having helped. The Warp Dresser says nothing, loudly. You shut the workbook. The afternoon has gone into it, every blank filled and none of it marked, and what began as a detour ends as a day's walk: you are back at the Bureau, one life lighter." }
+      - { kind: change-lives, delta: -1, reason: "the PATTERN WORKBOOK drank an afternoon" }
+      - { kind: move-player, roomId: room-pattern-bureau, reason: "returned to the level start after the workbook drank an afternoon" }
+    once: true
+    authoring:
+      telegraph: >-
+        H1 — two in-room telegraphs, both readable before the sheet can be used. (1) The workbook itself, the cousin's PATTERN WORKBOOK (mandatory! fun!), sitting on the Threading Order's lectern in the `room-threading-order` description (rooms card, wave 1, where `item-slop-worksheet` is also defined, proposed D2 there; this card only references the id). (2) The Warp Dresser's warning about it, carried in the rooms card and her NPC dialogue (npcs card, wave 1). Both are read before the item is used, so the detour telegraphs itself; neither telegraph is authored in this card.
+      counterplay: >-
+        Avoidable action: leaving the cousin's workbook unopened sidesteps the hazard entirely; it is a tempting-object trap (topic file §7), and the Warp Dresser's warning gives the reason to. `once: true` bounds the penalty to that single careless filling, so re-use after the firing cannot repeat it, and no puzzle phase or topic progress is touched (H1; hazards.md §4). The hazard starts no quiz (a hazard never starts a quiz; hazards.md §4) and sets no flag; once `threading-ordered` sets, the sheet bores the pen and cannot fire again. No hint is offered during or for this hazard (hazards.md §4).
+      pillar: >-
+        P-a, P-d — the workbook performs engagement exactly as the cousin performs helpfulness, in deadpan cartoon school: enthusiasm grades high, marks stay at none. Its text never commits to or reveals an answer.
+      hintsNote: >-
+        No hint is offered during or for this hazard: hazards are brief penalties, not puzzles (H1; hazards.md §4). This card attaches no hint sequence and cites no hint id; the area's hint ladders stay with the wave-2 hints card.

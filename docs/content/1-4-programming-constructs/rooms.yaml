@@ -1,0 +1,857 @@
+kind: area
+areaId: 1-4-programming-constructs
+status: draft
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+definition:
+  id: area-1-4-programming-constructs
+  worldId: world-wjec-gcse-computer-science-2025-spec
+  name: The Pattern Mill
+  startRoomId: room-pattern-bureau
+  lives: 3
+
+rooms:
+  - id: room-pattern-bureau
+    title: The Pattern Bureau
+    aliases: [pattern bureau, bureau]
+    description: >-
+      You come in under a lintel where Bore da — the Loomwright's good morning —
+      has been repainted for decades. Looms crowd the long room, their warp —
+      the threads that run one way, dressed first and in order — combed and
+      ready. Five shapes are stencilled into the counter's oak: a rounded
+      doorway (the terminator, where a pattern starts and stops), slanted
+      hoppers (input and output), a diamond hatch (the decision, which way),
+      a plain box (the process, where the work happens), and painted arrows
+      joining them (flow lines). The Loomwright stands at the counter, holding
+      a stamp above the Demonstration Book; its brass plate reads NOTHING LEAVES
+      THIS DESK WITHOUT A DEMONSTRATION. "Demonstration first. Then the stamp,"
+      he says. "Stamps don't lie. People do." The east door is bolted; its
+      legend reads UNTIL A DEMONSTRATION IS ON RECORD. A pattern card — the
+      mill's construct licence — waits under his palm. In its rack a training
+      leaflet: FIVE SHAPES AND WHAT THEY DO. West, the concourse door stands
+      open. A carthen, a checked woollen blanket woven on looms like these, lies
+      folded on a loom rail; a paned mug steams at the counter's end, obligingly
+      poured.
+    topicIds: [algorithms-and-pseudocode]
+    exits:
+      - { direction: west, to: room-1-4-concourse }
+      - direction: east
+        to: room-warp-walk
+        conditions:
+          - { kind: flag-set, flag: demo-on-record }
+    score: 0
+    authoring:
+      interesting: >-
+        Five flowchart shapes stencilled in the counter wood, a bolted east door that counts demonstrations, and a stamp the size of a verdict.
+      pillar: >-
+        P-a, P-b, P-c; the demonstration rule as the attention criterion made furniture, the constructs as the loom's own mechanics, competence as what opens the east door.
+      clues: |-
+        N6 — the east gate's clues, discoverable in this room before it opens:
+        - The bolt legend beside the east door: UNTIL A DEMONSTRATION IS ON RECORD (room prose).
+        - The Demonstration Book's brass plate: NOTHING LEAVES THIS DESK WITHOUT A DEMONSTRATION (item text).
+        - The Loomwright's spoken rule: "Demonstration first. Then the stamp. Stamps don't lie. People do." (room prose; his other line, "the door counts demonstrations, not intentions", sits in the Warp Walk's clue block).
+
+  - id: room-warp-walk
+    title: The Warp Walk
+    aliases: [warp walk, warp]
+    description: >-
+      A corridor-loom runs the length of the junction, the mill's warp
+      stretched overhead like a road for moths. Every door of the mill shows
+      from here: north to the Threading Order, south to the Weft Counter, the
+      in door to the Colour Court, the out door to the Bobbin Window, and down
+      the undercroft stair to the Endless Selvedge. West leads back to the
+      Bureau. East, the big door to the Finished Rail sits under four glass
+      section lights on the caption RUNS WHEN PROVEN; woven tags name them
+      ORDER, COLOURS, COUNTS and END, and the last light carries a second wick,
+      lit only when both of that room's actions are done. All four are dark.
+      The Mill Board hangs where every loom can read it, the whole mill's
+      shared figure chalked in one place. A mill clock stands at the junction,
+      stopped at eleven minutes to something. The cousin's floor arrows point
+      both ways at once — THIS WAY TO EVERYTHING — and a woven label hangs from
+      the big door's handle: FINISHED RAIL.
+    topicIds: []
+    exits:
+      - { direction: west, to: room-pattern-bureau }
+      - { direction: north, to: room-threading-order }
+      - { direction: south, to: room-weft-counter }
+      - { direction: in, to: room-colour-court }
+      - { direction: out, to: room-bobbin-window }
+      - { direction: down, to: room-endless-selvedge }
+      - direction: east
+        to: room-finished-rail
+        conditions:
+          - kind: all
+            of:
+              - { kind: flag-set, flag: threading-ordered }
+              - { kind: flag-set, flag: colours-lifted }
+              - { kind: flag-set, flag: weft-counted }
+              - { kind: flag-set, flag: condition-plate-set }
+              - { kind: flag-set, flag: rogue-thread-filed }
+    score: 0
+    authoring:
+      interesting: >-
+        Every door visible under the warp; four dark section lights over RUNS WHEN PROVEN, and the selvedge light carries a second wick.
+      pillar: >-
+        P-b, P-c; the junction is a plainly marked one and the gate reads demonstrations rather than intentions.
+      note: >-
+        P1: navigation-only — no teaching topic is scoped here, marked with an
+        empty topicIds the way room-network-hub marks it. Door scheme (brief
+        delegates the choice): west Bureau; east Finished Rail (gated, all of
+        five action-set flags); north Threading Order; south Weft Counter; in
+        Colour Court; out Bobbin Window — and a fifth ungated door, down, for
+        the Endless Selvedge (the brief's four-direction scheme left the
+        selvedge room without a door; down to the undercroft is the addition,
+        flagged in the writer's return). Each return pairs its inverse (up
+        back to the Walk).
+      clues: |-
+        N6 — the east gate's clues, discoverable before it opens:
+        - In this room: the four section lights with woven tags ORDER, COLOURS, COUNTS, END over the caption RUNS WHEN PROVEN, all dark.
+        - In this room: the selvedge light's second wick — its room needs two actions done before its light lights (both condition-plate-set and rogue-thread-filed).
+        - In the Bureau next door (adjacent, NPC dialogue): the Loomwright's line "the door counts demonstrations, not intentions".
+
+  - id: room-threading-order
+    title: The Threading Order
+    aliases: [threading order]
+    description: >-
+      The warp runs this room's length, thread over thread, waiting to be
+      dressed. The Warp Dresser works along it, dressing the heddles — the
+      cords that hold the threads that lift — one after another, in the order
+      the pattern says. Pattern paper pinned above the loom spells the five
+      steps out — ground, first stripe, cross-stripe, border, hem — the order
+      a player who reads the room can act on. Every step of the order is
+      present. The order itself
+      is wrong: her shade cards hang on the step hangers in somebody else's
+      sequence, and she presses her hands to her mouth at the cloth it would
+      weave. "He read the order better," she says. "He said it louder." The
+      cousin's worksheet waits open on the lectern: PATTERN WORKBOOK —
+      mandatory! fun! — the word fun circled twice in green ink. Among the
+      shade cards an else plate hangs exactly where a colour should be. South
+      returns to the Warp Walk.
+    topicIds: [programming-constructs]
+    exits:
+      - { direction: south, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        Every step present, the order wrong; shade cards hung in somebody else's sequence, and the worksheet grinning on the lectern.
+      pillar: >-
+        P-b, P-c, P-d; sequence as the loom's own order, competence as what mends it, and the cousin's help as a bounded joke.
+      telegraph: >-
+        H1 — the workbook itself (PATTERN WORKBOOK — mandatory! fun!) is the in-room half of the telegraph for hazard-slop-worksheet; the Warp Dresser's warning is the other half and belongs to her conversation. It is readable before the hazard can fire.
+
+  - id: room-colour-court
+    title: The Colour Court
+    aliases: [colour court, court]
+    description: >-
+      A loom here opens its shed — the gap made when some threads lift and
+      others stay down — and the loom's selection, which colour fills the gap,
+      is decided by the plate in its diamond slot. The slot is empty. The Shed Opener works the
+      treadle — the pedal that lifts the threads — while her pick-pile leans
+      against sense behind her: picks for every shed, all filed urgent. Every
+      single one, urgent. A yellowed tally card is pinned to the pick trolley:
+      ONE SHEET FROM GOING OVER. The quality book lies open on her desk at
+      Field 9, STACK: OVERFLOWED; Field 10, CAUSE: URGENT (ALL). Her case rail
+      runs the loom's length — case select, for the patterns that say pick one
+      from many — one labelled case after another. "Half the pattern went
+      somewhere," she says. "The half that says otherwise. Find it." Out
+      returns to the Warp Walk.
+    topicIds: [programming-constructs]
+    exits:
+      - { direction: out, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        A shed with no plate, a pile one sheet from going over, and a book that has run out of words.
+      pillar: >-
+        P-b, P-c, P-d; selection as the gap between lifted and unlifted threads, competence as what seats the plate, and the pile as a cartoon weight waiting to happen.
+      telegraph: >-
+        H1 — the yellowed tally card pinned to the pick trolley reads ONE SHEET
+        FROM GOING OVER, and the pick-pile leans against sense; both are
+        readable on first entry, before hazard-pick-avalanche can arm (it arms
+        only after the Shed Opener's demonstration, quiz-passed:quiz-colour-court,
+        with the selection fix still undone).
+
+  - id: room-weft-counter
+    title: The Weft Counter
+    aliases: [weft counter, counter]
+    description: >-
+      The shuttle taps its way across the loom, each pass laying one row of
+      weft — the thread that crosses the warp. The Weft Tally counts everything
+      aloud, her own passes included. The counting
+      ratchet clicks under her hand, a slip tooth pried into its row — "more
+      teeth, more value," the cousin said — so the passes come nine, or
+      eleven, or will not stop. "Exactly ten," she says, in the voice of a
+      promise. Count-controlled is what the mill calls it: ten passes to a
+      pattern, no more, no fewer. A bank of
+      numbered pigeonholes — the mill's array in one line of slots, the first
+      numbered zero — holds the weft yarns, and a chalk line on the wood reads
+      count = count + 1. A china duck on her desk wears her formal post under
+      its wing. Behind the pigeonholes a bell wire has fallen where wall meets
+      shelf. On the bailing bench the chalk reads 26 DIV 4: 6 whole bundles,
+      2 over; whole bundles only get posted. The dye pad beside the ratchet
+      has dried to weak tea, its label flaked to half a word. North returns
+      to the Warp Walk.
+    topicIds: [programming-constructs]
+    exits:
+      - { direction: north, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        Exactly ten, said as a promise; a ratchet with somebody else's tooth in it, and a pad gone the colour of weak tea.
+      pillar: >-
+        P-b, P-c, P-d; count-controlled iteration as a shuttle that owes ten passes, competence as what mends the count, and the cousin's tooth as a joke with a number on it.
+      telegraph: >-
+        H1 — the dye pad has dried to weak tea and its label has flaked to half
+        a word; readable before hazard-dye-pad can fire. Her line — "if the
+        impression crackles, stop pressing" — belongs to her conversation
+        (hazard card owns the flag key and the examine-first disarm wiring).
+
+  - id: room-endless-selvedge
+    title: The Endless Selvedge
+    aliases: [endless selvedge, selvedge]
+    description: >-
+      Down here the corridor-loom weaves its edge on and on — the selvedge,
+      the woven edge that finishes itself as the cloth is made — and no
+      ending has come. The exit plate wants its until back: the plate in its
+      frame reads WHILE THE CLOTH IS NICE, in the cousin's hand. The Selvedge
+      Warden stands at the frame, shortening her sentences. "Every line
+      ends," she says. "This one is waiting for the word that lets it."
+      "Condition-controlled," she adds. "Repeat the work until the pick is
+      done AND the edge is signed — a shape that ends." The proper condition
+      plate lies on the whist table at the back, dealt into the last hand
+      like a card somebody meant to keep. On the skein shelf — a skein is
+      yarn not yet wound — one colour is dyed that never arises in this
+      pattern: the rogue thread — the rogue value, the mill's name for it —
+      reads -1. A weft kettle warms on its hook. A pack of whist cards keeps
+      the hand as it fell, and nobody at it. Up returns to the Warp Walk.
+    topicIds: [programming-constructs]
+    exits:
+      - { direction: up, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        An edge that never ends until its until is restored, and a whist evening that has learned to wait.
+      pillar: >-
+        P-b, P-c, P-d; condition-controlled iteration as an edge that ends when the work says so, competence as what seats the word, and the cousin's plate as the joke that cannot stop.
+
+  - id: room-bobbin-window
+    title: The Bobbin Window
+    aliases: [bobbin window, window]
+    description: >-
+      The mill's trade happens at this window: intake bobbins — a bobbin
+      carries the weft — signed in on one side, finished cloth posted out on
+      the other. Input at the intake, output at despatch; that is the whole
+      shape of it. The intake bell hangs short: the cousin silenced it, for
+      focus, he said. The despatch printer chatters at nothing and prints
+      Average: — then nothing, an average taken before anything went in. The
+      Bobbin Lad signs cloth at speed and posts it the moment it is named. On
+      the intake shelving, filed among the wrong-shaped bobbins, a diamond
+      plate waits to be found. The addressing plate reads DATA POND 4 and CWM
+      DATA 9, where a village and a valley stood: every llan — the word that
+      begins so many Welsh village names — has been replaced with data. The
+      postmark album and its pad sit on the despatch desk, the pad's rubber
+      reading MACHYNLLETH, worn shallow from the days the mill posted its own
+      cloth. In returns to the Warp Walk.
+    topicIds: [programming-constructs]
+    exits:
+      - { direction: in, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        An average of nothing, a bell silenced for focus, and a village renamed by find-and-replace.
+      pillar: >-
+        P-b, P-c, P-d; input and output as trade at a window, competence as what mends the bell, and the cousin's tidy rewrite as damage done politely.
+
+  - id: room-finished-rail
+    title: The Finished Rail
+    aliases: [finished rail]
+    description: >-
+      The four mended lengths join here into one master cloth on the rail,
+      and beside it a flowchart hangs: the same algorithm drawn once as shapes
+      and arrows, woven once as cloth. The Bureau's five shapes, joined up and
+      stamped clean. A runner calls the Mill Board's figure in at the door —
+      three, the mill's shared number, chalked where every loom can read it.
+      Ten, they add, is a private number: the Weft Tally's drawer, visible
+      from one desk only. The rota board hangs by the door, six weavers across
+      five days, in ink. A brass plate on the rail reads PREDICT. THEN WEAVE.
+      The rail holds until a prediction is on record. The room is clean: no
+      pile, no cousin, nowhere to rush. West returns to the Warp Walk. The
+      Loomwright has come up from the Bureau, ledger squared, to audit the
+      despatch.
+    topicIds: [algorithms-and-pseudocode, programming-constructs]
+    exits:
+      - { direction: west, to: room-warp-walk }
+    score: 0
+    authoring:
+      interesting: >-
+        One master cloth in two representations, and a rail that holds for one true prediction.
+      pillar: >-
+        P-a, P-b, P-c; the rail refuses to despatch until understanding is demonstrated, the algorithm is the cloth and its chart, and the room pays attention instead of performing it.
+      note: >-
+        The despatch beat is the Finished Rail quiz's (quiz-finished-rail
+        onPass sets master-demonstrated, topic file §10); no room exit gates
+        it. Global/local beat: the Mill Board's 3 is the mill's shared figure,
+        the drawer's 10 is the Weft Tally's own — visible from where, and why,
+        is carried in the room's prose and the rail quiz, not in conversation
+        here. The Loomwright's attendance is in the description prose: he has
+        come up from the Bureau, ledger squared, to audit the despatch
+        (bible §11 item 12, presence without a placement field).
+
+items:
+  - id: item-pattern-card-sequence
+    name: sequence card
+    aliases: [sequence card]
+    portable: false
+    refusalText: >-
+      The Loomwright's hand covers the card before yours lands. "Demonstration
+      first. Then the stamp."
+    description: >-
+      A stiff pattern card foil-stamped with one plain box repeated three
+      times over — the process shape, in order. Down its margin, in the Warp
+      Dresser's careful print, the dressing order: ground first, then the
+      first stripe, the cross-stripe, the border, the hem. The stamp box on
+      its back is blank, waiting for the Loomwright's stamp.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        Granted only by the Threading Order's demonstration (quiz-threading-order
+        onPass grant-item places it in your hands; TAKE is refused, per the
+        Loomwright's demonstration rule). GIVE the card to the Warp Dresser to
+        file it — the give topic transfers it and sets card-sequence-given.
+        Carrying it sets no flag.
+
+  - id: item-pattern-card-selection
+    name: selection card
+    aliases: [selection card]
+    portable: false
+    refusalText: >-
+      The Loomwright's hand covers the card before yours lands. "Demonstration
+      first. Then the stamp."
+    description: >-
+      A pattern card whose foil shows a diamond hatch splitting into two
+      arrows, one labelled for the routine way and one for the rest. The
+      stamp box on its back is blank, waiting.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        Granted only by the Colour Court's demonstration (quiz-colour-court
+        onPass grant-item; TAKE is refused). GIVE the card to the Shed Opener
+        to file it — the give topic transfers it and sets card-selection-given.
+        Carrying it sets no flag.
+
+  - id: item-pattern-card-count-iteration
+    name: count card
+    aliases: [count card]
+    portable: false
+    refusalText: >-
+      The Loomwright's hand covers the card before yours lands. "Demonstration
+      first. Then the stamp."
+    description: >-
+      A pattern card whose foil shows a counting disc — ten notches, a shuttle
+      between each pair, the last notch stamped TEN. Nine passes a promise
+      unkept.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        Granted only by the Weft Counter's demonstration (quiz-weft-tally onPass
+        grant-item; TAKE is refused). GIVE the card to the Weft Tally to file
+        it — the give topic transfers it and sets card-count-given. Carrying it
+        sets no flag.
+
+  - id: item-pattern-card-condition-iteration
+    name: condition card
+    aliases: [condition card]
+    portable: false
+    refusalText: >-
+      The Loomwright's hand covers the card before yours lands. "Demonstration
+      first. Then the stamp."
+    description: >-
+      A pattern card whose foil shows a doorway that looks back on itself — go
+      on UNTIL the shape is met. UNTIL is cut deep; somebody's pencil has tried
+      WHILE above it and been ruled out in careful ink.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        Granted only by the Endless Selvedge's demonstration (quiz-selvedge
+        onPass grant-item; TAKE is refused). GIVE the card to the Selvedge
+        Warden to file it — the give topic transfers it and sets
+        card-condition-given. Carrying it sets no flag.
+
+  - id: item-shed-plate
+    name: shed plate
+    aliases: [shed plate, diamond plate]
+    portable: true
+    description: >-
+      A diamond-cut brass plate, its face the diamond hatch from the Bureau's
+      counter. Somebody filed it among the Bobbin Window's intake shelving,
+      where the shelves do not ask what shape things are.
+    initialRoom: room-bobbin-window
+    authoring:
+      useNotes: >-
+        Carrying it back to the Colour Court and seating it in the shed loom's
+        empty diamond slot is the selection puzzle's action; the puzzle's
+        onSolve sets colours-lifted (with the else plate home too). Carrying it
+        sets no flag.
+
+  - id: item-else-plate
+    name: else plate
+    aliases: [else plate]
+    portable: true
+    description: >-
+      A slim plate stamped ELSE in letters deep enough to seat in its rail:
+      the branch that runs when the condition is false. Its home in the
+      Colour Court's plate frame is a plain rectangular slot beside the
+      diamond slot, empty until the plate comes home. The cousin hung it
+      among the Threading Order's shade cards, where a colour should be,
+      because every order can be improved, he said.
+    initialRoom: room-threading-order
+    authoring:
+      useNotes: >-
+        Returning it to its rail in the Colour Court is the selection puzzle's
+        other half; with the shed plate seated, the puzzle's onSolve sets
+        colours-lifted. Carrying or examining it sets no flag.
+
+  - id: item-counting-ratchet
+    name: counting ratchet
+    aliases: [counting ratchet, counting disc]
+    portable: false
+    refusalText: >-
+      The ratchet is the loom's own gear. It lifts as far as its cradle and no
+      farther, and the cradle is where the ten belong.
+    description: >-
+      The weft loom's counting gear, lifted half out of its cradle so somebody
+      could add to it. Each tooth is numbered up the rim, and the numbers run
+      past ten to a tooth that bears no number at all.
+    initialRoom: room-weft-counter
+    authoring:
+      useNotes: >-
+        Prying the slip tooth out and re-seating the ratchet is the Weft
+        Counter's count puzzle; the puzzle's onSolve sets weft-counted.
+        Examining it sets no flag.
+
+  - id: item-slip-tooth
+    name: slip tooth
+    aliases: [slip tooth]
+    portable: true
+    description: >-
+      A tooth cut to slip into a counting ratchet unasked. Its back is polished
+      by somebody's thumb and stamped, in tiny letters, +1.
+    initialRoom: room-weft-counter
+    authoring:
+      useNotes: >-
+        Prying the slip tooth from the counting ratchet is the count puzzle's
+        first act; with the ratchet re-seated, the puzzle's onSolve sets
+        weft-counted. Carrying the pried tooth sets no flag.
+
+  - id: item-condition-plate
+    name: condition plate
+    aliases: [condition plate, until plate]
+    portable: true
+    description: >-
+      A brass plate stamped UNTIL in letters cut to seat the selvedge's exit
+      frame. It was taken off the frame and never put back; the felt of the
+      whist table is worn where it has rested.
+    initialRoom: room-endless-selvedge
+    authoring:
+      useNotes: >-
+        PUT the until plate on the selvedge's empty exit frame: the verb
+        action sets the intermediate flag until-clause-restored, and the zone
+        flag condition-plate-set lands only via puzzle-close-the-selvedge's
+        onSolve (topic file §10). Carrying the plate sets no flag.
+
+  - id: item-rogue-thread
+    name: rogue thread
+    aliases: [rogue thread, rogue value]
+    portable: true
+    description: >-
+      A skein dyed a colour that never arises in this pattern, its end tagged
+      -1. The rogue thread — the rogue value, the mill's name for it — is a
+      signal, and a signal is filed, never woven.
+    initialRoom: room-endless-selvedge
+    authoring:
+      useNotes: >-
+        PUT the rogue thread in the counterfoil drawer: the verb action sets
+        the intermediate flag rogue-thread-in-drawer, and the zone flag
+        rogue-thread-filed lands only via puzzle-file-the-rogue-thread's
+        onSolve (topic file §10). With condition-plate-set it lights the
+        selvedge section light. Carrying it sets no flag.
+
+  - id: item-bell-wire
+    name: bell wire
+    aliases: [bell wire]
+    portable: true
+    description: >-
+      A length of wire with a bell-shaped tag at one end, fallen behind the
+      pigeonholes where it has unravelled for weeks. It fits the intake bell's
+      empty hook exactly.
+    initialRoom: room-weft-counter
+    authoring:
+      useNotes: >-
+        Taking it to the Bobbin Window and USING it on the intake bell is the
+        bell puzzle's action; the puzzle's onSolve sets bell-mended. Carrying
+        it sets no flag.
+
+  - id: item-dye-pad
+    name: dye pad
+    aliases: [dye pad, dyeing pad]
+    portable: false
+    description: >-
+      A dye pad seated in a wooden collar at the ratchet's side, its surface
+      dried to the colour of weak tea. Its label has flaked to half a word:
+      PRESS FIRM... and then the label gives up.
+    initialRoom: room-weft-counter
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): added so the examine-first
+        disarm and its telegraph have a registered noun (N6 — no
+        guess-the-noun). The hazard card (hazard-dye-pad) owns the disarm
+        flag's exact key and its wiring; this item sets no flag itself.
+      useNotes: >-
+        The ratified route (topic file §10): asking the Weft Tally about the
+        dried pad runs her crackle-test and sets pad-checked; examining the
+        pad in-room is the in-fiction route to that ask. Examining or
+        pressing it sets no content flag beyond that hazard's own check.
+
+  - id: item-carthen
+    name: carthen
+    aliases: [carthen, blanket]
+    portable: false
+    refusalText: >-
+      The carthen stays folded where the Loomwright put it. "For the long
+      winter nights," he says, "when the looms want company."
+    description: >-
+      A checked carthen folded on a loom rail — the blanket west Wales wove
+      for the farm beds, on looms like these. One corner carries the weave's
+      own signature.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        EXAMINE the carthen to read the weave and its signature. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-mill-duck
+    name: mill duck
+    aliases: [mill duck, loom duck]
+    portable: false
+    refusalText: >-
+      The duck has held the Weft Tally's post for years, and it would no sooner
+      leave the desk than she would.
+    description: >-
+      A china duck on the Weft Tally's desk, formal and upright. Tucked under
+      one wing is a card in careful copperplate, addressed to THE DUCK, THE
+      DESK, THE WEFT COUNTER, and postmarked all the same.
+    initialRoom: room-weft-counter
+    authoring:
+      useNotes: >-
+        EXAMINE the mill duck to read the post under its wing. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-whist-cards
+    name: whist cards
+    aliases: [whist cards, playing cards]
+    portable: false
+    refusalText: >-
+      The hand is mid-deal, and leaving it mid-deal is the sort of thing the
+      table remembers.
+    description: >-
+      A pack of whist cards, dealt and abandoned mid-hand at the back table.
+      The scoring stands in pencil along the table's edge: over is over, the
+      rules are verbal, and the arguments are warm.
+    initialRoom: room-endless-selvedge
+    authoring:
+      useNotes: >-
+        EXAMINE the whist cards to read the abandoned hand and the pencilled
+        scoring. Purely decorative: examining it sets no flag.
+
+  - id: item-mill-clock
+    name: mill clock
+    aliases: [mill clock, stopped clock]
+    portable: false
+    description: >-
+      A mill clock stopped at eleven minutes to something. Its winding key is
+      still in the back — the stopping was a decision, and the decision holds.
+    initialRoom: room-warp-walk
+    authoring:
+      useNotes: >-
+        EXAMINE the mill clock to read the time it has agreed to keep. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-postmark-album
+    name: postmark album
+    aliases: [postmark album, stamp album]
+    portable: false
+    description: >-
+      An album of postmarks from the days the mill posted its own cloth, one
+      to a page, each dated. The next page is ruled and empty, pencilled FOR
+      THE NEXT POSTING.
+    initialRoom: room-bobbin-window
+    authoring:
+      useNotes: >-
+        EXAMINE the postmark album to read the dated pages. Purely decorative:
+        examining it sets no flag.
+
+  - id: item-postmark-pad
+    name: postmark pad
+    aliases: [postmark pad, Machynlleth postmark]
+    portable: false
+    description: >-
+      A rubber postmark pad by the album, its rubber reading MACHYNLLETH — a
+      market town in mid Wales — worn shallow from years of franking cloth.
+    initialRoom: room-bobbin-window
+    authoring:
+      useNotes: >-
+        EXAMINE the postmark pad to read the town in its rubber. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-paned-mug
+    name: paned mug
+    aliases: [paned mug, tea mug]
+    portable: false
+    refusalText: >-
+      The mug stays at the counter's end. "Hands are for stamps," the
+      Loomwright says, and pours again.
+    description: >-
+      A paned mug — paned being a cup of tea, obligingly poured — half full
+      and still steaming at the counter's end, warm to the last sip.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        EXAMINE the paned mug to read the tea and the pour. Purely decorative:
+        examining it sets no flag.
+
+  - id: item-woven-door-label
+    name: woven label
+    aliases: [woven label, door label]
+    portable: false
+    description: >-
+      A label woven rather than printed: FINISHED RAIL in faced threads, hung
+      from its door's handle. Its edges are whip-finished, which is how the
+      Warden signs her cloth.
+    initialRoom: room-warp-walk
+    authoring:
+      useNotes: >-
+        EXAMINE the woven label to read its stitched name and finished edges.
+        Purely decorative: examining it sets no flag.
+
+  - id: item-pattern-leaflet
+    name: pattern leaflet
+    aliases: [pattern leaflet, training leaflet]
+    portable: false
+    description: >-
+      A training leaflet for new hands stands in its rack by the Bureau door:
+      FIVE SHAPES AND WHAT THEY DO, its fifth printing still crooked in the
+      same three places.
+    initialRoom: room-pattern-bureau
+    authoring:
+      useNotes: >-
+        EXAMINE the pattern leaflet to read its five shapes. Purely decorative:
+        examining it sets no flag.
+
+  - id: item-pick-trolley
+    name: pick trolley
+    aliases: [pick trolley, sheet trolley]
+    portable: false
+    description: >-
+      A low pick trolley with its sides raised, the last thing standing between
+      the pick-pile and the floor. On its tray three numbered picks — 9, 12,
+      15 — wait to be routed by the plate's condition.
+    initialRoom: room-colour-court
+    authoring:
+      useNotes: >-
+        EXAMINE the pick trolley to see its raised sides and the tally card
+        pinned to it. Purely decorative: examining it sets no flag.
+
+  - id: item-quality-book
+    name: quality book
+    aliases: [quality book, incident book]
+    portable: false
+    description: >-
+      The quality book, open on the Shed Opener's desk. The columns run out of
+      words: Field 9, STACK: OVERFLOWED. Field 10, CAUSE: URGENT (ALL). The
+      rest of the page is ruled, empty, and waiting for an entry somebody can
+      already write.
+    initialRoom: room-colour-court
+    authoring:
+      note: >-
+        Flavour bar (topic file §7): the STACK: OVERFLOWED fields are colour
+        only — never taught, quizzed, hinted or cited as evidence for any spec
+        claim; the overflowed stack is the pick-pile, and the pile is taught by
+        the room and the hazard card, never by this page.
+      useNotes: >-
+        EXAMINE the quality book to read the open page. Purely decorative:
+        examining it sets no flag.
+
+  - id: item-weft-kettle
+    name: weft kettle
+    aliases: [weft kettle, mill kettle]
+    portable: false
+    refusalText: >-
+      The kettle comes off its hook only for pouring, and pouring is for the
+      table, at a break that is owed.
+    description: >-
+      A weft kettle on its hook by the whist table, kept warm for the air the
+      thread likes and the tea the referee swears by.
+    initialRoom: room-endless-selvedge
+    authoring:
+      useNotes: >-
+        EXAMINE the weft kettle to see the hook and the steam. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-mill-board
+    name: mill board
+    aliases: [mill board, board]
+    portable: false
+    refusalText: >-
+      Two hooks hold the Mill Board in place, and they have held it longer than
+      the cousin has been helping.
+    description: >-
+      The Mill Board hangs by the junction, the mill's shared figure chalked in
+      one place where every loom can read it. It is amended in public, read by
+      every loom, carried by none.
+    initialRoom: room-warp-walk
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): proposed in the brief as the
+        global-variable beat's prop.
+      useNotes: >-
+        EXAMINE the mill board to read the mill's shared figure — one figure
+        the whole mill keeps, visible from anywhere (the global-variable beat;
+        its teaching lands in conversation at the Finished Rail). Examining it
+        sets no flag.
+
+  - id: item-demonstration-book
+    name: demonstration book
+    aliases: [demonstration book, demonstration ledger]
+    portable: false
+    refusalText: >-
+      The book stays open on the desk. "It waits where the stamp can reach
+      it," the Loomwright says.
+    description: >-
+      The Demonstration Book lies open at the counter, its brass plate reading
+      NOTHING LEAVES THIS DESK WITHOUT A DEMONSTRATION. Its ruled pages wait,
+      one to a demonstration, and one page is already stamped and clean.
+    initialRoom: room-pattern-bureau
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): proposed in the brief; its
+        plate is a bounded clue for the Bureau's east gate.
+      useNotes: >-
+        EXAMINE the demonstration book to read its brass plate — one of the
+        east gate's discoverable clues. The book itself sets no flag; the
+        demonstration (quiz-pattern-bureau onPass) sets demo-on-record.
+
+  - id: item-rota-board
+    name: rota board
+    aliases: [rota board, rota, duty rota]
+    portable: false
+    description: >-
+      The rota board hangs by the Finished Rail's door: six weavers' names
+      across five days' columns, in ink. Both counts begin at zero where the
+      frame is ruled like a slate — WEAVERS 0-5, DAYS 0-4.
+    initialRoom: room-finished-rail
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): proposed in the brief as the
+        2D arrays beat's prop (the spec's own 6x5 shape).
+      useNotes: >-
+        EXAMINE the rota board to read the duty rota — rows and columns both
+        counted from zero, the two counting conventions stated together. Purely
+        decorative: examining it sets no flag.
+
+  - id: item-slop-worksheet
+    name: slop worksheet
+    aliases: [slop worksheet, pattern workbook, worksheet]
+    portable: true
+    description: >-
+      The cousin's worksheet, PATTERN WORKBOOK (mandatory! fun!) in his
+      roundest, most enthusiastic hand. Green ink circles the word fun twice;
+      beside every blank line somebody has pre-printed GREAT QUESTION! in
+      advance of any answer.
+    initialRoom: room-threading-order
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): REQUIRED by the brief — the
+        hazard card (hazard-slop-worksheet) references this exact id. Its
+        red-ink enthusiasm and trigger are the hazard card's; taking the
+        workbook away mends nothing and strands no one (a pure detour, never
+        a gate).
+      useNotes: >-
+        A tempting object on the Threading Order's lectern. Filling it in
+        (USING the slop worksheet) is what hazard-slop-worksheet answers, one
+        life and one tide of red ink; the hazard card owns the trigger.
+        Examining it sets no flag; taking it away is possible and profits
+        nothing.
+
+  - id: item-addressing-plate
+    name: addressing plate
+    aliases: [addressing plate, address plate]
+    portable: false
+    description: >-
+      The intake's addressing plate, its transfer strip read through one
+      find-and-replace: DATA POND 4 where a village stood, CWM DATA 9 where a
+      valley did. Every llan — the word that begins so many Welsh village
+      names — has become data.
+    initialRoom: room-bobbin-window
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): proposed in the brief as the
+        Bobbin Window's string-handling prop.
+      useNotes: >-
+        EXAMINE the addressing plate to read what the find-and-replace did to
+        the addresses. Its route is settled: working the despatch plate's
+        letter rack — re-lettering the slopped addresses back — produces
+        addressing-plate-re-lettered, and the zone flag bell-mended lands
+        only via puzzle-mend-the-bell's onSolve (topic file §10). Examining
+        the plate itself sets no flag.
+
+  - id: item-counterfoil-drawer
+    name: counterfoil drawer
+    aliases: [counterfoil drawer, counterfoils]
+    portable: false
+    description: >-
+      The Selvedge Warden's filing drawer for signals, shallow and square,
+      its counterfoils initialled W in her short, final hand. The rogue
+      thread belongs here, filed — never woven.
+    initialRoom: room-endless-selvedge
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): the selvedge's PUT target for
+        filing the rogue thread.
+      useNotes: >-
+        Filing the rogue thread here (PUT) is the selvedge's second action;
+        examining the drawer reads the filed counterfoils. Examining it sets
+        no flag.
+
+  - id: item-signing-board
+    name: signing board
+    aliases: [signing board]
+    portable: false
+    description: >-
+      The board the warden initials counterfoils against, its ledger lines
+      ruled for one initial per ended signal — and no line yet for a cloth
+      that never ends.
+    initialRoom: room-endless-selvedge
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): fixture beside the counterfoil
+        drawer; no flag of its own.
+      useNotes: >-
+        EXAMINE the signing board to read the ruled lines and the warden's
+        initials against it. Purely decorative: examining it sets no flag.
+
+  - id: item-dye-vat
+    name: dye vat
+    aliases: [dye vat]
+    portable: false
+    description: >-
+      Holds every colour the pattern asks for — and no home for a colour
+      that never arises. Now with one extra: a loose thread would be spent
+      as a colour and leave the loop waiting; examining the vat shows the
+      colours kept ready, nothing more.
+    initialRoom: room-endless-selvedge
+    authoring:
+      note: >-
+        proposed — needs editor approval (D2): the N5 failure framing (a
+        thread spent as a colour leaves the loop waiting).
+      useNotes: >-
+        EXAMINE the dye vat to see the colours kept ready; it sets no flag.
