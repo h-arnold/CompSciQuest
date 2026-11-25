@@ -64,6 +64,18 @@ function hintFixture(
   });
 }
 
+// Each fixture owns its own state: the hint ledger and any penalty are
+// per-run observations, so sharing one mutated object would leak the first
+// fixture's delivery into the later ones.
+function freshState(): ReturnType<typeof authoredState> {
+  return authoredState({
+    roomId: 'room-switch-floor',
+    turn: 4,
+    flags: { 'switch-cooled': true },
+    progress: [switchyardProgress({ earnedScore: 5 })],
+  });
+}
+
 describe('authored hint delivery', () => {
   it('QUIZ-HINT-07: explicit target beats active quiz, then quiz beats room context, and no match gives a friendly message', () => {
     const scenarios: readonly {
@@ -291,14 +303,8 @@ describe('authored hint persistence and score separation', () => {
       ...authoredBundle,
       hints: catalogueOf([penalised]),
     };
-    const state = authoredState({
-      roomId: 'room-switch-floor',
-      turn: 4,
-      flags: { 'switch-cooled': true },
-      progress: [switchyardProgress({ earnedScore: 5 })],
-    });
     const command: Command = { kind: 'hint', targetId: 'hint-test' };
-    const fixture = hintFixture(command, state, bundle);
+    const fixture = hintFixture(command, freshState(), bundle);
     const batch = fixture.game.submit('hint');
     expect(batch).toContainEqual({
       type: 'hint-penalty-applied',
@@ -335,7 +341,7 @@ describe('authored hint persistence and score separation', () => {
         return 5;
       },
     };
-    const separated = hintFixture(command, state, bundle, passThrough);
+    const separated = hintFixture(command, freshState(), bundle, passThrough);
     const separatedBatch = separated.game.submit('hint');
     expect(separatedBatch).toContainEqual({
       type: 'hint-penalty-applied',
@@ -364,7 +370,7 @@ describe('authored hint persistence and score separation', () => {
     };
     const defaultFixture = hintFixture(
       { kind: 'hint', targetId: 'hint-default-penalty' },
-      state,
+      freshState(),
       defaultBundle,
     );
     const defaultBatch = defaultFixture.game.submit('hint');

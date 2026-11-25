@@ -73,6 +73,19 @@ in the canonical union in
 [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
 `HintPanel` (or `OutputLog`) renders it with `textContent`.
 
+Explicit delivery runs in **phase 4**, after the puzzle system, so a puzzle
+solved in the same turn is reported before its hint
+([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
+The phase-3 dispatch for `hint` therefore emits no effects.
+
+An explicit `targetId` is a context ID supplied by the UI or API (for example a
+hint button that names the active quiz). The terminal's `hint` command is
+normally typed with no argument. A typed argument is resolved through the
+ordinary name resolver, whose aliases cover items, actors and scenery rather
+than hint, quiz, puzzle or topic IDs; a phrase it cannot resolve is treated as a
+bare `hint` and then resolved by the context order above, so an unrecognised
+word never produces a parser error.
+
 Hints never write puzzle/quiz state.
 
 ## 4. Adaptive behaviour
@@ -83,6 +96,14 @@ Two delivery modes, both supported:
 2. **Automatic** — if `autoOfferAfter` is set, a wrong quiz answer or N stuck
    turns increments a counter; when it reaches the threshold, a `show-hint`
    effect is applied in phase 4.
+
+   The trigger is a **new** wrong answer or the turn the stuck-turn counter
+   reaches `autoOfferAfter`, never the mere persistence of a counter above the
+   threshold. A quiz offers the next level on a turn whose batch contains an
+   incorrect `answer-evaluated` for that quiz; a later turn with no wrong answer
+   offers nothing. A puzzle offers the next level once, on the turn its
+   `turns-since` counter reaches `autoOfferAfter`. Further levels remain
+   available through an explicit `hint`, subject to `cooldownTurns`.
 
 Automatic hints emit the same `hint-shown` event, so the UI needs no special
 case. **There is no "reveal the answer" level**: even the final hint is a nudge
@@ -104,7 +125,8 @@ canonical union in
 - Missing target or empty sequence produces a friendly message, not an error.
 - Only unlocked, unshown levels are delivered; levels ascend in order.
 - `cooldownTurns` blocks early repeat requests and allows them after the interval.
-- `autoOfferAfter` fires at the threshold and not before.
+- `autoOfferAfter` fires at the threshold and not before; a later turn with no
+  new wrong answer or threshold crossing does not deliver another level.
 - Hint delivery does not change `solved`, `correctCount` or quiz state.
 - No hint level reveals the answer.
 - `levelsShown`, `lastShownTurn` and counters survive JSON save/load; a shown

@@ -25,9 +25,9 @@
     "semantic_hash": ""
   },
   "src/main.ts": {
-    "mtime": 1795597821.752353,
-    "seen": 1795597852.469964,
-    "ast_hash": "69abf2c7af463284883c5f76572b85e5",
+    "mtime": 1795631968.6795688,
+    "seen": 1795632337.5451574,
+    "ast_hash": "b038c8c25f76066328eb1ac8211fcaaf",
     "semantic_hash": ""
   },
   "tsconfig.json": {
@@ -61,15 +61,15 @@
     "semantic_hash": ""
   },
   "docs/developer/hints.md": {
-    "mtime": 1795624523.1543293,
-    "seen": 1795625569.591528,
-    "ast_hash": "3e8c906416fd0c238f046395ce6fb62f",
+    "mtime": 1795631096.9241416,
+    "seen": 1795632337.545367,
+    "ast_hash": "a5a6f74786433558bd3fa6c1b475a746",
     "semantic_hash": ""
   },
   "docs/developer/npcs.md": {
-    "mtime": 1795621950.3256266,
-    "seen": 1795625569.5915327,
-    "ast_hash": "54c9ce5cc90513cb82c8492d20e62621",
+    "mtime": 1795632790.2083807,
+    "seen": 1795632878.8562026,
+    "ast_hash": "73b319d9e908ee420d48763d9aaf8e8d",
     "semantic_hash": ""
   },
   "docs/developer/puzzles.md": {
@@ -79,27 +79,27 @@
     "semantic_hash": ""
   },
   "docs/developer/shared-rules.md": {
-    "mtime": 1795623840.889095,
-    "seen": 1795625569.5915425,
-    "ast_hash": "171aeb11af41b3cda7dafbd680627786",
+    "mtime": 1795632498.2158942,
+    "seen": 1795632878.85621,
+    "ast_hash": "ae9d07b8fbe2ef7e0cbb8fbf74468bd6",
     "semantic_hash": ""
   },
   "docs/developer/content-rules.md": {
-    "mtime": 1795624534.003458,
-    "seen": 1795625569.5915167,
-    "ast_hash": "792c517ef8b36bcd0cccd943d0360d30",
+    "mtime": 1795632790.2033806,
+    "seen": 1795632878.8561866,
+    "ast_hash": "f11da2d06115c19820c0e3b8298eeae9",
     "semantic_hash": ""
   },
   "docs/developer/storage-schema.md": {
-    "mtime": 1795521231.170675,
-    "seen": 1795522170.1653337,
-    "ast_hash": "195eb15982314dcf82366adac87fac53",
-    "semantic_hash": "195eb15982314dcf82366adac87fac53"
+    "mtime": 1795629482.813894,
+    "seen": 1795632337.5453734,
+    "ast_hash": "4788dfe35d140639ef217d7bdaea4c40",
+    "semantic_hash": ""
   },
   "docs/developer/application-and-ui.md": {
-    "mtime": 1795623849.1713078,
-    "seen": 1795625569.5915046,
-    "ast_hash": "92b2802e9240dc5bc42c0ce99a879680",
+    "mtime": 1795632503.7839606,
+    "seen": 1795632878.856175,
+    "ast_hash": "11770333acb3a42d18940790062a6ee8",
     "semantic_hash": ""
   },
   ".prettierrc.json": {
@@ -133,9 +133,9 @@
     "semantic_hash": ""
   },
   "src/application/Game.ts": {
-    "mtime": 1795625607.6171408,
-    "seen": 1795625640.7117672,
-    "ast_hash": "612e511f2dc154f29a3c4b674abb760a",
+    "mtime": 1795632834.1059046,
+    "seen": 1795632878.8552144,
+    "ast_hash": "a72e494aa96a3f6be8ede7de24c3cbaa",
     "semantic_hash": ""
   },
   "src/application/GameViewData.ts": {
@@ -361,9 +361,9 @@
     "semantic_hash": ""
   },
   "src/core/Random.ts": {
-    "mtime": 1795525947.59908,
-    "seen": 1795526631.7528372,
-    "ast_hash": "8d73e7fb17a78867273a890282decae9",
+    "mtime": 1795631968.6795688,
+    "seen": 1795632337.5450678,
+    "ast_hash": "8bc984f014b17a01553754794b501fab",
     "semantic_hash": ""
   },
   "src/core/Room.ts": {
@@ -409,9 +409,9 @@
     "semantic_hash": ""
   },
   "src/core/combat/QuizSystem.ts": {
-    "mtime": 1795625371.1404042,
-    "seen": 1795625569.5907474,
-    "ast_hash": "9c9afbbd961b2fc4e333df0452e27d63",
+    "mtime": 1795631968.680569,
+    "seen": 1795632337.545081,
+    "ast_hash": "69ba8ad6f4879d79ca52bd58cbf1052e",
     "semantic_hash": ""
   },
   "src/core/commands/Command.ts": {
@@ -469,9 +469,9 @@
     "semantic_hash": ""
   },
   "src/core/hazards/HazardSystem.ts": {
-    "mtime": 1795625083.4729865,
-    "seen": 1795625569.590819,
-    "ast_hash": "ece48f32d09ae4ad7034900e51c3ae67",
+    "mtime": 1795632123.5554187,
+    "seen": 1795632337.5451093,
+    "ast_hash": "35672e5ef4a78647a4f58f4b969ccd9e",
     "semantic_hash": ""
   },
   "src/core/hints/HintSequence.ts": {
@@ -481,9 +481,9 @@
     "semantic_hash": ""
   },
   "src/core/hints/HintSystem.ts": {
-    "mtime": 1795625491.9850507,
-    "seen": 1795625569.5908337,
-    "ast_hash": "bf02ccaae0764169320e980a266d1ba2",
+    "mtime": 1795632258.7460337,
+    "seen": 1795632337.545114,
+    "ast_hash": "b1554d1069709087237cb1c0671b38bc",
     "semantic_hash": ""
   },
   "src/core/lifecycle/Session.ts": {
@@ -589,9 +589,9 @@
     "semantic_hash": ""
   },
   "src/core/scoring/ScoreTracker.ts": {
-    "mtime": 1795622795.8487415,
-    "seen": 1795625569.5909374,
-    "ast_hash": "02417d22dcaea89990e1120bd61b38c9",
+    "mtime": 1795632839.5409694,
+    "seen": 1795632878.8556273,
+    "ast_hash": "d7cb306a7d609fa5829b27293c098d8f",
     "semantic_hash": ""
   },
   "src/core/scoring/SpecTopic.ts": {
@@ -619,9 +619,9 @@
     "semantic_hash": ""
   },
   "src/core/effects/EffectApplier.ts": {
-    "mtime": 1795625441.4712272,
-    "seen": 1795625569.5907984,
-    "ast_hash": "23a97af41d328fa467cdc6be0573689f",
+    "mtime": 1795632806.3425732,
+    "seen": 1795632878.8554943,
+    "ast_hash": "21d46293d3b987e6f7fa7e2e753f4797",
     "semantic_hash": ""
   },
   "src/storage/BrowserStorage.ts": {
@@ -1501,9 +1501,9 @@
     "semantic_hash": ""
   },
   "tests/rules/ConditionEvaluator.test.ts": {
-    "mtime": 1795612541.1461596,
-    "seen": 1795612583.2862234,
-    "ast_hash": "56f01c6d11b3fa8005d8e3ff4beec8d1",
+    "mtime": 1795631477.817702,
+    "seen": 1795632337.5453005,
+    "ast_hash": "8067d5e5c25cea5b5dcfaa81434294bf",
     "semantic_hash": ""
   },
   "graphify-out/memory/query_20261125_122031_8abe2523_which_canonical_module_owns_validation_and_what_va.md": {
@@ -1537,9 +1537,9 @@
     "semantic_hash": ""
   },
   "e2e/w7-opening-walkthrough.spec.ts": {
-    "mtime": 1795625631.148412,
-    "seen": 1795625640.7117372,
-    "ast_hash": "47c90b30b8d53dd4539d605bf9ed9df5",
+    "mtime": 1795627847.5844615,
+    "seen": 1795632337.5449882,
+    "ast_hash": "5adfd54859120530420fcf10394f2123",
     "semantic_hash": ""
   },
   "tests/fixtures/npcs.ts": {
@@ -1729,9 +1729,9 @@
     "semantic_hash": ""
   },
   "tests/hints/HintFlow.test.ts": {
-    "mtime": 1795620434.5134966,
-    "seen": 1795620596.2115252,
-    "ast_hash": "06cd793d9d9d6303da44b21919cb3d14",
+    "mtime": 1795632618.9473364,
+    "seen": 1795632878.8559012,
+    "ast_hash": "c409c0d88fa052de08da73bd9839640c",
     "semantic_hash": ""
   },
   "tests/parser/ItemUseProducers.test.ts": {
@@ -1771,9 +1771,9 @@
     "semantic_hash": ""
   },
   "src/application/commandResolution.ts": {
-    "mtime": 1795623087.5192277,
-    "seen": 1795625569.5905697,
-    "ast_hash": "af3c6aaa7a94461d9670887a0629d5a4",
+    "mtime": 1795632278.4652693,
+    "seen": 1795632337.5450125,
+    "ast_hash": "1900d798526c51d4d4e371b402b5a684",
     "semantic_hash": ""
   },
   "src/core/commands/InteractionRules.ts": {
@@ -1806,16 +1806,76 @@
     "ast_hash": "354df09fca15e8b8ecb9d85b9a7b6667",
     "semantic_hash": ""
   },
-  "graphify-out/memory/query_20261125_162940_ee609c00_w7_opening_walkthrough_spec_ts_savedplayer_itemuse.md": {
-    "mtime": 1795624180.0002472,
-    "seen": 1795625569.591852,
-    "ast_hash": "eade5888abdf9442c8fdad87a5c39d50",
-    "semantic_hash": ""
-  },
   "graphify-out/memory/query_20261125_165347_f13ae6f5_which_nodes_own_quiz_and_hint_delivery_in_the_quiz.md": {
     "mtime": 1795625627.5592368,
     "seen": 1795625640.7129462,
     "ast_hash": "b643340fd2576f49aec8741e4fadf146",
+    "semantic_hash": ""
+  },
+  "tests/combat/QuizRevision.test.ts": {
+    "mtime": 1795632601.1921241,
+    "seen": 1795632878.855718,
+    "ast_hash": "3fe3f537722d45a174ddbf575a283067",
+    "semantic_hash": ""
+  },
+  "tests/content/NpcTopicOverlap.test.ts": {
+    "mtime": 1795632839.126148,
+    "seen": 1795632878.8557627,
+    "ast_hash": "46a6ca944ad3a307493fbe8b61b8d841",
+    "semantic_hash": ""
+  },
+  "tests/content/npcTopicOverlapConditionCases.ts": {
+    "mtime": 1795631904.0874047,
+    "seen": 1795632337.5452142,
+    "ast_hash": "34177a77eabaec5e5c679309ae5b9102",
+    "semantic_hash": ""
+  },
+  "tests/content/npcTopicOverlapHandoffCases.ts": {
+    "mtime": 1795631884.9880922,
+    "seen": 1795632337.545216,
+    "ast_hash": "8625819b60a5385647873853cf240bd8",
+    "semantic_hash": ""
+  },
+  "tests/content/npcTopicOverlapPairCases.ts": {
+    "mtime": 1795632813.7616618,
+    "seen": 1795632878.855798,
+    "ast_hash": "e234c48f7d4478504fbcfe51a8816660",
+    "semantic_hash": ""
+  },
+  "tests/fixtures/npcTopicOverlap.ts": {
+    "mtime": 1795631800.749563,
+    "seen": 1795632337.5452332,
+    "ast_hash": "0ce6fae3dd867178cfffe32c1ef71e24",
+    "semantic_hash": ""
+  },
+  "tests/hints/HintRevision.test.ts": {
+    "mtime": 1795631579.4809194,
+    "seen": 1795632337.5452592,
+    "ast_hash": "d08017e6c316f7459a5ef75abf140967",
+    "semantic_hash": ""
+  },
+  "tests/ui/HintQuizViews.test.ts": {
+    "mtime": 1795631713.8195245,
+    "seen": 1795632337.5453184,
+    "ast_hash": "8a69896a720ebf119938066d1a44c4fc",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_172621_565cd40a_which_canonical_nodes_own_w7_room_event_rendering.md": {
+    "mtime": 1795627581.173869,
+    "seen": 1795632337.5455317,
+    "ast_hash": "d05a834665f584d061e963ffdfa3eafd",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_184546_0bc50b82_quiz_and_hint_revision_contracts__seeded_random_pe.md": {
+    "mtime": 1795632346.6988573,
+    "seen": 1795632878.856489,
+    "ast_hash": "75bbd087464323151bf89c397b4ae532",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20261125_184637_9671a818_why_did_the_quiz_hint_07_room_context_hint_resolve.md": {
+    "mtime": 1795632397.7083595,
+    "seen": 1795632878.856491,
+    "ast_hash": "b9a15ba83425e7b5f0ca1b685a122f64",
     "semantic_hash": ""
   },
   "package-lock.json": {

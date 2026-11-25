@@ -166,6 +166,7 @@ function explicitHint(
 function autoCandidates(
   context: TurnContext,
   dependencies: HintSystemDependencies,
+  events: readonly GameEvent[],
 ): readonly HintSequence[] {
   const { bundle } = dependencies;
   const { state } = context;
@@ -174,8 +175,10 @@ function autoCandidates(
   const consider = (
     sequence: HintSequence | undefined,
     counterKey: string,
+    isTriggered: boolean,
   ): void => {
     if (
+      !isTriggered ||
       sequence === undefined ||
       sequence.autoOfferAfter === undefined ||
       seenIds.has(sequence.id)
@@ -188,13 +191,26 @@ function autoCandidates(
     candidates.push(sequence);
   };
 
-  const quizId = state.quiz.activeQuizId;
-  if (quizId !== undefined) {
-    consider(sequenceForQuiz(bundle, quizId), `failed-attempts:${quizId}`);
+  // A quiz offers only on a turn whose batch carries a new wrong answer
+  // (hints.md §4); later turns with no wrong answer offer nothing.
+  for (const event of events) {
+    if (event.type !== 'answer-evaluated' || event.correct) continue;
+    consider(
+      sequenceForQuiz(bundle, event.quizId),
+      `failed-attempts:${event.quizId}`,
+      true,
+    );
   }
+  // A puzzle offers once, on the turn its stuck-turn counter reaches the
+  // threshold; an unchanged counter above it never triggers again.
   for (const [puzzleId, record] of Object.entries(state.puzzles)) {
     if (record.phase !== 'active') continue;
-    consider(sequenceForPuzzle(bundle, puzzleId), `turns-since:${puzzleId}`);
+    const counterKey = `turns-since:${puzzleId}`;
+    const sequence = sequenceForPuzzle(bundle, puzzleId);
+    const isTriggered =
+      sequence?.autoOfferAfter !== undefined &&
+      (state.counters[counterKey] ?? 0) === sequence.autoOfferAfter;
+    consider(sequence, counterKey, isTriggered);
   }
   return candidates;
 }
@@ -202,10 +218,11 @@ function autoCandidates(
 function automaticHints(
   context: TurnContext,
   dependencies: HintSystemDependencies,
+  events: readonly GameEvent[],
 ): readonly GameEvent[] {
   if (context.command.kind === 'hint') return [];
-  const events: GameEvent[] = [];
-  for (const sequence of autoCandidates(context, dependencies)) {
+  const emitted: GameEvent[] = [];
+  for (const sequence of autoCandidates(context, dependencies, events)) {
     if (wasShownThisTurn(context.state, sequence.id, context.turn)) continue;
     const level = nextLevel(
       sequence,
@@ -215,20 +232,20 @@ function automaticHints(
     );
     if (level === undefined) continue;
     for (const event of applyLevel(sequence, level, dependencies.applier)) {
-      events.push(event);
+      emitted.push(event);
     }
   }
-  return events;
+  return emitted;
 }
 
 export function createHintSystem(
   dependencies: HintSystemDependencies,
 ): HintSystem {
   return {
-    react(context): readonly GameEvent[] {
+    react(context, events): readonly GameEvent[] {
       return [
         ...explicitHint(context, dependencies),
-        ...automaticHints(context, dependencies),
+        ...automaticHints(context, dependencies, events),
       ];
     },
   };

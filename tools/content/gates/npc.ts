@@ -1,7 +1,11 @@
 // npc-content gate (content-rules.md §4.3, §7, C6): actor binding, reserved
 // nodes, the silent ready state and concrete node topic resolution.
 
-import type { Finding, ParsedCardSet } from '../contracts.ts';
+import type {
+  Finding,
+  ParsedCardSet,
+  ValidationOptions,
+} from '../contracts.ts';
 import {
   allEffects,
   asObjectArray,
@@ -14,6 +18,7 @@ import {
   stringList,
   type CardEntry,
 } from './common.ts';
+import { checkTopicOverlap } from './topicOverlap.ts';
 
 function topicActorFindings(
   topics: readonly CardEntry[],
@@ -119,7 +124,10 @@ function readyStateFindings(states: readonly CardEntry[]): readonly Finding[] {
   );
 }
 
-export function checkNpc(cards: ParsedCardSet): readonly Finding[] {
+export function checkNpc(
+  cards: ParsedCardSet,
+  options: ValidationOptions = {},
+): readonly Finding[] {
   const actors = collection(cards, 'actors');
   const actorIds = idsOf(actors);
   const topics = collection(cards, 'conversationTopics');
@@ -158,5 +166,8 @@ export function checkNpc(cards: ParsedCardSet): readonly Finding[] {
     ...topicActorFindings(topics, actorIds),
     ...nodeFindings,
     ...readyStateFindings(collection(cards, 'actorStates')),
+    // C7 is opt-in so direct validateCards() callers keep the eight-gate
+    // contract; content:validate and generation enable it (content-rules.md §7).
+    ...(options.topicOverlap === true ? checkTopicOverlap(cards) : []),
   ];
 }

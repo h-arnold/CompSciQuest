@@ -179,10 +179,13 @@ function collectCard(
 
 export function generateContent(
   cards: ParsedCardSet,
-  options: ValidationOptions = {},
+  options?: ValidationOptions,
 ): GenerationResult {
+  // Generation runs C7 by default; an explicit caller options object still
+  // overrides this default (content-rules.md §7, content-toolchain.md §5).
+  const settings = options ?? { topicOverlap: true };
   const normalised = normalisedCards(cards);
-  const findings = validateCards(normalised, options);
+  const findings = validateCards(normalised, settings);
   if (findings.length > 0) return { ok: false, findings, files: [] };
 
   const outputs = new Map<string, Data[]>(

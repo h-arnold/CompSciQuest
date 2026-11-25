@@ -59,7 +59,7 @@ export function validateCards(
     ...checkWorld(normalised),
     ...checkHint(normalised),
     ...checkHazard(normalised),
-    ...checkNpc(normalised),
+    ...checkNpc(normalised, options),
     ...checkScore(normalised),
     ...sharedFindings(normalised, options),
     ...uncheckedFindings(normalised, options),
@@ -68,8 +68,11 @@ export function validateCards(
 
 export function validateCommand(
   cards: CardSet,
-  options: ValidationOptions = {},
+  options?: ValidationOptions,
 ): ValidateResult {
+  // The content:validate path runs C7 by default; an explicit caller options
+  // object still overrides this default (content-rules.md §7).
+  const settings = options ?? { topicOverlap: true };
   const parsed = parseCardSet(cards);
   const parsedCards: ParsedCardSet = {
     cards: Object.entries(parsed.parsed).map(([path, data]) => ({
@@ -77,6 +80,9 @@ export function validateCommand(
       data,
     })),
   };
-  const findings = [...parsed.findings, ...validateCards(parsedCards, options)];
+  const findings = [
+    ...parsed.findings,
+    ...validateCards(parsedCards, settings),
+  ];
   return { findings, exitCode: findings.length === 0 ? 0 : 1 };
 }

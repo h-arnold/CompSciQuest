@@ -30,6 +30,17 @@ interface FiredThisTurn {
   readonly ids: Set<string>;
 }
 
+// `on-room-enter` matches a buffered `room-entered` event. The very first turn
+// has no buffered entry, so the area's start room also counts: hazards.md §8
+// pins that entry hazards fire after the initial room description. A scene
+// injected into another room is not an entry and waits for a real transition.
+function isInitialRoom(roomId: string, context: TurnContext): boolean {
+  const { position } = context.state.player;
+  if (position.roomId !== roomId) return false;
+  const area = context.bundle.areas.getById(position.areaId);
+  return area?.startRoomId === position.roomId;
+}
+
 function isTriggerMatched(
   trigger: Trigger,
   context: TurnContext,
@@ -38,7 +49,7 @@ function isTriggerMatched(
   switch (trigger.kind) {
     case 'on-room-enter': {
       return (
-        context.state.player.position.roomId === trigger.roomId ||
+        isInitialRoom(trigger.roomId, context) ||
         events.some(
           (event) =>
             event.type === 'room-entered' && event.room.id === trigger.roomId,

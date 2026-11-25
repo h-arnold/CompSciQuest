@@ -75,12 +75,15 @@ function readCards(): CardSet {
 // (content-toolchain.md §2, content-rules.md §5/P1).
 function coverageOptions(): ValidationOptions {
   if (!existsSync(COVERAGE_PATH)) {
-    return { uncheckedClauses: ['coverage-topic-headings'] };
+    return {
+      topicOverlap: true,
+      uncheckedClauses: ['coverage-topic-headings'],
+    };
   }
   const headings = topicHeadings(readFileSync(COVERAGE_PATH, 'utf8'));
   return headings.length === 0
-    ? { uncheckedClauses: ['coverage-topic-headings'] }
-    : { coverageHeadings: headings };
+    ? { topicOverlap: true, uncheckedClauses: ['coverage-topic-headings'] }
+    : { topicOverlap: true, coverageHeadings: headings };
 }
 
 function printFindings(findings: readonly Finding[]): void {

@@ -87,10 +87,17 @@ function systemClock(): Clock {
 }
 
 // Deterministic PRNG (shared-rules.md §7 keeps randomness outside core). It is
-// seeded from a fixed constant, never Math.random or the wall clock.
+// seeded from a fixed constant, never Math.random or the wall clock. `seed` is
+// the persisted 32-bit PRNG state that the game writes into `rngSeed`.
 function seededRandom(): Random {
   let state = 2_654_435_769;
   return {
+    get seed(): number {
+      return state;
+    },
+    setSeed(seed: number): void {
+      state = seed >>> 0;
+    },
     nextInt(maxExclusive: number): number {
       if (maxExclusive <= 0) {
         return 0;

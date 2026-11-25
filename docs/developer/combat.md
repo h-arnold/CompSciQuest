@@ -86,10 +86,11 @@ Definitions live in `src/content/quizzes/`; `QuizCatalogue` resolves IDs.
 
 The `answer` variant is defined in the canonical `Command` union in
 [application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs).
-`answer N` is 1-based in the UI; the parser stores `option = N - 1`. Option-text
-keywords are accepted as aliases. `answer` outside a quiz is allowed and emits a
-friendly "nobody asked you anything" message. There is **no time limit** — the
-game is turn-based, and no clock exists in core.
+`answer N` is 1-based in the UI; the `Command` carries that 1-based `option`,
+and `QuizSystem` converts it to the 0-based choice index before evaluating.
+Option-text keywords are accepted as aliases. `answer` outside a quiz is allowed
+and emits a friendly "nobody asked you anything" message. There is **no time
+limit** — the game is turn-based, and no clock exists in core.
 
 The quiz events (`quiz-started`, `question-asked`, `answer-evaluated`,
 `quiz-ended`) are part of the canonical union in

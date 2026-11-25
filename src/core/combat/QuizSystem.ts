@@ -13,7 +13,7 @@ export interface QuizSystemDependencies {
   readonly bundle: ContentBundle;
 }
 
-const NO_QUESTION = 'There is no question to answer.';
+const NO_QUESTION = 'Nobody asked you anything.';
 const OUT_OF_RANGE = 'That answer is not one of the choices.';
 
 function message(text: string): Effect {

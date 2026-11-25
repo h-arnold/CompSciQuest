@@ -756,6 +756,9 @@ export interface Clock {
 } // ISO 8601
 export interface Random {
   nextInt(maxExclusive: number): number;
+  // Seeded implementations only (shared-rules.md §7); test fakes may omit both.
+  readonly seed?: number; // unsigned 32-bit PRNG state, persisted as rngSeed
+  setSeed?(seed: number): void;
 }
 
 // src/core/scoring/ScoreTracker.ts, src/core/lifecycle/Session.ts
@@ -868,34 +871,36 @@ refresh `AreaProgress.maxScore`.
 [shared-rules.md §5](shared-rules.md#5-effect-and-effectapplier) promises one
 buffered event per effect. The complete mapping is:
 
-| Effect                                       | Event                                |
-| -------------------------------------------- | ------------------------------------ |
-| `set-flag`                                   | `flag-changed`                       |
-| `message`                                    | `message`                            |
-| `change-lives`                               | `lives-changed`                      |
-| `complete-topic`                             | `topic-completed`                    |
-| `grant-item`, `remove-item`, `transfer-item` | `item-moved`                         |
-| `move-player`                                | `room-entered`                       |
-| `set-actor-state`                            | `actor-state-changed`                |
-| `learn-topic`                                | `knowledge-gained`                   |
-| `enter-node`                                 | `node-entered`                       |
-| `exit-node`                                  | `node-exited`                        |
-| `set-puzzle-active`                          | `puzzle-activated`                   |
-| `set-puzzle-solved`                          | `puzzle-solved`                      |
-| `schedule`                                   | `scheduled`                          |
-| `start-quiz`                                 | `quiz-started`, `question-asked`     |
-| `ask-question`                               | `question-asked`                     |
-| `evaluate-answer`                            | `answer-evaluated`                   |
-| `end-quiz`                                   | `quiz-ended`                         |
-| `show-hint`                                  | `hint-shown`, `hint-penalty-applied` |
-| `announce-hazard`                            | `hazard-triggered`                   |
+| Effect                                       | Event                                                                   |
+| -------------------------------------------- | ----------------------------------------------------------------------- |
+| `set-flag`                                   | `flag-changed`                                                          |
+| `message`                                    | `message`                                                               |
+| `change-lives`                               | `lives-changed`                                                         |
+| `complete-topic`                             | `topic-completed`                                                       |
+| `grant-item`, `remove-item`, `transfer-item` | `item-moved`                                                            |
+| `move-player`                                | `room-entered`                                                          |
+| `set-actor-state`                            | `actor-state-changed`                                                   |
+| `learn-topic`                                | `knowledge-gained`                                                      |
+| `enter-node`                                 | `node-entered`                                                          |
+| `exit-node`                                  | `node-exited`                                                           |
+| `set-puzzle-active`                          | `puzzle-activated`                                                      |
+| `set-puzzle-solved`                          | `puzzle-solved`                                                         |
+| `schedule`                                   | `scheduled`                                                             |
+| `start-quiz`                                 | `quiz-started`, `question-asked`                                        |
+| `ask-question`                               | `question-asked`                                                        |
+| `evaluate-answer`                            | `answer-evaluated`                                                      |
+| `end-quiz`                                   | `quiz-ended`, `actor-state-changed` (when the quiz names a known actor) |
+| `show-hint`                                  | `hint-shown`, `hint-penalty-applied`                                    |
+| `announce-hazard`                            | `hazard-triggered`                                                      |
 
-`start-quiz` emits `quiz-started` and the first `question-asked`; `show-hint`
-emits `hint-shown` and `hint-penalty-applied` (the level's `scorePenalty`, or
-`0` when omitted). Every other row is one event per effect.
-
-An effect that legitimately needs to say something to the player includes its
-own `message` effect alongside the state-changing one. `ScoreTracker` consumes
+`start-quiz` emits `quiz-started` and the first `question-asked`; `end-quiz`
+emits `quiz-ended`, plus `actor-state-changed` when the quiz names a known
+actor and its NPC returns to the actor's initial state; `show-hint` emits
+`hint-shown` and `hint-penalty-applied` (the level's `scorePenalty`, or `0` when
+omitted). Every other row is one event per effect. An effect that legitimately
+needs to say something to the player includes its own `message` effect alongside
+the state-changing one.
+`ScoreTracker` consumes
 `topic-completed`, `hint-penalty-applied`, `room-entered`, `puzzle-solved` and
 `quiz-ended`; `Session` consumes `lives-changed` and the win condition (§11).
 Per-puzzle points are awarded by `ScoreTracker` from `puzzle-solved` using the
@@ -924,6 +929,14 @@ declared points, so one spec topic can be scored several times, up to a budget.
   `solved` before `puzzle-solved` is emitted), a quiz once
   (`quiz-passed:<quizId>`), and a hint penalty is applied per
   `hint-penalty-applied` event.
+- A quiz pass scores only when the tracker observes `quiz-passed:<quizId>`
+  changing from not-true to true across the pass; a retry that re-sets an
+  already-true flag scores nothing. The tracker keeps the flag values it last
+  observed, seeded from the live state when it is created (and again after a
+  load), so no new persisted field is needed. `quiz-ended` alone is not a score
+  trigger on a later pass. A pass with no `set-flag` and the flag still false
+  follows the direct-achievement path and scores once on that batch; content
+  that can be retried must set the flag.
 
 `ScoreTracker` is still the sole writer of `AreaProgress.earnedScore`, and the
 runtime total remains derived from those area totals.

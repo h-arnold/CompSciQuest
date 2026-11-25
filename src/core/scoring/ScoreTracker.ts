@@ -36,13 +36,6 @@ function hasScoreFor(events: readonly GameEvent[], reason: string): boolean {
   );
 }
 
-function hasFlagChange(events: readonly GameEvent[], flag: string): boolean {
-  return events.some(
-    (event) =>
-      event.type === 'flag-changed' && event.flag === flag && event.value,
-  );
-}
-
 function hasTopicCompletion(
   events: readonly GameEvent[],
   topicId: string,
@@ -110,18 +103,22 @@ function quizEnded(
   bundle: ContentBundle | undefined,
   event: Extract<GameEvent, { type: 'quiz-ended' }>,
   emitted: readonly GameEvent[],
+  lastObserved: ReadonlyMap<string, boolean>,
   announce: Announce,
 ): void {
   if (!event.passed) return;
   const reason = `quiz:${event.quizId}`;
   if (hasScoreFor(emitted, reason)) return;
   const flag = `quiz-passed:${event.quizId}`;
-  // `set-flag` applies before ScoreTracker observes, so the state flag alone
-  // cannot tell a first pass from a replayed `quiz-ended`. A state flag already
-  // true is honoured only when the batch carries this pass's flag transition;
-  // a batch with no flag and no state flag (the direct-achievement contract) is
-  // still scoreable.
-  if (state.flags[flag] === true && !hasFlagChange(emitted, flag)) return;
+  // `set-flag` applies before ScoreTracker observes, so the live state alone
+  // cannot tell a first pass from a retry that re-sets an already-true flag
+  // (application-and-ui.md §10). Compare with the value last observed: a pass
+  // that was already true is a retry and scores nothing. A false→true
+  // transition scores once, and so does a direct-achievement pass whose flag
+  // is still false on the batch.
+  const wasPassed = lastObserved.get(flag) === true;
+  const isPassed = state.flags[flag] === true;
+  if (isPassed && wasPassed) return;
   announce(bundle?.quizzes.getById(event.quizId)?.score ?? 0, reason);
 }
 
@@ -130,6 +127,7 @@ function processEvent(
   bundle: ContentBundle | undefined,
   event: GameEvent,
   emitted: readonly GameEvent[],
+  lastObserved: ReadonlyMap<string, boolean>,
   announce: Announce,
 ): void {
   if (event.type === 'score-changed') {
@@ -145,7 +143,7 @@ function processEvent(
     return;
   }
   if (event.type === 'quiz-ended') {
-    quizEnded(state, bundle, event, emitted, announce);
+    quizEnded(state, bundle, event, emitted, lastObserved, announce);
     return;
   }
   if (event.type === 'hint-penalty-applied') award(state, event.delta);
@@ -157,6 +155,10 @@ export function createScoreTracker(
 ): ScoreTracker {
   const { bundle } = dependencies;
   let emittedEvents: GameEvent[] = [];
+  // Flag values observed so far, seeded from the live state when the tracker is
+  // created (and therefore again on every rebind after a load). This is runtime
+  // bookkeeping only: application-and-ui.md §10 adds no persisted field.
+  let lastObserved: Map<string, boolean> = new Map(Object.entries(state.flags));
   const announce: Announce = (delta, reason): void => {
     award(state, delta);
     const event: GameEvent = {
@@ -171,8 +173,17 @@ export function createScoreTracker(
     observe(events): readonly GameEvent[] {
       emittedEvents = [...events];
       for (const event of events) {
-        processEvent(state, bundle, event, emittedEvents, announce);
+        processEvent(
+          state,
+          bundle,
+          event,
+          emittedEvents,
+          lastObserved,
+          announce,
+        );
       }
+      // Record this turn's flag values so the next turn compares against them.
+      lastObserved = new Map(Object.entries(state.flags));
       // Every score event in the published batch reports the running total
       // after the whole batch has been awarded, not a mid-batch snapshot.
       const finalTotal = totalOf(state);

@@ -9,6 +9,7 @@ import type { Condition } from '../../src/core/rules/Condition';
 import type { Position } from '../../src/types/domain';
 import {
   loadConditionEvaluatorFactory,
+  mechanicsState,
   turnContext,
 } from '../fixtures/mechanics';
 import { makeRuntimeState, makeStateDto } from '../fixtures/persistence';
@@ -289,6 +290,66 @@ describe('condition scoping (shared-rules.md §3)', () => {
         { kind: 'topic-complete', topicId: 'topic-never-started' },
         state,
         context,
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('quiz-passed condition (shared-rules.md §3, combat.md §8)', () => {
+  it('C-QUIZ-01: quiz-passed evaluates true when its flag is set', async () => {
+    const createEvaluator = await loadConditionEvaluatorFactory();
+    const evaluator = createEvaluator();
+    const state = mechanicsState({
+      flags: { 'quiz-passed:quiz-1': true },
+    });
+    const context = turnContext(state);
+    const condition = {
+      kind: 'quiz-passed',
+      quizId: 'quiz-1',
+    } satisfies Condition;
+
+    expect(() => evaluator.evaluate(condition, state, context)).not.toThrow();
+    expect(evaluator.evaluate(condition, state, context)).toBe(true);
+  });
+
+  it('C-QUIZ-02: quiz-passed is false for an absent, false, or other-quiz flag and never throws', async () => {
+    const createEvaluator = await loadConditionEvaluatorFactory();
+    const evaluator = createEvaluator();
+    const condition = {
+      kind: 'quiz-passed',
+      quizId: 'quiz-1',
+    } satisfies Condition;
+
+    const absent = mechanicsState();
+    expect(() =>
+      evaluator.evaluate(condition, absent, turnContext(absent)),
+    ).not.toThrow();
+    expect(evaluator.evaluate(condition, absent, turnContext(absent))).toBe(
+      false,
+    );
+
+    const explicitlyFalse = mechanicsState({
+      flags: { 'quiz-passed:quiz-1': false },
+    });
+    expect(
+      evaluator.evaluate(
+        condition,
+        explicitlyFalse,
+        turnContext(explicitlyFalse),
+      ),
+    ).toBe(false);
+
+    const otherQuiz = mechanicsState({
+      flags: { 'quiz-passed:quiz-2': true },
+    });
+    expect(
+      evaluator.evaluate(condition, otherQuiz, turnContext(otherQuiz)),
+    ).toBe(false);
+    expect(
+      evaluator.evaluate(
+        { kind: 'quiz-passed', quizId: 'quiz-unknown' },
+        otherQuiz,
+        turnContext(otherQuiz),
       ),
     ).toBe(false);
   });

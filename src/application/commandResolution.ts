@@ -209,6 +209,35 @@ function targetedCommand(
   }
 }
 
+function answerCommand(
+  tokens: readonly string[],
+  state: GameState,
+  bundle: ContentBundle,
+): Command {
+  const numeric = Number(tokens[0] ?? '');
+  // A numeric token stays 1-based; the quiz seam converts it to a 0-based
+  // option (combat.md §4).
+  if (tokens.length > 0 && Number.isSafeInteger(numeric)) {
+    return { kind: 'answer', option: numeric };
+  }
+  const quizId = state.quiz.activeQuizId;
+  if (quizId === undefined) return { kind: 'answer', option: 0 };
+  const questionId = state.quiz.questionIds[state.quiz.index];
+  const question =
+    questionId === undefined ? undefined : bundle.questions.getById(questionId);
+  const phrase = tokens.join(' ').trim().toLocaleLowerCase('en-GB');
+  const index =
+    question === undefined
+      ? -1
+      : question.options.findIndex(
+          (option) => option.trim().toLocaleLowerCase('en-GB') === phrase,
+        );
+  // Resolve to the 0-based option index, expressed as the seam's 1-based value.
+  // An unmatched phrase stays inside the quiz so it gets the quiz's friendly
+  // out-of-range message rather than a parser error.
+  return { kind: 'answer', option: index === -1 ? 0 : index + 1 };
+}
+
 export function resolveGameCommand(
   raw: string,
   state: GameState,
@@ -228,16 +257,15 @@ export function resolveGameCommand(
       ? { kind: 'go', direction: tokens[0] }
       : unknown();
   }
-  if (parsed.verb === 'answer') {
-    const option = Number(tokens[0] ?? '');
-    return Number.isSafeInteger(option)
-      ? { kind: 'answer', option }
-      : unknown();
-  }
+  if (parsed.verb === 'answer') return answerCommand(tokens, state, bundle);
   if (parsed.verb === 'hint') {
     if (tokens.length === 0) return { kind: 'hint' };
     const targetId = resolve(tokens.join(' '));
-    return targetId === undefined ? unknown() : { kind: 'hint', targetId };
+    // An unresolved phrase acts as a bare hint and runs the context order
+    // (hints.md §3); it is never a parser error.
+    return targetId === undefined
+      ? { kind: 'hint' }
+      : { kind: 'hint', targetId };
   }
   return targetedCommand(parsed.verb, tokens, resolve, bundle, unknown);
 }

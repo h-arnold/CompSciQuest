@@ -2,12 +2,7 @@
 // counter and the event buffer; it never computes game rules or scores itself.
 import type { ContentBundle } from '../content/ContentBundle';
 import { createFromDto, createInitial } from '../core/GameState';
-import type {
-  GameState,
-  HintStateDto,
-  QuizStateDto,
-  SessionStatus,
-} from '../core/GameState';
+import type { GameState } from '../core/GameState';
 import type { Command } from '../core/commands/Command';
 import { getCommandHandler } from '../core/commands/verbs/index';
 import type { Effect } from '../core/effects/Effect';
@@ -82,6 +77,17 @@ export interface GameDependencies {
   readonly score?: ScoreTracker;
   readonly session?: Session;
   readonly clearViews?: () => void;
+}
+
+// Shared-rules.md §7: the port's current seed is the persisted PRNG state. A
+// bare test fake omits both optional members and stays deterministic.
+function adoptSeed(random: Random, state: GameState): void {
+  if (typeof random.setSeed === 'function') random.setSeed(state.rngSeed);
+}
+
+function recordSeed(random: Random, state: GameState): void {
+  const { seed } = random;
+  if (seed !== undefined) (state as { rngSeed: number }).rngSeed = seed >>> 0;
 }
 
 function initialBatch(
@@ -202,62 +208,6 @@ function hintViews(
   return views.map(({ hintId, level, text }) => ({ hintId, level, text }));
 }
 
-// An injected initial state remains the live owner of turn/status/quiz and of
-// the shared entity, flag, counter and room records. The game itself owns one
-// real state object whose hint ledger and score-bearing progress rows are
-// private copies, so replaying the same starting point in a second game begins
-// with no hints shown and no score already awarded. Every system reads and
-// writes that one object; there is no forked-owner Proxy.
-function initialRuntimeState(source: GameState): GameState {
-  const hints: Record<string, HintStateDto> = {};
-  for (const [hintId, record] of Object.entries(source.hints)) {
-    hints[hintId] = {
-      ...record,
-      levelsShown: [...record.levelsShown],
-    };
-  }
-  const progress = source.progress.map((entry) => ({
-    ...entry,
-    visitedRooms: [...entry.visitedRooms],
-    completedTopics: [...entry.completedTopics],
-  }));
-  const runtime = {
-    ...source,
-    hints,
-    progress,
-    get score(): number {
-      return progress.reduce((total, entry) => total + entry.earnedScore, 0);
-    },
-  } as GameState;
-  Object.defineProperties(runtime, {
-    turn: {
-      get: () => source.turn,
-      set: (value: number) => {
-        (source as { turn: number }).turn = value;
-      },
-      enumerable: true,
-      configurable: true,
-    },
-    status: {
-      get: () => source.status,
-      set: (value: SessionStatus) => {
-        (source as { status: SessionStatus }).status = value;
-      },
-      enumerable: true,
-      configurable: true,
-    },
-    quiz: {
-      get: () => source.quiz,
-      set: (value: QuizStateDto) => {
-        (source as { quiz: QuizStateDto }).quiz = value;
-      },
-      enumerable: true,
-      configurable: true,
-    },
-  });
-  return runtime;
-}
-
 const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
   'look',
   'examine',
@@ -267,13 +217,13 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
-  // An injected runtime state is live: injected sessions and appliers already
-  // point at it, and callers observe the same turn counter. Restores still pass
-  // through createFromDto so the derived score is rebuilt from progress.
+  // The injected runtime state is the one live state object: injected appliers,
+  // tracker and session already point at it, and every production system reads
+  // and writes it. Restores still pass through createFromDto so the derived
+  // score is rebuilt from progress.
   let state: GameState =
-    dependencies.initialState === undefined
-      ? createInitial(dependencies.bundle)
-      : initialRuntimeState(dependencies.initialState);
+    dependencies.initialState ?? createInitial(dependencies.bundle);
+  adoptSeed(dependencies.random, state);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
   const isInjectedApply = dependencies.apply !== undefined;
@@ -387,6 +337,7 @@ export function createGame(dependencies: GameDependencies): Game {
     shouldResetSession: boolean,
   ): readonly GameEvent[] => {
     state = next;
+    adoptSeed(dependencies.random, state);
     conversationPrompt = undefined;
     rebind();
     dependencies.clearViews?.();
@@ -395,10 +346,12 @@ export function createGame(dependencies: GameDependencies): Game {
   };
 
   const saveGame = (): void => {
+    recordSeed(dependencies.random, state);
     dependencies.saveManager.save(state);
   };
 
   const downloadGame = (): void => {
+    recordSeed(dependencies.random, state);
     const text = JSON.stringify(dependencies.saveManager.buildDto(state));
     const filename = `compsciquest-save-${dependencies.clock.now().replaceAll(/[:.]/gu, '-')}.json`;
     dependencies.downloadFile(filename, text);
@@ -408,6 +361,7 @@ export function createGame(dependencies: GameDependencies): Game {
     const result = dependencies.saveManager.validate(text);
     if (result.ok) {
       state = dependencies.saveManager.restore(result.dto);
+      adoptSeed(dependencies.random, state);
       conversationPrompt = undefined;
       rebind();
       dependencies.clearViews?.();
@@ -520,6 +474,7 @@ export function createGame(dependencies: GameDependencies): Game {
         command,
       };
       const events = runTurn(command, context);
+      recordSeed(dependencies.random, state);
       return publish(session.observe(score.observe(events)));
     },
     newGame(): void {

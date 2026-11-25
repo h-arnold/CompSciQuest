@@ -317,6 +317,12 @@ stay deterministic for saves and tests.
   lives in `GameStateDto.rngSeed` as an unsigned 32-bit integer; the seed
   **advances on each draw and is saved**
   ([storage-schema.md §3.3](storage-schema.md#33-invariants)).
+- A seeded implementation exposes its current state as `seed` and accepts
+  `setSeed(seed)`. The game writes that value into the live state after each
+  turn and before a save, and calls `setSeed` with the restored
+  `GameStateDto.rngSeed` whenever a state is created, loaded or imported, so a
+  reload resumes the sequence instead of restarting it. Test fakes may omit
+  both members; they are deterministic by construction.
 - Unit tests inject a fake `Random` returning fixed values.
 - No `Math.random()` anywhere in `src/core`.
 
