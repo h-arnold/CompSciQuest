@@ -15,9 +15,6 @@ permissions:
     resource: ".opencode/scratchpad/**"
     effect: allow
   - action: shell
-    resource: "*"
-    effect: deny
-  - action: shell
     resource: "npm run dev *"
     effect: allow
   - action: shell

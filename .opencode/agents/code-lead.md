@@ -9,9 +9,6 @@ permissions:
     resource: ".opencode/scratchpad/**"
     effect: allow
   - action: shell
-    resource: "*"
-    effect: deny
-  - action: shell
     resource: "npm test *"
     effect: allow
   - action: shell
@@ -50,30 +47,6 @@ permissions:
   - action: shell
     resource: "graphify reflect *"
     effect: allow
-  - action: subagent
-    resource: "*"
-    effect: deny
-  - action: subagent
-    resource: "test-planner"
-    effect: allow
-  - action: subagent
-    resource: "test-writer"
-    effect: allow
-  - action: subagent
-    resource: "code-implementer"
-    effect: allow
-  - action: subagent
-    resource: "code-reviewer"
-    effect: allow
-  - action: subagent
-    resource: "browser-tester"
-    effect: allow
-  - action: webfetch
-    resource: "*"
-    effect: deny
-  - action: websearch
-    resource: "*"
-    effect: deny
   # Ask rules come last so they override the global deny for these files.
   - action: edit
     resource: "eslint.config.*"
