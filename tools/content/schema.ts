@@ -4,7 +4,7 @@
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 import type { CardSet, Finding, ParseResult } from './contracts.ts';
-import { asRecord, finding } from './gates/common.ts';
+import { asArray, asRecord, finding } from './gates/common.ts';
 
 const SHAPE_GATE = 'shape';
 
@@ -124,6 +124,36 @@ function nullFindings(
   return [];
 }
 
+function refusalTextFindings(
+  path: string,
+  entries: readonly unknown[],
+): readonly Finding[] {
+  const found: Finding[] = [];
+  for (const entry of entries) {
+    const record = asRecord(entry);
+    if (record === undefined) continue;
+    const label = String(record['id'] ?? path);
+    const value = record['refusalText'];
+    if (value === undefined || value === null) continue;
+    if (typeof value === 'string') {
+      if (value.trim().length === 0) {
+        found.push(
+          shapeFinding(
+            path,
+            label,
+            `refusalText is blank; omit the field or provide non-empty prose`,
+          ),
+        );
+      }
+      continue;
+    }
+    found.push(
+      shapeFinding(path, label, `refusalText must be a string when present`),
+    );
+  }
+  return found;
+}
+
 function todoFindings(
   value: unknown,
   path: string,
@@ -226,6 +256,7 @@ export function parseCardSet(cards: CardSet): ParseResult {
       ...nullFindings(record, file.path, file.path, new Set()),
       ...todoFindings(record, file.path, file.path, new Set()),
       ...strayFindings(file.path, record),
+      ...refusalTextFindings(file.path, asArray(record['items'])),
     );
     parsed[file.path] = record;
   }

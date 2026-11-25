@@ -10,8 +10,12 @@ import {
   expectSameMembers,
   findingText,
   loadSchema,
+  loadValidation,
   withCard,
+  type CardSet,
+  type Finding,
   type ParseResult,
+  type ValidateResult,
 } from '../fixtures/contentToolchain';
 
 interface ParsedRoom {
@@ -121,5 +125,135 @@ describe('YAML card shapes (content-toolchain.md §2, §4)', () => {
     for (const description of Object.values(descriptions)) {
       expect(description).toContain('computer.science@wjec.co.uk');
     }
+  });
+});
+
+// C-CONTENT-18: the optional item `refusalText` is an authoring-only YAML
+// check (content-rules.md §3 D3, §4.2, §7/V1/D5). The non-blank rule is a user
+// decision of 2026-11-25 recorded in the branch matrix, not a design-card
+// citation. The runtime fallback and empty-as-absent behaviour stay with
+// P-TAKE-01 and are not re-asserted here.
+const REFUSAL_ITEM_ID = 'item-register-cache';
+const INITIAL_ROOM_LINE = '    initialRoom: room-binary-hall';
+
+function cardsWithRefusalText(value: string): CardSet {
+  const cards = conformingCardSet();
+  const base = cardText(cards, ROOMS_PATH);
+  expect(base, 'the fixture item must carry the initialRoom anchor').toContain(
+    INITIAL_ROOM_LINE,
+  );
+  return withCard(
+    cards,
+    ROOMS_PATH,
+    base.replace(
+      INITIAL_ROOM_LINE,
+      () => `${INITIAL_ROOM_LINE}\n    refusalText: ${value}`,
+    ),
+  );
+}
+
+function refusalFindings(findings: readonly Finding[]): readonly Finding[] {
+  return findings.filter((entry) => entry.entry === REFUSAL_ITEM_ID);
+}
+
+function expectOneShapeFinding(
+  result: ValidateResult,
+  messagePattern: RegExp,
+): void {
+  const forItem = refusalFindings(result.findings);
+  expect(
+    forItem,
+    'exactly one finding must name the offending item ID',
+  ).toHaveLength(1);
+  expect(
+    result.findings,
+    'the otherwise-valid card set must produce no unrelated findings',
+  ).toHaveLength(1);
+  const [offending] = forItem;
+  expect(offending?.path).toBe(ROOMS_PATH);
+  expect(offending?.gate).toBe('shape');
+  expect(offending?.message).toMatch(/refusaltext/iu);
+  expect(offending?.message.toLowerCase()).toMatch(messagePattern);
+  expect(result.exitCode, 'any finding must fail content:validate').not.toBe(0);
+}
+
+describe('C-CONTENT-18: authoring validation of item refusalText', () => {
+  it('C-CONTENT-18: absent refusalText produces no finding', async () => {
+    const { validateCommand } = await loadValidation();
+    const cards = conformingCardSet();
+    expect(cardText(cards, ROOMS_PATH)).not.toContain('refusalText');
+
+    const result = validateCommand(cards);
+
+    expect(
+      refusalFindings(result.findings),
+      'omitting the optional field must not produce a finding',
+    ).toEqual([]);
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('C-CONTENT-18: a non-blank refusalText string is accepted', async () => {
+    const { validateCommand } = await loadValidation();
+
+    const result = validateCommand(
+      cardsWithRefusalText('The plaque is bolted fast'),
+    );
+
+    expect(refusalFindings(result.findings)).toEqual([]);
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('C-CONTENT-18: authored prose keeps its surrounding whitespace', async () => {
+    const { validateCommand } = await loadValidation();
+
+    const result = validateCommand(
+      cardsWithRefusalText('"  The plaque is bolted fast  "'),
+    );
+
+    expect(
+      refusalFindings(result.findings),
+      'validation must not require trimming or rewriting authored prose',
+    ).toEqual([]);
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('C-CONTENT-18: an empty refusalText string is rejected', async () => {
+    const { validateCommand } = await loadValidation();
+
+    const result = validateCommand(cardsWithRefusalText('""'));
+
+    expectOneShapeFinding(result, /blank|omit|empty/u);
+  });
+
+  it('C-CONTENT-18: a whitespace-only refusalText string is rejected', async () => {
+    const { validateCommand } = await loadValidation();
+
+    const result = validateCommand(cardsWithRefusalText('"   "'));
+
+    expectOneShapeFinding(result, /blank|omit|empty/u);
+  });
+
+  it.each([
+    ['a number', '42'],
+    ['a boolean', 'true'],
+    ['an array', '[fast, bolted]'],
+    ['an object', '{ text: bolted }'],
+  ] as const)(
+    'C-CONTENT-18: %s refusalText is rejected',
+    async (_variant, value) => {
+      const { validateCommand } = await loadValidation();
+
+      const result = validateCommand(cardsWithRefusalText(value));
+
+      expectOneShapeFinding(result, /string/u);
+    },
+  );
+
+  it('C-CONTENT-18: null refusalText has one finding and no duplicate', async () => {
+    const { validateCommand } = await loadValidation();
+
+    const result = validateCommand(cardsWithRefusalText('null'));
+
+    expectOneShapeFinding(result, /omit|null/u);
   });
 });
