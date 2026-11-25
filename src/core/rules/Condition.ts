@@ -3,6 +3,12 @@ export type Condition =
   | { readonly kind: 'flag-set'; readonly flag: string }
   | { readonly kind: 'has-item'; readonly itemId: string }
   | { readonly kind: 'visited-room'; readonly roomId: string }
+  | { readonly kind: 'in-room'; readonly roomId: string }
+  | {
+      readonly kind: 'in-area';
+      readonly worldId: string;
+      readonly areaId: string;
+    }
   | { readonly kind: 'topic-complete'; readonly topicId: string }
   | {
       readonly kind: 'npc-knows';
