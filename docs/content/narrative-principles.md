@@ -22,12 +22,13 @@ story develops; only `confirmed` entries influence writing.
 - Use the full, precise technical term from the Unit 1 teacher guidance. On its
   **first use** pair it with a short plain-English gloss in apposition; after
   that the term stands alone.
-- Everything else is short, simple and punchy. No waffle, no throat-clearing and
-  no paragraph that restates the previous one. A player should never have to wade
-  through prose to find out what is happening.
+- Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
 - Keep second person, present tense and one consistent register (N4). Room
   descriptions stay at or under 80 words (N8); longer passages are for key nodes
   and NPC teaching beats only.
+- Avoid repetition of sentence structures or writing effects. Especially cliches such as:
+ - It's not x it y.
+ - Repetitions of what something is not. This is appropriate when used sparingly.
 - Technical language and plain language are not in competition: the term carries
   the marks, the gloss carries the meaning, and neither is padded out.
 
