@@ -14,6 +14,9 @@ permissions:
   - action: shell
     resource: "*"
     effect: deny
+  - action: shell
+    resource: "npm run content:validate*"
+    effect: allow
   - action: webfetch
     resource: "*"
     effect: deny
