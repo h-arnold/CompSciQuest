@@ -40,7 +40,7 @@ action in room prose rather than a labelled inventory. For the card:
 - Declare the area's `definition.startRoomId` once, unconditionally; hazards and quiz failures return there. Do not use `levelStart`.
 - Item `useNotes` under `authoring:` states which action sets which flag: puzzles depend on action-set flags, not possession. Purely decorative items state that they set no flag.
 - You may add further examinable props beyond those in the brief when they enrich the area without conflicting with the plot, puzzles, gates or existing aliases. Check each proposed ID and alias against bible §9, mark it `proposed — needs editor approval` in your report, and expect the editor to ratify it before the card is accepted (D2). Never reuse an alias from another area.
-- Set `portable` from real-world plausibility: fixed scenery is `false`, small movable props are `true`. A refused `TAKE` must answer in world (N5). `takeHandler()` currently ignores `portable` (branch-matrix `P-TAKE-01`, owner `code-lead`); do not work around this by removing fixed scenery.
+- Set `portable` from real-world plausibility: fixed scenery is `false`, small movable props are `true`. A refused `TAKE` must answer in world (N5): an item may carry the optional `refusalText` string for that message, written in the room's voice; omit the field when the default is all you need, and never set it to an empty string (D3, bible §9). Do not strip fixed scenery to dodge the refusal path.
 
 Do not: write TypeScript or engine code; invent IDs or aliases outside the brief's registry and the proposal rule above; add a door or exit not in the bible without flagging it; write score; include HTML; invent a global mechanic outside `content-rules.md` §8.
 
@@ -52,7 +52,7 @@ Before finishing, check every ID against the registry, every topic ID against th
 - Each room has id, title, a second-person present-tense block-scalar description of at most 200 words (ceiling, not a target), registry aliases, `authoring.interesting`, ≥1 `topicIds` entry (or `navigation-only`), and exits whose directions and targets exist; optional fields are omitted.
 - Every gate names ≥2 discoverable clue placements; no maze and no guess-the-verb or guess-the-noun trap.
 - `definition.startRoomId` is declared once and names an existing room; there is no `levelStart` key.
-- Every item has `portable` set by real-world plausibility and `authoring.useNotes` naming the action that sets the flag it depends on; purely decorative items say so in `useNotes` and declare no flag.
+- Every item has `portable` set by real-world plausibility and `authoring.useNotes` naming the action that sets the flag it depends on; purely decorative items say so in `useNotes` and declare no flag. `refusalText` appears only where it adds in-voice refusal text and is omitted otherwise (D3).
 - Final message includes file path, room IDs, topic IDs and flagged assumptions.
 
 ## Constraints and escalation

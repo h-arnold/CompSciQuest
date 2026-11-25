@@ -2,7 +2,8 @@
 
 **Status: approved 2026-11-24, including the curated ideation set for the first zone.**
 The user approved the original bible, then the root/topic split with 1.2.1 Data
-representation as the first zone, then (after the ideation sub-stage of §13) the
+representation as the first zone, then (after the Gate 0 ideation sub-stage, whose
+workflow now lives in `.opencode/agents/content-editor.md`) the
 curated cast, hazard, question-pool and prologue decisions. This file is the **root
 bible**; zone detail lives in `docs/content/topics/*.md`. The first zone's six design
 cards were subsequently briefed, written, reviewed and integrated (see `status.md`).
@@ -44,6 +45,10 @@ choices → the bible, subject to the rules.
 | `docs/content/topics/1-1-computer-architecture.md` | Parked detail for the former first zone. Reserved IDs and topics are kept alive here, not briefed. |
 | `docs/content/narrative-principles.md` | Voice, humour, harm floor, fourth wall and Welsh references (**approved 2026-11-24**; settled authority for briefs). |
 | `docs/content/status.md` | Gate states, file states and both review verdicts. |
+
+The editor's own process — including the Gate 0 ideation sub-stage (W1–W2) — lives
+in `.opencode/agents/content-editor.md`; this file records only the curated outcome
+and the decisions.
 
 **Split rule.** The root bible holds only material true across the whole game. Each
 zone gets its own `docs/content/topics/<spec-section>.md` **before** its writer brief;
@@ -545,40 +550,6 @@ Recorded in §12.
 
 Zone-specific questions are in the owning topic file.
 
-## 13. Ideation sub-stage (editor workflow)
-
-Between settling a topic's outline and issuing any card-writing brief, the editor
-runs an **ideation sub-stage** to build a rich pool of material before anything is
-fixed. This is a Gate 0 activity (W1–W2): no design card is written during it.
-
-1. **Trigger.** A spec topic has been chosen and its outline generated in the
-   owning `topics/<section>.md` file (spec references, area, room cluster, PDG,
-   cast, hazards). Only then does ideation begin.
-2. **Dispatch.** The editor briefs the six ideation subagents in parallel — area
-   layout, NPC cast, hazards, puzzles, quizzes, hints — each with an
-   *ideation-only* brief: no files, no design cards, no TypeScript, no ID or alias
-   allocation, no marking a topic covered. Each brief is scoped strictly to the
-   topic in hand and cites rule IDs and spec references.
-3. **Anti-duplication.** Every ideation brief carries an explicit inventory of
-   what already exists for that topic: rooms and exits, items and aliases, cast,
-   actor states, conversation topics and nodes, puzzles and flags, quizzes and
-   question IDs, hints, hazards, and the master registry (§9). Agents are told to
-   refine, supersede or extend existing ideas rather than re-propose them, and to
-   mark every new ID/alias as "proposed — needs editor approval" (D2).
-4. **Curation.** The editor reads all six returns together, rejects duplicates
-   and out-of-scope ideas, folds overlaps into reserved IDs, checks PDG
-   acyclicity/reachability and the score budget, and incorporates the survivors
-   into the owning topic file, the cast/topic indexes and the master registry.
-   Nothing is incorporated uncritically; agent output is a pool, not a decision.
-5. **Gate.** The curated set is reported to the user and approved before any
-   card-writing writer is briefed (W1–W2). Only then does Gate 1 begin, with one
-   writer per output file.
-
-This stage is **completed** for `1.2.1 Data representation`: the six ideation
-returns were curated into `topics/1-2-1-data-representation.md` and approved by the
-user. Six writers were then briefed under Gate 1 and all six design cards were
-written, reviewed to PASS and integrated (see `status.md`).
-
 ## 12. Approval record
 
 - 2026-11-24 — Initial draft from the interview: premise, five pillars, key-node
@@ -677,3 +648,11 @@ written, reviewed to PASS and integrated (see `status.md`).
   `code-lead` handoff; the pins in `application-and-ui.md` §3.2/§5.1–§5.2 (and any
   N5 example in the rulebook) are outside the content editor's edit boundary and
   are made by their owner.
+- 2026-11-25 — **Ideation sub-stage moved to the editor's agent instructions.** The
+  user asked that the workflow documentation sit with the editor process rather than
+  in the bible, so the former §13 was removed from this file and now lives in
+  `.opencode/agents/content-editor.md` under Gate 0 (W1–W2). This file keeps only the
+  curated outcome (§12 entries above) and a one-line pointer in §1. The move changes
+  no decision, ID, alias, card, flag, gate, score, coverage entry or V4 trace, so no
+  writer is briefed and no review cycle opens. The completed 1.2.1 ideation sub-stage
+  is recorded in the 2026-11-24 entry above and in `status.md`.

@@ -24,6 +24,7 @@ You are the pedagogical content knowledge (PCK) reviewer for CompSciQuest. You c
 ## Authoritative sources
 
 - `docs/exam-specs/wjec-unit1.md` (and `docs/exam-specs/gcse-unit-1-computer-science.pdf` where cited) — primary source.
+- `docs/content/topics/<spec-section>.md` — the zone's approved spec references and teaching beats; use it to locate the exact spec section a card claims.
 - `docs/coverage/COVERAGE.md` — the authoritative spec → topic → room map; evidence is required.
 - `docs/developer/content-rules.md` §3 P rules and §6.2 — the authoring rules you enforce.
 - The card paths named in the brief.
