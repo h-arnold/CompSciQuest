@@ -281,8 +281,8 @@ function resolveNpcRaw(raw: string, actorId: string): Command | undefined {
   const match = /^(talk|ask|tell|give|show) guide(?: (.+))?$/u.exec(phrase);
   if (match === null) return undefined;
   const verb = match[1];
-  const object = match[2];
   if (verb === 'talk') return { kind: 'talk-to', actorId };
+  const object = match[2];
   if (object === undefined) return undefined;
   const resolved = object === 'ring' ? ITEM_ID : object;
   if (verb === 'ask') return { kind: 'ask', actorId, topic: resolved };
