@@ -38,6 +38,18 @@ authoring:
       Teaching lines give method or structure only, never a worked answer or a quiz key
       (N3, P2). No score is authored here, no HTML is used, and all prose is British
       English in the single deadpan register.
+    - >-
+      C7 lesson ladders use two kinds of evidence. The first beat gates on
+      `not npc-knows`; a middle beat sets the `*-heard` flag it records, and the next
+      beat requires it: `topic-clerk-carries` and `topic-clerk-shifts-known` set
+      `clerk-carry-heard`, `topic-critic-depth` sets `critic-depth-heard`,
+      `topic-conductor-depth` sets `conductor-depth-heard`, and
+      `topic-predecessor-comic-sans` sets `predecessor-cartridge-heard`. A quiz
+      handoff gates on `not quiz-passed <its quiz>`, so it stays askable, and
+      re-issues the quiz, until that test is passed (P5), and retires on the pass;
+      the foreman's second beat requires `quiz-passed quiz-switchyard` and
+      `topic-setter-string` requires `quiz-passed quiz-character-representation`. No
+      ID, alias or declaration-order tie-break is used.
 
 actors:
   - id: npc-predecessor
@@ -74,7 +86,7 @@ actors:
       topics: >-
         topic-foreman-switches, topic-foreman-lift, topic-foreman-predecessor, topic-foreman-show-gauge, topic-foreman-show-lens, topic-foreman-show-fork, topic-foreman-show-nibble.
       note: >-
-        May appear in spoke rooms in `actorstate-foreman-helpful`; `topic-foreman-lift` sets that state once the switches are set, as a one-off presentational change rather than a re-enterable round. The initial state stays `actorstate-foreman-busy`.
+        May appear in spoke rooms in `actorstate-foreman-helpful`; `topic-foreman-lift` sets that state once `quiz-switchyard` has passed and `switches-set` is set, and a retried lift beat re-enters it until `quiz-data-types` passes. The initial state stays `actorstate-foreman-busy`.
 
   - id: npc-nibble-clerk
     aliases: [nibble clerk, clerk, abacus]
@@ -207,20 +219,24 @@ actorStates:
       On a round of the upper floors; calls out before you get a word out.
     authoring:
       note: >-
-        Approved "foreman's round" from the topic file §3.1. This state is entered at most once, when `topic-foreman-lift` first fires with `switches-set`; it cannot be re-entered, because that topic gates on `not npc-knows data-types` while its own `learn-topic` sets that knowledge, and `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
+        Approved "foreman's round" from the topic file §3.1. This state is entered when `topic-foreman-lift` fires; since that topic now gates on `not quiz-passed quiz-data-types`, a retried lift beat re-enters the state until the type test passes. `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
 
 conversationTopics:
   - id: topic-predecessor-comic-sans
     actorId: npc-predecessor
     match: { kind: askTell, objectIds: [item-comic-sans-cartridge] }
-    isActive: { kind: all, of: [] }
+    isActive: { kind: not, of: { kind: flag-set, flag: predecessor-cartridge-heard } }
     responses:
       - >-
         That cartridge. Warm still. On everything I used it — every label, every poster. The AI called it a compliance infringement. I called it a Tuesday.
     strategy: { kind: once }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: predecessor-cartridge-heard, value: true }
     prompt: >-
       (You could ask about the cartridge.)
+    authoring:
+      note: >-
+        First beat on the cartridge, and the first free-text beat the predecessor offers; it records `predecessor-cartridge-heard` so the C7 ladder does not rest on declaration order or ID wording. `topic-predecessor-duck-as-bit` requires that flag, and `topic-predecessor-geese` is a `special` keyword topic outside the ask/tell class.
 
   - id: topic-predecessor-geese
     actorId: npc-predecessor
@@ -237,7 +253,7 @@ conversationTopics:
   - id: topic-predecessor-duck-as-bit
     actorId: npc-predecessor
     match: { kind: askTell, objectIds: [data-types] }
-    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-predecessor, topicId: data-types } }
+    isActive: { kind: all, of: [{ kind: flag-set, flag: predecessor-cartridge-heard }, { kind: not, of: { kind: npc-knows, actorId: npc-predecessor, topicId: data-types } }] }
     responses:
       - >-
         A switch is on or off. I used to draw a duck for on and an empty pond for off. It is a Boolean either way, duck or no duck. Don't tell the clerk I drew the pond.
@@ -247,6 +263,9 @@ conversationTopics:
       - { kind: enter-node, actorId: npc-predecessor, nodeId: node-predecessor-advice }
     prompt: >-
       (You could ask how a duck becomes a bit.)
+    authoring:
+      note: >-
+        Second free-text beat: it requires `predecessor-cartridge-heard`, recorded by `topic-predecessor-comic-sans`, so the pair is complementary on the flag and needs no declaration order (C7); the `npc-knows` negation is the AltTopic complement that retires it after the lesson. `topic-predecessor-geese` is a `special` keyword topic, so it matches on its own words and never competes with this class.
 
   - id: topic-predecessor-default
     actorId: npc-predecessor
@@ -270,11 +289,11 @@ conversationTopics:
   - id: topic-foreman-switches
     actorId: npc-the-foreman
     match: { kind: askTell, objectIds: [switch-to-bit] }
-    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: switch-to-bit } }
+    isActive: { kind: not, of: { kind: quiz-passed, quizId: quiz-switchyard } }
     responses:
       - >-
         Bore da. Each switch on that belt is a transistor — a tiny switch that decides whether a line carries a one or a zero. Listen to the clicks; that is the belt counting. The retired tubes on the wall came first; today's switches arrive packed onto chips. Your gauge says set every switch, then take the north stair, and the painted diagram agrees. Write me the switch figure and I'll sign the paperwork.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: learn-topic, actorId: npc-the-foreman, topicId: switch-to-bit }
       - { kind: start-quiz, quizId: quiz-switchyard, actorId: npc-the-foreman }
@@ -282,16 +301,16 @@ conversationTopics:
       (You could ask what a switch decides, or give the foreman the switch figure.)
     authoring:
       note: >-
-        Awareness depth only, 1.1.1 "be aware of" (topic file §2); no transistor physics. Two discoverable clues for `switches-set`: the gauge stamp and the hall's painted route diagram (N6). This topic now issues `quiz-switchyard` in-world: the foreman wants the switch in writing before he signs the AI's paperwork (topic file §6). On `quiz-ended` he returns to `actorstate-ready`.
+        Awareness depth only, 1.1.1 "be aware of" (topic file §2); no transistor physics. Two discoverable clues for `switches-set`: the gauge stamp and the hall's painted route diagram (N6). This topic now issues `quiz-switchyard` in-world: the foreman wants the switch in writing before he signs the AI's paperwork (topic file §6). On `quiz-ended` he returns to `actorstate-ready`. It stays askable, and re-issues `quiz-switchyard`, until that quiz passes (P5); the pass is what opens the lift beat.
 
   - id: topic-foreman-lift
     actorId: npc-the-foreman
     match: { kind: askTell, objectIds: [data-types] }
-    isActive: { kind: all, of: [{ kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: data-types } }, { kind: flag-set, flag: switches-set }] }
+    isActive: { kind: all, of: [{ kind: quiz-passed, quizId: quiz-switchyard }, { kind: flag-set, flag: switches-set }, { kind: not, of: { kind: quiz-passed, quizId: quiz-data-types } }] }
     responses:
       - >-
         Bore da. Upstairs, five bins wait with their lids propped: Boolean for a switch state, character for one letter, integer for a whole number, real for a decimal, string for a run of characters. The stack keeper sends word that the labels are flaking and asks for the shelves to be sealed first. I need the types in writing before I sign the AI's paperwork.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: learn-topic, actorId: npc-the-foreman, topicId: data-types }
       - { kind: set-flag, flag: stacks-sealed, value: true }
@@ -301,7 +320,7 @@ conversationTopics:
       (You could ask what waits upstairs, or take the type test.)
     authoring:
       note: >-
-        Formal spec terms paired with plain glosses (PCK-TERM). This topic is the hub-side owner of `stacks-sealed` for `hazard-bit-rot`: it is available once `switches-set` opens the hall route and before you go in, so the disarm is reachable (H1). "the labels are flaking" is the keeper's telegraph relayed in the foreman's voice, with no hint to the player and no course fact in that clause. `set-actor-state` is confirmed in shared-rules.md §5; the quiz returns the actor to `actorstate-ready` on `quiz-ended` (npcs.md §6), though the flag persists.
+        Formal spec terms paired with plain glosses (PCK-TERM). This topic is the hub-side owner of `stacks-sealed` for `hazard-bit-rot`: it is available once `switches-set` opens the hall route and before you go in, so the disarm is reachable (H1). "the labels are flaking" is the keeper's telegraph relayed in the foreman's voice, with no hint to the player and no course fact in that clause. `set-actor-state` is confirmed in shared-rules.md §5; the quiz returns the actor to `actorstate-ready` on `quiz-ended` (npcs.md §6), though the flag persists. It stays askable, and re-issues `quiz-data-types`, until that quiz passes (P5); `quiz-switchyard`'s pass is what opens this beat.
 
   - id: topic-foreman-predecessor
     actorId: npc-the-foreman
@@ -405,38 +424,39 @@ conversationTopics:
   - id: topic-clerk-carries
     actorId: npc-nibble-clerk
     match: { kind: askTell, objectIds: [number-conversion] }
-    isActive: { kind: flag-set, flag: switches-set }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: switches-set }, { kind: not, of: { kind: flag-set, flag: carries-added } }, { kind: not, of: { kind: flag-set, flag: clerk-carry-heard } }] }
     responses:
       - >-
         Columns of four, please. The rule card reads '1 + 1 = 0, carry 1', in ink still sharp. Put the token in the rightmost column; whatever is left moves to the next column along. Tidy.
     strategy: { kind: once }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: clerk-carry-heard, value: true }
     prompt: >-
       (You could ask what the carry token does.)
     authoring:
       note: >-
-        The rule wording is the spec's own; no worked addition beyond it. Second beat on `number-conversion`, so it gates on the puzzle flag `switches-set` that opens the deck rather than on `npc-knows` (C3); no `learn-topic` here, so the first beat stays available.
+        The rule wording is the spec's own; no worked addition beyond it. Second beat on `number-conversion`, so it gates on the puzzle flag `switches-set` that opens the deck rather than on `npc-knows` (C3); no `learn-topic` here, so the carry beat adds no knowledge; the first beat's gate is unchanged. C7 ladder: records `clerk-carry-heard`, so `topic-clerk-shifts` can require it.
 
   - id: topic-clerk-shifts
     actorId: npc-nibble-clerk
     match: { kind: askTell, objectIds: [number-conversion] }
-    isActive: { kind: flag-set, flag: carries-added }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: carries-added }, { kind: flag-set, flag: clerk-carry-heard }, { kind: not, of: { kind: quiz-passed, quizId: quiz-number-systems } }] }
     responses:
       - >-
-        Columns of four, please. The gutter has arrow notches and a question card; the answers are yours to supply. An arithmetic shift moves the row the way the notch points; decide what happens when overflow puts a bit past the end. Then the audit.
-    strategy: { kind: once }
+        Columns of four, please. The gutter has arrow notches and a question card; the answers are yours to supply. An arithmetic shift moves the row the way the notch points; decide what happens when overflow puts a bit past the end, and when underflow drops one off the other end. Then the audit.
+    strategy: { kind: sequence }
     effects:
       - { kind: start-quiz, quizId: quiz-number-systems, actorId: npc-nibble-clerk }
     prompt: >-
       (You could ask which way the arithmetic shift goes, or take the number audit.)
     authoring:
       note: >-
-        "arithmetic shift" and "overflow" sit beside the plain glosses (PCK-TERM); no worked number exists in the guidance (topic file §6). Third beat on `number-conversion`, gated on the puzzle flag `carries-added` rather than `npc-knows` so it stays reachable (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        "arithmetic shift", "overflow" and "underflow" sit beside the plain glosses (PCK-TERM); no worked number exists in the guidance (topic file §6). Third beat on `number-conversion`, gated on the puzzle flag `carries-added` rather than `npc-knows` so it stays reachable (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `clerk-carry-heard`, so it never competes with the carry beat or the shift-introduction beat. The `not quiz-passed quiz-number-systems` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-clerk-bases-known
     actorId: npc-nibble-clerk
     match: { kind: askTell, objectIds: [number-conversion] }
-    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: any, of: [{ kind: has-item, itemId: item-hex-nibble-card }, { kind: flag-set, flag: hex-read }] }] }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: any, of: [{ kind: has-item, itemId: item-hex-nibble-card }, { kind: flag-set, flag: hex-read }] }, { kind: not, of: { kind: flag-set, flag: carries-added } }, { kind: flag-set, flag: clerk-carry-heard }] }
     responses:
       - >-
         Columns of four, please. You already have the card, ink and all; read the back yourself. READ THE NIBBLES BEFORE THE EAST DOOR OPENS. I shan't write it out twice.
@@ -446,22 +466,23 @@ conversationTopics:
       (You could ask about bases now you have read the card.)
     authoring:
       note: >-
-        AltTopic (C3): complement of the primary gate, plus independent discovery through the card or the `hex-read` flag.
+        AltTopic (C3): complement of the primary gate, plus independent discovery through the card or the `hex-read` flag. C7 ladder: reachable after the carry beat and before `carries-added`, with `clerk-carry-heard` as the complement against `topic-clerk-carries`; the `carries-added` negation separates it from both shift beats.
 
   - id: topic-clerk-shifts-known
     actorId: npc-nibble-clerk
     match: { kind: askTell, objectIds: [number-conversion] }
-    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: carries-added }] }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: carries-added }, { kind: not, of: { kind: flag-set, flag: clerk-carry-heard } }] }
     responses:
       - >-
         Columns of four, please. You have added the carries already; the columns look almost respectable. The notch gives the direction; the tray under the lamp catches what runs past. Take that to the audit.
     strategy: { kind: once }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: clerk-carry-heard, value: true }
     prompt: >-
       (You could ask about the shift now the carries are in.)
     authoring:
       note: >-
-        AltTopic (C3): complement of the primary gate, plus the independently discovered `carries-added` flag.
+        AltTopic (C3): complement of the primary gate, plus the independently discovered `carries-added` flag. C7 ladder: records `clerk-carry-heard` in the post-carry, pre-shift state (the branch where the player adds the carries before the clerk's carry beat), so `topic-clerk-shifts` can require it; the `carries-added` complement keeps the carry beat out.
 
   - id: topic-clerk-default
     actorId: npc-nibble-clerk
@@ -501,11 +522,11 @@ conversationTopics:
   - id: topic-setter-unicode
     actorId: npc-typesetter
     match: { kind: askTell, objectIds: [character-representation] }
-    isActive: { kind: flag-set, flag: characters-matched }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-typesetter, topicId: character-representation }, { kind: flag-set, flag: characters-matched }, { kind: not, of: { kind: quiz-passed, quizId: quiz-character-representation } }] }
     responses:
       - >-
         Every mark has its place. Unicode is another standardised character set. In the spare drawer, behind the velvet, I keep a tile bearing ŵ, labelled 'a different character'. No character is refused a tile here; ask and I shall cut it for you.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: set-flag, flag: unicode-tile-cut, value: true }
       - { kind: start-quiz, quizId: quiz-character-representation, actorId: npc-typesetter }
@@ -513,12 +534,12 @@ conversationTopics:
       (You could ask about the tile in the spare drawer.)
     authoring:
       note: >-
-        The `ŵ` is "a different character" only; no coverage claim (spec-check flag). Second beat on `character-representation`, gated on `characters-matched` rather than `npc-knows` (C3). The `unicode-tile-cut` flag is the producer named for `puzzle-make-room-for-the-welsh-letter` in topic file §5. Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        The `ŵ` is "a different character" only; no coverage claim (spec-check flag). Second beat on `character-representation`, gated on `characters-matched` rather than `npc-knows` (C3). The `unicode-tile-cut` flag is the producer named for `puzzle-make-room-for-the-welsh-letter` in topic file §5. Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: the negated `quiz-passed quiz-character-representation` complement keeps it exclusive against `topic-setter-string`, and unlike the former `unicode-tile-cut` complement it keeps the handoff selectable after a failed attempt (P5).
 
   - id: topic-setter-string
     actorId: npc-typesetter
     match: { kind: askTell, objectIds: [character-representation] }
-    isActive: { kind: flag-set, flag: unicode-tile-cut }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-typesetter, topicId: character-representation }, { kind: flag-set, flag: unicode-tile-cut }, { kind: quiz-passed, quizId: quiz-character-representation }] }
     responses:
       - >-
         Every mark has its place. A character is one tile; a string is several tiles set in order, reading left to right. The case lid says match the tiles, then go south.
@@ -528,7 +549,7 @@ conversationTopics:
       (You could ask how a string differs from a character.)
     authoring:
       note: >-
-        Two clues for `characters-matched`: the ordered tiles and the case lid inscription (N6). Third beat on `character-representation`, gated on the puzzle flag `unicode-tile-cut` rather than `npc-knows` (C3).
+        Two clues for `characters-matched`: the ordered tiles and the case lid inscription (N6). Third beat on `character-representation`, gated on the puzzle flag `unicode-tile-cut` rather than `npc-knows` (C3). C7 ladder: requires the `quiz-character-representation` pass (and the cut tile), so the two never compete, and the pass is the only thing that retires the handoff beat.
 
   - id: topic-setter-default
     actorId: npc-typesetter
@@ -568,33 +589,34 @@ conversationTopics:
   - id: topic-critic-depth
     actorId: npc-mosaic-critic
     match: { kind: askTell, objectIds: [graphics-representation] }
-    isActive: { kind: flag-set, flag: picture-built }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-mosaic-critic, topicId: graphics-representation }, { kind: flag-set, flag: picture-built }, { kind: not, of: { kind: flag-set, flag: critic-depth-heard } }] }
     responses:
       - >-
         Show me the pixels. Bit depth is the number of bits used for each pixel's colour. Colour depth is measured in bits per channel, bpc; the label says so plainly. I deal in what is written down.
     strategy: { kind: once }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: critic-depth-heard, value: true }
     prompt: >-
       (You could ask what bit depth and colour depth mean.)
     authoring:
       note: >-
-        Modern bits-per-channel convention as required by topic file §2; no older bits-per-pixel material. Second beat on `graphics-representation`, gated on the puzzle flag `picture-built` rather than `npc-knows` (C3).
+        Modern bits-per-channel convention as required by topic file §2; no older bits-per-pixel material. Second beat on `graphics-representation`, gated on the puzzle flag `picture-built` rather than `npc-knows` (C3). C7 ladder: records `critic-depth-heard`, so `topic-critic-storage` can require it.
 
   - id: topic-critic-storage
     actorId: npc-mosaic-critic
     match: { kind: askTell, objectIds: [graphics-representation] }
-    isActive: { kind: flag-set, flag: pixels-weighed }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-mosaic-critic, topicId: graphics-representation }, { kind: flag-set, flag: pixels-weighed }, { kind: flag-set, flag: critic-depth-heard }, { kind: not, of: { kind: quiz-passed, quizId: quiz-graphics-representation } }] }
     responses:
       - >-
         Show me the pixels. Resolution is how many pixels the grid holds, and every stored colour costs bits. Price the grid by its depth, then account for the missing squares. The ruler gives width and height; the figure is yours to work out.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: start-quiz, quizId: quiz-graphics-representation, actorId: npc-mosaic-critic }
     prompt: >-
       (You could ask what an image costs to store, or ask for the gallery audit.)
     authoring:
       note: >-
-        Method only: no worked storage total. Third beat on `graphics-representation`, gated on the puzzle flag `pixels-weighed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        Method only: no worked storage total. Third beat on `graphics-representation`, gated on the puzzle flag `pixels-weighed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `critic-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-graphics-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-critic-default
     actorId: npc-mosaic-critic
@@ -634,33 +656,34 @@ conversationTopics:
   - id: topic-conductor-depth
     actorId: npc-choirmaster
     match: { kind: askTell, objectIds: [sound-representation] }
-    isActive: { kind: flag-set, flag: sound-sampled }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-choirmaster, topicId: sound-representation }, { kind: flag-set, flag: sound-sampled }, { kind: not, of: { kind: flag-set, flag: conductor-depth-heard } }] }
     responses:
       - >-
         Again, from the top. Bit depth is the bits per sample; sample rate is the number of samples each second. Both dials sit on the desk, and the pipes do the shouting for me.
     strategy: { kind: once }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: conductor-depth-heard, value: true }
     prompt: >-
       (You could ask what the two desk dials mean.)
     authoring:
       note: >-
-        Spec terms only; no Nyquist or codec material (topic file §6). Second beat on `sound-representation`, gated on the puzzle flag `sound-sampled` rather than `npc-knows` (C3).
+        Spec terms only; no Nyquist or codec material (topic file §6). Second beat on `sound-representation`, gated on the puzzle flag `sound-sampled` rather than `npc-knows` (C3). C7 ladder: records `conductor-depth-heard`, so `topic-conductor-storage` can require it.
 
   - id: topic-conductor-storage
     actorId: npc-choirmaster
     match: { kind: askTell, objectIds: [sound-representation] }
-    isActive: { kind: flag-set, flag: bit-rate-counted }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-choirmaster, topicId: sound-representation }, { kind: flag-set, flag: bit-rate-counted }, { kind: flag-set, flag: conductor-depth-heard }, { kind: not, of: { kind: quiz-passed, quizId: quiz-sound-representation } }] }
     responses:
       - >-
         Again, from the top. The blank dial wants the bit rate; the other dials give samples per second and bits per sample, and the card lists the channels. Quality follows from those choices. Work it at the desk — I leave the singing to the pipes — and I will take the audio test when you are ready.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: start-quiz, quizId: quiz-sound-representation, actorId: npc-choirmaster }
     prompt: >-
       (You could ask what fills the blank dial, or ask for the audio test.)
     authoring:
       note: >-
-        Structure only, with no worked bit-rate number. Third beat on `sound-representation`, gated on the puzzle flag `bit-rate-counted` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        Structure only, with no worked bit-rate number. Third beat on `sound-representation`, gated on the puzzle flag `bit-rate-counted` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `conductor-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-sound-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-conductor-default
     actorId: npc-choirmaster
@@ -701,18 +724,18 @@ conversationTopics:
   - id: topic-keeper-capacity
     actorId: npc-stack-keeper
     match: { kind: askTell, objectIds: [data-storage-units] }
-    isActive: { kind: flag-set, flag: stacks-sealed }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-stack-keeper, topicId: data-storage-units }, { kind: flag-set, flag: stacks-sealed }, { kind: not, of: { kind: quiz-passed, quizId: quiz-storage-units } }] }
     responses:
       - >-
         Count twice, stack once. Read the rung you are on, then climb one joint at a time; do not skip a rung — the shelves notice. I send the AI the figure exactly as I find it, flaking labels and all.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: start-quiz, quizId: quiz-storage-units, actorId: npc-stack-keeper }
     prompt: >-
       (You could ask how to move between the rungs, or ask for the capacity tally.)
     authoring:
       note: >-
-        Method only; no worked capacity. Prose chain only, not the inconsistent equivalence column (topic file §6). Second beat on `data-storage-units`, gated on the puzzle flag `stacks-sealed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        Method only; no worked capacity. Prose chain only, not the inconsistent equivalence column (topic file §6). Second beat on `data-storage-units`, gated on the puzzle flag `stacks-sealed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: the `npc-knows` complement against `topic-keeper-units` keeps the two mutually exclusive. The `not quiz-passed quiz-storage-units` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-keeper-default
     actorId: npc-stack-keeper
@@ -748,23 +771,23 @@ conversationTopics:
       (You could ask what the two ends of the lever do.)
     authoring:
       note: >-
-        Two clues for the climax choice: the lever labels and the two sample trays in the ratio window (N6).
+        Two clues for the climax choice: the lever labels and the two sample trays in the ratio window (N6). Its `learn-topic` is what `topic-operator-ratio` requires, so lossy is answered before the ratio.
 
   - id: topic-operator-ratio
     actorId: npc-press-operator
     match: { kind: askTell, objectIds: [data-compression] }
-    isActive: { kind: flag-set, flag: archive-packed }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-press-operator, topicId: data-compression }, { kind: flag-set, flag: archive-packed }, { kind: not, of: { kind: quiz-passed, quizId: quiz-data-compression } }] }
     responses:
       - >-
         Nobody will miss it. Through the glass window you get an original column and a compressed column. The ratio is the original divided by the compressed; the window shows the columns only. Fill it in yourself, then take the compliance figure to the audit.
-    strategy: { kind: once }
+    strategy: { kind: sequence }
     effects:
       - { kind: start-quiz, quizId: quiz-data-compression, actorId: npc-press-operator }
     prompt: >-
       (You could ask how the ratio is worked out, or ask for the final audit.)
     authoring:
       note: >-
-        Ratio definition as given in the brief; no worked numbers. Second beat on `data-compression`, gated on the puzzle flag `archive-packed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+        Ratio definition as given in the brief; no worked numbers. Second beat on `data-compression`, gated on the puzzle flag `archive-packed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. The `not quiz-passed quiz-data-compression` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-operator-default
     actorId: npc-press-operator
@@ -793,7 +816,7 @@ conversationNodes:
     defaultTopicId: topic-predecessor-default
     authoring:
       note: >-
-        Deliberate teaching beat on the Boolean duck; the two comic topics give the player something else to try inside the node. Expires after one turn; no timeout.
+        Deliberate teaching beat on the Boolean duck, entered from `topic-predecessor-duck-as-bit` after the cartridge beat has been heard. Inside the node the live content is the geese keyword topic and the default; the comic-sans and duck beats are listed so the node carries the actor's full teaching set, but both are retired by the time it opens. Expires after one turn; no timeout.
 
   - id: node-foreman-switch-lesson
     actorId: npc-the-foreman

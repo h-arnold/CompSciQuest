@@ -1,20 +1,17 @@
-# Hazards (design)
+# Hazards
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
-[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
-[NPCs](npcs.md) · [quiz combat](combat.md) ·
-[puzzles](puzzles.md) · [hints](hints.md).
+Hazards are traps and penalties: declarative rules that cost lives when a
+trigger matches. They are separate from [quiz combat](combat.md), the
+adversarial question mechanic. The
+[developer documentation index](README.md) lists the other subsystem docs.
 
 ## 1. Scope
 
-Hazards are simple sources of life loss: traps and penalties. They are separate
-from [quiz combat](combat.md), which is the adversarial question mechanic. Both
-emit `lives-changed` and go through the same `Session` game-over handling — the
-seam already documented in `architecture.md` §6.5.
-
-Hazards are planned for v1 with designs in this document.
+A hazard combines a `Trigger`, a `Condition` and an ordered list of `Effect`s.
+Damage goes through `change-lives`, which emits `lives-changed`; `Session` owns
+the game-over check
+([application-and-ui.md §11](application-and-ui.md#11-win-check-owner)).
+`HazardSystem` never writes score or calls `Session` directly.
 
 ## 2. Model
 
@@ -31,98 +28,71 @@ export interface Hazard {
 }
 ```
 
-Typical definitions:
+Typical shapes are an entry trap (`on-room-enter` with a negated flag
+condition), a timed hazard (a fuse registered on room entry that fires after a
+set number of turns), and an action trap (`on-item-used` with a not-disarmed
+condition).
 
-- **Entry trap** — `on-room-enter` with a negated flag condition → `change-lives(-1)`
-  and a message.
-- **Timed hazard** — a fuse registered on room entry that fires after N turns →
-  `change-lives(-1)` and `move-player` back to the start of the level.
-- **Action trap** — `on-item-used` with a "not disarmed" condition → damage once.
-
-A definition's `schedule` is not active until an effect registers it: room entry
-applies a `schedule` effect that adds the `ScheduledEvent` to
-`GameStateDto.schedule`. After that, `Scheduler` owns its countdown.
+`schedule` is validation metadata. A scheduled hazard registers its event by
+including a `schedule` effect in `effects`; the `Scheduler` then owns the
+countdown
+([shared-rules.md §6](shared-rules.md#6-scheduler-tads-fuse--daemon)).
 
 `HazardStateDto` is defined in
 [storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
 ## 3. Execution
 
-`HazardSystem` runs in phase 4 of the [turn pipeline](shared-rules.md#2-turn-pipeline-amends-architecturemd-62),
-after the scheduler and before NPC reactions:
+`HazardSystem` runs in phase 4 of the
+[turn pipeline](shared-rules.md#2-turn-pipeline), after the scheduler and
+before NPC reactions
+([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)). It
+iterates `bundle.hazards.all` in declaration order:
 
-1. Iterate hazard definitions in declaration order.
-2. Skip if `once` and `timesFired > 0`.
-3. Skip if `cooldownTurns` is set and `lastFiredTurn !== undefined` and
-   `turn - lastFiredTurn < cooldownTurns`.
-4. Evaluate `trigger` against the turn's context and buffered events, then
-   evaluate `when` against the state **as updated by earlier hazards' effects in
-   declaration order**. Effects are applied before the next hazard's `when` is
-   evaluated; this is how mid-phase state is reached (user decision of
-   2026-11-25).
-5. Apply `effects` through the injected `EffectApplier`, including an
-   `announce-hazard` effect that emits `hazard-triggered`; increment `timesFired`
-   and set `lastFiredTurn` in the same pass. `HazardSystem` returns the resulting
-   `GameEvent[]`; it neither emits to the `EventBus` nor buffers events itself
-   ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
-6. A rule ID can fire at most once per turn (shared spine rule 4).
+1. Skip a hazard whose `once` is set and whose `timesFired` is above zero.
+2. Skip a hazard whose `cooldownTurns` has not elapsed since `lastFiredTurn`.
+3. Match the `trigger` against the turn's command and buffered events, then
+   evaluate `when` against the state as earlier hazards left it. Effects are
+   applied before the next hazard's `when` is evaluated, so hazards in one turn
+   see each other's changes. A hazard ID fires at most once per turn.
+4. Record `timesFired` and `lastFiredTurn`, then apply an `announce-hazard`
+   effect and the definition's `effects` in order through the injected
+   `EffectApplier`
+   ([shared-rules.md §5](shared-rules.md#5-effect-and-effectapplier)).
+   `HazardSystem` never applies `set-puzzle-*` effects; puzzle phase belongs to
+   `PuzzleSystem`.
+5. Return the resulting `GameEvent[]` for the turn buffer. `HazardSystem` never
+   emits to the `EventBus`.
 
-Damage always goes through `change-lives`, which emits `lives-changed`.
-`Session` (phase 5) detects `lives == 0` and emits `game-over` with the final
-score. Hazards never write score or call `Session` directly.
+`on-room-enter` matches a buffered `room-entered` event. The first turn buffers
+none, so the area's start room counts as entered: entry hazards there fire after
+the initial room description.
 
-If a hazard moves the player, it uses `move-player`, which emits `room-entered`;
-room scoring then works exactly as in `architecture.md` §6.3.
+A `move-player` effect emits `room-entered`, so room scoring follows the normal
+first-visit rule
+([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 
 ## 4. Failure consequences
 
-Per the agreed design, a hazard's failure effects may include:
+A hazard's failure effects may include `change-lives` with `delta: -1`,
+`move-player` back to the level start, and `set-flag` resets for level-local
+flags. A hazard never changes puzzle phase.
 
-- lose one life (`change-lives` with `delta: -1`);
-- return to the start of the current level (`move-player`);
-- reset level-local flags via `set-flag` effects.
-
-A failed hazard does **not** reset puzzle state: puzzles remain in whatever phase
-they reached. Puzzle progress is only changed by the puzzle system itself.
+The level-start room is the runtime `startRoomId` on `AreaDefinition`
+([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions)).
 
 ## 5. Content
 
-Hazard definitions live in `src/content/hazards/`. A `HazardCatalogue` exposes
-`getById(id)` and `getForRoom(roomId)` so `HazardSystem` does not scan the whole
-content set every turn. The level-start room is **declared explicitly per
-world/area in content**, not derived from the world graph: it is the runtime
-`startRoomId` on `AreaDefinition`
-([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions)).
+Hazards are authored in `docs/content/<area>/hazards.yaml` and generated into
+`src/content/authored/hazards.ts` as `ContentBundle.hazards`
+([content-toolchain.md](content-toolchain.md)).
 
 ## 6. Events and UI
 
-- New event: `hazard-triggered { hazardId, reason }`, emitted by the
-  `announce-hazard` effect ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping))
-  and part of the canonical union in
-  [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
-  The `message` event carries the player-facing text.
-- `OutputLog` renders both as text via `textContent`. No hazard-specific UI panel.
-
-## 7. Tests
-
-- Each trigger kind fires at the right time and not otherwise.
-- `once` fires exactly once across multiple turns; cooldown blocks early refires
-  and handles an absent `lastFiredTurn`.
-- Damage emits `lives-changed`; zero lives emits `game-over` with final score.
-- `move-player` on failure emits `room-entered` and `ScoreTracker` applies the
-  normal first-visit rule: returning to an already visited room awards no further
-  points ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
-- A registered schedule survives JSON save/load mid-countdown.
-- Two hazards firing in the same turn are applied in declaration order, and the
-  second hazard's `when` sees the first hazard's applied state.
-- A hazard failure does not change puzzle phase.
-
-## 8. Decisions resolved
-
-- Room-entry hazards fire **after** the initial room description.
-- Hazards have their own `hazard-triggered` event (in addition to `message`).
-- Level-start rooms are declared in content per world/area.
-- Failed hazards do not reset puzzle progress.
-- Later hazards' `when` checks see earlier hazards' applied state; effects are
-  applied in declaration order before the next `when` (user decision of
-  2026-11-25).
+`hazard-triggered { hazardId, reason }` is emitted by the `announce-hazard`
+effect
+([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping))
+and belongs to the canonical union in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
+The `message` event carries the player-facing text. `OutputLog` renders both as
+text with `textContent`; there is no hazard-specific panel.

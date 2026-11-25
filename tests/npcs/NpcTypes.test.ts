@@ -1,9 +1,18 @@
 // SCAFFOLDING — type-placeholder inspections. These rows are explicitly exempt
 // from red-first (the DTO/type placeholders were landed during scaffolding).
 // They pin the canonical shapes from npcs.md §2/§3, storage-schema.md §3.2 and
-// application-and-ui.md §8 without asserting any runtime behaviour.
+// application-and-ui.md §8. W7R-NPC-02 separately pins the resolver signature
+// and actor-bound special-topic behaviour.
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import type { ActorDefinition } from '../../src/content/ActorDefinition';
+import {
+  createTopicResolver,
+  type TopicResolver,
+} from '../../src/core/commands/TopicResolver';
+import { createEffectApplier } from '../../src/core/effects/EffectApplier';
+import type { GameEvent } from '../../src/core/events/GameEvent';
+import type { GameState } from '../../src/core/GameState';
+import type { handleConversationTopic } from '../../src/core/npcs/ConversationFlow';
 import type { DialogueSystem } from '../../src/core/npcs/DialogueSystem';
 import type { ActorState } from '../../src/core/npcs/ActorState';
 import type { ConversationNode } from '../../src/core/npcs/ConversationNode';
@@ -12,8 +21,35 @@ import type { ResolvedTopic } from '../../src/core/npcs/ResolvedTopic';
 import type { ResponseStrategy } from '../../src/core/npcs/ResponseStrategy';
 import type { TopicMatch } from '../../src/core/npcs/TopicMatch';
 import type { NpcStateDto } from '../../src/core/NpcStateDto';
-import type { TopicResolver } from '../../src/core/commands/TopicResolver';
-import { npcDto } from '../fixtures/npcs';
+import type { NpcDependencies } from '../../src/core/npcs/NpcDependencies';
+import { createConditionEvaluator } from '../../src/core/rules/ConditionEvaluator';
+import type { TurnContext } from '../../src/core/TurnContext';
+import { FakeRandom } from '../fixtures/persistence';
+import {
+  ACTOR_ID,
+  npcBundle,
+  npcDto,
+  npcState,
+  READY,
+  topic,
+} from '../fixtures/npcs';
+
+const threeArgumentResolve: TopicResolver['resolve'] = (phrase) => ({
+  kind: 'free-text',
+  text: phrase,
+});
+
+const fourArgumentResolve: TopicResolver['resolve'] = (
+  phrase,
+  state,
+  node,
+  actorId = '',
+) => {
+  const boundActor = state.npcs[actorId];
+  return boundActor === undefined
+    ? { kind: 'free-text', text: phrase }
+    : { kind: 'keyword', topicId: node?.id ?? phrase };
+};
 
 describe('NPC model placeholders — SCAFFOLDING', () => {
   it('NPC-MODEL-01: ActorState is data with descriptions and optional effects', () => {
@@ -150,5 +186,62 @@ describe('NPC model placeholders — SCAFFOLDING', () => {
   it('NPC-MODEL-09: TopicResolver.resolve and DialogueSystem.react are pure seams', () => {
     expectTypeOf<TopicResolver>().toHaveProperty('resolve');
     expectTypeOf<DialogueSystem>().toHaveProperty('react');
+  });
+
+  it('W7R-NPC-02: canonical signatures accept actor binding without mutating state', () => {
+    type ResolveParameters = Parameters<TopicResolver['resolve']>;
+    expectTypeOf<ResolveParameters['length']>().toEqualTypeOf<2 | 3 | 4>();
+    expectTypeOf<ResolveParameters[0]>().toEqualTypeOf<string>();
+    expectTypeOf<ResolveParameters[1]>().toEqualTypeOf<GameState>();
+    expectTypeOf<ResolveParameters[2]>().toEqualTypeOf<
+      ConversationNode | undefined
+    >();
+    expectTypeOf<ResolveParameters[3]>().toEqualTypeOf<string | undefined>();
+
+    type ConversationParameters = Parameters<typeof handleConversationTopic>;
+    expectTypeOf<ConversationParameters['length']>().toEqualTypeOf<5>();
+    expectTypeOf<ConversationParameters[0]>().toEqualTypeOf<TurnContext>();
+    expectTypeOf<ConversationParameters[1]>().toEqualTypeOf<string>();
+    expectTypeOf<ConversationParameters[2]>().toEqualTypeOf<NpcDependencies>();
+    expectTypeOf<ConversationParameters[3]>().toEqualTypeOf<TopicResolver>();
+    expectTypeOf<ConversationParameters[4]>().toEqualTypeOf<GameEvent[]>();
+
+    expectTypeOf(threeArgumentResolve).toMatchTypeOf<
+      TopicResolver['resolve']
+    >();
+    expectTypeOf(fourArgumentResolve).toMatchTypeOf<TopicResolver['resolve']>();
+
+    const special = topic({
+      id: 'topic-actor-special',
+      actorId: ACTOR_ID,
+      match: { kind: 'special', keywords: ['sigil'] },
+      responses: ['The bound actor recognises the sigil.'],
+    });
+    const bundle = npcBundle({ topics: [special] });
+    const state = npcState({
+      npcs: { [ACTOR_ID]: npcDto({ stateId: READY }) },
+    });
+    const random = new FakeRandom([0]);
+    const resolver = createTopicResolver({
+      bundle,
+      evaluator: createConditionEvaluator(),
+      random,
+      applier: createEffectApplier(state, { bundle, random }),
+    });
+    const before = JSON.stringify(state);
+
+    expect(resolver.resolve('sigil', state, undefined, ACTOR_ID)).toEqual({
+      kind: 'keyword',
+      topicId: special.id,
+    });
+    expect(resolver.resolve('sigil', state)).toEqual({
+      kind: 'free-text',
+      text: 'sigil',
+    });
+    expect(resolver.resolve('sigil', state, undefined, 'npc-another')).toEqual({
+      kind: 'free-text',
+      text: 'sigil',
+    });
+    expect(JSON.stringify(state)).toBe(before);
   });
 });

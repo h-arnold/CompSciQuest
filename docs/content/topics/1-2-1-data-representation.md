@@ -158,9 +158,21 @@ beside any plain gloss (`PCK-TERM`).
 | `npc-press-operator` | press / compression | Breezy, euphemistic ("Nobody will miss it.") | Smaller files by an honest method; regards lossy compression as a kindness; opposes critic and choirmaster | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default`; forced node `node-operator-choose` |
 
 **Conversation shape.** Every teaching topic carries a `prompt` hint and teaches
-method or structure only — never a worked result or a quiz key (N4, C2). Primary
-topics gate on `not npc-knows`; AltTopics with the complement condition fire when the
-fact is independently discoverable via an item or puzzle flag (C3). Free-text input
+method or structure only — never a worked result or a quiz key (N4, C2). The first
+beat on each teaching actor gates on `not npc-knows`. Each middle beat records its
+own evidence in a content-internal flag — `clerk-carry-heard` (carries and the
+post-carry alt), `critic-depth-heard` (bit depth) and `conductor-depth-heard`
+(sample depth) — and the final beat requires that flag, so the ladder is provable
+under C7 without relying on declaration order. The predecessor's cartridge beat records
+`predecessor-cartridge-heard` for the duck-as-bit beat the same way. Every quiz
+handoff gates on `not quiz-passed <its quiz>` and repeats its single response, so a
+failed attempt can re-issue the test and the beat retires on the pass (P5);
+`topic-foreman-lift` requires `quiz-passed quiz-switchyard` and `topic-setter-string`
+requires `quiz-passed quiz-character-representation`, so each ladder stays exclusive
+under C7. AltTopics keep a complement condition when the
+fact is independently discoverable via an item or puzzle flag (C3); the clerk's
+`topic-clerk-bases-known` sits between the carry beat and the token, and
+`topic-clerk-shifts-known` covers the post-carry, pre-shift state. Free-text input
 resolves to the actor's `*-default` topic in character, never a parser error (C2).
 Each actor hands off to its reserved quiz with `start-quiz` and returns to `ready`
 on `quiz-ended` (npcs.md §6). `node-operator-choose` is the only forced beat beyond

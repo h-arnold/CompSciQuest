@@ -1,19 +1,13 @@
-# Application and UI contracts (design)
+# Application and UI contracts
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) ·
-[storage schema](storage-schema.md) · [shared rule spine](shared-rules.md) ·
-[content rules](content-rules.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
-[quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
+Index: [docs/developer/README.md](README.md).
 
 ## 1. Purpose and authority
 
 This document is the **canonical definition** of the application-layer and UI
-contracts needed to build a content-agnostic skeleton: the content bundle, the
-boot/title flow, the `Game` façade, the `Command` and `GameEvent` unions, the UI
-view-model and DOM layout, and the behavioural signatures the other documents
-name but do not pin down.
+contracts: the content bundle, the boot/title flow, the `Game` façade, the
+`Command` and `GameEvent` unions, the UI view-model and DOM layout, and the
+behavioural signatures the other documents name but do not pin down.
 
 Where another document defines a persisted shape,
 [storage-schema.md](storage-schema.md) remains canonical. Where it defines rule
@@ -29,7 +23,7 @@ v1 has a **title screen**. It is a UI overlay inside the browser-window chrome,
 not a persisted game state; `GameStateDto.status` continues to describe only
 `playing` / `won` / `lost`.
 
-Boot sequence (`src/main.ts`, amends [architecture.md §6.1](architecture.md#61-bootstrap-srcmaints)):
+Boot sequence (`src/main.ts`):
 
 1. Find `#app` (from `index.html`) or throw a clear error.
 2. Construct the `Clock`, `StorageAdapter`, `SaveManager`, `EventBus` and the
@@ -56,16 +50,12 @@ Boot sequence (`src/main.ts`, amends [architecture.md §6.1](architecture.md#61-
 A corrupt or quarantined save disables Continue; the player starts fresh. The
 quarantined text stays downloadable through `SaveControls`.
 
-**Consequence for tests:** the Playwright "boots into the initial room"
-assertion becomes "boots to the title screen; clicking New Game enters the
-initial room". See §12.
-
 ## 3. Content bundle and registration
 
 ### 3.1 Catalogue shape
 
 All definitions are declarative data under `src/content/`, never hard-coded in
-engine classes. `shared-rules.md §10` requires a catalogue per system; this is
+engine classes. `shared-rules.md §9` requires a catalogue per system; this is
 the concrete shape.
 
 ```ts
@@ -76,7 +66,7 @@ export interface Catalogue<T> {
 }
 ```
 
-`all` exists because [shared-rules.md §11](shared-rules.md#11-determinism-and-ordering-rules)
+`all` exists because [shared-rules.md §10](shared-rules.md#10-determinism-and-ordering-rules)
 requires declaration-order evaluation. `getById` returns `undefined` for missing
 IDs; it never throws.
 
@@ -100,11 +90,11 @@ export interface ContentBundle {
 }
 ```
 
-The per-artifact interfaces (`ActorState`, `ConversationTopic`,
-`ConversationNode`, `Quiz`, `QuizQuestion`, `Puzzle`, `Hazard`, `HintSequence`,
-`SpecTopic`) are defined in the subsystem documents and are not redeclared
-here. `WorldDefinition`, `AreaDefinition`, `RoomDefinition` and
-`ItemDefinition` are defined in §3.2.
+The per-artefact interfaces (`ActorState`, `ConversationTopic`,
+`ConversationNode`, `Quiz`, `QuizQuestion`, `Puzzle`, `Hazard`, `HintSequence`)
+are defined in the subsystem documents and are not redeclared here.
+`WorldDefinition`, `AreaDefinition`, `RoomDefinition` and `ItemDefinition` are
+defined in §3.2; `SpecTopic` and `SpecTopicCatalogue` are defined in §8.
 
 ### 3.2 World, area, room and item definitions
 
@@ -115,7 +105,7 @@ export interface WorldDefinition {
   readonly name: string;
   readonly areaIds: readonly string[];
   readonly startAreaId: string;
-  readonly lives: number; // 3 in the stub and in all v1 content
+  readonly lives: number; // starting lives for this world
 }
 
 // src/content/AreaDefinition.ts
@@ -125,7 +115,7 @@ export interface AreaDefinition {
   readonly name: string;
   readonly roomIds: readonly string[];
   readonly startRoomId: string; // level start for hazards and quiz failures
-  readonly lives: number; // reset value on entering the area
+  readonly lives: number; // declared reset value; the runtime does not apply it
 }
 
 // src/content/RoomDefinition.ts
@@ -150,10 +140,11 @@ export interface ItemDefinition {
 }
 ```
 
-`startRoomId` promotes the old `levelStart: true` authoring note into a real
-runtime field. [content-rules.md](content-rules.md) D4 now lists it as the
-exception to the authoring-only rule, and the §4.2 card example declares it on
-the area artifact. Lives reset on **area change**, not on every room move.
+`startRoomId` is the runtime level start for hazards and quiz-failure teleports;
+[content-rules.md](content-rules.md) D4 owns the authoring rule for `startRoomId`
+and `lives`. `WorldDefinition.lives` sets the starting lives at new game.
+`AreaDefinition.lives` is the declared reset value, and the current runtime does
+not apply it: lives change only through `change-lives`.
 
 ### 3.3 Loading and validation
 
@@ -168,11 +159,11 @@ export function validateContent(bundle: ContentBundle): readonly string[];
 `loadContent()` returns the `ContentBundle` assembled from the committed generated
 files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
-means valid. It runs the five shared structural gates in
+means valid. At boot it runs the runtime-mirrored gates from
 [content-rules.md §7](content-rules.md#7-structural-validation-gates) against the
-bundle at boot, including:
+bundle, including:
 
-- unique artifact IDs and globally unique object/NPC aliases;
+- unique artefact IDs and globally unique object/NPC aliases;
 - every exit target, `initialRoom`, `startRoomId` and `move-player` target exists;
 - the start resolves through the world's `startAreaId` and that area's
   `startRoomId`, never by array position;
@@ -181,38 +172,21 @@ bundle at boot, including:
 
 NPC actor binding is resolved: every authored topic and node carries an
 `actorId` that resolves to one actor, and the authoring-time `npc-content` gate
-enforces it ([content-rules.md §4.3 point 2](content-rules.md#43-npc-card),
-[§8](content-rules.md#8-decisions-content-must-not-assume)). Its runtime mirror
-is deferred with the other mechanics gates
-([content-toolchain.md §4](content-toolchain.md#4-validation)). Authoring-only checks
-(stray keys outside `authoring:`, document status, unresolved `todo` placeholders)
-run in `npm run content:validate` on the YAML and cannot run on the runtime
-bundle. Apart from authoring-only checks and the three deferred mechanics gates,
-authoring-time, test-time and boot-time validation use the same gate functions
-and cannot drift. Vitest runs `validateContent`
-against small deterministic fixtures and against the real catalogues.
+enforces it ([content-rules.md §4.3 "Actor binding"](content-rules.md#43-npc-card),
+[§8](content-rules.md#8-fixed-contracts-content-must-use)). Its runtime mirror
+is deferred with the other mechanics gates — `quiz-content`, `hint-content` and
+`npc-content` ([content-toolchain.md §4](content-toolchain.md#4-validation)).
+Authoring-only checks (stray keys outside `authoring:`, document status,
+unresolved `todo` placeholders) run in `npm run content:validate` on the YAML and
+cannot run on the runtime bundle. Apart from those, authoring-time, test-time and
+boot-time validation use the same gate functions and cannot drift.
 
-`GameState.createInitial()` takes its world, area, room and room inventory from
-the supplied bundle instead of importing `stubBundle`; it resolves the area by
-the world's `startAreaId` and the room by that area's `startRoomId`.
-`Game.newGame()` calls it directly, so array position is never a substitute for
-the authored start.
-
-### 3.4 Stub fixture
-
-The skeleton ships a clearly marked stub under `src/content/stub/` — one world,
-one area and two rooms, with empty catalogues for the five later mechanics. It
-exists only so the app boots and Playwright has a deterministic world. The stub
-is data, not engine code, and carries a `// STUB — replace with authored content`
-note.
-
-When the first real area is generated, the stub's placeholder data and the direct
-`stubBundle` import are removed: bundle assembly moves into
-`src/content/index.ts`, which returns the committed generated content, and the
-assembly seam is retained rather than deleted. Unit tests use a separate
-deterministic fixture, not the generated zone content. See
-[content-toolchain.md §5](content-toolchain.md#5-generation) for the generation
-handoff.
+`createInitial(bundle?)` takes its world, area, room and room inventory from the
+supplied bundle and resolves the area by the world's `startAreaId` and the room
+by that area's `startRoomId`. `Game.newGame()` calls it directly, so array
+position is never a substitute for the authored start. Boot assembles the
+committed generated catalogues; unit tests inject small fixtures; e2e uses the
+real generated bundle.
 
 ## 4. Game façade and meta actions
 
@@ -230,11 +204,12 @@ export interface Game {
 }
 ```
 
-`submit` owns the whole turn pipeline and returns the buffered batch it also
-publishes through the `EventBus`. It increments `GameStateDto.turn` once per
-submitted game command, whether or not the command succeeded. It never throws
-on bad input; unparseable text becomes an `unknown` command and a friendly
-message.
+`submit` runs the turn pipeline defined in
+[shared-rules.md §2](shared-rules.md#2-turn-pipeline); `Game` owns the per-turn
+event buffer and ordering, and returns the buffered batch it also publishes
+through the `EventBus`. It increments `GameStateDto.turn` once per submitted game
+command, whether or not the command succeeded. It never throws on bad input;
+unparseable text becomes an `unknown` command and a friendly message.
 
 `newGame`, `continueGame` and `restart` replace the current `GameState`, clear
 the views' transient state and emit the initial room batch. A reloaded end state
@@ -261,23 +236,20 @@ export type MetaAction =
 
 `Game` owns interception so the behaviour is identical whether the action came
 from a button or the terminal. Meta actions never enter the core `Command`
-union and never advance `turn`. `import` from a button supplies `text` from
-`SaveFile.readFile()`; typed `import` opens the same file picker rather than
-expecting pasted JSON. `load` rebinds the restored `GameState` and refreshes the
-views without re-emitting an end event.
+union and never advance `turn`. `openSaveFile` is injected from `src/main.ts`;
+`GameWindow` owns the download and import controls, and import from a button
+supplies `text` from `openSaveFile`. Typed `import` opens the same file picker
+rather than expecting pasted JSON. `load` rebinds the restored `GameState` and
+refreshes the views without re-emitting an end event.
 
 ## 5. Canonical command union and verbs
 
-This is the single canonical `Command` union. It replaces the partial lists in
-[architecture.md §7](architecture.md#7-core-interface-sketches),
-[npcs.md §3](npcs.md#3-commands-and-topic-resolution),
-[combat.md §4](combat.md#4-commands-and-events) and
-[hints.md §3](hints.md#3-commands-and-delivery).
+This is the single canonical `Command` union. Every other document links here.
 
 ```ts
 // src/core/commands/Command.ts
 export type Command =
-  // core (10)
+  // core
   | { readonly kind: 'go'; readonly direction: Direction }
   | { readonly kind: 'take'; readonly itemId: string }
   | { readonly kind: 'drop'; readonly itemId: string }
@@ -300,37 +272,37 @@ export type Command =
   | { readonly kind: 'score' }
   | { readonly kind: 'help' }
   | { readonly kind: 'unknown'; readonly raw: string }
-  // NPCs (6)
+  // NPCs
   | { readonly kind: 'talk-to'; readonly actorId: string }
   | { readonly kind: 'ask'; readonly actorId: string; readonly topic: string }
   | { readonly kind: 'tell'; readonly actorId: string; readonly topic: string }
   | { readonly kind: 'give'; readonly actorId: string; readonly itemId: string }
   | { readonly kind: 'show'; readonly actorId: string; readonly itemId: string }
   | { readonly kind: 'bye' }
-  // quiz combat (1), hints (1)
+  // quiz combat
   | { readonly kind: 'answer'; readonly option: number }
+  // hints
   | { readonly kind: 'hint'; readonly targetId?: string };
 ```
-
-(Names marked "core" above are the ten original variants plus the four new door
-verbs; the label is a grouping aid, not part of the type.)
 
 ### 5.1 Door and container verbs
 
 Doors and containers have dedicated verbs in v1 rather than relying solely on
 `use`:
 
-| Command                  | Meaning                                                     | Flag effect                                       |
-| ------------------------ | ----------------------------------------------------------- | ------------------------------------------------- |
-| `open <target>`          | Open an unlocked door or container                          | `door-open:<id>` / `container-open:<id>` = `true` |
-| `close <target>`         | Close an open door or container                             | the same flag = `false`                           |
-| `unlock <item> <target>` | Use a key-like item; sets the action flag but does not open | `door-unlocked:<id>` = `true`                     |
-| `put <item> <target>`    | Place a portable item into a container                      | `transfer-item` to the container owner            |
+| Command                  | Meaning                                                     | Flag effect                                                       |
+| ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| `open <target>`          | Open an unlocked door or container                          | `door-open:<itemId>` / `container-open:<itemId>` = `true`         |
+| `close <target>`         | Close an open door or container                             | the same flag = `false`                                           |
+| `unlock <item> <target>` | Use a key-like item; sets the action flag but does not open | `door-unlocked:<itemId>` / `container-unlocked:<itemId>` = `true` |
+| `put <item> <target>`    | Place a portable item into a container                      | `transfer-item` to the container owner                            |
 
-Each handler checks preconditions through `RuleEngine` (key held, target
-visible, target not already open). An invalid attempt emits a friendly in-voice
-message and leaves state unchanged. `use <item> on <target>` remains supported
-as a general interaction, including puzzle solutions.
+The `flags` convention and the one-owner-per-item rule are owned by
+[storage-schema.md §3.3](storage-schema.md#33-invariants). Each handler checks
+preconditions through `RuleEngine` (key held, target visible, target not already
+open). An invalid attempt emits a friendly in-voice message and leaves state
+unchanged. `use <item> on <target>` remains supported as a general interaction,
+including puzzle solutions.
 
 ### 5.2 Verb table and handler signature
 
@@ -381,17 +353,12 @@ using the item's `refusalText` when present and non-empty, otherwise the exact
 fallback "You cannot take that item with you." An empty `refusalText` is treated
 as absent. This is in-world feedback under
 [content-rules.md §3 N5](content-rules.md#3-rule-catalogue), not a parser-style
-denial; the fallback wording is a user decision recorded in the branch matrix,
-not a design-document citation. `drop` shares `takeHandler()` and is unaffected
+denial. `drop` shares `takeHandler()` and is unaffected
 by `portable`: it transfers from the player to the room and emits "Dropped.".
 
 ## 6. Canonical event union and rendering
 
-This is the single canonical `GameEvent` union. It consolidates the seven
-variants formerly in [architecture.md §7](architecture.md#7-core-interface-sketches)
-and the thirteen subsystem variants formerly listed in
-[shared-rules.md §9](shared-rules.md#9-event-additions), and adds the bookkeeping
-events required by §9.
+This is the single canonical `GameEvent` union. Every other document links here.
 
 ```ts
 // src/core/events/GameEvent.ts
@@ -487,7 +454,7 @@ export type GameEvent =
       readonly hintId: string;
       readonly delta: number;
     }
-  // bookkeeping (added by §9)
+  // bookkeeping
   | {
       readonly type: 'flag-changed';
       readonly flag: string;
@@ -528,8 +495,8 @@ export interface EventBus {
 }
 ```
 
-`EventBus` is unchanged from [architecture.md §7](architecture.md#7-core-interface-sketches)
-and [shared-rules.md §2](shared-rules.md#2-turn-pipeline-amends-architecturemd-62).
+`EventBus.publish` takes the whole turn batch; the interface is in
+[`src/core/events/EventBus.ts`](../../src/core/events/EventBus.ts).
 
 `score-changed.total` is the running total owned by `ScoreTracker`; it is the
 sum of `AreaProgress.earnedScore` at the moment of observation. It is not read
@@ -547,19 +514,19 @@ export function formatEvent(
 ): readonly string[];
 ```
 
-| Event(s)                                                                    | Transcript                                            | Panel update                 |
-| --------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------- |
-| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated` | text as given                                         | —                            |
-| `room-entered`                                                              | title, blank line, description, `Exits: north, west`  | ScorePanel via view data     |
-| `question-asked`                                                            | prompt, then `1. …` / `2. …` lines                    | QuizPanel                    |
-| `score-changed`                                                             | short line using `reason`                             | ScorePanel via view data     |
-| `topic-completed`                                                           | completion line derived from `topicId` via the bundle | ScorePanel via view data     |
-| `lives-changed`, `hazard-triggered`                                         | terse in-voice line                                   | ScorePanel (lives)           |
-| `conversation-started`, `conversation-ended`                                | short status line                                     | ConversationPanel            |
-| `quiz-started`, `quiz-ended`                                                | short status line                                     | QuizPanel                    |
-| `puzzle-activated`, `puzzle-solved`                                         | short status line                                     | ScorePanel via view data     |
-| `game-over`, `game-won`                                                     | final message with score                              | TitleScreen offer to restart |
-| bookkeeping events                                                          | terse line using bundle labels                        | —                            |
+| Event(s)                                                                    | Transcript                                                                            | Panel update                 |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
+| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated` | text as given                                                                         | —                            |
+| `room-entered`                                                              | title, blank line, description, `Exits: north, west`                                  | ScorePanel via view data     |
+| `question-asked`                                                            | prompt, then `1. …` / `2. …` lines                                                    | QuizPanel                    |
+| `score-changed`                                                             | short line using `reason`                                                             | ScorePanel via view data     |
+| `topic-completed`                                                           | completion line derived from `topicId` via the bundle                                 | ScorePanel via view data     |
+| `lives-changed`, `hazard-triggered`                                         | terse in-voice line                                                                   | ScorePanel (lives)           |
+| `conversation-started`, `conversation-ended`                                | short status line                                                                     | ConversationPanel            |
+| `quiz-started`, `quiz-ended`                                                | short status line                                                                     | QuizPanel                    |
+| `puzzle-activated`, `puzzle-solved`                                         | short status line                                                                     | ScorePanel via view data     |
+| `game-over`, `game-won`                                                     | final message with score                                                              | TitleScreen offer to restart |
+| bookkeeping events                                                          | terse line; item, actor and topic IDs resolve through the bundle, other IDs print raw | —                            |
 
 Every event yields at least one line, so the shared-rule promise that "every
 effect produces at least one buffered event, so every state change is
@@ -570,8 +537,8 @@ transcript as `> <raw input>` before their resulting batch is rendered.
 
 ### 7.1 DOM layout
 
-The skeleton uses plain DOM and one stylesheet (`src/ui/style.css`); no UI
-framework. "Browser window" is visual chrome, not a nested browsing context.
+The app uses plain DOM and one stylesheet (`src/ui/style.css`); no UI framework.
+"Browser window" is visual chrome, not a nested browsing context.
 
 ```
 #app
@@ -660,8 +627,8 @@ The rule is: **transcript and transient panels read events; ScorePanel reads
 rules. `ScorePanel` presents `earnedScore`/`maxScore`, visited counts and the
 linked spec topics using `SpecTopicCatalogue` labels.
 
-`Terminal` owns a bounded in-memory history (50 entries, no persistence, no
-duplicate suppression) navigated with the up/down arrows. It calls
+`Terminal` owns a bounded in-memory command history with no persistence and no
+duplicate suppression, navigated with the up/down arrows. It calls
 `Game.submit(raw)` on Enter and renders the returned batch after echoing the
 command. During a quiz, `answer N` is typed into the same input; `QuizPanel`
 only displays the question and options.
@@ -806,7 +773,6 @@ export interface QuizSystem {
 }
 
 // src/application/ComposedReaction.ts — holds the five constructed systems
-// described above (decision: 2026-11-25)
 export interface ComposedReactionDependencies {
   readonly scheduler: Scheduler;
   readonly hazards: HazardSystem;
@@ -825,35 +791,52 @@ export function createComposedReaction(
 ): ComposedReaction;
 ```
 
-`EventBus`, `Random` and `EffectApplier.apply(effect): GameEvent[]` are already
-pinned in the existing documents and are not restated as new contracts.
+`EventBus`, `Random` and `EffectApplier.apply(effect): GameEvent[]` are defined in
+[`src/core/events/EventBus.ts`](../../src/core/events/EventBus.ts),
+[`src/core/Random.ts`](../../src/core/Random.ts) and
+`src/core/effects/EffectApplier.ts`.
 
 `TurnContext.command` carries the command being handled: `on-verb` matches
 `command.kind === trigger.verb`, and `on-item-used` matches an `itemId` on the
 command equal to `trigger.itemId`
 ([shared-rules.md §4](shared-rules.md#4-trigger)). `Command` is the single
-canonical union in §5. This carrier was added by user decision on 2026-11-25.
+canonical union in §5.
 
 `Game` builds a single `TurnContext` per turn (including the resolved `Command`)
 and passes it to `createComposedReaction`'s reaction; phase-4 systems read state
-and command from that context rather than constructing their own (decision:
-2026-11-25).
+and command from that context rather than constructing their own.
 
-The phase-4 contract is uniform by the same decision: `Scheduler`,
-`HazardSystem`, `DialogueSystem`, `PuzzleSystem` and `HintSystem` each apply
-their effects through their injected `EffectApplier` and return
-`readonly GameEvent[]`. `createComposedReaction` calls them in the order
-scheduler → hazards → npcs → puzzles → hints and concatenates the returned
-events; it has no effect buffer and applies no effects itself. `Game` still owns
-the per-turn event buffer and the single publication at the end of the turn
-([shared-rules.md §2](shared-rules.md#2-turn-pipeline-amends-architecturemd-62)).
-Phase 3 handlers continue to **return** `Effect[]` (§5.2).
+The phase-4 contract is uniform: `Scheduler`, `HazardSystem`, `DialogueSystem`,
+`PuzzleSystem` and `HintSystem` each apply their effects through their injected
+`EffectApplier` and return `readonly GameEvent[]`. `createComposedReaction` calls
+them in the order scheduler → hazards → npcs → puzzles → hints and concatenates
+the returned events; it has no effect buffer and applies no effects itself. `Game`
+owns the per-turn event buffer and the single publication at the end of the turn
+([shared-rules.md §2](shared-rules.md#2-turn-pipeline)). Phase 3 handlers continue
+to **return** `Effect[]` (§5.2).
 
-`SpecTopicCatalogue` is canonical here (the sketch in `architecture.md` now
-links to this section). Its `getByAreaId` lookup is what restore and the
-ScorePanel need:
+`SpecTopic` and `SpecTopicCatalogue` are canonical here. `SpecTopic` carries
+`roomIds`; the catalogue owns the `(worldId, areaId)` index, so do not add
+`worldId` or `areaId` to the topic.
 
 ```ts
+// src/core/scoring/SpecTopic.ts
+export type SpecStatus = 'not started' | 'in progress' | 'covered';
+
+export interface SpecTopic {
+  readonly id: string;
+  readonly title: string;
+  readonly specReference: string;
+  readonly codeLocation: string;
+  readonly status: SpecStatus;
+  readonly evidence: string;
+  readonly roomIds: readonly string[];
+  readonly maxScore: number;
+}
+```
+
+```ts
+// src/core/scoring/SpecTopicCatalogue.ts
 export interface SpecTopicCatalogue {
   getById(id: string): SpecTopic | undefined;
   getByRoomId(roomId: string): readonly SpecTopic[];
@@ -861,8 +844,7 @@ export interface SpecTopicCatalogue {
 }
 ```
 
-`SpecTopic` therefore also carries `worldId` and `areaId` (or the catalogue
-maintains that index internally). `getByAreaId` is what
+`getByAreaId` is what
 [storage-schema.md §7](storage-schema.md#7-restore-time-derivation) needs to
 refresh `AreaProgress.maxScore`.
 
@@ -905,8 +887,7 @@ the state-changing one.
 `quiz-ended`; `Session` consumes `lives-changed` and the win condition (§11).
 Per-puzzle points are awarded by `ScoreTracker` from `puzzle-solved` using the
 declared `Puzzle.score`, so no score-carrying effect kind exists;
-`score-changed.total` remains owned and emitted by `ScoreTracker` (§6). The
-`announce-hazard` row was added by user decision on 2026-11-25.
+`score-changed.total` remains owned and emitted by `ScoreTracker` (§6).
 
 ## 10. Scoring with many puzzles per topic
 
@@ -926,9 +907,9 @@ declared points, so one spec topic can be scored several times, up to a budget.
   scoreable. Unmapped or unevidenced achievements emit no score change.
 - Idempotency is derived from existing state, so no new persisted field is
   needed: a room scores once (`visitedRooms`), a puzzle once (its phase is
-  `solved` before `puzzle-solved` is emitted), a quiz once
-  (`quiz-passed:<quizId>`), and a hint penalty is applied per
-  `hint-penalty-applied` event.
+  `solved` before `puzzle-solved` is emitted), a quiz once on the first
+  observed false→true transition of `quiz-passed:<quizId>` (below), and a hint
+  penalty is applied per `hint-penalty-applied` event.
 - A quiz pass scores only when the tracker observes `quiz-passed:<quizId>`
   changing from not-true to true across the pass; a retry that re-sets an
   already-true flag scores nothing. The tracker keeps the flag values it last
@@ -951,65 +932,44 @@ injected `ContentBundle` and follows
 `progress[].completedTopics`. On success it sets `status = 'won'` and emits
 `game-won`; on `lives === 0` it sets `status = 'lost'` and emits `game-over`.
 
-Two conditions must both hold (user decision 2026-11-25):
+Two conditions must both hold:
 
 1. **Topics.** Every covered topic with evidence is complete, as above.
 2. **Quizzes.** Every quiz with at least one question has been passed. A pass is
    recorded by the `quiz-passed:<quizId>` flag, or by a `quiz-ended` event with
-   `passed: true` in the same batch (the direct-achievement path used by tests
-   and by content that supplies the event without the flag). The batch clause
-   matters because the flag is applied before phase 5 in the same turn; the
-   flag alone cannot distinguish the first pass from a replay.
+   `passed: true` in the same batch (the direct-achievement path for content that
+   supplies the event without the flag). The batch clause matters because the
+   flag is applied before phase 5 in the same turn; the flag alone cannot
+   distinguish the first pass from a replay.
 
-The quiz condition is what puts the authored run's single `game-won` in its
-final batch: rooms and puzzles complete their topics earlier, but the eight quiz
-passes are the remaining completion sources. `Quiz.score` itself is still
-awarded once per quiz by `ScoreTracker` (§10).
+`Quiz.score` itself is still awarded once per quiz by `ScoreTracker` (§10).
 
 `SaveManager.restore()` performs the same derivation against the live catalogue
 but **never emits** an event when `status !== 'playing'`, so a reloaded end
 state cannot announce victory twice.
 
-## 12. Tests for the skeleton
+## 12. Behavioural guarantees
 
-**Vitest**
-
-- `validateContent`: accepts the stub fixture; rejects duplicate IDs, duplicate
-  aliases, missing exit/level-start targets and over-budget topic scores.
-- `Game.submit`: known verbs dispatch, unknown input yields a friendly message
-  and does not throw, turn increments once, meta actions do not advance it.
-- Doors: `open`/`close`/`unlock`/`put` set the documented flags and leave state
-  unchanged when preconditions fail.
-- `formatEvent`: every event kind returns at least one line; room and question
+- Boot shows the title screen; Continue is enabled only for a valid save. New
+  Game enters the initial room with visible output and a score panel.
+- A save survives reload; download produces a valid JSON file and importing it
+  restores state. Importing a corrupt file shows an error and leaves the live
+  save intact.
+- `submit` dispatches known verbs, turns unknown input into a friendly message
+  without throwing, increments the turn once per game command and does not
+  advance it for meta actions.
+- Door and container verbs set the documented flags; failed preconditions leave
+  state unchanged.
+- `formatEvent` returns at least one line for every event; room and question
   formatting include exits and numbered options.
-- `ScoreTracker`: per-puzzle awards accumulate on one topic, each achievement
-  scores once, uncovered topics score nothing, and `total` matches the area sum.
-- `Session`: win check runs after scoring, end states suppress further commands.
+- `ScoreTracker` accumulates per-puzzle awards on one topic, scores each
+  achievement once, scores nothing for uncovered topics and keeps `total` equal
+  to the area sum.
+- `Session` runs the win check after scoring, and end states suppress further
+  commands.
+- `validateContent` rejects duplicate IDs, duplicate aliases, missing exit and
+  level-start targets and over-budget topic scores.
 
-**Playwright**
-
-- Boots to the title screen; Continue is disabled with no save.
-- New Game enters the initial room with visible output and a score panel.
-- A save survives reload; with a valid save, boot shows an enabled Continue.
-- Download produces a valid JSON file; importing it restores state.
-- Importing a corrupt file shows an error and leaves the live save intact.
-
-Run with `npm test`, `npm run test:e2e`, `npm run typecheck` and `npm run lint`.
-`playwright.config.ts` must set `baseURL` to include `/CompSciQuest/`.
-
-## 13. Decisions
-
-| Topic                | Decision                                                                                    |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| Title screen         | v1 has one, as an overlay; Continue + New Game, Continue disabled without a valid save.     |
-| UI layout            | Windowed panels: terminal and inline dialogue/quiz/hint panels, side score and save panels. |
-| Save controls        | Buttons plus typed meta-action aliases, both intercepted by `Game` before core dispatch.    |
-| Doors and containers | Dedicated `open`, `close`, `unlock` and `put` verbs; `use` still works for puzzles.         |
-| Topic scoring        | Per puzzle: each achievement awards its own points within `SpecTopic.maxScore`.             |
-| Empty content        | Ship a clearly marked one-area, two-room stub fixture for boot and e2e tests.               |
-| Content registration | One `ContentBundle` of typed catalogues from `src/content/index.ts`, validated at boot.     |
-| Start state          | Content declares `startAreaId`/`startRoomId`; lives reset on area change.                   |
-| Command/event unions | Canonical in this document; other documents link here.                                      |
-| UI data channel      | Events drive transcript and transient panels; `GameViewData` drives ScorePanel.             |
-| Command history      | Bounded in-memory (50), no persistence, no duplicate suppression.                           |
-| Setup docs           | `package.json` and `README.md` are authoritative for installed tooling.                     |
+Run `npm test`, `npm run test:e2e`, `npm run typecheck` and `npm run lint`; the
+scripts are in `package.json`. `playwright.config.ts` sets `baseURL` to include
+`/CompSciQuest/`.

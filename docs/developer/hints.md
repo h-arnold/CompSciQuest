@@ -1,20 +1,16 @@
-# Hints (design)
+# Hints
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
-[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
-[NPCs](npcs.md) · [hazards](hazards.md) ·
-[quiz combat](combat.md) · [puzzles](puzzles.md).
+Hint ladders are a first-class mechanic: this is a revision tool, so helping a
+stuck student is part of the product. Hints escalate in levels and can be
+unlocked by evidence that the player is stuck. The
+[developer documentation index](README.md) lists the other subsystem docs.
 
 ## 1. Scope
 
-Hints are a first-class mechanic: this is a revision tool, so helping a stuck
-student is part of the product. The design follows TADS's adaptive hint idea —
-hints escalate in levels and can be unlocked by evidence that the player is
-stuck.
-
-Hints are planned for v1 with designs in this document.
+A hint ladder is a `HintSequence`: an ordered set of levels with unlock
+conditions. `HintSystem` delivers the next level on an explicit `hint` or
+automatically when a stuck counter reaches its threshold. It never writes score,
+puzzle or quiz state.
 
 ## 2. Model
 
@@ -36,16 +32,19 @@ export interface HintSequence {
 }
 ```
 
-`targets` may include GCSE spec topic IDs, so the `ScorePanel` can label which
-revision area a hint belongs to. Definitions live in `src/content/hints/`;
-`HintCatalogue` resolves by ID and by target.
+`targets` links a ladder to puzzle, quiz, room and spec-topic IDs so
+`HintSystem` can resolve context ([§3](#3-commands-and-delivery)). Hints are
+authored in `docs/content/<area>/hints.yaml` and generated into
+`src/content/authored/hints.ts` as `ContentBundle.hints`. `HintSystem` resolves
+a target through `bundle.hints.all` by sequence ID or by membership in
+`targets`.
 
 `HintStateDto` (`levelsShown`, `lastShownTurn?`) is defined in
 [storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state).
 
-Counters for gating live in `GameStateDto.counters` using the shared namespace:
-`hints-shown:<hintId>`, `failed-attempts:<quizId>`, `turns-since:<puzzleId>`.
-Systems increment them; conditions only read them.
+A level's `unlock` is a `Condition`, usually `counter-at-least` on one of the
+shared counter keys
+([storage-schema.md §4](storage-schema.md#4-counters-and-stuckness)).
 
 ## 3. Commands and delivery
 
@@ -55,90 +54,65 @@ Its optional `targetId` is omitted when there is no explicit context.
 
 Context resolution order:
 
-1. explicit `targetId` (if given);
-2. active quiz (`QuizStateDto.activeQuizId`);
-3. the current room — a `HintSequence` whose `targets` includes that room's ID or
-   one of its mapped spec topics.
+1. an explicit `targetId` (if given), which must resolve to a sequence; an
+   explicit target does not fall through to the next context;
+2. the active quiz (`QuizStateDto.activeQuizId`), through the quiz's
+   `hintSequenceId` or a sequence that targets the quiz ID;
+3. the current room — a `HintSequence` whose `targets` includes that room's ID
+   or one of its mapped spec topics.
 
-There is no separate "active puzzle context" field. If none of these resolves,
-emit a friendly "no hints available here" message instead of an error.
+An explicit `targetId` is a context ID supplied by the caller. The terminal's
+`hint` command is normally typed with no argument. A typed argument is resolved
+through the ordinary name resolver, whose aliases cover items, actors and
+scenery rather than hint, quiz, puzzle or topic IDs; an unresolved phrase is
+treated as a bare `hint` and resolved by the context order above, so an
+unrecognised word never produces a parser error.
 
-When a sequence is found, choose the lowest-numbered level that is unlocked and
-has not been shown (i.e. the next level in order). Independent unlock conditions
-must not skip levels. Then apply a `show-hint` effect. Repeated
-requests are rate-limited: if `cooldownTurns` is set and `lastShownTurn` exists,
-a request before `turn - lastShownTurn >= cooldownTurns` returns a short "think
-about it for a moment" message and does not show a hint. `hint-shown` is defined
-in the canonical union in
-[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
-`HintPanel` (or `OutputLog`) renders it with `textContent`.
+When a sequence resolves, `HintSystem` shows the lowest-numbered level that is
+unlocked and has not been shown; independent unlock conditions never skip a
+lower unshown level. With no resolved sequence it emits a friendly "no hints
+available here" message.
+
+Repeated requests are rate-limited: after a hint shown on an earlier turn, a
+request before `cooldownTurns` turns have passed returns a short "think about it
+for a moment" message. A hint already shown this turn is not repeated: the
+command produces no new output.
 
 Explicit delivery runs in **phase 4**, after the puzzle system, so a puzzle
 solved in the same turn is reported before its hint
 ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
-The phase-3 dispatch for `hint` therefore emits no effects.
-
-An explicit `targetId` is a context ID supplied by the UI or API (for example a
-hint button that names the active quiz). The terminal's `hint` command is
-normally typed with no argument. A typed argument is resolved through the
-ordinary name resolver, whose aliases cover items, actors and scenery rather
-than hint, quiz, puzzle or topic IDs; a phrase it cannot resolve is treated as a
-bare `hint` and then resolved by the context order above, so an unrecognised
-word never produces a parser error.
-
-Hints never write puzzle/quiz state.
+The phase-3 dispatch for `hint` emits no effects. `hint-shown` is in the
+canonical union in
+[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
+`HintPanel` renders it with `textContent`.
 
 ## 4. Adaptive behaviour
 
-Two delivery modes, both supported:
+Explicit delivery is the `hint` command. Automatic delivery applies when
+`autoOfferAfter` is set and the relevant stuck counter reaches it; `HintSystem`
+then applies a `show-hint` effect in phase 4. A turn whose command is `hint`
+skips automatic delivery.
 
-1. **Explicit** — the player types `hint`; the next available level is shown.
-2. **Automatic** — if `autoOfferAfter` is set, a wrong quiz answer or N stuck
-   turns increments a counter; when it reaches the threshold, a `show-hint`
-   effect is applied in phase 4.
+- **Quiz trigger.** A wrong answer increments `failed-attempts:<quizId>`, and the
+  ladder offers a level on a turn whose batch contains an incorrect
+  `answer-evaluated` for that quiz. A later turn with no wrong answer offers
+  nothing.
+- **Puzzle trigger.** Each active puzzle's `turns-since:<puzzleId>` counter
+  advances every turn. The ladder offers a level once, on the turn the counter
+  reaches `autoOfferAfter`; a counter that stays above the threshold never
+  triggers again.
 
-   The trigger is a **new** wrong answer or the turn the stuck-turn counter
-   reaches `autoOfferAfter`, never the mere persistence of a counter above the
-   threshold. A quiz offers the next level on a turn whose batch contains an
-   incorrect `answer-evaluated` for that quiz; a later turn with no wrong answer
-   offers nothing. A puzzle offers the next level once, on the turn its
-   `turns-since` counter reaches `autoOfferAfter`. Further levels remain
-   available through an explicit `hint`, subject to `cooldownTurns`.
+Each trigger delivers at most one level, and a hint shown this turn is not
+delivered again by a later pass in the same turn. Further levels remain
+available through an explicit `hint`, subject to `cooldownTurns`. Automatic
+hints emit the same `hint-shown` event, so the UI needs no special case.
 
-Automatic hints emit the same `hint-shown` event, so the UI needs no special
-case. **There is no "reveal the answer" level**: even the final hint is a nudge
-or instruction, and the player must still supply an answer to pass a quiz.
+**There is no "reveal the answer" level**: even the final hint is a nudge or
+instruction, and the player must still supply an answer to pass a quiz.
 
 ## 5. Score interaction
 
-The default `scorePenalty` is **0** — penalties discourage the behaviour a
-revision tool should encourage. If content opts in, `HintSystem` must not write
-score directly; it emits `hint-penalty-applied { hintId, delta }` and
-`ScoreTracker` (the sole score writer) applies it. This event is part of the
-canonical union in
-[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
-
-## 6. Tests
-
-- Explicit `targetId` takes precedence over an active quiz.
-- With no target and no quiz, resolution uses the current room's mapped topics.
-- Missing target or empty sequence produces a friendly message, not an error.
-- Only unlocked, unshown levels are delivered; levels ascend in order.
-- `cooldownTurns` blocks early repeat requests and allows them after the interval.
-- `autoOfferAfter` fires at the threshold and not before; a later turn with no
-  new wrong answer or threshold crossing does not deliver another level.
-- Hint delivery does not change `solved`, `correctCount` or quiz state.
-- No hint level reveals the answer.
-- `levelsShown`, `lastShownTurn` and counters survive JSON save/load; a shown
-  hint is not repeated after reload.
-- If a penalty is configured, `ScoreTracker` (not `HintSystem`) writes it.
-
-## 7. Decisions resolved
-
-- Hints are tied to spec topics so the score panel can label the revision area.
-- Repeated top-level requests use a small cooldown (`cooldownTurns`).
-- No hint level reveals the answer; the player must always answer.
-- Optional penalties go through `hint-penalty-applied` and `ScoreTracker`.
-- There is no hazard-penalty lockout: a hazard is a brief penalty applied in
-  phase 4 and does not suppress a hint in the same turn (decision reversed by
-  user on 2026-11-25).
+The default `scorePenalty` is 0. A `show-hint` effect always emits `hint-shown`
+and `hint-penalty-applied`; the delta is 0 when the level declares no penalty.
+`HintSystem` never writes score, and `ScoreTracker` applies the delta
+([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping)).

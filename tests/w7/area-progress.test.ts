@@ -290,6 +290,58 @@ describe('W7R-AREA-01 bundle position and matching progress rows', () => {
 
   it('W7R-AREA-01: empty-progress completion creates one restorable row without awarding score', () => {
     const bundle = areaBundle();
+    const state = stateAt(bundle, ROOM_A1, []);
+    const applier = createEffectApplier(state, {
+      bundle,
+      random: new FakeRandom(),
+    });
+    const expectedCurrent = {
+      worldId: 'world-b',
+      areaId: 'area-b',
+      visitedRooms: [],
+      completedTopics: [TOPIC_ID],
+      earnedScore: 0,
+      maxScore: 10,
+    };
+
+    applier.apply({
+      kind: 'move-player',
+      roomId: ROOM_B2,
+      reason: 'same-turn cross-area completion',
+    });
+    const events = applier.apply({ kind: 'complete-topic', topicId: TOPIC_ID });
+
+    expect(events).toEqual([{ type: 'topic-completed', topicId: TOPIC_ID }]);
+    expect(state.progress).toEqual([expectedCurrent]);
+    expect(state.score).toBe(0);
+    expect(
+      state.progress.filter(
+        (entry) => entry.worldId === 'world-b' && entry.areaId === 'area-b',
+      ),
+    ).toHaveLength(1);
+    expect(
+      new Set(state.progress.map((entry) => `${entry.worldId}/${entry.areaId}`))
+        .size,
+    ).toBe(state.progress.length);
+
+    applier.apply({ kind: 'complete-topic', topicId: TOPIC_ID });
+
+    expect(state.progress).toEqual([expectedCurrent]);
+    expect(state.score).toBe(0);
+
+    const restored = createFromDto(roundTripThroughJson(state));
+
+    expect(restored.progress).toEqual([expectedCurrent]);
+    expect(restored.score).toBe(0);
+    expect(
+      restored.progress.find(
+        (entry) => entry.worldId === 'world-b' && entry.areaId === 'area-b',
+      ),
+    ).toEqual(expectedCurrent);
+  });
+
+  it('W7R-AREA-01: completion preserves an unrelated row and creates no duplicate world/area pair', () => {
+    const bundle = areaBundle();
     const unrelated = progress('world-a', 'area-a', 5, [ROOM_A1]);
     const unrelatedBefore = JSON.stringify(unrelated);
     const state = stateAt(bundle, ROOM_B2, [unrelated]);
@@ -306,22 +358,14 @@ describe('W7R-AREA-01 bundle position and matching progress rows', () => {
       maxScore: 10,
     };
 
-    const events = applier.apply({ kind: 'complete-topic', topicId: TOPIC_ID });
+    applier.apply({ kind: 'complete-topic', topicId: TOPIC_ID });
 
-    expect(events).toEqual([{ type: 'topic-completed', topicId: TOPIC_ID }]);
     expect(state.progress).toEqual([unrelated, expectedCurrent]);
     expect(JSON.stringify(unrelated)).toBe(unrelatedBefore);
     expect(state.score).toBe(5);
     expect(
-      state.progress.filter(
-        (entry) =>
-          entry.worldId === 'world-b' && entry.areaId === 'area-b',
-      ),
-    ).toHaveLength(1);
-    expect(
-      new Set(
-        state.progress.map((entry) => `${entry.worldId}/${entry.areaId}`),
-      ).size,
+      new Set(state.progress.map((entry) => `${entry.worldId}/${entry.areaId}`))
+        .size,
     ).toBe(state.progress.length);
 
     applier.apply({ kind: 'complete-topic', topicId: TOPIC_ID });
@@ -329,17 +373,6 @@ describe('W7R-AREA-01 bundle position and matching progress rows', () => {
     expect(state.progress).toEqual([unrelated, expectedCurrent]);
     expect(JSON.stringify(unrelated)).toBe(unrelatedBefore);
     expect(state.score).toBe(5);
-
-    const restored = createFromDto(roundTripThroughJson(state));
-
-    expect(restored.progress).toEqual([unrelated, expectedCurrent]);
-    expect(restored.score).toBe(5);
-    expect(
-      restored.progress.find(
-        (entry) =>
-          entry.worldId === 'world-b' && entry.areaId === 'area-b',
-      ),
-    ).toEqual(expectedCurrent);
   });
 
   it('W7R-AREA-01: area views use the world/area pair and cap visitedRoomCount', () => {

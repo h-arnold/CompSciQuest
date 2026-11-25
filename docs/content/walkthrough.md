@@ -96,9 +96,10 @@ unavoidable losses.
    together (item useNotes). This solves `puzzle-set-the-switches` →
    `complete-topic number-conversion` and opens the north arch. Talk to the foreman:
    `topic-foreman-switches` → `quiz-switchyard` (onPass → `complete-topic
-   switch-to-bit`; score 0, no life loss); `topic-foreman-lift` (now active, gated on
-   `switches-set`) sets `stacks-sealed` and → `quiz-data-types` (onPass →
-   `complete-topic data-types`).
+   switch-to-bit`; score 0, no life loss). That beat stays askable until the test
+   passes, so a failed attempt is retried on the spot. **Pass `quiz-switchyard`**,
+   which opens `topic-foreman-lift`; it sets `stacks-sealed` and → `quiz-data-types`
+   (onPass → `complete-topic data-types`).
 4. **Up → `room-binary-hall`.**
 5. **PUT the unlabelled decimal sample on the `real` bin.** Sets `types-sorted`,
    solving `puzzle-sort-the-data-types` → `complete-topic data-types`.
@@ -108,37 +109,47 @@ unavoidable losses.
    **North again** on the safe re-entry and take `item-hex-nibble-card`.
 7. **USE the nibble card on the carry lamp** → `carry-cleared` (disarms the hazard);
    **USE the nibble card on the nibble groups** → `hex-read`, solving
-   `puzzle-read-nibbles` (opens the east arch). **USE the carry token on the
-   rightmost column** → `carries-added` (`puzzle-add-with-carries`). **USE the shift
-   lever on the row** → `row-shifted` (`puzzle-shift-the-row`). In the same hex-deck
-   leg, **SHOW the switch gauge to the foreman** → `overflow-checked`
-   (`puzzle-check-the-overflow-register`, via the new `topic-foreman-show-gauge`),
-   and talk to the clerk: `topic-clerk-shifts` → `quiz-number-systems` →
-   `complete-topic number-conversion`.
+   `puzzle-read-nibbles` (opens the east arch). Talk to the clerk while you hold the
+   card: `topic-clerk-bases` (the three bases), then `topic-clerk-carries` (the carry
+   rule, before the token), then `topic-clerk-bases-known` (the card's back).
+   **USE the carry token on the rightmost column** → `carries-added`
+   (`puzzle-add-with-carries`). **USE the shift lever on the row** → `row-shifted`
+   (`puzzle-shift-the-row`). In the same hex-deck leg, **SHOW the switch gauge to the
+   foreman** → `overflow-checked` (`puzzle-check-the-overflow-register`, via
+   `topic-foreman-show-gauge`), then talk to the clerk again: `topic-clerk-shifts` →
+   `quiz-number-systems` → `complete-topic number-conversion`. The shift beat stays
+   askable until that audit passes; a failed attempt lands you in the Binary Hall, so
+   walk north again (`switches-set` still holds) and re-ask.
 8. **South → hub. East → `room-character-tiles`** (gate `hex-read`). Take
    `item-ascii-stamp`.
 9. **EXAMINE the tiles in the character case** → `tiles-verified` (disarms
    `hazard-glyph-corruption`). **USE the ASCII stamp on the tiles in the character
    case** → `characters-matched`, solving `puzzle-match-characters` (opens the south
-   arch). Ask the typesetter about the spare tile → `unicode-tile-cut`
-   (`puzzle-make-room-for-the-welsh-letter`); `topic-setter-unicode` →
-   `quiz-character-representation` → `complete-topic character-representation`.
+   arch). Talk to the typesetter: `topic-setter-ascii` (character versus string),
+   then ask about the spare tile with `topic-setter-unicode` → `unicode-tile-cut`
+   (`puzzle-make-room-for-the-welsh-letter`) and `quiz-character-representation` →
+   `complete-topic character-representation`. The unicode beat stays askable until
+   the test is passed, so a failed attempt can re-open it; `topic-setter-string`
+   opens once the pass is recorded.
 10. **West → hub. South → `room-picture-mosaic`** (gate `characters-matched`). Take
     `item-pixel-lens`.
 11. **USE the pixel lens on the mosaic** → `picture-built`, solving
     `puzzle-build-mosaic` (opens the up arch). **USE the pixel lens on the nibble
     card** → `pixels-weighed` (`puzzle-weigh-the-pixels`). **SHOW the pixel lens to
     the foreman** → `badge-scaled` (`puzzle-scale-the-badge`). Talk to the critic:
-    `topic-critic-storage` → `quiz-graphics-representation` → `complete-topic
-    graphics-representation`.
+    `topic-critic-vectors` (vector versus raster), `topic-critic-depth` (bit depth
+    and colour depth), then `topic-critic-storage` → `quiz-graphics-representation`
+    → `complete-topic graphics-representation`; that beat stays askable until the
+    test passes.
 12. **North → hub. Up → `room-sound-choir`** (gate `picture-built`). Take
     `item-sample-fork`.
 13. **USE the sample fork on the bit-rate desk** → `sound-sampled`, solving
-    `puzzle-tune-sampling` (opens the in arch). The choirmaster's quiz topic
-    (`topic-conductor-storage`) gates on `bit-rate-counted`, so the audio test is
-    taken in step 15, after the fork is shown. The fork is shown to the foreman in
-    step 15, after its last USE, so a `show`-transferred fork cannot strand the
-    ladder task.
+    `puzzle-tune-sampling` (opens the in arch). Ask the choirmaster
+    `topic-conductor-samples` (samples and channels) and `topic-conductor-depth`
+    (bit depth and sample rate) now; the quiz topic (`topic-conductor-storage`)
+    gates on `bit-rate-counted`, so the audio test is taken in step 15, after the
+    fork is shown. The fork is shown to the foreman in step 15, after its last USE,
+    so a `show`-transferred fork cannot strand the ladder task.
 14. **Down → hub. In → `room-storage-stacks`** (gate `sound-sampled`).
     `hazard-bit-rot` is disarmed by `stacks-sealed` set at step 3; the keeper's
     `topic-keeper-units` is the alternative route. Read the flaking-label telegraph.
@@ -146,18 +157,23 @@ unavoidable losses.
     `puzzle-stack-the-bytes` (opens the out arch). **SHOW the fork to the foreman**
     → `bit-rate-counted` (`puzzle-count-the-bit-rate`); now
     `topic-conductor-storage` is active, so talk to the choirmaster →
-    `quiz-sound-representation` → `complete-topic sound-representation`. Then **SHOW
+    `quiz-sound-representation` → `complete-topic sound-representation`; the beat
+    stays askable until that test passes. Then **SHOW
     the nibble card to the foreman** → `capacity-labelled` (`puzzle-label-the-capacity`).
     Both SHOWs come after the items' last USE; the choirmaster is globally
-    addressable. Finally, talk to the stack keeper: `topic-keeper-capacity` →
-    `quiz-storage-units` → `complete-topic data-storage-units`.
+    addressable. Finally, talk to the stack keeper: `topic-keeper-units` (the unit
+    ladder and the 1,024 rule), then `topic-keeper-capacity` → `quiz-storage-units`
+    → `complete-topic data-storage-units`; that beat stays askable until the test
+    passes.
 16. **Out → hub. Out → `room-compression-press`** (gate `stacks-sorted`). Take
     `item-compression-die`.
-17. **USE the compression die** → `archive-packed`, solving
+17. Talk to the press operator first: `topic-operator-lossy` (lossless versus lossy,
+    and the choice the lever offers); that beat is what `topic-operator-ratio`
+    requires. **USE the compression die** → `archive-packed`, solving
     `puzzle-pack-the-archive`. **USE the compression die on the ASCII stamp** →
-    `compression-chosen` (`puzzle-choose-the-compression`). Talk to the press
-    operator: `topic-operator-ratio` → `quiz-data-compression` → `complete-topic
-    data-compression`.
+    `compression-chosen` (`puzzle-choose-the-compression`). Then
+    `topic-operator-ratio` → `quiz-data-compression` → `complete-topic
+    data-compression`; the ratio beat stays askable until that test passes.
 18. **All eight `covered` topics are complete** → `Session.observe` emits
     `game-won` with the final score (content-rules.md §8). Return in → hub if a final
     room transition is needed; no further gate applies.
@@ -195,7 +211,7 @@ with no cycle (topic file §5).
 | Rooms | 11 (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the hub |
 | Exits | all declared in the four `rooms.yaml` cards | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
 | Items | 19 total: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
-| NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; AltTopics on puzzle flags set on the path; four foreman `show` topics are always active |
+| NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; each middle beat records a `*-heard` flag (`clerk-carry-heard`, `critic-depth-heard`, `conductor-depth-heard`) that the next beat requires, and the predecessor's cartridge beat records `predecessor-cartridge-heard` for the duck-as-bit beat (`topic-predecessor-geese` is a keyword topic); every quiz handoff gates on `not quiz-passed <its quiz>` and stays askable, re-issuing the test, until that pass (P5), which makes steps 3, 7, 9, 11, 13, 15 and 17 retryable; `topic-foreman-lift` requires `quiz-passed quiz-switchyard`, `topic-setter-string` requires `quiz-passed quiz-character-representation`, and `topic-operator-ratio` requires the lossy beat plus `archive-packed`; `topic-clerk-shifts-known` is reachable on the add-carries-first branch and `topic-clerk-bases-known` between the carry beat and the token; four foreman `show` topics are always active |
 | Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
 | Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |
 | Hazard triggers | 5 | overheat at step E (first entry), carry-overflow at step 6 (first entry), bit-rot at step 14, glyph-corruption on stamp use at step 9, detention-bell on optional cartridge use at step 1 (`once: true`) |
@@ -248,8 +264,9 @@ passes closed successive findings, and the fourth returned PASS.
    the overflow firing at step 6; steps 2 and 6 continue with the safe re-entry where
    the counterplay item is taken.
 2. **`bit-rot` hub disarm lifetime — RESOLVED.** `stacks-sealed` is set from the hub by
-   `topic-foreman-lift` (gated on `switches-set`, before `quiz-data-types` closes the
-   topic), so it is obtainable before step 14. `hazard-bit-rot` now also has
+   `topic-foreman-lift` (open once `quiz-switchyard` has passed, and until
+   `quiz-data-types` passes, so the hub disarm is obtainable before step 14).
+   `hazard-bit-rot` now also has
    `once: true`, so even without the hub disarm the in-room keeper route is reachable
    on a later entry.
 3. **Foreman "SHOW" flag producers — RESOLVED.** The four leaf flags had no runtime
@@ -277,6 +294,15 @@ The first-pass majors about trace ordering (hex-deck actions after the move to t
 character-tiles), quiz ownership (`topic-setter-unicode`, not `-ascii`), and the
 "six puzzles" miscount have all been corrected in §1, §2, §3, §4 and §5. The second
 pass also corrected the stale leaf-step list in §4.
+
+**Code follow-up (not a content finding).** `src/core/npcs/TopicSelection.ts` prefers
+a topic whose ID words appear in the free-text phrase (`isIdMatchingPhrase`). That
+contradicts `npcs.md` §3 ("content must not rely on a keyword or an ID word as a
+tie-break") and would let the phrase in a trace step reach a topic its conditions do
+not select. The cards no longer depend on it — every actor's ask/tell pair is
+provably exclusive on `isActive` after the 2026-11-25 repair — but the runtime
+preference must be removed by `code-lead` and the trace phrases re-audited before the
+W7 browser pass, so a green walkthrough cannot be won by an ID word.
 
 ## 7. Verdict
 

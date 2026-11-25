@@ -662,3 +662,51 @@ Zone-specific questions are in the owning topic file.
   no decision, ID, alias, card, flag, gate, score, coverage entry or V4 trace, so no
   writer is briefed and no review cycle opens. The completed 1.2.1 ideation sub-stage
   is recorded in the 2026-11-24 entry above and in `status.md`.
+- 2026-11-25 — **C7 conversation-ladder repair (user-directed).** The user asked for
+  the zone-1 NPC content to be re-authored after the new `npc-content` C7 gate
+  reported 18 overlapping ask/tell pairs across the clerk, typesetter, mosaic
+  critic, choirmaster and stack keeper. The repair keeps every topic ID and every
+  response line (one later gains an underflow gloss, noted below): each actor's
+  existing declaration-order sequence becomes an explicit,
+  provable ladder. The first beat keeps `not npc-knows`; a middle beat records its
+  own evidence in a content-internal `*-heard` flag, and the final beat requires
+  that flag. New flags (no registry prefix; content keys owned by the NPC card,
+  `npcs.yaml`): `clerk-carry-heard` (set by `topic-clerk-carries` and
+  `topic-clerk-shifts-known`), `critic-depth-heard` (set by
+  `topic-critic-depth`) and `conductor-depth-heard` (set by
+  `topic-conductor-depth`). `topic-clerk-bases-known` keeps its ask/tell match and is
+  gated on `clerk-carry-heard` and `not carries-added`, so it is reachable between the
+  carry beat and the token and exclusive with both shift beats; its response and
+  prompt are unchanged. The two quiz handoffs that follow a middle beat
+  (`topic-critic-storage`, `topic-conductor-storage`) gain `npc-knows` alongside
+  the heard flag. The typesetter is the exception to the `*-heard` pattern:
+  `topic-setter-unicode` (the handoff) is gated on `not quiz-passed
+  quiz-character-representation` and `topic-setter-string` on that pass, because
+  gating the handoff on its own `unicode-tile-cut` product would leave a failed
+  attempt with no way back to the quiz (C7, P5). Two PCK-review follow-ups land in
+  the same round: the underflow concept the spec names beside overflow gains a
+  plain gloss in `topic-clerk-shifts` (the quiz already used it as a distractor),
+  and that is the only response line that changes. No ID, alias, prompt, spec fact,
+  gate, score, dependency or quiz handoff changes; no writer invents an ID.
+- 2026-11-25 — **Quiz-handoff retry (user decision).** P5 promises unlimited quiz
+  retries, but `once` retires a topic before its effects run — the NPC-GAP-06
+  decision of the same date makes a used `once` topic fall through to the actor's
+  default — so no quiz handoff in the Switchyard could re-issue its test after a
+  failed attempt. The user chose to settle this in content rather than in code.
+  Every quiz handoff in `npcs.yaml` (`topic-foreman-switches`, `-lift`,
+  `topic-clerk-shifts`, `topic-setter-unicode`, `topic-critic-storage`,
+  `topic-conductor-storage`, `topic-keeper-capacity`, `topic-operator-ratio`) now
+  gates on `not quiz-passed <its quiz>` and uses the `sequence` strategy, so a
+  single response repeats while the gate holds and the test can be re-issued; the
+  topic retires when the pass lands. `topic-foreman-lift` additionally requires
+  `quiz-passed quiz-switchyard` and `topic-setter-string` requires
+  `quiz-passed quiz-character-representation`, so each ladder remains provably
+  exclusive. The same round closes three C7 majors that the node exemption had
+  masked: `topic-predecessor-comic-sans` records a new content key
+  `predecessor-cartridge-heard` that `topic-predecessor-duck-as-bit` requires, and
+  `topic-operator-ratio` requires `npc-knows data-compression` (set by
+  `topic-operator-lossy`) as well as `archive-packed`. The V4 trace follows: step 3
+  passes `quiz-switchyard` before the lift beat, step 17 asks the lossy beat before
+  the die, and steps 3, 7, 9, 11, 13, 15 and 17 record that a failed attempt is
+  retried at the same beat. No ID, alias, response line, prompt, quiz ID, score,
+  dependency or spec fact changes, and no code is touched.

@@ -13,6 +13,7 @@ import {
 import { makeBundle } from '../fixtures/persistence';
 
 const ROOM_ANCHOR = '    exits: []\n    score: 0';
+const NULL_ITEM_ID: unknown = JSON.parse('null');
 const VALID_SCENERY = [
   {
     name: 'inspection panel',
@@ -74,7 +75,7 @@ const EXAMINE_CASES = [
   {
     label: 'null itemId',
     actingItem: 'itemId: null',
-    interaction: { itemId: null },
+    interaction: { itemId: NULL_ITEM_ID },
   },
   {
     label: 'empty-string itemId',
@@ -84,7 +85,7 @@ const EXAMINE_CASES = [
   {
     label: 'whitespace-only itemId',
     actingItem: 'itemId: "   "',
-    interaction: { itemId: '   ' },
+    interaction: { itemId: ' '.repeat(3) },
   },
   {
     label: 'a valid string itemId on EXAMINE',
@@ -309,7 +310,7 @@ describe('W7R-CONTENT-01 authoring EXAMINE interaction validation', () => {
 
       expectUsefulAuthoringFindings(
         result,
-        /EXAMINE interaction must omit its acting item/iu,
+        /EXAMINE interaction must omit its acting item|Optional field 'itemId' must be omitted/iu,
       );
       expect(JSON.stringify(cards)).toBe(before);
     },

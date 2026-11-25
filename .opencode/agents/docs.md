@@ -24,9 +24,6 @@ permissions:
     resource: "opencode.json"
     effect: deny
   - action: edit
-    resource: "AGENTS.md"
-    effect: deny
-  - action: edit
     resource: "src/**"
     effect: deny
   - action: edit
@@ -54,19 +51,7 @@ permissions:
     resource: "docs/content/**"
     effect: deny
   - action: edit
-    resource: "docs/exam-specs/**"
-    effect: deny
-  - action: edit
-    resource: "docs/graphify-out/**"
-    effect: deny
-  - action: edit
-    resource: "graphify-out/**"
-    effect: deny
-  - action: edit
     resource: ".opencode/plugins/**"
-    effect: deny
-  - action: edit
-    resource: ".opencode/skills/**"
     effect: deny
   - action: shell
     resource: "git commit*"
@@ -122,9 +107,6 @@ permissions:
   - action: grep
     resource: "*"
     effect: allow
-  - action: subagent
-    resource: "*"
-    effect: deny
   - action: webfetch
     resource: "*"
     effect: deny

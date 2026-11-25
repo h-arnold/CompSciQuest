@@ -1,18 +1,17 @@
-# Puzzles (design)
+# Puzzles
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
-[shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
-[NPCs](npcs.md) · [hazards](hazards.md) ·
-[quiz combat](combat.md) · [hints](hints.md).
+Puzzles are revision tasks: using an item at the right place, combining clues,
+or answering an NPC correctly. A puzzle is solved when all its requirement
+conditions hold, and completion records its mapped spec topic. The
+[developer documentation index](README.md) lists the other subsystem docs.
 
 ## 1. Scope
 
-Puzzles are revision tasks: using an item at the right place, combining clues,
-or answering an NPC correctly. They are planned for v1 with designs in this
-document. Completion reporting already has a seam in `architecture.md` §6.3
-(`topic-completed` → `ScoreTracker`), so the score panel needs no redesign.
+Multi-step tasks are modelled as one puzzle per step, linked by `dependsOn`
+([§4](#4-puzzle-dependency-graph)). Completion applies `complete-topic` for the
+mapped spec topic; `PuzzleSystem` never writes score, and `ScoreTracker` awards
+it from the `puzzle-solved` event
+([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 
 ## 2. Model
 
@@ -36,37 +35,43 @@ in the dependency graph, but a puzzle may be activated before it is solved).
 
 ## 3. Completion detection
 
-`PuzzleSystem` runs in phase 4 of the [turn pipeline](shared-rules.md#2-turn-pipeline-amends-architecturemd-62),
-after hazards and NPC reactions, before auto-hints:
+`PuzzleSystem` runs in phase 4 of the
+[turn pipeline](shared-rules.md#2-turn-pipeline), after hazards and NPC
+reactions, before auto-hints
+([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
 
-1. For each puzzle in declaration order, if it is `unsolved` and at least one
-   requirement is true, `PuzzleSystem` applies a `set-puzzle-active` effect
-   through its injected `EffectApplier`. The applier sets the phase and emits
-   `puzzle-activated`; the `turns-since:<puzzleId>` counter starts on the next
-   turn.
-2. If all `requirements` hold, it applies a `set-puzzle-solved` effect through
-   the same applier. The phase is set to `solved` **before** `puzzle-solved` is
-   emitted, which prevents double-firing.
-3. Apply `onSolve` effects through that applier. If `topicId` is set, include a
-   `complete-topic` effect; that emits `topic-completed` and records completion
-   for the win check. Points come from the puzzle's own `score` on the
-   `puzzle-solved` event. The settled rule is **per-puzzle scoring**: several
-   puzzles may map to one topic and each awards its own points, within the
-   topic's `maxScore` budget
-   ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
-   Only covered topics with evidence are scoreable.
-4. A solved puzzle stays solved. A hazard teleport or flag reset does **not**
-   revert it — puzzle progress is owned solely by `PuzzleSystem`.
+For each puzzle in declaration order:
 
-`PuzzleSystem` is event-returning like the other phase-4 systems: it returns the
-`GameEvent[]` produced by its applier, while `Game` owns the turn buffer
+1. A solved puzzle is skipped. When at least one requirement is true but not all
+   of them are, `PuzzleSystem` applies a `set-puzzle-active` effect through the
+   injected `EffectApplier`, which sets the phase and emits `puzzle-activated`.
+   The `turns-since:<puzzleId>` counter is created at 0 and advances from the
+   next turn
+   ([storage-schema.md §4](storage-schema.md#4-counters-and-stuckness)).
+2. When all `requirements` hold, it applies `set-puzzle-solved` through the same
+   applier. A puzzle that first becomes active on a solving turn is set `active`
+   before it is set `solved`. The phase is set to `solved` **before**
+   `puzzle-solved` is emitted, which prevents double-firing.
+3. It applies `onSolve` effects in order, then `complete-topic` for `topicId`
+   when one is set. `topic-completed` records completion for the win check.
+   Points come from the puzzle's own `score` on the `puzzle-solved` event under
+   the per-puzzle rule in
+   [application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic):
+   several puzzles may map to one topic and each awards its own points, within
+   the topic's `maxScore` budget.
+
+A solved puzzle stays solved. `PuzzleSystem` owns puzzle phase, so no hazard
+teleport or flag reset can revert it.
+
+`PuzzleSystem` returns the `GameEvent[]` produced by its applier, while `Game`
+owns the turn buffer
 ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
 
 **Critical authoring rule:** requirements must be _action-set flags_, not mere
 possession. "Has the brass key" must not auto-solve "unlock the door"; the
-`use key on door` handler sets `door-unlocked`, and _that flag_ is a requirement.
-A possession check is only valid for puzzles whose solution genuinely is
-carrying something to a place.
+`use key on door` handler sets `door-unlocked`, and _that flag_ is a
+requirement. A possession check is only valid for puzzles whose solution
+genuinely is carrying something to a place.
 
 ## 4. Puzzle Dependency Graph
 
@@ -78,11 +83,12 @@ testing tool**, not runtime machinery:
 - It is a **DAG**. A cycle means a softlock ("the key is inside the box it
   opens").
 - `dependsOn` in each definition is the graph's edge list.
-- A **Vitest** suite validates: acyclic, every puzzle reachable from the start,
-  no duplicate IDs, and every referenced `topicId` exists in the spec catalogue.
-  It runs with `npm test`; no extra build step.
+- The graph must be acyclic, every puzzle reachable from a root, and IDs
+  unique; every referenced `topicId` must exist in the spec catalogue.
+  `puzzleGraphFindings` checks these at boot and mirrors the authoring
+  `puzzle-graph` gate ([content-toolchain.md](content-toolchain.md)).
 - The graph's roots are the puzzles with no `dependsOn` entries; reachability
-  means every puzzle is reachable from at least one root (decision: 2026-11-25).
+  means every puzzle is reachable from at least one root.
 - Topological order gives a valid solve order; layer width shows how much
   non-linear branching exists.
 - For narrative text, only reference plot points in a puzzle's **ancestor
@@ -91,37 +97,21 @@ testing tool**, not runtime machinery:
 
 ## 5. Hints
 
-Set `hintSequenceId` to link a hint ladder ([hints](hints.md)); `hintSequence.targets`
-may reference the puzzle directly or its spec topic, so the `ScorePanel` can
-label the revision area. Hint availability can be gated by `counter-at-least`
-conditions such as `turns-since:<puzzleId>` or `hints-shown:<hintId>`. Hints never
-solve a puzzle; they only emit `hint-shown` events and may adjust counters.
+Set `hintSequenceId` to link a hint ladder ([hints](hints.md)). `HintSystem`
+uses the ladder's `targets` for context resolution
+([hints.md §3](hints.md#3-commands-and-delivery)). Hint availability can be
+gated by `counter-at-least` conditions such as `turns-since:<puzzleId>` or
+`hints-shown:<hintId>`. Hints never solve a puzzle; they only show hint levels.
 
 ## 6. Integration points
 
-- **Items:** `use` handler with optional `targetId` (already in `Command`).
-- **Doors/exits:** `Precondition` on `Exit` (already in `architecture.md`).
+- **Items:** the `use` verb carries an optional `targetId` in the canonical
+  `Command` union
+  ([application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs)).
+- **Doors and exits:** movement is gated by `Exit.preconditions`
+  ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
 - **NPCs:** a conversation topic can set a puzzle flag, or a quiz pass can emit
-  `complete-topic` for the same spec topic.
-- **Hazards:** a failure can reset level-local flags, but never puzzle phase.
-
-## 7. Tests
-
-- A puzzle transitions `unsolved → active → solved` once across many turns.
-- Possession alone does not solve an action-flag puzzle.
-- `onSolve` effects are applied in order and produce `puzzle-solved` +
-  `topic-completed`.
-- Score is written by `ScoreTracker`, not by `PuzzleSystem`.
-- Dependency graph validation: cycle rejected, unreachable puzzle rejected,
-  unknown topic ID rejected.
-- Save/load of a solved puzzle does not re-emit completion.
-- Hint linkage: hint condition gating does not change puzzle phase.
-
-## 8. Decisions resolved
-
-- Puzzles have an `active` phase; multi-step tasks are separate puzzle nodes.
-- Several puzzles may map to one topic (many-to-one).
-- Dependency graph validation runs as a Vitest test.
-- Puzzle phase is never reset by hazards or quiz failures.
-- Scoring is per puzzle, not once per topic
-  ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
+  `complete-topic` for the same spec topic
+  ([npcs.md §4](npcs.md#4-conversation-flow)).
+- **Hazards:** a failure can reset level-local flags, but never puzzle phase
+  ([hazards.md §4](hazards.md#4-failure-consequences)).

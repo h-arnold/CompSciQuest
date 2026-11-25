@@ -1,11 +1,6 @@
-# Storage schema (design)
+# Storage schema
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
-[shared rule spine](shared-rules.md) · [content rules](content-rules.md) ·
-[NPCs](npcs.md) · [hazards](hazards.md) · [quiz combat](combat.md) ·
-[puzzles](puzzles.md) · [hints](hints.md).
+Index: [docs/developer/README.md](README.md).
 
 ## 1. Scope and authority
 
@@ -14,7 +9,7 @@ is written to `localStorage`, what is exported as JSON, and how it is validated
 and restored. The subsystem documents own the meaning of individual fields; this
 document owns their serialised names and types.
 
-Constraints carried over from [architecture.md](architecture.md) §1–2:
+The storage design holds to these constraints:
 
 - Fully static site: `localStorage` is the live store, a JSON file is the portable
   store, and there is no backend or server-side state.
@@ -42,8 +37,8 @@ export interface SaveDto {
 - Quarantine key: `compsciquest:save:v1:corrupt` (§9).
 - `SaveManager.buildDto()` adds `version` and `savedAt` to `GameState.toDto()`;
   `JSON.stringify` produces the stored/imported text.
-- Download filename: `compsciquest-save-<ISO-date>.json`, so successive exports
-  do not overwrite one another.
+- Download filename: `compsciquest-save-<ISO-timestamp>.json`, so successive
+  exports do not overwrite one another.
 - On import the file's original `savedAt` is **preserved**; it is not restamped.
 - The UI renders every imported string via `textContent`, never as HTML.
 
@@ -140,20 +135,16 @@ export interface AreaProgress {
 [shared-rules.md](shared-rules.md) §§3–6; a schedule serialises its
 `remainingTurns`, optional `repeatEveryTurns` and its `Effect` as plain data.
 
-`QuizStateDto.startedTurn`, `HintStateDto.firstRequestedTurn` and the old generic
-`QuizStateDto.attempts` field were removed — nothing reads them. Retry limits use
-`quizAttempts` (§5).
-
 ### 3.3 Invariants
 
 1. Every item ID occurs in **exactly one** owner list: `player.inventory`, an
    `NpcStateDto.inventory`, or a `RoomStateDto.inventory`. `transfer-item` uses
    the reserved owner ID `'player'`, actor IDs for NPCs and room IDs for rooms,
    and updates both lists atomically.
-2. Mutable door/container/item state uses a kebab-case `flags` convention, e.g.
-   `door-open:<itemId>`, `container-open:<itemId>`, `item-used:<itemId>`, plus
-   puzzle action flags such as `door-unlocked`. There is no separate item-state
-   record. Each item's starting room is declared in content (§6).
+2. Mutable door/container/item state uses a kebab-case `flags` convention:
+   `door-open:<itemId>`, `container-open:<itemId>`, `door-unlocked:<itemId>`,
+   `container-unlocked:<itemId>` and `item-used:<itemId>`. There is no separate
+   item-state record. Each item's starting room is declared in content (§6).
 3. `progress` entries are unique by `(worldId, areaId)`.
 4. `status` is `'playing'` during normal play and is set by `Session` on
    `game-over` (`'lost'`) or `game-won` (`'won'`).
@@ -180,21 +171,19 @@ pruned**: the save keeps a complete audit trail.
 ## 5. Quiz attempts
 
 `quizAttempts[quizId]` is the lifetime number of times that quiz has been
-started. `start-quiz` checks it against the quiz's optional `attemptsAllowed`
-(omitted means unlimited) **before** starting and increments it on start.
-The active attempt's question order, index, correct count and answers live in
-`QuizStateDto`; they are reset when the quiz ends and `activeQuizId` is omitted.
+started; absent means none. [combat.md §3](combat.md#3-flow) owns the retry
+policy. The active attempt's question order, index, correct count and answers
+live in `QuizStateDto`; they are reset when the quiz ends and `activeQuizId` is
+omitted.
 
 ## 6. Content dependencies
 
 The save stores IDs, not content. Content must therefore declare:
 
-- each item's starting room (an `initialRoom` field on the area card's item
-  artifact, added to [content-rules.md](content-rules.md) §4.2);
-- level-start rooms per world/area for hazard and quiz failure teleports, as the
-  runtime `startAreaId` / `startRoomId` fields defined in
+- each item's `initialRoom` ([content-rules.md §4.2](content-rules.md#42-area-and-rooms-card));
+- each area's `startRoomId` for hazard and quiz-failure teleports, as defined in
   [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions);
-- `SpecTopic.status` and `evidence` in `COVERAGE.md`, used for the covered +
+- each topic's `status` and `evidence` in `COVERAGE.md`, used for the covered +
   evidence scoring rule and for the win check.
 
 Validation receives the content catalogues so it can check that referenced IDs
@@ -213,17 +202,17 @@ exist (§8). The engine never hard-codes content IDs.
    an older save adjusts when content changes.
 
 The win check is evaluated against the **live catalogue**, not a topic list in
-the save: the game is won when every `SpecTopic` with `status === 'covered'` and
-non-empty `evidence` has its ID in some `progress[].completedTopics`, and no
-recorded quiz attempt lacks its `quiz-passed:<quizId>` flag (user decision
-2026-11-25; [application-and-ui.md §11](application-and-ui.md#11-win-check-owner)
-adds the quiz condition to the in-play check). Restore cannot see the events
-that passed a quiz, so an attempt with no pass flag means that quiz has not been
-passed yet and the save is still playing. A save with no recorded attempts is
-treated as a completed run when every covered topic is complete — hand-built and
-legacy saves carry no attempt counters. If `status !== 'playing'` the check is
-skipped, so a reloaded won game cannot emit `game-won` a second time. During
-play the same check is owned by `Session.observe` in phase 5
+the save:
+
+- Every `SpecTopic` with `status === 'covered'` and non-empty `evidence` has its
+  ID in some `progress[].completedTopics`.
+- No recorded quiz attempt lacks its `quiz-passed:<quizId>` flag. Restore cannot
+  see the events that passed a quiz, so an attempt with no pass flag means that
+  quiz has not been passed and the save is still playing. A save with no recorded
+  attempts is treated as a completed run when every covered topic is complete.
+
+If `status !== 'playing'` the check is skipped. During play the same check is
+owned by `Session.observe` in phase 5
 ([application-and-ui.md §11](application-and-ui.md#11-win-check-owner)); restore
 only derives and never emits.
 
@@ -278,7 +267,7 @@ export interface QuarantineDto {
 - Only one quarantine slot exists; an existing quarantine is **never
   overwritten**.
 - Boot then continues to the title screen with Continue disabled, rather than
-  blocking the player; `GameState.createInitial()` runs when New Game is chosen
+  blocking the player; `createInitial()` runs when New Game is chosen
   ([application-and-ui.md §2](application-and-ui.md#2-boot-title-screen-and-session-start)).
 - `SaveControls` offers a **download quarantined save** action so the text can
   be inspected or recovered.
@@ -313,12 +302,12 @@ it testable with in-memory fakes and a fake clock.
 ```
 save:     GameState.toDto() → buildDto() → JSON.stringify
           ├→ StorageAdapter.write('compsciquest:save:v1', json)
-          └→ SaveFile.download(json)  (dated filename)
+          └→ downloadFile(filename, json)  (dated filename, injected from src/main.ts)
 
 boot:     StorageAdapter.read(...) → validate()
           ├─ ok    → title screen with Continue enabled → restore(dto) → GameState
           └─ fail  → quarantine raw text → title screen with Continue disabled
-                     → New Game → GameState.createInitial()
+                     → New Game → createInitial()
 
 import:   File.text() → validate() → restore(dto) → GameState
           (no storage writes on success or failure)
@@ -328,48 +317,28 @@ Meta actions (save, load, download, import, restart) are intercepted by `Game`
 before core command dispatch and do not advance the turn
 ([application-and-ui.md §4.1](application-and-ui.md#41-meta-actions)).
 
-## 12. Tests
+## 12. Invariants the implementation must keep
 
-- Round-trip `GameState → DTO → JSON → DTO → GameState` preserves every field.
-- Extra unknown v1 fields are ignored; missing and wrongly typed fields rejected.
-- Wrong and newer versions rejected with distinct reasons; content IDs checked.
-- Item ownership invariant holds after `drop`, `give`, `show` and `transfer-item`.
-- `score` is absent from the JSON but derived correctly after restore.
-- `maxScore` is refreshed from a changed content fixture on restore.
-- `status` round-trips; a won save does not re-emit `game-won`.
-- `quizAttempts` caps retries across attempts; active quiz state resets on end.
+- A save round-trips through `GameState → DTO → JSON → DTO → GameState` without
+  losing a field.
+- Unknown extra v1 fields are ignored; missing and wrongly typed fields are
+  rejected. Wrong and newer versions are rejected with distinct reasons, and
+  content IDs are checked against the catalogues.
+- Every item has exactly one owner after `drop`, `give`, `show` and
+  `transfer-item`.
+- `score` is absent from the JSON and derived after restore; `maxScore` is
+  refreshed from content.
+- `status` round-trips, and a won save does not re-emit `game-won`.
+- `quizAttempts` caps retries across attempts, and active quiz state resets when
+  the quiz ends.
 - `turns-since` starts at 0 on activation and ticks on all later turns.
-- `savedAt` survives import; filenames carry the date.
+- `savedAt` survives import, and filenames carry the timestamp.
 - Boot quarantine keeps the first corrupt copy and offers a download; a failed
   import leaves the live save and quarantine untouched.
-- Seeded order is identical across save/load (`rngSeed` round-trip).
+- The seeded sequence is identical across save and load (`rngSeed` round-trip).
 
 ## 13. Out of scope
 
 Checksums/integrity hashes and multi-tab concurrency protection are explicitly
 not in v1: shape validation is considered sufficient. Also out of scope:
 schema migration, multiple save slots, autosave and undo.
-
-## 14. Decisions resolved
-
-| Decision                | Choice                                                                        |
-| ----------------------- | ----------------------------------------------------------------------------- |
-| Item ownership          | Properties of Player, NPC and Room state; no central owner map.               |
-| Mutable item/exit state | Kebab-case `flags` convention; no `itemStates` record.                        |
-| Session status          | Persisted as `status: 'playing' \| 'won' \| 'lost'`.                          |
-| Score                   | Removed from the DTO; derived at restore from area totals.                    |
-| `AreaProgress.maxScore` | Stored but refreshed from content at restore.                                 |
-| Quiz retry limits       | `quizAttempts: Record<quizId, number>`; no generic `attempts` field.          |
-| `turns-since`           | Created at 0 on activation, incremented every later turn.                     |
-| Spare fields            | `startedTurn` and `firstRequestedTurn` dropped.                               |
-| Win check               | Catalogue topics with `covered` + evidence, checked against completed topics. |
-| Validation strictness   | Required keys and types checked; extra keys ignored.                          |
-| Error model             | Typed `LoadResult` union with five reasons.                                   |
-| Quarantine              | One slot, raw text + reason + timestamp, boot only, downloadable.             |
-| API contracts           | Exact `StorageAdapter` and `SaveManager` signatures pinned above.             |
-| Import/export           | Preserve `savedAt`; dated download filename.                                  |
-| Derived values          | Applied by `SaveManager.restore()`, keeping core content-free.                |
-| Progress validation     | Unique `(worldId, areaId)`; content IDs checked.                              |
-| Counter keys            | Free-form strings; no prefix restriction at load.                             |
-| Room inventory          | `rooms: Record<roomId, RoomStateDto>`, not a flat `roomItems` map.            |
-| Integrity / multi-tab   | Neither in v1; documented as out of scope.                                    |

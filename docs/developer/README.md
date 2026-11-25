@@ -1,32 +1,31 @@
 # Developer documentation index
 
-One owning document per subject. Where two docs need the same rule, the full
-statement lives in the owner and the other links to it; see
-[documentation-style-guide.md](documentation-style-guide.md) for the writing
-rules, which this index follows.
+This index names the subject each developer doc owns. See
+[documentation-style-guide.md](documentation-style-guide.md) for the ownership
+and writing rules.
 
 ## Style and governance
 
-| Doc                                                          | Owns                                                                                           |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| [documentation-style-guide.md](documentation-style-guide.md) | Writing rules, audience, ownership, decisions and audit scope for all developer documentation. |
-| [README.md](README.md)                                       | This index.                                                                                    |
+| Doc                                                          | Owns                                                                                                       |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| [documentation-style-guide.md](documentation-style-guide.md) | Writing rules, audience, ownership, decision-record rules and audit scope for all developer documentation. |
+| [README.md](README.md)                                       | This index.                                                                                                |
 
 ## Architecture and cross-cutting contracts
 
-| Doc                                            | Owns                                                                                                                          |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| [architecture.md](architecture.md)             | Original scaffold: module map, class responsibilities, subsystem doc map (§12) and build order.                               |
-| [shared-rules.md](shared-rules.md)             | Conditions, triggers, effects, scheduler, seeded `Random`, per-turn event buffer and observer order — owns the turn pipeline. |
-| [application-and-ui.md](application-and-ui.md) | Application shell: boot, `Game` façade, `Command`/`GameEvent` unions, UI layout, view model, end-state ownership.             |
-| [storage-schema.md](storage-schema.md)         | Save DTOs, validation, `LoadResult`, quarantine, restore-time derivation.                                                     |
+| Doc                                            | Owns                                                                                                                                                                               |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [architecture.md](architecture.md)             | Layer boundaries and dependency direction, module layout, module responsibilities and code conventions.                                                                            |
+| [shared-rules.md](shared-rules.md)             | Conditions, triggers, effects, scheduler, seeded Random; owns the turn-pipeline contract (phase order, event batching and observer ordering).                                      |
+| [application-and-ui.md](application-and-ui.md) | Application shell and canonical content bundle: boot, Game façade, Command/GameEvent unions, UI layout and view model, behavioural signatures, effect/event mapping and win check. |
+| [storage-schema.md](storage-schema.md)         | Save DTOs, validation, `LoadResult`, quarantine, restore-time derivation.                                                                                                          |
 
 ## Content pipeline
 
-| Doc                                          | Owns                                                                                  |
-| -------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [content-rules.md](content-rules.md)         | The authoring rulebook: W1–W7 workflow, N/P/C/H/D/V rules, the shared agent contract. |
-| [content-toolchain.md](content-toolchain.md) | YAML scaffolds, Zod shapes, validator, generator, generated bundle, W6 ownership.     |
+| Doc                                          | Owns                                                                                                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| [content-rules.md](content-rules.md)         | The authoring rulebook: W1–W7 workflow, N/P/C/H/D/V rules, the shared agent contract.                                 |
+| [content-toolchain.md](content-toolchain.md) | YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff. |
 
 ## Subsystems
 
@@ -38,13 +37,15 @@ rules, which this index follows.
 | [npcs.md](npcs.md)       | Actors, actor states, conversation topics, `ConvNode`, knowledge gating, `TopicResolver`.       |
 | [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation.                  |
 
-## Elsewhere
+## Documentation outside this folder
 
-- `docs/content/` — authored game content (bible, topic files, YAML cards,
-  traces); owned by the `content-editor` agent, not governed by the style
-  guide.
+- `docs/content/` — authored game content and its canonical records; owned by
+  the `content-editor` agent and governed by
+  [content-rules.md](content-rules.md) and the content bible.
 - `docs/coverage/COVERAGE.md` — the spec → topic → room → code mapping;
-  split-governed (content editor owns states, the `docs` agent owns form).
-- `docs/exam-specs/wjec-unit1.md` — read-only authority for course facts.
+  split-governed (the content-editor owns topic status, evidence, room IDs and
+  score budgets; the docs agent owns form — see
+  [documentation-style-guide.md](documentation-style-guide.md#coveragemd-is-split-governed)).
+- `docs/exam-specs/` — read-only authority for course facts.
 - Root `README.md` — environment, toolchain and setup.
 - Root `AGENTS.md` — delegation contract and routing.

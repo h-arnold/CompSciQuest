@@ -4,28 +4,29 @@ This file is the authoritative mapping from the GCSE Computer Science Unit 1
 specification to game content. The separate coverage graph built from `docs/`
 (indexed at `docs/graphify-out/graph.json`) includes this file and the source
 PDF; it is **evidence** for these mappings, not proof that a topic is covered.
+See [Two separate graphs](../../AGENTS.md#two-separate-graphs) in the root
+`AGENTS.md` for the two graphs and their build rules.
 
-Source material: `exam-specs/gcse-unit-1-computer-science.pdf`; text extraction
-at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
+Source material: `docs/exam-specs/gcse-unit-1-computer-science.pdf`; text
+extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 
 ## Conventions
 
-- Use one `## Topic: <spec topic name>` heading per specification topic.
-- Use the exact same name or ID for the corresponding room/game concept in code,
-  so Graphify's concept deduplication can join the document and code nodes.
+- Use one `## Topic: <id>` heading per specification topic; the id must match the
+  entry in `docs/content/spec-topics.yaml`.
+- IDs and aliases follow
+  [content-rules.md §5](../developer/content-rules.md#5-id-and-alias-registry).
 - Cite the PDF section/page and the code path/symbol. An empty field means
   "not mapped yet", not "covered".
 - Status is one of `not started`, `in progress`, `covered`. Record evidence.
 - A topic is `covered` only when accepted cards supply real teaching (an actor or
   in-world label), retrieval (a quiz question) and — where the spec calls for it —
   application (a puzzle) evidence (content-rules.md V3). Code locations are the
-  generated `src/content/authored/*.ts` targets from `architecture.md` §12; paths
-  stay marked *planned* until the code-lead generates them from validated YAML
-  (W6).
-- `SpecTopic` declarations are added incrementally as zones are integrated: take
-  each ID from a `## Topic: <id>` heading here and query the coverage graph built
-  from `docs/` for what exists, rather than enumerating the whole specification up
-  front (content-toolchain.md §2). Do not invent a topic with no coverage heading.
+  generated modules under `src/content/authored/`, produced by
+  `tools/content/generate.ts`
+  ([content-toolchain.md §5](../developer/content-toolchain.md#5-generation)).
+- Topic entries follow the `SpecTopic` contract in
+  [content-toolchain.md §2](../developer/content-toolchain.md#2-authoring-format).
 
 ## Topic: switch-to-bit
 
@@ -34,8 +35,8 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   (`wjec-unit1.md` L318–325, "Early Transistors" / "Integrated Circuits").
 - Game content / room ID: `room-switch-floor`, `item-switch-gauge`,
   `quiz-switchyard`, `topic-foreman-switches`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-switch-floor`);
-  `src/content/authored/quizzes.ts` (`quiz-switchyard`). Not yet generated.
+- Code location: `src/content/authored/rooms.ts` (`room-switch-floor`);
+  `src/content/authored/quizzes.ts` (`quiz-switchyard`).
 - Status: covered
 - Evidence / notes: Awareness depth only — a transistor is a tiny switch, early
   transistors replaced vacuum tubes, and transistors are packed onto chips
@@ -51,9 +52,9 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   character, integer, real and string (`wjec-unit1.md` L525–532; table L584–590).
 - Game content / room ID: `room-binary-hall` type bins,
   `puzzle-sort-the-data-types`, `quiz-data-types`, `hint-data-types`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-binary-hall`);
+- Code location: `src/content/authored/rooms.ts` (`room-binary-hall`);
   `src/content/authored/puzzles.ts` (`puzzle-sort-the-data-types`);
-  `src/content/authored/quizzes.ts` (`quiz-data-types`). Not yet generated.
+  `src/content/authored/quizzes.ts` (`quiz-data-types`).
 - Status: covered
 - Evidence / notes: Teaching — five labelled bins using the spec's own examples plus
   one unlabelled decimal sample matched to `real` (`rooms.md` fixtureNotes);
@@ -71,11 +72,11 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-hex-deck`, `room-switch-floor`,
   `item-switch-gauge`, `item-hex-nibble-card`, five puzzles, `quiz-number-systems`,
   `quiz-switchyard`, `hint-number-systems`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-hex-deck`);
+- Code location: `src/content/authored/rooms.ts` (`room-hex-deck`);
   `src/content/authored/puzzles.ts` (`puzzle-set-the-switches`, `puzzle-add-with-carries`,
   `puzzle-shift-the-row`, `puzzle-read-nibbles`,
   `puzzle-check-the-overflow-register`); `src/content/authored/quizzes.ts`
-  (`quiz-number-systems`). Not yet generated.
+  (`quiz-number-systems`).
 - Status: covered
 - Evidence / notes: Teaching — carry rule "1 + 1 = 0, carry 1", shift gutter
   (qualitative effect only), gauge tab "denary 37 — what binary pattern?"
@@ -93,10 +94,10 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-character-tiles`, `item-ascii-stamp`,
   `puzzle-match-characters`, `puzzle-make-room-for-the-welsh-letter`,
   `quiz-character-representation`, `hint-representation`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-character-tiles`);
+- Code location: `src/content/authored/rooms.ts` (`room-character-tiles`);
   `src/content/authored/puzzles.ts` (`puzzle-match-characters`,
   `puzzle-make-room-for-the-welsh-letter`); `src/content/authored/quizzes.ts`
-  (`quiz-character-representation`). Not yet generated.
+  (`quiz-character-representation`).
 - Status: covered
 - Evidence / notes: Teaching — character case with single-mark tiles, ASCII stamp
   case lid, spare `ŵ` tile labelled only "a different character" (`rooms.md`);
@@ -115,10 +116,9 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-picture-mosaic`, `item-pixel-lens`,
   `puzzle-build-mosaic`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge`,
   `quiz-graphics-representation`, `hint-representation`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-picture-mosaic`);
+- Code location: `src/content/authored/rooms.ts` (`room-picture-mosaic`);
   `src/content/authored/puzzles.ts` (`puzzle-build-mosaic`, `puzzle-weigh-the-pixels`,
   `puzzle-scale-the-badge`); `src/content/authored/quizzes.ts` (`quiz-graphics-representation`).
-  Not yet generated.
 - Status: covered
 - Evidence / notes: Teaching — pixel mosaic, vector-versus-raster drafting corner,
   ruler and bit-depth/colour-depth label in bits per channel (`rooms.md`); critic
@@ -135,9 +135,9 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-sound-choir`, `item-sample-fork`,
   `puzzle-tune-sampling`, `puzzle-count-the-bit-rate`,
   `quiz-sound-representation`, `hint-representation`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-sound-choir`);
+- Code location: `src/content/authored/rooms.ts` (`room-sound-choir`);
   `src/content/authored/puzzles.ts` (`puzzle-tune-sampling`, `puzzle-count-the-bit-rate`);
-  `src/content/authored/quizzes.ts` (`quiz-sound-representation`). Not yet generated.
+  `src/content/authored/quizzes.ts` (`quiz-sound-representation`).
 - Status: covered
 - Evidence / notes: Teaching — bit-rate desk with samples-per-second and
   bits-per-sample dials plus a blank dial, and the sample definition card
@@ -154,9 +154,9 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-storage-stacks`, `item-hex-nibble-card`,
   `puzzle-stack-the-bytes`, `puzzle-label-the-capacity`, `quiz-storage-units`,
   `hint-storage-capacity`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-storage-stacks`);
+- Code location: `src/content/authored/rooms.ts` (`room-storage-stacks`);
   `src/content/authored/puzzles.ts` (`puzzle-stack-the-bytes`, `puzzle-label-the-capacity`);
-  `src/content/authored/quizzes.ts` (`quiz-storage-units`). Not yet generated.
+  `src/content/authored/quizzes.ts` (`quiz-storage-units`).
 - Status: covered
 - Evidence / notes: Teaching — eight-rung unit ladder marked ×1024 from byte
   upward and a brass plate stating 1 KB = 1,024 bytes (`rooms.md`); keeper topics
@@ -173,10 +173,10 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Game content / room ID: `room-compression-press`, `item-compression-die`,
   `puzzle-pack-the-archive`, `puzzle-choose-the-compression`,
   `quiz-data-compression`, `hint-compression-ratio`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-compression-press`);
+- Code location: `src/content/authored/rooms.ts` (`room-compression-press`);
   `src/content/authored/puzzles.ts` (`puzzle-pack-the-archive`,
   `puzzle-choose-the-compression`); `src/content/authored/quizzes.ts`
-  (`quiz-data-compression`). Not yet generated.
+  (`quiz-data-compression`).
 - Status: covered
 - Evidence / notes: Teaching — two sample trays, lossless/lossy lever and glass
   ratio window (`rooms.md`); press operator topics (`npcs.md`). Retrieval —
@@ -189,8 +189,8 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Spec reference: game-wide framing for the AI's "mastery of the whole of Unit 1"
   criterion; no direct 1.2.1 assessment in this zone.
 - Game content / room ID: `room-entry-interface`, `npc-the-ai`, `topic-ai-verdict`.
-- Code location: *planned* `src/content/authored/rooms.ts` (`room-entry-interface`);
-  `src/content/authored/actors.ts` (`npc-the-ai`). Not yet generated.
+- Code location: `src/content/authored/rooms.ts` (`room-entry-interface`);
+  `src/content/authored/actors.ts` (`npc-the-ai`).
 - Status: in progress
 - Evidence / notes: Framing topic only in this zone — the AI's verdict and the Unit 2
   taunt carry no spec assessment and gate no puzzle. Full ethics coverage belongs to
@@ -256,8 +256,6 @@ at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - All "code location" entries are planned paths under `src/content/authored/`: the
   code-lead must confirm the actual generated module names when validated YAML is
   generated to TypeScript (W6).
-- The coverage graph is evidence, not proof; rebuild it from `docs/` once this map
-  changes (AGENTS.md, "Two separate graphs").
 - `ai-ethics-and-implications` remains `in progress` (framing only) and needs a
   future zone before it can be marked `covered`.
 - `docs/content/narrative-principles.md` was approved by the user on 2026-11-24

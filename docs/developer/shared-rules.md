@@ -1,10 +1,6 @@
-# Shared rule spine (design)
+# Shared rule spine
 
-Status: planned · Last updated: 2026-11-25
-
-Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
-[storage schema](storage-schema.md) · [NPCs](npcs.md) · [hazards](hazards.md) ·
-[quiz combat](combat.md) · [puzzles](puzzles.md) · [hints](hints.md).
+Index: [docs/developer/README.md](README.md).
 
 ## 1. Purpose
 
@@ -21,21 +17,18 @@ systems documented separately sit on top of it.
 | `Effect`    | "What should change?"     | `src/core/effects/Effect.ts`       |
 | `Scheduler` | "When on the turn clock?" | `src/core/scheduling/Scheduler.ts` |
 
-`EffectApplier` is the only code that applies effects to `GameState`. `ScoreTracker`
-remains the only writer of score and progress: it awards from the achievement
-events `room-entered`, `puzzle-solved`, `quiz-ended` and `hint-penalty-applied`
-rather than writing a number. `complete-topic` / `topic-completed` only records
-completion for the win check and the score panel and awards no points
-([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
+`EffectApplier` is the only code that applies effects to `GameState`. Scoring is
+owned by [application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic):
+`ScoreTracker` is the sole writer of score and progress.
 
-## 2. Turn pipeline (amends architecture.md §6.2)
+## 2. Turn pipeline
 
 Events are **buffered for the whole turn** and published once, after all state is
 final. This is the TADS "transcript" idea: it makes output deterministic, prevents
 the UI rendering a half-updated state, and makes observer order explicit.
 
 ```
-1. Resolve     Tokenizer → Parser → NameResolver / TopicResolver → Command
+1. Resolve     Tokenizer → Parser → NameResolver → Command
 2. Validate    RuleEngine checks preconditions
 3. Execute     verb handler applies Effects; events go into a per-turn buffer
 4. React       Scheduler → Hazards → NPC reactions → Puzzles → Auto-hints
@@ -52,19 +45,17 @@ Notes:
   final score. Neither subscribes to the bus; both are explicit phase-5 calls.
 - Phase 4 is ordered: scheduled events, then hazards, then NPC reactions, then
   puzzle completion, then automatic hints.
-- **NPC reactions** in phase 4 only end a conversation when the player leaves the
-  room. There is deliberately **no turn timeout** (decision: no implicit
-  farewell). Topic matching happens in phase 3 when a conversation command is
-  submitted.
+- **NPC reactions** are handled by `DialogueSystem` in phase 4. It selects the
+  conversation topic through `TopicResolver`, applies the effects and ends a
+  conversation only when the player leaves the room. Phase 1 resolves verbs and
+  nouns into a `Command` and does no topic matching. [npcs.md §4](npcs.md#4-conversation-flow)
+  owns the conversation-flow rule.
 - **Auto-hints** in phase 4 only deliver hints whose counter thresholds have been
   reached. Answering a quiz question happens in phase 3 via the `answer` command;
   `QuizSystem` has no reactive step beyond auto-hints.
 - A reaction effect can enable another rule. Each rule ID may fire **at most once
-  per turn**; a repeat is skipped **silently** (decision: visible only in tests).
-  One extra reaction pass is allowed; a third is not.
-- The turn counter increments once per submitted game command, whether or not it
-  succeeded. Meta actions (save/load/download/import/restart) are intercepted
-  before phase 1 and do not advance the turn.
+  per turn**; a repeat is skipped **silently**. One extra reaction pass is
+  allowed; a third is not.
 
 ## 3. Condition
 
@@ -116,10 +107,10 @@ player's **current** `Position` (`worldId`/`areaId`/`roomId`) with the named IDs
 and `areaId` match, because area IDs are unique only together with `worldId`
 ([application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions))
 and `AreaProgress` is keyed by the pair. `visited-room` and `topic-complete` are
-deliberately different: they are true once the room or topic has ever been seen
-and must scan **every** `AreaProgress` row, not only `progress[0]`; the earlier
-single-row lookup was a multi-area bug, corrected with this decision
-(2026-11-25). Missing IDs evaluate to `false` for all four kinds.
+true once the room or topic has ever been seen; they scan **every** `AreaProgress`
+row.
+
+Missing IDs evaluate to `false` for all four kinds.
 
 A **location scope** is an `in-room`/`in-area` condition, or an `all` containing
 at least one such condition. A `not` or `any` shape is not a single location
@@ -127,13 +118,9 @@ scope: a check that needs to extract one reports a gap rather than guessing.
 Conversation topics use these kinds through their existing `isActive`
 ([npcs.md §2](npcs.md#2-model)).
 
-`counter-at-least` is deliberately generic. The agreed key namespace is:
-
-| Counter key                | Incremented by                                |
-| -------------------------- | --------------------------------------------- |
-| `hints-shown:<hintId>`     | `show-hint` effect                            |
-| `failed-attempts:<quizId>` | a wrong quiz answer                           |
-| `turns-since:<puzzleId>`   | each turn after a puzzle first becomes active |
+`counter-at-least` is deliberately generic. The three counter prefixes and their
+increments are owned by
+[storage-schema.md §4](storage-schema.md#4-counters-and-stuckness).
 
 `quiz-passed` reads the flag `quiz-passed:<quizId>`, which the quiz's `onPass`
 effects must set with `set-flag`. There is no other writer.
@@ -251,10 +238,7 @@ export type Effect =
     };
 ```
 
-This is the complete pinned `Effect` union; `announce-hazard` was added by user
-decision on 2026-11-25, and the three quiz-progress kinds (`ask-question`,
-`evaluate-answer`, `end-quiz`) were added by user decision on 2026-11-25 to
-carry the `question-asked`, `answer-evaluated` and `quiz-ended` events while
+This is the complete pinned `Effect` union. Quiz progress is carried by effects so
 phase 3 stays effects-only.
 
 Conventions:
@@ -270,17 +254,12 @@ Conventions:
 - Every effect produces at least one buffered event, so every state change is
   explainable in the output log. The complete effect → event mapping is
   canonical in [application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping).
-- `announce-hazard` emits `hazard-triggered`
-  ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping));
-  there is deliberately no score-carrying effect variant.
-- `change-lives` emits `lives-changed`; `Session` owns game-over.
-- `complete-topic` emits `topic-completed`, which records completion only; the
-  score comes from the separate achievement event
+- `set-flag` emits exactly one `flag-changed` on every application, including a
+  re-set to the value already held. Quiz retry scoring compares the flag with
+  the value observed before the batch rather than treating the event as a score
+  trigger
   ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
-- `move-player` emits `room-entered`, so room scoring in `architecture.md` §6.3
-  continues to work for quiz-failure teleports.
-- `set-puzzle-active` emits `puzzle-activated`; `set-puzzle-solved` emits
-  `puzzle-solved`.
+- `Session` owns game-over. There is no score-carrying effect variant.
 
 ## 6. Scheduler (TADS fuse / daemon)
 
@@ -298,11 +277,9 @@ export interface ScheduledEvent {
 - A **fuse** counts down by one each turn and fires at `0`, then is removed.
 - A **daemon** fires whenever `remainingTurns` reaches `0` and is reset to
   `repeatEveryTurns` (defaulting to the initial `remainingTurns`).
-- Authoring rejects `remainingTurns: 0` (decision: 2026-11-25); `1` fires on the
-  next turn's phase 4.
+- Authoring rejects `remainingTurns: 0`; `1` fires on the next turn's phase 4.
 - `Scheduler.tick(context: TurnContext)` runs first in phase 4 (signature pinned
-  in [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures),
-  corrected by user decision of 2026-11-25).
+  in [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
   All scheduled state is serialised in `GameStateDto.schedule`, so a reload
   resumes timers accurately.
 - Fire order is array order in the save.
@@ -313,59 +290,36 @@ Quiz question order and varied NPC replies need randomness, but the core must
 stay deterministic for saves and tests.
 
 - Define a `Random` port: `nextInt(maxExclusive: number): number`.
-- The production implementation is a seeded PRNG (e.g. mulberry32) whose seed
-  lives in `GameStateDto.rngSeed` as an unsigned 32-bit integer; the seed
-  **advances on each draw and is saved**
+- The static site supplies a small seeded LCG from `src/main.ts`; `src/core` sees
+  only the `Random` port. The seed lives in `GameStateDto.rngSeed` as an unsigned
+  32-bit integer and **advances on each draw and is saved**
   ([storage-schema.md §3.3](storage-schema.md#33-invariants)).
 - A seeded implementation exposes its current state as `seed` and accepts
   `setSeed(seed)`. The game writes that value into the live state after each
-  turn and before a save, and calls `setSeed` with the restored
+  turn and before a save or download, and calls `setSeed` with the restored
   `GameStateDto.rngSeed` whenever a state is created, loaded or imported, so a
   reload resumes the sequence instead of restarting it. Test fakes may omit
   both members; they are deterministic by construction.
-- Unit tests inject a fake `Random` returning fixed values.
 - No `Math.random()` anywhere in `src/core`.
 
-## 8. State additions — schema stays v1
+## 8. Persisted-shape constraints for rule-spine state
 
-Per decision, **there is no schema migration step yet**. `SCHEMA_VERSION` remains
-`1` and `SaveManager` does not migrate. Every persisted shape — `GameStateDto`,
-`SaveDto`, `RoomStateDto`, `NpcStateDto`, `HazardStateDto`, `PuzzleStateDto` /
-`PuzzlePhase`, `HintStateDto`, `QuizStateDto`, `AreaProgress`, `SessionStatus`,
-`ScheduledEvent` and `LoadResult` — is defined canonically in
-[storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical). Subsystem
-documents link there instead of redeclaring fields.
-
-What is specific to this rule spine:
+Rule-spine state is part of `GameStateDto`;
+[storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical) owns the
+shapes. What is specific to this rule spine:
 
 - Only plain arrays, records, strings, numbers and booleans go into DTOs — no
-  `Set`, `Map`, functions or class instances (decision: keep JSON trivial; no
-  custom serialiser). Optional properties are omitted, never `undefined`.
-- `counters` uses free-form string keys (no prefix restriction at load). The
-  three defined prefixes and the `turns-since` activation/increment rule are in
-  §3 and [storage-schema.md §4](storage-schema.md#4-counters-and-stuckness).
-- Item ownership is a property of Player, NPC and Room state; the `rooms` record
-  holds `RoomStateDto`. Mutable door/container/item state uses kebab-case
-  `flags` keys (§5).
+  `Set`, `Map`, functions or class instances. Optional properties are omitted,
+  never `undefined`.
+- `counters` uses free-form string keys (no prefix restriction at load); the
+  three prefixes and the `turns-since` rule are in
+  [storage-schema.md §4](storage-schema.md#4-counters-and-stuckness).
+- Item ownership and the kebab-case `flags` convention are owned by
+  [storage-schema.md §3.3](storage-schema.md#33-invariants).
 - `score` is not stored: `ScoreTracker` writes `AreaProgress.earnedScore` and the
   total is derived at restore ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
-- Old v1 saves made before these fields existed fail strict validation. That is
-  accepted while the game is unreleased.
 
-## 9. Event additions
-
-The full `GameEvent` union is canonical in
-[application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
-It includes the baseline events from `architecture.md`, the thirteen subsystem
-variants formerly listed here, and the bookkeeping events needed by the effect →
-event mapping. Do not redeclare those variants in subsystem documents.
-
-`hint-penalty-applied` is the only score-related addition; `ScoreTracker`
-consumes it. All text is rendered with `textContent`, and
-[application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping)
-defines how every event becomes a transcript line or panel update.
-
-## 10. Content registration
+## 9. Content registration
 
 All definitions are declarative data under `src/content/`, never hard-coded in
 engine classes. Each system has a catalogue exposing `getById(id)`, `all` and any
@@ -376,44 +330,28 @@ The engine consumes catalogues through interfaces, so tests can inject small
 fixtures. Content validation enforces global uniqueness of object and NPC aliases
 so `NameResolver` never has to guess.
 
-## 11. Determinism and ordering rules
+## 10. Determinism and ordering rules
 
 1. Definitions are evaluated in declaration order (arrays), never by object-key
    iteration.
 2. No wall-clock reads in core; `Clock` is for `savedAt` only.
 3. No `Math.random()` in core; use the injected `Random` port.
 4. Rules that fire more than once in a turn are skipped after their first fire.
-   The skip is silent to the player and asserted only in tests.
+   The skip is silent to the player.
 5. All UI text comes from events or the read-only `GameViewData` and is rendered
    with `textContent` ([application-and-ui.md §7](application-and-ui.md#7-ui-structure-and-view-model)).
 
-## 12. Tests
+## 11. Invariants the implementation must keep
 
-- `ConditionEvaluator`: every kind, nested combinators, missing IDs → `false`.
-  `in-room`/`in-area` match only the current `Position`; `visited-room` and
-  `topic-complete` find their ID in **any** area's progress, not only the first.
-- `EffectApplier`: each effect mutates only its declared field and emits the
-  expected event; `ScoreTracker` still owns score.
-- `Scheduler`: fuse countdown, daemon repeat with a differing interval,
-  save/restore mid-countdown.
-- `Random`: fixed-seed reproducibility across save/restore.
-- Turn pipeline: a hazard firing in phase 4 is visible to `ScoreTracker` before
-  UI publish; cascades stop after the second reaction pass; `game-over` carries
-  the post-score total.
-
-## 13. Decisions resolved
-
-- Skipped cascades are silent to the player; only tests observe them.
-- `counters` are never pruned — a complete audit trail is kept; keys are
-  free-form strings with no prefix restriction at load.
-- DTOs use plain arrays/records; no custom serialiser. Item ownership is a
-  property of Player, NPC and Room state, and mutable item/exit state uses the
-  kebab-case `flags` convention.
-- `score` is not persisted: `ScoreTracker` writes `AreaProgress.earnedScore` and
-  the total is derived at restore.
-- Conversation starts implicitly on `ask`/`give`/`show`; there is no turn timeout.
-- `give`/`show` use a dedicated `transfer-item` effect.
-- Object and NPC aliases must be globally unique, enforced by content validation.
-- Schema versioning/migration is revisited before public release, not now.
-- Room/area locality uses `in-room`/`in-area` in `isActive`, not topic fields
-  (2026-11-25).
+- Condition evaluation is pure and total: every kind and nested combinator
+  evaluates without throwing, and missing IDs are `false`. `in-room` and
+  `in-area` match only the current `Position`; `visited-room` and
+  `topic-complete` find their ID in **every** `AreaProgress` row.
+- Each effect mutates only its declared field and emits its mapped event;
+  `ScoreTracker` remains the sole score writer.
+- A fuse counts down and a daemon repeats with its declared interval, both
+  surviving save and restore mid-countdown.
+- A fixed seed reproduces the same sequence across save and restore.
+- The pipeline publishes once per turn; a hazard firing in phase 4 is visible to
+  `ScoreTracker` before UI publication; cascades stop after the second reaction
+  pass; `game-over` carries the post-score total.
