@@ -55,4 +55,12 @@ export type Effect =
       readonly hintId: string;
       readonly level: number;
       readonly text: string;
+    }
+  // Hazard announcement is the sole carrier of `hazard-triggered` through the
+  // sole mutator (shared-rules.md §5, application-and-ui.md §9). Score is never
+  // carried by an effect: ScoreTracker awards it from achievement events.
+  | {
+      readonly kind: 'announce-hazard';
+      readonly hazardId: string;
+      readonly reason: string;
     };

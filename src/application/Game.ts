@@ -7,6 +7,7 @@ import type { Direction } from '../types/domain';
 import type { Command } from '../core/commands/Command';
 import { createNameResolver } from '../core/commands/NameResolver';
 import { parse } from '../core/commands/Parser';
+import { getCommandHandler } from '../core/commands/verbs/index';
 import type { Effect } from '../core/effects/Effect';
 import { createEffectApplier } from '../core/effects/EffectApplier';
 import type { EventBus } from '../core/events/EventBus';
@@ -14,6 +15,11 @@ import type { GameEvent, RoomSummary } from '../core/events/GameEvent';
 import { createSession } from '../core/lifecycle/Session';
 import type { Session } from '../core/lifecycle/Session';
 import type { Random } from '../core/Random';
+import { createHazardSystem } from '../core/hazards/HazardSystem';
+import { createPuzzleSystem } from '../core/puzzles/PuzzleSystem';
+import { createConditionEvaluator } from '../core/rules/ConditionEvaluator';
+import { createRuleEngine } from '../core/rules/RuleEngine';
+import { createScheduler } from '../core/scheduling/Scheduler';
 import { createScoreTracker } from '../core/scoring/ScoreTracker';
 import type { ScoreTracker } from '../core/scoring/ScoreTracker';
 import type { TurnContext } from '../core/TurnContext';
@@ -25,6 +31,10 @@ import type {
   SpecTopicView,
 } from './GameViewData';
 import type { MetaAction } from './MetaAction';
+import {
+  createComposedReaction,
+  type ComposedReaction,
+} from './ComposedReaction';
 import type { LoadResult, SaveDto } from './SaveDto';
 import type { SaveManager } from './SaveManager';
 
@@ -57,9 +67,9 @@ export interface GameDependencies {
   ) => readonly Effect[];
   readonly apply?: (effect: Effect) => readonly GameEvent[];
   readonly react?: (
-    state: GameState,
+    context: TurnContext,
     events: readonly GameEvent[],
-  ) => readonly Effect[];
+  ) => readonly GameEvent[];
   readonly score?: ScoreTracker;
   readonly session?: Session;
   readonly clearViews?: () => void;
@@ -304,15 +314,61 @@ export function createGame(dependencies: GameDependencies): Game {
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
   const isInjectedApply = dependencies.apply !== undefined;
-  let score: ScoreTracker = dependencies.score ?? createScoreTracker(state);
+  let score: ScoreTracker =
+    dependencies.score ??
+    createScoreTracker(state, { bundle: dependencies.bundle });
   let session: Session =
     dependencies.session ?? createSession(state, dependencies.bundle);
   let apply: (effect: Effect) => readonly GameEvent[] =
     dependencies.apply ??
     createEffectApplier(state, { random: dependencies.random }).apply;
 
+  const evaluator = createConditionEvaluator();
+  const ruleEngine = createRuleEngine({
+    bundle: dependencies.bundle,
+    evaluator,
+    random: dependencies.random,
+  });
+  const check =
+    dependencies.check ??
+    ((command, current) => ruleEngine.check(command, current));
+  const dispatch =
+    dependencies.dispatch ??
+    ((command, context) => {
+      const handler = getCommandHandler(command);
+      return handler === undefined ? [] : handler(command, context);
+    });
+
+  // Phase 4 is composed per turn so each injected applier is bound to the live
+  // state, including after save/load replaces it. NPC reactions and auto-hints
+  // are no-op seams until their own slices implement them.
+  const productionReaction = (current: GameState): ComposedReaction => {
+    const applier = createEffectApplier(current, {
+      random: dependencies.random,
+    });
+    return createComposedReaction({
+      scheduler: createScheduler({ applier }),
+      hazards: createHazardSystem({
+        bundle: dependencies.bundle,
+        evaluator,
+        random: dependencies.random,
+        applier,
+      }),
+      npcs: { react: () => [] },
+      puzzles: createPuzzleSystem({
+        bundle: dependencies.bundle,
+        evaluator,
+        random: dependencies.random,
+        applier,
+      }),
+      hints: { react: () => [] },
+    });
+  };
+
   const rebind = (): void => {
-    if (!isInjectedScore) score = createScoreTracker(state);
+    if (!isInjectedScore) {
+      score = createScoreTracker(state, { bundle: dependencies.bundle });
+    }
     if (!isInjectedSession) {
       session = createSession(state, dependencies.bundle);
     }
@@ -411,23 +467,27 @@ export function createGame(dependencies: GameDependencies): Game {
     context: TurnContext,
   ): readonly GameEvent[] => {
     const events: GameEvent[] = [];
-    const violations = dependencies.check?.(command, context.state) ?? [];
+    const violations = check(command, context.state);
     if (violations.length > 0) {
       for (const text of violations) {
         events.push({ type: 'message', text });
       }
       return events;
     }
-    applyAll(dependencies.dispatch?.(command, context) ?? [], events);
+    applyAll(dispatch(command, context), events);
 
-    // Phase 4: one reaction pass, plus one extra when an effect can enable a
-    // rule. A third pass is never allowed (shared-rules.md §2).
-    const react = (): readonly Effect[] =>
-      dependencies.react?.(context.state, events) ?? [];
-    const firstPass = react();
-    applyAll(firstPass, events);
-    if (firstPass.some((effect) => effect.kind !== 'message')) {
-      applyAll(react(), events);
+    // Phase 4: one reaction pass, plus one extra when a reaction produces a
+    // state-changing event that can enable another rule. A third pass is never
+    // allowed (shared-rules.md §2). Systems return events; Game owns the
+    // buffer and the single publication.
+    // Compose the five phase-4 systems once per turn: both allowed passes must
+    // reuse the same instances so once-per-turn guards stay intact. The
+    // injected seam remains a single supplied function.
+    const react = dependencies.react ?? productionReaction(context.state);
+    const firstPass = react(context, events);
+    events.push(...firstPass);
+    if (firstPass.some((event) => event.type !== 'message')) {
+      events.push(...react(context, events));
     }
     return events;
   };
@@ -455,6 +515,7 @@ export function createGame(dependencies: GameDependencies): Game {
         state,
         bundle: dependencies.bundle,
         random: dependencies.random,
+        command,
       };
       const events = runTurn(command, context);
       return publish(session.observe(score.observe(events)));

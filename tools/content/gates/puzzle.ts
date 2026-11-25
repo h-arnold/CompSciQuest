@@ -38,7 +38,7 @@ function clueFindings(puzzle: {
 }): readonly Finding[] {
   const authoring = asRecord(puzzle.data['authoring']);
   const clues = stringList(authoring?.['clues']);
-  return clues.length > 0 && clues.length < 2
+  return clues.length < 2
     ? [
         finding(
           puzzle.path,

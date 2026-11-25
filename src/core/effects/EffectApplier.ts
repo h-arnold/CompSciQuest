@@ -216,12 +216,32 @@ function applySystemEffect(
   return undefined;
 }
 
+export function hazardTriggeredEvent(
+  effect: Extract<Effect, { kind: 'announce-hazard' }>,
+): GameEvent {
+  return {
+    type: 'hazard-triggered',
+    hazardId: effect.hazardId,
+    reason: effect.reason,
+  };
+}
+
+function applyBookkeepingEffect(
+  _state: GameState,
+  effect: Effect,
+): readonly GameEvent[] | undefined {
+  return effect.kind === 'announce-hazard'
+    ? [hazardTriggeredEvent(effect)]
+    : undefined;
+}
+
 function applyEffect(state: GameState, effect: Effect): readonly GameEvent[] {
   const handlers = [
     applyItemEffect,
     applyStateEffect,
     applyEntityEffect,
     applySystemEffect,
+    applyBookkeepingEffect,
   ];
   for (const handler of handlers) {
     const events = handler(state, effect);

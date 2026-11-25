@@ -194,6 +194,8 @@ export function makeTurnContext(
     state: makeParserState(),
     bundle: makeParserBundle(),
     random: new FakeRandom(),
+    // application-and-ui.md §8: the resolved command is part of TurnContext.
+    command: { kind: 'look' },
     ...overrides,
   };
 }

@@ -81,6 +81,8 @@ testing tool**, not runtime machinery:
 - A **Vitest** suite validates: acyclic, every puzzle reachable from the start,
   no duplicate IDs, and every referenced `topicId` exists in the spec catalogue.
   It runs with `npm test`; no extra build step.
+- The graph's roots are the puzzles with no `dependsOn` entries; reachability
+  means every puzzle is reachable from at least one root (decision: 2026-11-25).
 - Topological order gives a valid solve order; layer width shows how much
   non-linear branching exists.
 - For narrative text, only reference plot points in a puzzle's **ancestor

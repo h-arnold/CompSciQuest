@@ -15,6 +15,7 @@ import type { Random } from '../../src/core/Random';
 import type { ScoreTracker } from '../../src/core/scoring/ScoreTracker';
 import type { TurnContext } from '../../src/core/TurnContext';
 import type { StorageAdapter } from '../../src/storage/StorageAdapter';
+import type { TurnContract } from './mechanics';
 import { makeGameDependencies } from './persistence';
 import { loadSeam } from './seams';
 
@@ -36,9 +37,9 @@ export interface TurnGameDependencies {
   ) => readonly Effect[];
   readonly apply?: (effect: Effect) => readonly GameEvent[];
   readonly react?: (
-    state: GameState,
+    context: TurnContract,
     events: readonly GameEvent[],
-  ) => readonly Effect[];
+  ) => readonly GameEvent[];
   readonly score?: ScoreTracker;
   readonly session?: Session;
   readonly clearViews?: () => void;
@@ -126,7 +127,7 @@ export function phaseFakes(calls: string[]): Partial<TurnGameDependencies> {
       const text = 'text' in effect ? effect.text : effect.kind;
       return [{ type: 'message', text }];
     },
-    react: (): readonly Effect[] => {
+    react: (): readonly GameEvent[] => {
       calls.push('react');
       return [];
     },

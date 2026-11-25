@@ -4,6 +4,7 @@
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {
   auditedAreaLikes,
+  asNumber,
   asObjectArray,
   asRecord,
   asText,
@@ -56,6 +57,22 @@ function effectFindings(hazard: CardEntry): readonly Finding[] {
   });
 }
 
+function scheduleFindings(hazard: CardEntry): readonly Finding[] {
+  const schedule = asRecord(hazard.data['schedule']);
+  if (schedule === undefined) return [];
+  const remaining = asNumber(schedule['remainingTurns']);
+  return Number.isFinite(remaining) && remaining < 1
+    ? [
+        finding(
+          hazard.path,
+          hazard.entry,
+          `scheduled event '${asText(schedule['id'])}' needs a positive remainingTurns`,
+          'hazard-content',
+        ),
+      ]
+    : [];
+}
+
 function startFindings(cards: ParsedCardSet): readonly Finding[] {
   const roomIds = idsOf(collection(cards, 'rooms'));
   if (roomIds.size === 0) return [];
@@ -80,6 +97,7 @@ export function checkHazard(cards: ParsedCardSet): readonly Finding[] {
     ...hazards.flatMap((hazard) => [
       ...telegraphFinding(hazard),
       ...effectFindings(hazard),
+      ...scheduleFindings(hazard),
     ]),
     ...startFindings(cards),
   ];

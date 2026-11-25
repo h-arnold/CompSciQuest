@@ -1,8 +1,10 @@
 // Phase-4 seam from application-and-ui.md §8 / shared-rules.md §2.
-import type { GameState } from '../GameState';
-import type { Effect } from '../effects/Effect';
 import type { GameEvent } from '../events/GameEvent';
+import type { TurnContext } from '../TurnContext';
 
 export interface DialogueSystem {
-  react(state: GameState, events: readonly GameEvent[]): readonly Effect[];
+  react(
+    context: TurnContext,
+    events: readonly GameEvent[],
+  ): readonly GameEvent[];
 }

@@ -222,14 +222,14 @@ describe('one-command turn pipeline', () => {
           calls.push('execute');
           return [];
         },
-        react: (): readonly Effect[] => {
+        react: (): readonly GameEvent[] => {
           calls.push('react');
           passes += 1;
-          const firstPass: readonly Effect[] = [
-            { kind: 'set-flag', flag: 'rule-enabled', value: true },
+          const firstPass: readonly GameEvent[] = [
+            { type: 'flag-changed', flag: 'rule-enabled', value: true },
           ];
-          const laterPass: readonly Effect[] = [
-            { kind: 'message', text: 'rule-fire' },
+          const laterPass: readonly GameEvent[] = [
+            { type: 'message', text: 'rule-fire' },
           ];
           return passes === 1 ? firstPass : laterPass;
         },
