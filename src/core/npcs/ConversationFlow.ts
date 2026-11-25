@@ -243,7 +243,8 @@ export function handleConversationTopic(
     selected.fromNode &&
     resolved.kind === 'keyword' &&
     node !== undefined &&
-    !node.isSticky;
+    !node.isSticky &&
+    !exited;
   if (specialExit) {
     applyAll([{ kind: 'exit-node', actorId }], dependencies.applier, events);
   }

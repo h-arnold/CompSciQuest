@@ -103,8 +103,8 @@ export type ResolvedTopic =
 
 Resolution order:
 
-1. object alias from room/inventory/known objects → `object`;
-2. keyword from the active node's special topics → `keyword`;
+1. keyword from the active node's special topics → `keyword`;
+2. object alias from room/inventory/known objects → `object`;
 3. otherwise → `free-text`, which always finds a `DefaultAskTellTopic` and gets
    a vague in-character reply. **Unknown topics never crash or say "parser
    error".**
@@ -172,7 +172,7 @@ quiz's `onPass`/`onFail` effects.
 
 ## 8. Tests
 
-- `TopicResolver`: object alias → keyword → free-text fallback.
+- `TopicResolver`: keyword → object alias → free-text fallback.
 - Unknown topic returns a default reply, never an error.
 - Global alias uniqueness is enforced at content load.
 - `isActive` gating: topic hidden until `learn-topic` fires; alternative topic
