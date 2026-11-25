@@ -125,7 +125,11 @@ function hasResolvedMatch(
   }
   // Unmatched free text still reaches an active concrete ask/tell topic; the
   // catch-all is only chosen when no such topic is selectable (npcs.md §3).
-  return isAskTellMatch(match);
+  // GIVE and SHOW must keep their own item matches instead of falling into an
+  // earlier ask/tell lesson.
+  return (
+    isAskTellMatch(match) && (command.kind === 'ask' || command.kind === 'tell')
+  );
 }
 
 function isActive(
@@ -160,6 +164,40 @@ export function findDefaultTopic(
   return undefined;
 }
 
+// Free text has no resolved object to match against; a topic whose authored ID
+// carries one of the phrase's words is the more specific answer (for example
+// "ask the clerk about shifts" selecting `topic-clerk-shifts` over the general
+// teaching topic that is still active).
+function isIdMatchingPhrase(topicId: string, phrase: string): boolean {
+  const words = new Set(topicId.toLowerCase().split('-'));
+  return phrase
+    .toLowerCase()
+    .split(/\s+/u)
+    .some((word) => word.length > 0 && words.has(word));
+}
+
+function chooseCandidate(
+  candidates: readonly (readonly [ConversationTopic, boolean])[],
+  context: TurnContext,
+  evaluator: ConditionEvaluator,
+  resolved: ResolvedTopic,
+  phrase: string,
+): SelectedTopic | undefined {
+  const matches = candidates.filter(
+    ([topic]) =>
+      !isDefaultTopic(topic) &&
+      isActive(topic, context, evaluator) &&
+      hasResolvedMatch(topic, resolved, context.command, phrase),
+  );
+  if (matches.length === 0) return undefined;
+  const preferred =
+    resolved.kind === 'free-text'
+      ? matches.find(([topic]) => isIdMatchingPhrase(topic.id, phrase))
+      : undefined;
+  const [topic, fromNode] = preferred ?? matches[0]!;
+  return { topic, fromNode, isDefault: false };
+}
+
 export function selectTopic(
   context: TurnContext,
   evaluator: ConditionEvaluator,
@@ -172,19 +210,22 @@ export function selectTopic(
   const actorTopics = context.bundle.conversationTopics.all.filter(
     (topic) => topic.actorId === undefined || topic.actorId === actorId,
   );
-  const candidates: readonly (readonly [ConversationTopic, boolean])[] = [
-    ...nodeTopics.map((topic) => [topic, true] as const),
-    ...actorTopics.map((topic) => [topic, false] as const),
-  ];
-  for (const [topic, fromNode] of candidates) {
-    if (
-      !isDefaultTopic(topic) &&
-      isActive(topic, context, evaluator) &&
-      hasResolvedMatch(topic, resolved, context.command, phrase)
-    ) {
-      return { topic, fromNode, isDefault: false };
-    }
-  }
+  const nodeMatch = chooseCandidate(
+    nodeTopics.map((topic) => [topic, true] as const),
+    context,
+    evaluator,
+    resolved,
+    phrase,
+  );
+  if (nodeMatch !== undefined) return nodeMatch;
+  const actorMatch = chooseCandidate(
+    actorTopics.map((topic) => [topic, false] as const),
+    context,
+    evaluator,
+    resolved,
+    phrase,
+  );
+  if (actorMatch !== undefined) return actorMatch;
   const fallback = findDefaultTopic(context, evaluator, actorId, node);
   return fallback === undefined
     ? undefined

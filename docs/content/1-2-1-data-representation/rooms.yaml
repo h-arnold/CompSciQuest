@@ -43,6 +43,18 @@ rooms:
     exits:
       - { direction: west, to: room-network-hub }
       - { direction: up, to: room-binary-hall }
+    scenery:
+      - name: belt
+        aliases: [belt, switch belt]
+        description: >-
+          The belt clicks as its tiny switches settle into place.
+    interactions:
+      - kind: use
+        itemId: item-switch-gauge
+        target: { kind: scenery, name: belt }
+        flags: [switch-cooled, switches-set]
+        text: >-
+          The gauge cools the belt and clicks every switch into place.
     score: 0
     authoring:
       interesting: >-
@@ -67,6 +79,18 @@ rooms:
       - { direction: up, to: room-sound-choir, conditions: [{ kind: flag-set, flag: picture-built }] }
       - { direction: in, to: room-storage-stacks, conditions: [{ kind: flag-set, flag: sound-sampled }] }
       - { direction: out, to: room-compression-press, conditions: [{ kind: flag-set, flag: stacks-sorted }] }
+    scenery:
+      - name: real bin
+        aliases: [real bin, bin]
+        description: >-
+          The real bin is labelled for a number with a decimal point.
+    interactions:
+      - kind: put
+        itemId: item-decimal-sample
+        target: { kind: scenery, name: real bin }
+        flags: [types-sorted]
+        text: >-
+          You place the decimal sample in the real bin.
     score: 0
     authoring:
       interesting: >-
@@ -94,6 +118,56 @@ rooms:
     topicIds: [number-conversion]
     exits:
       - { direction: south, to: room-binary-hall }
+    scenery:
+      - name: carry lamp
+        aliases: [carry lamp, lamp]
+        description: >-
+          A carry lamp hangs above a scratched overflow tray.
+      - name: carry token
+        aliases: [carry token, token]
+        description: >-
+          A bright carry token waits beside the addition columns.
+      - name: nibble groups
+        aliases: [nibble groups, nibbles, groups]
+        description: >-
+          The card groups its marks into nibbles of four.
+      - name: rightmost column
+        aliases: [rightmost column, column]
+        description: >-
+          The rightmost column is marked for the first carry.
+      - name: shift lever
+        aliases: [shift lever, lever]
+        description: >-
+          The shift lever has notches for moving the marked row.
+      - name: row
+        aliases: [row, marked row]
+        description: >-
+          A row of bits waits beside the shift gutter.
+    interactions:
+      - kind: use
+        itemId: item-hex-nibble-card
+        target: { kind: scenery, name: carry lamp }
+        flags: [carry-cleared]
+        text: >-
+          The card fits the lamp socket and clears its carry warning.
+      - kind: use
+        itemId: item-hex-nibble-card
+        target: { kind: scenery, name: nibble groups }
+        flags: [hex-read]
+        text: >-
+          You read the card in nibbles and mark the groups on the deck.
+      - kind: use
+        item: { kind: scenery, name: carry token }
+        target: { kind: scenery, name: rightmost column }
+        flags: [carries-added]
+        text: >-
+          You place the carry token in the rightmost column.
+      - kind: use
+        item: { kind: scenery, name: shift lever }
+        target: { kind: scenery, name: row }
+        flags: [row-shifted]
+        text: >-
+          You move the lever and shift the marked row.
     score: 0
     authoring:
       interesting: >-
@@ -113,6 +187,23 @@ rooms:
     topicIds: [character-representation]
     exits:
       - { direction: west, to: room-binary-hall }
+    scenery:
+      - name: tiles
+        aliases: [tiles, character tiles, character case]
+        description: >-
+          The character case holds ordered rows of marked tiles.
+    interactions:
+      - kind: examine
+        target: { kind: scenery, name: tiles }
+        flags: [tiles-verified]
+        text: >-
+          You check the marked tiles and verify their order.
+      - kind: use
+        itemId: item-ascii-stamp
+        target: { kind: scenery, name: tiles }
+        flags: [characters-matched]
+        text: >-
+          The stamp matches each character to its place in the case.
     score: 0
     authoring:
       interesting: >-
@@ -130,6 +221,24 @@ rooms:
     topicIds: [graphics-representation]
     exits:
       - { direction: north, to: room-binary-hall }
+    scenery:
+      - name: mosaic
+        aliases: [mosaic, picture mosaic]
+        description: >-
+          A square mosaic waits for its missing coloured squares.
+    interactions:
+      - kind: use
+        itemId: item-pixel-lens
+        target: { kind: scenery, name: mosaic }
+        flags: [picture-built]
+        text: >-
+          Through the lens, the numbered squares form a complete picture.
+      - kind: use
+        itemId: item-pixel-lens
+        target: { kind: item, id: item-hex-nibble-card }
+        flags: [pixels-weighed]
+        text: >-
+          You compare the pixel grid with the values on the nibble card.
     score: 0
     authoring:
       interesting: >-
@@ -145,6 +254,18 @@ rooms:
     topicIds: [sound-representation]
     exits:
       - { direction: down, to: room-binary-hall }
+    scenery:
+      - name: bit-rate desk
+        aliases: [bit rate desk, bit-rate desk, desk]
+        description: >-
+          The desk carries sampling dials and a blank bit-rate dial.
+    interactions:
+      - kind: use
+        itemId: item-sample-fork
+        target: { kind: scenery, name: bit-rate desk }
+        flags: [sound-sampled]
+        text: >-
+          The fork sounds a clear sample and the desk records it.
     score: 0
     authoring:
       interesting: >-
@@ -160,6 +281,18 @@ rooms:
     topicIds: [data-storage-units]
     exits:
       - { direction: out, to: room-binary-hall }
+    scenery:
+      - name: unit ladder
+        aliases: [unit ladder, ladder]
+        description: >-
+          The unit ladder climbs from bit to byte and beyond.
+    interactions:
+      - kind: use
+        itemId: item-sample-fork
+        target: { kind: scenery, name: unit ladder }
+        flags: [stacks-sorted]
+        text: >-
+          The fork marks each unit as you order the stacks on the ladder.
     score: 0
     authoring:
       interesting: >-
@@ -177,6 +310,18 @@ rooms:
     topicIds: [data-compression]
     exits:
       - { direction: in, to: room-binary-hall }
+    interactions:
+      - kind: use
+        itemId: item-compression-die
+        flags: [archive-packed]
+        text: >-
+          You set the die and pack the archive into its smaller column.
+      - kind: use
+        itemId: item-compression-die
+        target: { kind: item, id: item-ascii-stamp }
+        flags: [compression-chosen]
+        text: >-
+          You compare the stamped characters and choose the compression setting.
     score: 0
     authoring:
       interesting: >-
@@ -371,3 +516,14 @@ items:
     authoring:
       useNotes: >-
         USING the comic sans cartridge triggers `hazard-detention-bell` and costs one life; `once: true` on that hazard. It is required by no puzzle and is expendable, so using it never strands the player.
+
+  - id: item-decimal-sample
+    name: decimal sample
+    aliases: [decimal sample, sample]
+    portable: true
+    description: >-
+      You find a small unlabelled sample among the bins, showing 36.4. No type-bin name marks its face.
+    initialRoom: room-binary-hall
+    authoring:
+      useNotes: >-
+        PUTTING the unlabelled decimal sample on the `real` bin sets `types-sorted`; the spec's real example is temperature 36.4, a number with a decimal point.

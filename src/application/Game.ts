@@ -2,11 +2,13 @@
 // counter and the event buffer; it never computes game rules or scores itself.
 import type { ContentBundle } from '../content/ContentBundle';
 import { createFromDto, createInitial } from '../core/GameState';
-import type { GameState } from '../core/GameState';
-import type { Direction } from '../types/domain';
+import type {
+  GameState,
+  HintStateDto,
+  QuizStateDto,
+  SessionStatus,
+} from '../core/GameState';
 import type { Command } from '../core/commands/Command';
-import { createNameResolver } from '../core/commands/NameResolver';
-import { parse } from '../core/commands/Parser';
 import { getCommandHandler } from '../core/commands/verbs/index';
 import type { Effect } from '../core/effects/Effect';
 import { createEffectApplier } from '../core/effects/EffectApplier';
@@ -19,6 +21,8 @@ import { createHazardSystem } from '../core/hazards/HazardSystem';
 import { createDialogueSystem } from '../core/npcs/DialogueSystem';
 import { TALKING_STATE } from '../core/npcs/ConversationFlow';
 import { createPuzzleSystem } from '../core/puzzles/PuzzleSystem';
+import { createQuizSystem } from '../core/combat/QuizSystem';
+import { createHintSystem } from '../core/hints/HintSystem';
 import { createConditionEvaluator } from '../core/rules/ConditionEvaluator';
 import { createRuleEngine } from '../core/rules/RuleEngine';
 import { createScheduler } from '../core/scheduling/Scheduler';
@@ -30,6 +34,8 @@ import type { Clock } from './Clock';
 import type {
   AreaProgressView,
   GameViewData,
+  HintView,
+  QuizView,
   SpecTopicView,
 } from './GameViewData';
 import type { MetaAction } from './MetaAction';
@@ -39,6 +45,7 @@ import {
 } from './ComposedReaction';
 import type { LoadResult, SaveDto } from './SaveDto';
 import type { SaveManager } from './SaveManager';
+import { resolveGameCommand } from './commandResolution';
 
 export interface Game {
   submit(raw: string): readonly GameEvent[];
@@ -128,143 +135,6 @@ function areaViews(
   });
 }
 
-const DIRECTION_NAMES: ReadonlySet<string> = new Set([
-  'north',
-  'south',
-  'east',
-  'west',
-  'up',
-  'down',
-  'in',
-  'out',
-]);
-
-function isDirection(value: string | undefined): value is Direction {
-  return value !== undefined && DIRECTION_NAMES.has(value);
-}
-
-function noArgumentCommand(kind: string): Command | undefined {
-  const commands: Readonly<Record<string, Command>> = {
-    look: { kind: 'look' },
-    inventory: { kind: 'inventory' },
-    score: { kind: 'score' },
-    help: { kind: 'help' },
-    bye: { kind: 'bye' },
-  };
-  return commands[kind];
-}
-
-function singleIdCommand(kind: string, id: string): Command | undefined {
-  switch (kind) {
-    case 'take': {
-      return { kind: 'take', itemId: id };
-    }
-    case 'drop': {
-      return { kind: 'drop', itemId: id };
-    }
-    case 'examine': {
-      return { kind: 'examine', targetId: id };
-    }
-    case 'open': {
-      return { kind: 'open', targetId: id };
-    }
-    case 'close': {
-      return { kind: 'close', targetId: id };
-    }
-    case 'talk-to': {
-      return { kind: 'talk-to', actorId: id };
-    }
-    default: {
-      return undefined;
-    }
-  }
-}
-
-function doubleIdCommand(
-  kind: string,
-  first: string,
-  second: string | undefined,
-): Command | undefined {
-  if (second === undefined) return undefined;
-  switch (kind) {
-    case 'unlock': {
-      return { kind: 'unlock', itemId: first, targetId: second };
-    }
-    case 'give': {
-      return { kind: 'give', actorId: first, itemId: second };
-    }
-    case 'show': {
-      return { kind: 'show', actorId: first, itemId: second };
-    }
-    default: {
-      return undefined;
-    }
-  }
-}
-
-// `put <item> in <target>` keeps its raw noun phrases (architecture.md §7), so
-// the documented preposition is skipped here rather than resolved as an object.
-function putCommand(
-  nounPhrases: readonly string[],
-  itemId: string,
-  idAt: (index: number) => string | undefined,
-  unknown: () => Command,
-): Command {
-  const preposition = nounPhrases.indexOf('in');
-  const targetId = idAt(preposition === -1 ? 1 : preposition + 1);
-  return targetId === undefined ? unknown() : { kind: 'put', itemId, targetId };
-}
-
-// Default phase-1 composition: Tokenizer → Parser → NameResolver → Command.
-// Unresolved nouns and unknown verbs become the documented unknown command.
-function resolveGameCommand(
-  raw: string,
-  state: GameState,
-  bundle: ContentBundle,
-): Command {
-  const parsed = parse(raw);
-  const resolver = createNameResolver();
-  const nounAt = (index: number): string | undefined =>
-    parsed.nounPhrases[index];
-  const idAt = (index: number): string | undefined => {
-    const phrase = nounAt(index);
-    return phrase === undefined
-      ? undefined
-      : resolver.resolve(phrase, state, bundle);
-  };
-  const unknown = (): Command => ({ kind: 'unknown', raw });
-
-  const simple = noArgumentCommand(parsed.verb);
-  if (simple !== undefined) return simple;
-  if (parsed.verb === 'go') {
-    const direction = nounAt(0);
-    return isDirection(direction) ? { kind: 'go', direction } : unknown();
-  }
-  const first = idAt(0);
-  if (first === undefined) return unknown();
-  if (parsed.verb === 'use') {
-    const targetId = idAt(1);
-    return targetId === undefined
-      ? { kind: 'use', itemId: first }
-      : { kind: 'use', itemId: first, targetId };
-  }
-  if (parsed.verb === 'put') {
-    return putCommand(parsed.nounPhrases, first, idAt, unknown);
-  }
-  if (parsed.verb === 'hint') return { kind: 'hint', targetId: first };
-  if (parsed.verb === 'answer') {
-    const option = Number(nounAt(0) ?? '');
-    return Number.isSafeInteger(option)
-      ? { kind: 'answer', option }
-      : unknown();
-  }
-  return (
-    doubleIdCommand(parsed.verb, first, idAt(1)) ??
-    singleIdCommand(parsed.verb, first) ??
-    unknown()
-  );
-}
-
 function metaActionOf(raw: string): MetaAction | undefined {
   const trimmed = raw.trim();
   const lowered = trimmed.toLowerCase();
@@ -290,6 +160,104 @@ function metaActionOf(raw: string): MetaAction | undefined {
   }
 }
 
+function quizView(
+  state: GameState,
+  bundle: ContentBundle,
+): QuizView | undefined {
+  const quizId = state.quiz.activeQuizId;
+  if (quizId === undefined) return undefined;
+  const questionId = state.quiz.questionIds[state.quiz.index];
+  const question =
+    questionId === undefined ? undefined : bundle.questions.getById(questionId);
+  if (question === undefined) return undefined;
+  return {
+    quizId,
+    prompt: question.prompt,
+    options: question.options,
+    questionNumber: state.quiz.index + 1,
+    questionCount: state.quiz.questionIds.length,
+  };
+}
+
+function hintViews(
+  state: GameState,
+  bundle: ContentBundle,
+): readonly HintView[] {
+  const views: Array<HintView & { readonly shownTurn: number }> = [];
+  for (const [hintId, record] of Object.entries(state.hints)) {
+    const level = record.levelsShown.at(-1);
+    if (level === undefined) continue;
+    const definition = bundle.hints
+      .getById(hintId)
+      ?.levels.find((entry) => entry.level === level);
+    if (definition === undefined) continue;
+    views.push({
+      hintId,
+      level,
+      text: definition.text,
+      shownTurn: record.lastShownTurn ?? 0,
+    });
+  }
+  views.sort((left, right) => left.shownTurn - right.shownTurn);
+  return views.map(({ hintId, level, text }) => ({ hintId, level, text }));
+}
+
+// An injected initial state remains the live owner of turn/status/quiz and of
+// the shared entity, flag, counter and room records. The game itself owns one
+// real state object whose hint ledger and score-bearing progress rows are
+// private copies, so replaying the same starting point in a second game begins
+// with no hints shown and no score already awarded. Every system reads and
+// writes that one object; there is no forked-owner Proxy.
+function initialRuntimeState(source: GameState): GameState {
+  const hints: Record<string, HintStateDto> = {};
+  for (const [hintId, record] of Object.entries(source.hints)) {
+    hints[hintId] = {
+      ...record,
+      levelsShown: [...record.levelsShown],
+    };
+  }
+  const progress = source.progress.map((entry) => ({
+    ...entry,
+    visitedRooms: [...entry.visitedRooms],
+    completedTopics: [...entry.completedTopics],
+  }));
+  const runtime = {
+    ...source,
+    hints,
+    progress,
+    get score(): number {
+      return progress.reduce((total, entry) => total + entry.earnedScore, 0);
+    },
+  } as GameState;
+  Object.defineProperties(runtime, {
+    turn: {
+      get: () => source.turn,
+      set: (value: number) => {
+        (source as { turn: number }).turn = value;
+      },
+      enumerable: true,
+      configurable: true,
+    },
+    status: {
+      get: () => source.status,
+      set: (value: SessionStatus) => {
+        (source as { status: SessionStatus }).status = value;
+      },
+      enumerable: true,
+      configurable: true,
+    },
+    quiz: {
+      get: () => source.quiz,
+      set: (value: QuizStateDto) => {
+        (source as { quiz: QuizStateDto }).quiz = value;
+      },
+      enumerable: true,
+      configurable: true,
+    },
+  });
+  return runtime;
+}
+
 const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
   'look',
   'examine',
@@ -299,12 +267,13 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
-  // The façade owns its own top-level state copy (notably the turn counter);
-  // entity records stay shared by reference so callers observe entity changes.
+  // An injected runtime state is live: injected sessions and appliers already
+  // point at it, and callers observe the same turn counter. Restores still pass
+  // through createFromDto so the derived score is rebuilt from progress.
   let state: GameState =
     dependencies.initialState === undefined
       ? createInitial(dependencies.bundle)
-      : createFromDto(dependencies.initialState);
+      : initialRuntimeState(dependencies.initialState);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
   const isInjectedApply = dependencies.apply !== undefined;
@@ -332,16 +301,25 @@ export function createGame(dependencies: GameDependencies): Game {
   const check =
     dependencies.check ??
     ((command, current) => ruleEngine.check(command, current));
+  const quizSystem = createQuizSystem({ bundle: dependencies.bundle });
   const dispatch =
     dependencies.dispatch ??
     ((command, context) => {
+      // `answer` is the phase-3 quiz seam (application-and-ui.md §8). `hint`
+      // emits nothing here: its delivery runs with the other phase-4 systems so
+      // a puzzle solved in the same turn is reported before the hint.
+      if (command.kind === 'answer') {
+        return quizSystem.handle(command, context.state);
+      }
+      if (command.kind === 'hint') return [];
       const handler = getCommandHandler(command);
       return handler === undefined ? [] : handler(command, context);
     });
 
-  // Phase 4 is composed per turn so each injected applier is bound to the live
-  // state, including after save/load replaces it. NPC reactions and auto-hints
-  // are no-op seams until their own slices implement them.
+  // Phase 4 is composed per turn so each applier is bound to the live state,
+  // including after save/load replaces it. All five systems are real: the hints
+  // system delivers explicit requests here so a puzzle solved this turn is
+  // reported before its hint.
   const productionReaction = (current: GameState): ComposedReaction => {
     const applier = createEffectApplier(current, {
       random: dependencies.random,
@@ -367,7 +345,11 @@ export function createGame(dependencies: GameDependencies): Game {
         random: dependencies.random,
         applier,
       }),
-      hints: { react: () => [] },
+      hints: createHintSystem({
+        bundle: dependencies.bundle,
+        evaluator,
+        applier,
+      }),
     });
   };
 
@@ -563,6 +545,7 @@ export function createGame(dependencies: GameDependencies): Game {
                 speaking[0],
               ...(conversationPrompt && { prompt: conversationPrompt }),
             };
+      const activeQuiz = quizView(state, dependencies.bundle);
       return {
         status: state.status,
         position: state.player.position,
@@ -570,8 +553,9 @@ export function createGame(dependencies: GameDependencies): Game {
         lives: state.player.lives,
         score: state.score,
         areas: areaViews(state, dependencies.bundle),
+        ...(activeQuiz && { activeQuiz }),
         ...(conversation && { conversation }),
-        hints: [],
+        hints: hintViews(state, dependencies.bundle),
       };
     },
     save(): void {

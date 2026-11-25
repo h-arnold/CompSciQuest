@@ -9,7 +9,11 @@ import type { ActorDefinition } from '../../src/content/ActorDefinition';
 import type { Command } from '../../src/core/commands/Command';
 import type { EffectApplier } from '../../src/core/effects/EffectApplier';
 import type { GameEvent } from '../../src/core/events/GameEvent';
-import type { GameState, GameStateDto } from '../../src/core/GameState';
+import {
+  createFromDto,
+  type GameState,
+  type GameStateDto,
+} from '../../src/core/GameState';
 import type { ActorState } from '../../src/core/npcs/ActorState';
 import type { ConversationNode } from '../../src/core/npcs/ConversationNode';
 import type { ConversationTopic } from '../../src/core/npcs/ConversationTopic';
@@ -297,7 +301,9 @@ export function npcGameDependencies(
   const actorId = bundle.actors.all[0]?.id ?? ACTOR_ID;
   const base = makeGameDependencies({
     bundle,
-    initialState: options.state ?? npcState(),
+    // Keep the fixture's original top-level turn counter as the pre-turn
+    // observation while sharing entity records for state assertions.
+    initialState: createFromDto(options.state ?? npcState()),
     random: options.random ?? new FakeRandom([0]),
   });
   return {

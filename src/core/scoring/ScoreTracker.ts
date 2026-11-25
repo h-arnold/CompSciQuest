@@ -36,6 +36,22 @@ function hasScoreFor(events: readonly GameEvent[], reason: string): boolean {
   );
 }
 
+function hasFlagChange(events: readonly GameEvent[], flag: string): boolean {
+  return events.some(
+    (event) =>
+      event.type === 'flag-changed' && event.flag === flag && event.value,
+  );
+}
+
+function hasTopicCompletion(
+  events: readonly GameEvent[],
+  topicId: string,
+): boolean {
+  return events.some(
+    (event) => event.type === 'topic-completed' && event.topicId === topicId,
+  );
+}
+
 function roomEntered(
   state: GameState,
   bundle: ContentBundle | undefined,
@@ -57,6 +73,7 @@ function roomEntered(
 // spec topic (application-and-ui.md §10). The puzzle's phase is already solved
 // when its event is observed, so the reason also gives idempotency.
 function puzzleSolved(
+  state: GameState,
   bundle: ContentBundle | undefined,
   event: Extract<GameEvent, { type: 'puzzle-solved' }>,
   emitted: readonly GameEvent[],
@@ -76,10 +93,20 @@ function puzzleSolved(
   }
   const reason = `puzzle:${event.puzzleId}`;
   if (hasScoreFor(emitted, reason)) return;
+  // A real solve arrives after the applier has set the phase to `solved`, with
+  // its `topic-completed` achievement in the same batch. A replayed bare
+  // `puzzle-solved` event on an already-solved puzzle has no such batch marker.
+  if (
+    state.puzzles[event.puzzleId]?.phase === 'solved' &&
+    !hasTopicCompletion(emitted, topicId)
+  ) {
+    return;
+  }
   announce(definition.score, reason);
 }
 
 function quizEnded(
+  state: GameState,
   bundle: ContentBundle | undefined,
   event: Extract<GameEvent, { type: 'quiz-ended' }>,
   emitted: readonly GameEvent[],
@@ -88,6 +115,13 @@ function quizEnded(
   if (!event.passed) return;
   const reason = `quiz:${event.quizId}`;
   if (hasScoreFor(emitted, reason)) return;
+  const flag = `quiz-passed:${event.quizId}`;
+  // `set-flag` applies before ScoreTracker observes, so the state flag alone
+  // cannot tell a first pass from a replayed `quiz-ended`. A state flag already
+  // true is honoured only when the batch carries this pass's flag transition;
+  // a batch with no flag and no state flag (the direct-achievement contract) is
+  // still scoreable.
+  if (state.flags[flag] === true && !hasFlagChange(emitted, flag)) return;
   announce(bundle?.quizzes.getById(event.quizId)?.score ?? 0, reason);
 }
 
@@ -107,11 +141,11 @@ function processEvent(
     return;
   }
   if (event.type === 'puzzle-solved') {
-    puzzleSolved(bundle, event, emitted, announce);
+    puzzleSolved(state, bundle, event, emitted, announce);
     return;
   }
   if (event.type === 'quiz-ended') {
-    quizEnded(bundle, event, emitted, announce);
+    quizEnded(state, bundle, event, emitted, announce);
     return;
   }
   if (event.type === 'hint-penalty-applied') award(state, event.delta);

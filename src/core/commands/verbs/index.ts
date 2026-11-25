@@ -5,6 +5,13 @@ import type { Effect } from '../../effects/Effect';
 import type { Command } from '../Command';
 import type { CommandHandler } from '../CommandHandler';
 import { npcHandler } from './npcHandlers';
+import {
+  describeScenery,
+  examineInteraction,
+  isSceneryVisible,
+  putInteraction,
+  useInteraction,
+} from '../InteractionRules';
 
 function message(text: string): Effect {
   return { kind: 'message', text };
@@ -52,7 +59,10 @@ function describeRoom(context: TurnContext): Effect {
 function describeTarget(context: TurnContext, targetId: string): Effect {
   const item = context.bundle.items.getById(targetId);
   const actor = context.bundle.actors.getById(targetId);
-  const description = item?.description ?? actor?.aliases[0];
+  const description =
+    item?.description ??
+    actor?.aliases[0] ??
+    describeScenery(context, targetId);
   return message(description ?? 'You see nothing special.');
 }
 
@@ -113,7 +123,10 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
   if (!hasItem(context, command.itemId)) {
     return [message('You are not carrying that.')];
   }
-  if (!isVisible(context, command.targetId)) {
+  if (
+    !isVisible(context, command.targetId) &&
+    !isSceneryVisible(context, command.targetId)
+  ) {
     return [message('You cannot see that here.')];
   }
   return [
@@ -123,8 +136,46 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
       fromOwnerId: 'player',
       toOwnerId: command.targetId,
     },
+    ...putInteraction(command, context),
     message('You put it down.'),
   ];
+}
+
+function useHandler(command: Command, context: TurnContext): readonly Effect[] {
+  if (command.kind !== 'use') return [];
+  const item = context.bundle.items.getById(command.itemId);
+  let canReach: boolean;
+  if (item === undefined) {
+    canReach = isSceneryVisible(context, command.itemId);
+  } else if (item.portable) {
+    canReach = hasItem(context, command.itemId);
+  } else {
+    canReach = isVisible(context, command.itemId);
+  }
+  if (!canReach) return [message('You are not carrying that.')];
+  if (
+    command.targetId !== undefined &&
+    !isVisible(context, command.targetId) &&
+    !isSceneryVisible(context, command.targetId)
+  ) {
+    return [message('You cannot see that here.')];
+  }
+  return (
+    useInteraction(command, context) ?? [
+      message('That does not fit the mechanism here.'),
+    ]
+  );
+}
+
+function examineHandler(
+  command: Command,
+  context: TurnContext,
+): readonly Effect[] {
+  if (command.kind !== 'examine') return [];
+  const interaction = examineInteraction(command.targetId);
+  return interaction.length > 0
+    ? interaction
+    : [describeTarget(context, command.targetId)];
 }
 
 function goHandler(command: Command, context: TurnContext): readonly Effect[] {
@@ -209,12 +260,8 @@ const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
   go: goHandler,
   take: takeHandler,
   drop: takeHandler,
-  use: fixedMessage('You cannot use that here.'),
-  examine: (command, context) => [
-    command.kind === 'examine'
-      ? describeTarget(context, command.targetId)
-      : message('You see nothing special.'),
-  ],
+  use: useHandler,
+  examine: examineHandler,
   open: (command, context) => openOrClose(command, context, true),
   close: (command, context) => openOrClose(command, context, false),
   unlock: unlockHandler,
@@ -232,8 +279,10 @@ const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
   give: npcHandler,
   show: npcHandler,
   bye: npcHandler,
-  answer: fixedMessage('There is no question to answer.'),
-  hint: fixedMessage('No hint is available.'),
+  // Quiz answers and hint requests are delivered by their domain systems
+  // (`QuizSystem.handle` in phase 3 and `HintSystem.react` in phase 4).
+  answer: () => [],
+  hint: () => [],
 };
 
 function handlerFor(command: Command): CommandHandler | undefined {

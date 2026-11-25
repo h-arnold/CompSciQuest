@@ -224,6 +224,27 @@ export type Effect =
       readonly text: string;
     }
   | {
+      readonly kind: 'ask-question';
+      readonly quizId: string;
+      readonly questionId: string;
+      readonly prompt: string;
+      readonly options: readonly string[];
+    }
+  | {
+      readonly kind: 'evaluate-answer';
+      readonly quizId: string;
+      readonly questionId: string;
+      readonly option: number; // 0-based index into the question's options
+      readonly correct: boolean;
+      readonly explanation: string;
+    }
+  | {
+      readonly kind: 'end-quiz';
+      readonly quizId: string;
+      readonly passed: boolean;
+      readonly reason: string;
+    }
+  | {
       readonly kind: 'announce-hazard';
       readonly hazardId: string;
       readonly reason: string;
@@ -231,7 +252,10 @@ export type Effect =
 ```
 
 This is the complete pinned `Effect` union; `announce-hazard` was added by user
-decision on 2026-11-25.
+decision on 2026-11-25, and the three quiz-progress kinds (`ask-question`,
+`evaluate-answer`, `end-quiz`) were added by user decision on 2026-11-25 to
+carry the `question-asked`, `answer-evaluated` and `quiz-ended` events while
+phase 3 stays effects-only.
 
 Conventions:
 

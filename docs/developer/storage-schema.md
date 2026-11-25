@@ -1,6 +1,6 @@
 # Storage schema (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [content rules](content-rules.md) ·
@@ -214,11 +214,18 @@ exist (§8). The engine never hard-codes content IDs.
 
 The win check is evaluated against the **live catalogue**, not a topic list in
 the save: the game is won when every `SpecTopic` with `status === 'covered'` and
-non-empty `evidence` has its ID in some `progress[].completedTopics`. If
-`status !== 'playing'` the check is skipped, so a reloaded won game cannot emit
-`game-won` a second time. During play the same check is owned by
-`Session.observe` in phase 5 ([application-and-ui.md §11](application-and-ui.md#11-win-check-owner));
-restore only derives and never emits.
+non-empty `evidence` has its ID in some `progress[].completedTopics`, and no
+recorded quiz attempt lacks its `quiz-passed:<quizId>` flag (user decision
+2026-11-25; [application-and-ui.md §11](application-and-ui.md#11-win-check-owner)
+adds the quiz condition to the in-play check). Restore cannot see the events
+that passed a quiz, so an attempt with no pass flag means that quiz has not been
+passed yet and the save is still playing. A save with no recorded attempts is
+treated as a completed run when every covered topic is complete — hand-built and
+legacy saves carry no attempt counters. If `status !== 'playing'` the check is
+skipped, so a reloaded won game cannot emit `game-won` a second time. During
+play the same check is owned by `Session.observe` in phase 5
+([application-and-ui.md §11](application-and-ui.md#11-win-check-owner)); restore
+only derives and never emits.
 
 ## 8. Validation contract
 

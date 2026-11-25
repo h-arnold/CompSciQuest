@@ -44,7 +44,7 @@ export const ZONE1_CATALOGUES: readonly {
   readonly count: number;
 }[] = [
   { path: 'src/content/authored/rooms.ts', name: 'rooms', count: 11 },
-  { path: 'src/content/authored/items.ts', name: 'items', count: 18 },
+  { path: 'src/content/authored/items.ts', name: 'items', count: 19 },
   { path: 'src/content/authored/areas.ts', name: 'areas', count: 3 },
   { path: 'src/content/authored/worlds.ts', name: 'worlds', count: 1 },
   { path: 'src/content/authored/actors.ts', name: 'actors', count: 9 },

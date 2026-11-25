@@ -80,13 +80,17 @@ function stateToDto(state: GameStateDto): GameStateDto {
 // values here — SaveManager owns the content lookup (storage-schema.md §7).
 export function createFromDto(dto: GameStateDto): RuntimeGameState {
   const state = stateToDto(dto);
-  const score = state.progress.reduce(
-    (total, entry) => total + entry.earnedScore,
-    0,
-  );
+  // `score` is a live derivation, never a snapshot: ScoreTracker rewrites
+  // AreaProgress.earnedScore, and Session must see the final total in the same
+  // turn (application-and-ui.md §11; storage-schema.md §7).
   const runtime: RuntimeGameState = {
     ...state,
-    score,
+    get score(): number {
+      return runtime.progress.reduce(
+        (total, entry) => total + entry.earnedScore,
+        0,
+      );
+    },
     toDto(): GameStateDto {
       return stateToDto(runtime);
     },
@@ -121,6 +125,19 @@ export function createInitial(
     const owner = roomState[item.initialRoom];
     if (owner !== undefined) owner.inventory.push(item.id);
   }
+  // Every actor starts in its declared initial state (npcs.md §4/§6); a new
+  // game must have the NPC records that conversation and quizzes address.
+  const npcState: Record<string, NpcStateDto> = Object.fromEntries(
+    bundle.actors.all.map((actor) => [
+      actor.id,
+      {
+        stateId: actor.initialStateId,
+        knownTopics: [],
+        inventory: [],
+        topicUses: {},
+      },
+    ]),
+  );
   return createFromDto({
     player: {
       position: { worldId: world.id, areaId: area.id, roomId: room.id },
@@ -128,7 +145,7 @@ export function createInitial(
       lives: world.lives,
     },
     rooms: roomState,
-    npcs: {},
+    npcs: npcState,
     hazards: {},
     puzzles: {},
     hints: {},

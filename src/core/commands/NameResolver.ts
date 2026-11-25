@@ -1,6 +1,7 @@
 // Canonical signature from application-and-ui.md §8.
 import type { ContentBundle } from '../../content/ContentBundle';
 import type { GameState } from '../GameState';
+import { resolveScenery } from './InteractionRules';
 
 export interface NameResolver {
   resolve(
@@ -49,6 +50,10 @@ export function createNameResolver(): NameResolver {
       const exact = candidates
         .filter((candidate) => hasName(candidate.names, normalised))
         .map((candidate) => candidate.id);
+      if (exact.length === 0) {
+        const scenery = resolveScenery(normalised, state);
+        if (scenery !== undefined) return scenery;
+      }
       const matchesFound =
         exact.length > 0
           ? exact

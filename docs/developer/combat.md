@@ -58,15 +58,16 @@ Definitions live in `src/content/quizzes/`; `QuizCatalogue` resolves IDs.
    starting, check `quizAttempts[quizId]` against `attemptsAllowed`: if exhausted,
    emit a friendly message and do not start. Otherwise increment that count at
    quiz start ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)).
-2. `QuizSystem` creates `QuizStateDto`, optionally shuffles `questionIds` using
+2. `start-quiz` creates `QuizStateDto`, optionally shuffles `questionIds` using
    the injected `Random` port (shared spine §7), and emits `quiz-started`.
 3. Emit `question-asked` with the prompt and numbered options. The UI's
    `QuizPanel` renders them as text.
-4. The player enters `answer 2`. The handler treats this as **1-based**, stores
-   `option = N - 1`, records the choice, emits `answer-evaluated` with `correct`
-   and `explanation`, and either advances `index` or finishes the quiz. An
-   out-of-range number gets a friendly message and does not consume the turn's
-   answer.
+4. The player enters `answer 2`. The handler treats this as **1-based**, returns
+   an `evaluate-answer` effect with `option = N - 1`, and `EffectApplier` records
+   the choice and emits `answer-evaluated` with `correct` and `explanation`; the
+   handler also returns `ask-question` when questions remain or `end-quiz` to
+   finish the quiz (application-and-ui.md §9). An out-of-range number gets a
+   friendly message and does not consume the turn's answer.
 5. On finish, emit `quiz-ended` with `passed`, then **omit** `activeQuizId` from
    the DTO and reset `index`, `correctCount` and `answers` for the next attempt.
    Apply `onPass` or `onFail` effects through `EffectApplier`.

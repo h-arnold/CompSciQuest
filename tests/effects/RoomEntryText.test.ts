@@ -69,14 +69,14 @@ describe('authored room-entry summaries', () => {
     expect(bus.batches).toEqual([movementBatch]);
   });
 
-  it('ROOM-TEXT-03: the authored hub description carries all six route clues and entry surfaces them without examine', () => {
-    const hub = authoredBundle.rooms.getById('room-network-hub');
-    if (hub === undefined) {
+  it('ROOM-TEXT-03: the authored gate description carries all six route clues and the navigation-only hub uses its own summary', () => {
+    const hall = authoredBundle.rooms.getById('room-binary-hall');
+    if (hall === undefined) {
       throw new Error(
-        'The authored Network Hub is missing from the catalogue.',
+        'The authored Binary Hall is missing from the catalogue.',
       );
     }
-    const description = hub.description.toLowerCase();
+    const description = hall.description.toLowerCase();
     for (const [flag, clue] of [
       ['switches-set', 'switches'],
       ['hex-read', 'nibbles'],
@@ -85,7 +85,9 @@ describe('authored room-entry summaries', () => {
       ['sound-sampled', 'sound'],
       ['stacks-sorted', 'stacks'],
     ]) {
-      expect(description, `the hub must name ${flag}`).toContain(flag);
+      expect(description, `the gate description must name ${flag}`).toContain(
+        flag,
+      );
       expect(description, `the hub must repeat the ${clue} clue`).toContain(
         clue,
       );

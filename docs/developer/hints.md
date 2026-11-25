@@ -1,6 +1,6 @@
 # Hints (design)
 
-Status: planned · Last updated: 2026-11-24
+Status: planned · Last updated: 2026-11-25
 
 Part of the CompSciQuest design set: [architecture](architecture.md) · [application and UI](application-and-ui.md) ·
 [shared rule spine](shared-rules.md) · [storage schema](storage-schema.md) ·
@@ -116,5 +116,7 @@ canonical union in
 - Hints are tied to spec topics so the score panel can label the revision area.
 - Repeated top-level requests use a small cooldown (`cooldownTurns`).
 - No hint level reveals the answer; the player must always answer.
-- Hints are never offered during a hazard penalty.
 - Optional penalties go through `hint-penalty-applied` and `ScoreTracker`.
+- There is no hazard-penalty lockout: a hazard is a brief penalty applied in
+  phase 4 and does not suppress a hint in the same turn (decision reversed by
+  user on 2026-11-25).

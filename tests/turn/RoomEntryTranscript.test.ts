@@ -52,7 +52,10 @@ describe('authored room-entry transcript', () => {
       );
       expect(lines).not.toContain(roomId);
     }
-    const hubLines = transcript(hubBatch);
+    const hallFixture = authoredGame({
+      state: authoredState({ roomId: 'room-switch-floor' }),
+    });
+    const hallLines = transcript(hallFixture.game.submit('up'));
     for (const flag of [
       'switches-set',
       'hex-read',
@@ -61,7 +64,7 @@ describe('authored room-entry transcript', () => {
       'sound-sampled',
       'stacks-sorted',
     ]) {
-      expect(hubLines.join('\n')).toContain(flag);
+      expect(hallLines.join('\n')).toContain(flag);
     }
   });
 
@@ -114,7 +117,8 @@ describe('authored room-entry transcript', () => {
       type: 'room-entered',
       room: summaryOf('room-network-hub'),
     });
-    const hubText = transcript(hub).join('\n');
+    const hazardBatch = game.submit('east');
+    const hallText = transcript(hazardBatch).join('\n');
     for (const flag of [
       'switches-set',
       'hex-read',
@@ -123,10 +127,8 @@ describe('authored room-entry transcript', () => {
       'sound-sampled',
       'stacks-sorted',
     ]) {
-      expect(hubText).toContain(flag);
+      expect(hallText).toContain(flag);
     }
-
-    const hazardBatch = game.submit('east');
     const enteredIndex = hazardBatch.findIndex(
       (event) => event.type === 'room-entered',
     );

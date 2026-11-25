@@ -52,8 +52,14 @@ function isTriggerMatched(
       return context.command.kind === trigger.verb;
     }
     case 'on-item-used': {
+      // Only an actual `use` counts: carrying or taking the same item is not
+      // using it (hazards.md §2 action trap; shared-rules.md §4).
       const command = context.command;
-      return 'itemId' in command && command.itemId === trigger.itemId;
+      return (
+        command.kind === 'use' &&
+        'itemId' in command &&
+        command.itemId === trigger.itemId
+      );
     }
     case 'on-event': {
       return events.some((event) => event.type === trigger.eventType);

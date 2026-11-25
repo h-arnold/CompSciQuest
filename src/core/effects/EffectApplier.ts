@@ -3,6 +3,9 @@
 // other documented effect its canonical event without inventing mechanics.
 import type { ContentBundle } from '../../content/ContentBundle';
 import type { GameState, RoomStateDto } from '../GameState';
+import type { QuizQuestion } from '../combat/QuizQuestion';
+import type { PuzzleStateDto } from '../PuzzleStateDto';
+import type { QuizStateDto } from '../QuizStateDto';
 import type { GameEvent, RoomSummary } from '../events/GameEvent';
 import type { Random } from '../Random';
 import type { Effect } from './Effect';
@@ -192,40 +195,210 @@ function applyEntityEffect(
   return undefined;
 }
 
+function shuffleQuestionIds(
+  ids: readonly string[],
+  random: Random,
+): readonly string[] {
+  const shuffled = [...ids];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapWith = random.nextInt(index + 1);
+    const current = shuffled[index];
+    const other = shuffled[swapWith];
+    if (current === undefined || other === undefined) continue;
+    shuffled[index] = other;
+    shuffled[swapWith] = current;
+  }
+  return shuffled;
+}
+
+function questionAskedEvent(quizId: string, question: QuizQuestion): GameEvent {
+  return {
+    type: 'question-asked',
+    quizId,
+    questionId: question.id,
+    prompt: question.prompt,
+    options: question.options,
+  };
+}
+
+function firstQuestionEvent(
+  state: GameState,
+  quizId: string,
+  bundle: ContentBundle | undefined,
+): readonly GameEvent[] {
+  const questionId = state.quiz.questionIds[0];
+  const question =
+    questionId === undefined || bundle === undefined
+      ? undefined
+      : bundle.questions.getById(questionId);
+  return question === undefined ? [] : [questionAskedEvent(quizId, question)];
+}
+
+function resetQuiz(state: GameState): void {
+  (state as { quiz: QuizStateDto }).quiz = {
+    questionIds: [],
+    index: 0,
+    correctCount: 0,
+    answers: [],
+  };
+}
+
+function startQuiz(
+  state: GameState,
+  effect: Extract<Effect, { kind: 'start-quiz' }>,
+  bundle: ContentBundle | undefined,
+  random: Random,
+): readonly GameEvent[] {
+  const quiz = bundle?.quizzes.getById(effect.quizId);
+  const attempts = state.quizAttempts[effect.quizId] ?? 0;
+  if (quiz?.attemptsAllowed !== undefined && attempts >= quiz.attemptsAllowed) {
+    return [
+      { type: 'message', text: 'There are no attempts left for this quiz.' },
+    ];
+  }
+  (state.quizAttempts as Record<string, number>)[effect.quizId] = attempts + 1;
+  const questionIds =
+    quiz === undefined ? [] : shuffleQuestionIds(quiz.questionIds, random);
+  (state as { quiz: QuizStateDto }).quiz = {
+    activeQuizId: effect.quizId,
+    questionIds,
+    index: 0,
+    correctCount: 0,
+    answers: [],
+  };
+  return [
+    {
+      type: 'quiz-started',
+      quizId: effect.quizId,
+      actorId: effect.actorId,
+    },
+    ...firstQuestionEvent(state, effect.quizId, bundle),
+  ];
+}
+
+function evaluateAnswer(
+  state: GameState,
+  effect: Extract<Effect, { kind: 'evaluate-answer' }>,
+): readonly GameEvent[] {
+  const current = state.quiz;
+  const answers = [...current.answers, effect.option];
+  const correctCount = current.correctCount + (effect.correct ? 1 : 0);
+  (state as { quiz: QuizStateDto }).quiz = {
+    ...current,
+    index: current.index + 1,
+    correctCount,
+    answers,
+  };
+  if (!effect.correct) {
+    const key = `failed-attempts:${effect.quizId}`;
+    const counters = state.counters as Record<string, number>;
+    counters[key] = (counters[key] ?? 0) + 1;
+  }
+  return [
+    {
+      type: 'answer-evaluated',
+      quizId: effect.quizId,
+      questionId: effect.questionId,
+      correct: effect.correct,
+      explanation: effect.explanation,
+    },
+  ];
+}
+
+function endQuiz(
+  state: GameState,
+  effect: Extract<Effect, { kind: 'end-quiz' }>,
+  bundle: ContentBundle | undefined,
+): readonly GameEvent[] {
+  resetQuiz(state);
+  const events: GameEvent[] = [
+    {
+      type: 'quiz-ended',
+      quizId: effect.quizId,
+      passed: effect.passed,
+      reason: effect.reason,
+    },
+  ];
+  const actorId = bundle?.quizzes.getById(effect.quizId)?.actorId;
+  if (actorId === undefined) return events;
+  const npc = state.npcs[actorId] as { stateId: string } | undefined;
+  if (npc === undefined) return events;
+  const ready = bundle?.actors.getById(actorId)?.initialStateId ?? 'ready';
+  npc.stateId = ready;
+  events.push({ type: 'actor-state-changed', actorId, stateId: ready });
+  return events;
+}
+
+function showHint(
+  state: GameState,
+  effect: Extract<Effect, { kind: 'show-hint' }>,
+  bundle: ContentBundle | undefined,
+): readonly GameEvent[] {
+  const hints = state.hints as Record<
+    string,
+    { levelsShown: readonly number[]; lastShownTurn?: number }
+  >;
+  const previous = hints[effect.hintId];
+  const levelsShown = previous?.levelsShown.includes(effect.level)
+    ? [...previous.levelsShown]
+    : [...(previous?.levelsShown ?? []), effect.level];
+  hints[effect.hintId] = { levelsShown, lastShownTurn: state.turn };
+  const key = `hints-shown:${effect.hintId}`;
+  const counters = state.counters as Record<string, number>;
+  counters[key] = (counters[key] ?? 0) + 1;
+  const penalty =
+    bundle?.hints
+      .getById(effect.hintId)
+      ?.levels.find((level) => level.level === effect.level)?.scorePenalty ?? 0;
+  return [
+    {
+      type: 'hint-shown',
+      hintId: effect.hintId,
+      level: effect.level,
+      text: effect.text,
+    },
+    { type: 'hint-penalty-applied', hintId: effect.hintId, delta: penalty },
+  ];
+}
+
 function applySystemEffect(
   state: GameState,
   effect: Effect,
+  bundle: ContentBundle | undefined,
+  random: Random,
 ): readonly GameEvent[] | undefined {
   if (
     effect.kind === 'set-puzzle-active' ||
     effect.kind === 'set-puzzle-solved'
   ) {
     const isActive = effect.kind === 'set-puzzle-active';
-    const puzzle = state.puzzles[effect.puzzleId] as
-      { phase: string } | undefined;
-    if (puzzle) puzzle.phase = isActive ? 'active' : 'solved';
+    const previous = state.puzzles[effect.puzzleId];
+    (state.puzzles as Record<string, PuzzleStateDto>)[effect.puzzleId] = {
+      ...previous,
+      phase: isActive ? 'active' : 'solved',
+    };
     const event: GameEvent = {
       type: isActive ? 'puzzle-activated' : 'puzzle-solved',
       puzzleId: effect.puzzleId,
     };
     return [event];
   }
-  if (effect.kind === 'start-quiz') {
-    (state.quiz as { activeQuizId?: string }).activeQuizId = effect.quizId;
-    return [
-      { type: 'quiz-started', quizId: effect.quizId, actorId: effect.actorId },
-    ];
-  }
-  if (effect.kind === 'show-hint') {
+  if (effect.kind === 'start-quiz')
+    return startQuiz(state, effect, bundle, random);
+  if (effect.kind === 'ask-question') {
     return [
       {
-        type: 'hint-shown',
-        hintId: effect.hintId,
-        level: effect.level,
-        text: effect.text,
+        type: 'question-asked',
+        quizId: effect.quizId,
+        questionId: effect.questionId,
+        prompt: effect.prompt,
+        options: effect.options,
       },
     ];
   }
+  if (effect.kind === 'evaluate-answer') return evaluateAnswer(state, effect);
+  if (effect.kind === 'end-quiz') return endQuiz(state, effect, bundle);
+  if (effect.kind === 'show-hint') return showHint(state, effect, bundle);
   return undefined;
 }
 
@@ -252,13 +425,15 @@ function applyEffect(
   state: GameState,
   effect: Effect,
   bundle: ContentBundle | undefined,
+  random: Random,
 ): readonly GameEvent[] {
   const handlers = [
     applyItemEffect,
     applyStateEffect,
     (current: GameState, candidate: Effect) =>
       applyEntityEffect(current, candidate, bundle),
-    applySystemEffect,
+    (current: GameState, candidate: Effect) =>
+      applySystemEffect(current, candidate, bundle, random),
     applyBookkeepingEffect,
   ];
   for (const handler of handlers) {
@@ -275,7 +450,12 @@ export function createEffectApplier(
   // The injected source of randomness is retained for mechanic slices.
   const applier = {
     apply(effect: Effect): readonly GameEvent[] {
-      return applyEffect(state, effect, dependencies.bundle);
+      return applyEffect(
+        state,
+        effect,
+        dependencies.bundle,
+        dependencies.random,
+      );
     },
     random: dependencies.random,
   };

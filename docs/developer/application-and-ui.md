@@ -868,24 +868,31 @@ refresh `AreaProgress.maxScore`.
 [shared-rules.md §5](shared-rules.md#5-effect-and-effectapplier) promises one
 buffered event per effect. The complete mapping is:
 
-| Effect                                       | Event                 |
-| -------------------------------------------- | --------------------- |
-| `set-flag`                                   | `flag-changed`        |
-| `message`                                    | `message`             |
-| `change-lives`                               | `lives-changed`       |
-| `complete-topic`                             | `topic-completed`     |
-| `grant-item`, `remove-item`, `transfer-item` | `item-moved`          |
-| `move-player`                                | `room-entered`        |
-| `set-actor-state`                            | `actor-state-changed` |
-| `learn-topic`                                | `knowledge-gained`    |
-| `enter-node`                                 | `node-entered`        |
-| `exit-node`                                  | `node-exited`         |
-| `set-puzzle-active`                          | `puzzle-activated`    |
-| `set-puzzle-solved`                          | `puzzle-solved`       |
-| `schedule`                                   | `scheduled`           |
-| `start-quiz`                                 | `quiz-started`        |
-| `show-hint`                                  | `hint-shown`          |
-| `announce-hazard`                            | `hazard-triggered`    |
+| Effect                                       | Event                                |
+| -------------------------------------------- | ------------------------------------ |
+| `set-flag`                                   | `flag-changed`                       |
+| `message`                                    | `message`                            |
+| `change-lives`                               | `lives-changed`                      |
+| `complete-topic`                             | `topic-completed`                    |
+| `grant-item`, `remove-item`, `transfer-item` | `item-moved`                         |
+| `move-player`                                | `room-entered`                       |
+| `set-actor-state`                            | `actor-state-changed`                |
+| `learn-topic`                                | `knowledge-gained`                   |
+| `enter-node`                                 | `node-entered`                       |
+| `exit-node`                                  | `node-exited`                        |
+| `set-puzzle-active`                          | `puzzle-activated`                   |
+| `set-puzzle-solved`                          | `puzzle-solved`                      |
+| `schedule`                                   | `scheduled`                          |
+| `start-quiz`                                 | `quiz-started`, `question-asked`     |
+| `ask-question`                               | `question-asked`                     |
+| `evaluate-answer`                            | `answer-evaluated`                   |
+| `end-quiz`                                   | `quiz-ended`                         |
+| `show-hint`                                  | `hint-shown`, `hint-penalty-applied` |
+| `announce-hazard`                            | `hazard-triggered`                   |
+
+`start-quiz` emits `quiz-started` and the first `question-asked`; `show-hint`
+emits `hint-shown` and `hint-penalty-applied` (the level's `scorePenalty`, or
+`0` when omitted). Every other row is one event per effect.
 
 An effect that legitimately needs to say something to the player includes its
 own `message` effect alongside the state-changing one. `ScoreTracker` consumes
@@ -930,6 +937,21 @@ injected `ContentBundle` and follows
 `SpecTopic` with `covered` status and evidence must have its ID in some
 `progress[].completedTopics`. On success it sets `status = 'won'` and emits
 `game-won`; on `lives === 0` it sets `status = 'lost'` and emits `game-over`.
+
+Two conditions must both hold (user decision 2026-11-25):
+
+1. **Topics.** Every covered topic with evidence is complete, as above.
+2. **Quizzes.** Every quiz with at least one question has been passed. A pass is
+   recorded by the `quiz-passed:<quizId>` flag, or by a `quiz-ended` event with
+   `passed: true` in the same batch (the direct-achievement path used by tests
+   and by content that supplies the event without the flag). The batch clause
+   matters because the flag is applied before phase 5 in the same turn; the
+   flag alone cannot distinguish the first pass from a replay.
+
+The quiz condition is what puts the authored run's single `game-won` in its
+final batch: rooms and puzzles complete their topics earlier, but the eight quiz
+passes are the remaining completion sources. `Quiz.score` itself is still
+awarded once per quiz by `ScoreTracker` (§10).
 
 `SaveManager.restore()` performs the same derivation against the live catalogue
 but **never emits** an event when `status !== 'playing'`, so a reloaded end

@@ -104,7 +104,7 @@ unavoidable losses.
    solving `puzzle-sort-the-data-types` → `complete-topic data-types`.
 6. **North → `room-hex-deck`** (gate `switches-set`, first visit). The room text gives
    the dripping-lamp telegraph; `hazard-carry-overflow` then fires on entry (it has
-   `once: true`, `carry-cleared` unset), costing one life and ejecting you to the hub.
+   `once: true`, `carry-cleared` unset), costing one life and ejecting you to `room-binary-hall`.
    **North again** on the safe re-entry and take `item-hex-nibble-card`.
 7. **USE the nibble card on the carry lamp** → `carry-cleared` (disarms the hazard);
    **USE the nibble card on the nibble groups** → `hex-read`, solving
@@ -178,14 +178,14 @@ the win set or the eight scored topics.
 
 | Room exit / gate | Condition | Satisfied by | Two discoverable clues (N6) |
 | --- | --- | --- | --- |
-| hub north → `room-hex-deck` | `switches-set` | step 3 gauge-use | route diagram "north switches-set"; north arch "switches" |
-| hub east → `room-character-tiles` | `hex-read` | step 7 nibble-use | route diagram "east hex-read"; east arch "nibbles" |
-| hub south → `room-picture-mosaic` | `characters-matched` | step 9 stamp-use | route diagram "south characters-matched"; south arch "tiles" |
-| hub up → `room-sound-choir` | `picture-built` | step 11 lens-use | route diagram "up picture-built"; up arch "image" |
-| hub in → `room-storage-stacks` | `sound-sampled` | step 13 fork-use | route diagram "in sound-sampled"; in arch "sound" |
-| hub out → `room-compression-press` | `stacks-sorted` | step 15 ladder-use | route diagram "out stacks-sorted"; out arch "stacks" |
+| Binary Hall north → `room-hex-deck` | `switches-set` | step 3 gauge-use | route diagram "north switches-set"; north arch "switches" |
+| Binary Hall east → `room-character-tiles` | `hex-read` | step 7 nibble-use | route diagram "east hex-read"; east arch "nibbles" |
+| Binary Hall south → `room-picture-mosaic` | `characters-matched` | step 9 stamp-use | route diagram "south characters-matched"; south arch "tiles" |
+| Binary Hall up → `room-sound-choir` | `picture-built` | step 11 lens-use | route diagram "up picture-built"; up arch "image" |
+| Binary Hall in → `room-storage-stacks` | `sound-sampled` | step 13 fork-use | route diagram "in sound-sampled"; in arch "sound" |
+| Binary Hall out → `room-compression-press` | `stacks-sorted` | step 15 ladder-use | route diagram "out stacks-sorted"; out arch "stacks" |
 
-The hub's `down` and `west` exits are ungated; the six gated exits form the PDG chain
+The Binary Hall's `down` and `west` exits are ungated; the six gated exits form the PDG chain
 with no cycle (topic file §5).
 
 ## 4. Reachability table
@@ -194,7 +194,7 @@ with no cycle (topic file §5).
 | --- | --- | --- |
 | Rooms | 11 (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the hub |
 | Exits | all declared in the four `rooms.yaml` cards | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
-| Items | 18 total: 7 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The seven gameplay items are portable and each SHOW follows the item's last USE; of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
+| Items | 19 total: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
 | NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; AltTopics on puzzle flags set on the path; four foreman `show` topics are always active |
 | Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
 | Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |

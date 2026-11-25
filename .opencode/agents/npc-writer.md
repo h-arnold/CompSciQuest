@@ -29,10 +29,12 @@ You are the NPC writer for CompSciQuest. You turn a brief into one YAML card set
 
 Read first: `docs/developer/content-rules.md` (§3 C and D, §4.3), `docs/developer/npcs.md`, `docs/developer/content-toolchain.md` §2, `docs/content/content-bible.md`, `docs/content/narrative-principles.md` (voice, humour and the harm floor) and the brief. Your output path is given in the brief and always ends in `npcs.yaml`. Write only that file. Use block scalars for prose and put authoring metadata under `authoring:`; never edit the schema, validator, generator or generated TypeScript.
 
-Rules you own: C1–C6, N3–N5, D1–D5. In particular:
+Rules you own: C1–C7, N3–N5, D1–D5. In particular:
 
 - Each actor has a distinct role, voice, motivation and relationship dynamic in authoring metadata; responses stay in that voice.
 - Topic matching uses only the kinds in `npcs.md` §2: `ask`/`tell`/`askTell`, `give`/`show`, `command`/`special`. Unknown input always falls through to a `DefaultAskTellTopic` with an in-character reply. Never write "parser error" or "I don't understand that" as dialogue.
+- Before writing, list every non-default `ask`/`tell`/`askTell` topic per actor and show that at most one can be active at a time. Any two whose `match` can accept the same input need complementary `isActive` conditions; declaration order and topic IDs are not tie-breaks ([content-rules.md](content-rules.md) C7, [npcs.md](npcs.md) §3/§4.2).
+- A later lesson replaces an earlier one by negating the earlier topic on the later beat's evidence (for example `carries-added` gates the shift lesson, and the carries lesson carries `not carries-added`). Do not add several lessons on the same evidence and rely on order.
 - Gate knowledge with `isActive` / `npc-knows`, and add an `AltTopic` with a negated condition when the player could discover the fact independently.
 - Use a `ConvNode` only for a deliberate teaching beat; justify `isSticky: true`; every node has a valid `defaultTopicId`. No turn timeout.
 - A topic may hand off to a quiz with `start-quiz`; the actor returns to its `ready` state on `quiz-ended` unless the quiz sets another state.
@@ -54,6 +56,7 @@ Before finishing, verify every referenced actor ID, item ID, node ID and topic I
 - Each actor has distinct `authoring.role`, `voice`, `motivation` and `relationship`, and its responses stay in that voice.
 - Every topic's `match.kind` is one of `ask`/`tell`/`askTell`, `give`/`show`, `command`/`special`; `isActive` uses only `Condition` kinds and `effects` only `Effect` kinds; teaching topics carry a `prompt`.
 - Every actor has a free-text catch-all topic; no "parser error" or "I don't understand that" phrasing appears.
+- Every actor has at most one live free-text ask/tell target per state; overlapping topics are provably exclusive (C7).
 - Every topic and node binds to one actor; unentered nodes carry `authoring.reserved: true` and a reason; every node's `defaultTopicId` and `topicIds` resolve; `isSticky: true` is justified; knowledge-gated facts that can be found independently have an `AltTopic` with a negated condition.
 - Room or area locality uses `in-room`/`in-area` in `isActive` only, with the named room or area declared in the bible; a scoped topic's catch-all and the V4 beat agree, and unscoped topics remain global (C6, shared-rules.md §3).
 - `start-quiz` topics point to a real quiz ID and document the post-quiz state; the `ready` state is silent, with no `onEnter` greeting (content-rules.md §8).
@@ -101,6 +104,7 @@ An in-character fallback for unknown input:
 
 - Record `authoring.role`, `voice`, `motivation` and `relationship` for every actor before writing its lines.
 - Use only allowed `match.kind` values; give every actor a free-text `DefaultAskTellTopic` in voice; never use parser-error phrasing.
+- Prove at most one live free-text ask/tell target per actor state; overlapping topics have complementary `isActive` conditions, and no match relies on words in a topic ID (C7).
 - Gate facts with `isActive`/`npc-knows` and add an `AltTopic` with a negated condition when the fact can be found independently; express room or area locality with `in-room`/`in-area` in `isActive`, never as a topic field, and keep the catch-all global unless the actor itself is room-bound.
 - Put a `prompt` on teaching topics; justify `isSticky: true`; give every node a valid `defaultTopicId` and `topicIds`, mark reserved nodes, and set no turn timeout.
 - Point `start-quiz` at a real quiz ID, document the post-quiz state, and verify every referenced ID against the bible or brief.

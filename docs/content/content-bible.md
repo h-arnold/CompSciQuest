@@ -345,6 +345,7 @@ files explain what each ID is for; this table owns the spellings.
 | `item-` | `item-sample-fork` | sample fork, fork | 1.2.1 |
 | `item-` | `item-compression-die` | compression die, die | 1.2.1 |
 | `item-` | `item-comic-sans-cartridge` | comic sans cartridge, cursed cartridge | root; expendable joke item |
+| `item-` | `item-decimal-sample` | decimal sample, sample | 1.2.1; portable Binary Hall sample for the accepted real-bin action |
 | `item-` | `item-before-label` | before label, tube label | 1.2.1; decorative examinable |
 | `item-` | `item-oil-can` | oil can, oilcan | 1.2.1; decorative examinable |
 | `item-` | `item-route-diagram` | route diagram, painted diagram | 1.2.1; decorative examinable |
@@ -402,8 +403,9 @@ are bare kebab-case names matching the `## Topic: <name>` headings planned for
 COVERAGE.md.
 
 **Decorative examinables and the area-writer's authority (approved
-2026-11-25).** The twelve `item-` entries above carry no flag, score, topic or
-puzzle dependency; they exist so a room has several things worth examining. Their
+2026-11-25).** The twelve decorative examinable `item-` entries above carry no
+flag, score, topic or puzzle dependency; they exist so a room has several things
+worth examining. Their
 `portable` value follows real-world plausibility: fixed scenery (a brass plate, a
 painted diagram, a rack label, a drawer, a tray, a port label) is `portable: false`;
 movable props (an oil can, a rule card, a ruler, a sheet, a lead) are `portable: true`.
@@ -565,7 +567,7 @@ Zone-specific questions are in the owning topic file.
   `topics/1-2-1-data-representation.md` and parked 1.1 detail to
   `topics/1-1-computer-architecture.md`. Master alias registry retained at root to
   enforce global uniqueness.
-- 2026-11-24 — **Ideation sub-stage (§13) completed and curated.** Six ideation-only
+- 2026-11-24 — **Ideation sub-stage completed and curated.** Six ideation-only
   agents reported; editor whittled the returns to a workable first-zone set,
   rejecting out-of-scope future-zone ideas, superseded IDs and the unavoidable
   pop-quiz hazard. User approved four decisions: all six layer NPCs; three added
@@ -638,6 +640,10 @@ Zone-specific questions are in the owning topic file.
   registered nouns and give NPCs a visible action. **Room briefs are paused** until
   the user approves the new decorative item IDs and aliases for §9; no writer has
   been dispatched with an unregistered noun.
+- 2026-11-25 — **Decimal sample ID approved.** The user approved
+  `item-decimal-sample`, aliases `decimal sample` and `sample`, as a portable item
+  in `room-binary-hall`. This registers the entity already required by the accepted
+  V4 real-bin action; it adds no new flag, gate, score, topic or course fact.
 - 2026-11-25 — **Take-refusal contract approved (P-TAKE-01).** The user decided that
   an item may carry an optional in-world `refusalText` for a refused TAKE, with the
   exact fallback `"You cannot take that item with you."` when the prop is absent;

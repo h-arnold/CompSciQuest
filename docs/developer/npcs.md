@@ -109,6 +109,13 @@ Resolution order:
    a vague in-character reply. **Unknown topics never crash or say "parser
    error".**
 
+Free text therefore reaches the **first** active non-default `ask`/`tell` topic
+in declaration order — node topics before actor topics. There is no keyword or
+specificity tie-break inside that class, so two such topics on one actor must be
+mutually exclusive in `isActive` ([content-rules.md](content-rules.md#c--conversation-and-npcs)
+C7). `command`/`special` keywords are the only way to address one topic among
+several active ask/tell topics.
+
 Object and NPC aliases must be **globally unique**, validated when content is
 loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
 
@@ -117,8 +124,9 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
 1. `talk-to <actor>` **or any conversational verb** (`ask`, `give`, `show`)
    implicitly starts a conversation: emit `conversation-started`, apply the
    `ready` state's greeting effects and switch the actor to `talking`.
-2. In **phase 3 (Execute)**, `DialogueSystem` finds the best matching topic:
-   active node topics first, then the actor's state topics, then defaults.
+2. In **phase 3 (Execute)**, `DialogueSystem` finds the best matching topic
+   (the selection order in [§3](#3-commands-and-topic-resolution)): active node
+   topics first, then the actor's state topics, then defaults.
    `isActive` gates topics on world state, including `in-room`/`in-area` checks
    against the player's current `Position` for room-scoped dialogue.
 3. The response is emitted as `npc-spoke`; effects are returned to the turn's

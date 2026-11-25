@@ -101,8 +101,9 @@ function applyTopicEffects(
   npc: MutableNpcState,
   dependencies: NpcDependencies,
   events: GameEvent[],
-): void {
+): { readonly exited: boolean } {
   const { applier, bundle } = dependencies;
+  let isExited = false;
   for (const effect of topic.effects) {
     // A repeated lesson must not claim new knowledge twice; the effect is
     // still routed through the canonical applier on the first application.
@@ -112,12 +113,45 @@ function applyTopicEffects(
     ) {
       continue;
     }
+    // A quiz handoff exits the active node first (npcs.md §6, combat.md §3).
+    if (effect.kind === 'start-quiz' && npc.activeNodeId !== undefined) {
+      applyAll(
+        [{ kind: 'exit-node', actorId: effect.actorId }],
+        applier,
+        events,
+      );
+      isExited = true;
+    }
     for (const event of applier.apply(effect)) events.push(event);
+    if (effect.kind === 'exit-node') isExited = true;
     if (effect.kind !== 'enter-node') continue;
     const node = bundle.nodes.getById(effect.nodeId);
     applyAll(node?.onEnterEffects ?? [], applier, events);
     npc.activeNodeId = effect.nodeId;
   }
+  return { exited: isExited };
+}
+
+function conversationTransfer(
+  context: TurnContext,
+  topic: ConversationTopic,
+): Effect | undefined {
+  const command = context.command;
+  if (command.kind !== 'give' && command.kind !== 'show') return undefined;
+  if (!context.state.player.inventory.includes(command.itemId))
+    return undefined;
+  const authoredTransfer = topic.effects.some(
+    (effect) =>
+      effect.kind === 'transfer-item' && effect.itemId === command.itemId,
+  );
+  return authoredTransfer
+    ? undefined
+    : {
+        kind: 'transfer-item',
+        itemId: command.itemId,
+        fromOwnerId: 'player',
+        toOwnerId: command.actorId,
+      };
 }
 
 export function startConversation(
@@ -235,16 +269,27 @@ export function handleConversationTopic(
     events.push({ type: 'topic-suggested', actorId, text: topic.prompt });
   }
   const isHadNode = npc.activeNodeId !== undefined;
-  applyTopicEffects(topic, npc, dependencies, events);
+  const transfer = conversationTransfer(context, topic);
+  if (transfer !== undefined) {
+    applyAll([transfer], dependencies.applier, events);
+  }
+  const { exited: isExitedDuringEffects } = applyTopicEffects(
+    topic,
+    npc,
+    dependencies,
+    events,
+  );
 
   const entered = topic.effects.some((effect) => effect.kind === 'enter-node');
-  const exited = topic.effects.some((effect) => effect.kind === 'exit-node');
+  const isExited =
+    isExitedDuringEffects ||
+    topic.effects.some((effect) => effect.kind === 'exit-node');
   const specialExit =
     selected.fromNode &&
     resolved.kind === 'keyword' &&
     node !== undefined &&
     !node.isSticky &&
-    !exited;
+    !isExited;
   if (specialExit) {
     applyAll([{ kind: 'exit-node', actorId }], dependencies.applier, events);
   }
@@ -253,7 +298,7 @@ export function handleConversationTopic(
   if (
     isHadNode &&
     !entered &&
-    !exited &&
+    !isExited &&
     !specialExit &&
     node !== undefined &&
     !node.isSticky &&

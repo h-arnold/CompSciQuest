@@ -56,6 +56,29 @@ export type Effect =
       readonly level: number;
       readonly text: string;
     }
+  // Quiz progress is carried by effects so phase 3 stays effects-only while
+  // EffectApplier remains the sole mutator of QuizStateDto (shared-rules.md §5).
+  | {
+      readonly kind: 'ask-question';
+      readonly quizId: string;
+      readonly questionId: string;
+      readonly prompt: string;
+      readonly options: readonly string[];
+    }
+  | {
+      readonly kind: 'evaluate-answer';
+      readonly quizId: string;
+      readonly questionId: string;
+      readonly option: number; // 0-based index into the question's options
+      readonly correct: boolean;
+      readonly explanation: string;
+    }
+  | {
+      readonly kind: 'end-quiz';
+      readonly quizId: string;
+      readonly passed: boolean;
+      readonly reason: string;
+    }
   // Hazard announcement is the sole carrier of `hazard-triggered` through the
   // sole mutator (shared-rules.md §5, application-and-ui.md §9). Score is never
   // carried by an effect: ScoreTracker awards it from achievement events.

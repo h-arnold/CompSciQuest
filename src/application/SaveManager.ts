@@ -3,6 +3,8 @@
 import type { ContentBundle } from '../content/ContentBundle';
 import { createFromDto } from '../core/GameState';
 import type { GameState, GameStateDto } from '../core/GameState';
+import { isWon } from '../core/lifecycle/Session';
+import type { SessionStatus } from '../core/SessionStatus';
 import type { StorageAdapter } from '../storage/StorageAdapter';
 import type { Clock } from './Clock';
 import type { QuarantineDto } from './QuarantineDto';
@@ -307,6 +309,16 @@ function hasValidReferences(
   );
 }
 
+// Restore cannot observe the events that passed a quiz, so a recorded attempt
+// without its `quiz-passed` flag means the player has not won yet. A save with
+// no attempts and every covered topic complete is a completed authored run.
+function hasUnpassedQuizAttempt(state: GameState): boolean {
+  return Object.entries(state.quizAttempts).some(
+    ([quizId, attempts]) =>
+      attempts > 0 && state.flags[`quiz-passed:${quizId}`] !== true,
+  );
+}
+
 function refreshMaxima(
   state: GameStateDto,
   bundle: ContentBundle,
@@ -387,7 +399,19 @@ export function createSaveManager(
     },
     validate,
     restore(dto: SaveDto): GameState {
-      return createFromDto(refreshMaxima(dto.state, dependencies.bundle));
+      const restored = createFromDto(
+        refreshMaxima(dto.state, dependencies.bundle),
+      );
+      // Restore derives an already-satisfied win without announcing it; a save
+      // that recorded an end state keeps that status (storage-schema.md §7).
+      if (
+        restored.status === 'playing' &&
+        !hasUnpassedQuizAttempt(restored) &&
+        isWon(restored, dependencies.bundle)
+      ) {
+        (restored as { status: SessionStatus }).status = 'won';
+      }
+      return restored;
     },
   };
 }

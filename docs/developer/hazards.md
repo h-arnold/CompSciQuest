@@ -83,8 +83,7 @@ Per the agreed design, a hazard's failure effects may include:
 - reset level-local flags via `set-flag` effects.
 
 A failed hazard does **not** reset puzzle state: puzzles remain in whatever phase
-they reached. Hints are not offered for hazards — they are brief penalties, not
-puzzles. Puzzle progress is only changed by the puzzle system itself.
+they reached. Puzzle progress is only changed by the puzzle system itself.
 
 ## 5. Content
 
@@ -123,7 +122,6 @@ world/area in content**, not derived from the world graph: it is the runtime
 - Room-entry hazards fire **after** the initial room description.
 - Hazards have their own `hazard-triggered` event (in addition to `message`).
 - Level-start rooms are declared in content per world/area.
-- Hints are never offered during a hazard penalty.
 - Failed hazards do not reset puzzle progress.
 - Later hazards' `when` checks see earlier hazards' applied state; effects are
   applied in declaration order before the next `when` (user decision of
