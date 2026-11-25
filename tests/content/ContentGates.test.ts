@@ -337,6 +337,43 @@ describe('structural gates at authoring time (content-toolchain.md §4)', () => 
     ).toBe('');
   });
 
+  it('CT-GATE-06a: when the opening world is declared second, `world-graph` reports that `worlds.all[0]` is not the world owning `startAreaId`', async () => {
+    const { validateCards } = await loadValidation();
+    const openingArea = area({
+      id: 'area-opening',
+      worldId: 'world-opening',
+      roomIds: ['room-opening'],
+      startRoomId: 'room-opening',
+    });
+    const openingWorld = world({
+      id: 'world-opening',
+      areaIds: ['area-opening'],
+      startAreaId: 'area-opening',
+    });
+    const openingSecond = parsedSet(
+      parsedCard(ROOMS_PATH, {
+        kind: 'area',
+        areas: [area(), openingArea],
+        worlds: [world(), openingWorld],
+        rooms: [room(), room({ id: 'room-opening' })],
+      }),
+    );
+    const findings = validateCards(openingSecond);
+    expect(hasFinding(findings, 'world-graph', 'world-opening')).toBe(true);
+    expect(gateFindings(findings, 'world-graph')).toContain(
+      `World 'world-opening' declares startAreaId 'area-opening' but is not the first world declared; GameState.createInitial() boots from worlds.all[0] ('world-${AREA_ID}')`,
+    );
+    const openingOnly = parsedSet(
+      parsedCard(ROOMS_PATH, {
+        kind: 'area',
+        areas: [openingArea],
+        worlds: [openingWorld],
+        rooms: [room({ id: 'room-opening' })],
+      }),
+    );
+    expect(gateFindings(validateCards(openingOnly), 'world-graph')).toBe('');
+  });
+
   it('CT-GATE-07: world-graph reports unreachable artefacts and uncovered completions', async () => {
     const { validateCards } = await loadValidation();
 

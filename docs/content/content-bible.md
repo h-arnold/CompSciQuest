@@ -340,6 +340,18 @@ files explain what each ID is for; this table owns the spellings.
 | `item-` | `item-sample-fork` | sample fork, fork | 1.2.1 |
 | `item-` | `item-compression-die` | compression die, die | 1.2.1 |
 | `item-` | `item-comic-sans-cartridge` | comic sans cartridge, cursed cartridge | root; expendable joke item |
+| `item-` | `item-before-label` | before label, tube label | 1.2.1; decorative examinable |
+| `item-` | `item-oil-can` | oil can, oilcan | 1.2.1; decorative examinable |
+| `item-` | `item-route-diagram` | route diagram, painted diagram | 1.2.1; decorative examinable |
+| `item-` | `item-rule-card` | rule card, sum card | 1.2.1; decorative examinable |
+| `item-` | `item-overflow-tray` | overflow tray, catch tray | 1.2.1; decorative examinable |
+| `item-` | `item-spare-drawer` | spare drawer, drawer | 1.2.1; decorative examinable |
+| `item-` | `item-mosaic-ruler` | mosaic ruler, ruler | 1.2.1; decorative examinable |
+| `item-` | `item-vector-sheet` | vector sheet, curve sheet | 1.2.1; decorative examinable |
+| `item-` | `item-patch-lead` | patch lead, lead | 1.2.1; decorative examinable |
+| `item-` | `item-brass-plate` | brass plate, plate | 1.2.1; decorative examinable |
+| `item-` | `item-sample-tray` | sample tray, output tray | 1.2.1; decorative examinable |
+| `item-` | `item-port-label` | port label, live port | network-hub; decorative examinable |
 | `npc-` | `npc-the-ai` | ai, tutor, the tutor | root |
 | `npc-` | `npc-predecessor` | predecessor, former pupil, glitch | root |
 | `npc-` | `npc-the-foreman` | foreman, gaffer | 1.2.1 |
@@ -384,6 +396,21 @@ The prefix `topic-` is used only for **conversation** topics. Spec topic IDs (§
 are bare kebab-case names matching the `## Topic: <name>` headings planned for
 COVERAGE.md.
 
+**Decorative examinables and the area-writer's authority (approved
+2026-11-25).** The twelve `item-` entries above carry no flag, score, topic or
+puzzle dependency; they exist so a room has several things worth examining. Their
+`portable` value follows real-world plausibility: fixed scenery (a brass plate, a
+painted diagram, a rack label, a drawer, a tray, a port label) is `portable: false`;
+movable props (an oil can, a rule card, a ruler, a sheet, a lead) are `portable: true`.
+`takeHandler()` currently ignores `portable`, so a code fix is needed before W6/W7 —
+reported to the code-facing branch matrix, not authored here (N5 requires in-world
+failure text for a refused TAKE). The **area-writer may create further examinable
+props** that do not conflict with the plot, puzzles, gates or existing aliases. Each
+new item must have a globally unique ID and aliases checked against this registry;
+the writer marks each as `proposed — needs editor approval` in the return, and the
+editor ratifies it in §9 before the card is accepted (D2). Writers may set `portable`
+from real-world plausibility without a new mechanic.
+
 ## 10. Tone guide
 
 All text is **second person, present tense, British English**, rendered as plain text
@@ -421,6 +448,16 @@ from its function under 1.3.1, not its age.
 and verbs, unflagged; choosing one costs a life and triggers a severe but bounded
 comic comeuppance delivered in-world. Consequences are flavour only, apart from
 explicitly expendable items; `compsciquest:save:v1` is never touched.
+
+**Tone-revision decision (2026-11-25).** The user amended
+`narrative-principles.md` §2 and then approved a full-scope prose revision after
+seeing before/after examples. Briefs cite the confirmed "Flair before the fact"
+and "Presence, not labels" patterns in §11 of that document alongside N3, N4, N5,
+N6, N8, C1, C2, P2, H1 and D2. The ten prose-bearing YAML cards are in scope;
+`spec-topics.yaml` is evidence metadata and is not re-briefed. The user also asked
+for a richer world with many examinable props, some with no puzzle or story
+function; these need new IDs and aliases in §9 before any room brief can name them.
+Recorded in §12.
 
 ## 11. Global open questions
 
@@ -591,3 +628,21 @@ written, reviewed to PASS and integrated (see `status.md`).
   keeps the predecessor and all Switchyard teaching. No toolchain or rulebook
   change is needed because the generator and gates merge collections across
   cards.
+- 2026-11-25 — **Tone revision approved, full scope.** The user judged the existing
+  prose too curt and negative-heavy under the superseded §2 wording, reviewed
+  before/after examples and chose "Everything built so far". Ten prose-bearing
+  cards are re-briefed: three rooms, three NPC cards, quizzes, puzzles, hazards and
+  hints. `spec-topics.yaml` is excluded as evidence metadata. Frozen across every
+  brief: all IDs and aliases (§9), flags, gates, scores, dependencies, spec facts
+  and worked examples, the two N6 clues for each gate, and the H1 telegraph strings
+  quoted in `hazards.yaml` and the V4 trace. Route: Gate 1 re-brief → D5/V1 validate
+  → V2 both reviewers → V4 trace audit → W6 regeneration and W7 walkthrough.
+- 2026-11-25 — **Room discoverability and examinables approved, IDs pending.** The
+  user noted that room prose made residents hard to find and asked for vivid
+  descriptions with plenty of things to examine, including props with no gameplay
+  role. "Presence, not labels" was added as a confirmed pattern in
+  `narrative-principles.md` §11 and a richness directive in §2. Because
+  `describeRoom()` renders only title plus description, the prose must name
+  registered nouns and give NPCs a visible action. **Room briefs are paused** until
+  the user approves the new decorative item IDs and aliases for §9; no writer has
+  been dispatched with an unregistered noun.

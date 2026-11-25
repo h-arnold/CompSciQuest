@@ -43,7 +43,8 @@ function roomsScaffold(
   world: ScaffoldOptions['world'],
 ): string {
   const worldId = world?.id ?? `world-${areaId}`;
-  const isOwner = world?.startAreaId === areaId;
+  // The CLI passes the bare area name; authored area IDs carry the prefix.
+  const isOwner = world?.startAreaId === `area-${areaId}`;
   const lines = [
     header('area', areaId, 'D2, D3, D4, N6, V1'),
     `# definition: id area-${areaId}, worldId ${worldId}, name, startRoomId, lives (D3, V1)`,

@@ -40,6 +40,18 @@ the same empty slot."
 of the computer, if you think about it." The shorthand is imprecise, the gloss
 never names the formal term and the sentence eats space without teaching.
 
+**World richness and examinables (confirmed 2026-11-25).** The user wants a rich,
+engaging world: a room description should name several concrete things worth
+looking at, and some items may exist purely to be examined, with no puzzle or story
+work to do. Such an item earns its place through a vivid, specific description. It
+must not obscure a gate clue, use an unregistered noun, or imply that it is
+required. Every new ID and alias still needs editor allocation and user approval
+(D2, bible §9); decorative items are never scoreable and never gate progress.
+Set `portable` from real-world plausibility — fixed scenery stays put, small props
+can be carried — and expect a refused `TAKE` to answer in world (N5), never with a
+parser-style denial. The confirmed "Presence, not labels" pattern in §11 is the
+method for naming them.
+
 ## 3. Comic mode
 
 - The world is whimsical and slightly absurd. Monty Python, Terry Pratchett and
@@ -212,6 +224,42 @@ entries are cited in writer briefs alongside the relevant rule IDs. The editor
 reviews the log after each approved batch and asks the user to confirm anything
 worth promoting.
 
+### Flair before the fact
+
+- Status: confirmed (user approved the full-scope tone revision, 2026-11-25)
+- First noticed in: `hints.yaml`, against arrival and NPC prose written under the
+  superseded "short, simple and punchy" wording.
+- Why it works: one concrete sensory or character beat before the technical payload
+  gives the reader a reason to stay; the term still carries the marks and the gloss
+  still carries the meaning (§2). It also stops the "not X, but Y" frame becoming
+  the world's default rhythm.
+- Example: "An east route glows. It has the air of a clerk who has stamped the
+  form." — replaces "not a screen, not a voice, but..." and "not a door" in
+  `room-arrival`.
+- Non-example: "It offers an east route, not a door." / "The machine offers routes
+  through the work, not around it." — the contrast does all the work and the scene
+  stays flat.
+- Use in: every tone-revision brief issued 2026-11-25, and all later room, NPC and
+  quiz-message prose.
+
+### Presence, not labels
+
+- Status: confirmed (user approved the room briefs and this document's update,
+  2026-11-25)
+- First noticed in: seven Switchyard rooms whose resident item or NPC was absent
+  from the room description, including `room-switch-floor` and `room-hex-deck`.
+- Why it works: `describeRoom()` emits only the room title and description, so the
+  prose is the player's only in-world way to find an interactable. A registered noun
+  in a physical clause, and an NPC doing something in the scene, make them
+  discoverable without a menu or an out-of-character label.
+- Example: "A brass gauge hangs by the belt, needle at red. The foreman checks the
+  clicks." — the player has two things to try, with no "Items here" line.
+- Non-example: "Items here: switch gauge, foreman. You can talk to the foreman."
+  That is a labelled inventory, not a world (N3, §9).
+- Use in: all three rooms briefs in the 2026-11-25 revision. Keep H1 telegraph
+  strings and N6 clue strings byte-identical, and swap filler rather than adding
+  words, because rooms already sit at 66–80 words (N8).
+
 ## 12. Change control
 
 - This document was `draft` until the user approved it on 2026-11-24. Writer briefs
@@ -228,3 +276,19 @@ worth promoting.
   references.
 - 2026-11-24 — **Approved by the user.** Sign-off recorded; the document is now
   settled authority for writer briefs. No principle text changed.
+- 2026-11-25 — **§2 amendment recorded retroactively.** The user replaced the old
+  "Everything else is short, simple and punchy. No waffle..." instruction with the
+  Pratchett/Adams line ("Short, and punchy but with a certain amount of flair") and
+  added a warning against repeated "not X, but Y" constructions and other repeated
+  effects (commit 3a8478f). §12 requires each change to be logged; this note closes
+  that gap. No rule ID changed.
+- 2026-11-25 — **Full-scope tone revision approved.** After the editor showed
+  before/after examples, the user chose "Everything built so far". Ten prose-bearing
+  YAML cards are re-briefed; `spec-topics.yaml` is evidence metadata and is excluded.
+  IDs, aliases, flags, gates, scores, spec facts, the two N6 clues per gate and the
+  H1 telegraph strings are frozen. Briefs cite N4, N5, N8, C1, C2, N3, P2, H1 and N6.
+- 2026-11-25 — **World richness and examinables approved.** The user asked for vivid
+  descriptions and "lots of items to examine", including props with no puzzle or
+  story function. Added to §2 and the confirmed "Presence, not labels" pattern in
+  §11. Room briefs are paused pending user approval of new item IDs and aliases
+  (D2, bible §9); no writer has been dispatched with unregistered nouns.

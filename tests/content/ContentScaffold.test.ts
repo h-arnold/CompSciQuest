@@ -81,9 +81,9 @@ describe('content:scaffold (content-toolchain.md §3)', () => {
 
   it('CT-SCAFFOLD-03: only the start-area owner receives a worlds placeholder', async () => {
     const { scaffoldArea } = await loadScaffolder();
-    const owner = 'area-owner';
-    const other = 'area-other';
-    const world = { id: 'world-one', startAreaId: owner };
+    const owner = 'owner';
+    const other = 'other';
+    const world = { id: 'world-one', startAreaId: `area-${owner}` };
     const ownerIo = new MemoryContentIo();
     const otherIo = new MemoryContentIo();
 
@@ -104,5 +104,27 @@ describe('content:scaffold (content-toolchain.md §3)', () => {
     expect(otherRooms).toContain('worldId:');
     expect(ownerRooms).toContain(world.id);
     expect(otherRooms).toContain(world.id);
+  });
+
+  it('CT-SCAFFOLD-04: a bare area argument honours --start-area area-<area>', async () => {
+    const { scaffoldArea } = await loadScaffolder();
+    const world = {
+      id: 'world-wjec-gcse-computer-science-2025-spec',
+      startAreaId: 'area-entry-interface',
+    };
+    const ownerIo = new MemoryContentIo();
+    const otherIo = new MemoryContentIo();
+
+    scaffoldArea('entry-interface', { world }, ownerIo);
+    scaffoldArea('other-area', { world }, otherIo);
+
+    const ownerRooms = ownerIo.contentOf('entry-interface/rooms.yaml');
+    const otherRooms = otherIo.contentOf('other-area/rooms.yaml');
+
+    expect(ownerRooms).toContain('worlds:');
+    expect(ownerRooms).toContain(`  - id: ${world.id}`);
+    expect(ownerRooms).toContain(`    startAreaId: ${world.startAreaId}`);
+    expect(otherRooms).not.toContain('worlds:');
+    expect(otherRooms).toContain(`worldId: ${world.id}`);
   });
 });

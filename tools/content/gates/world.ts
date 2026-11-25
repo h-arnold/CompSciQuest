@@ -83,6 +83,31 @@ function declarationFindings(
   });
 }
 
+// createInitial() boots from worlds.all[0]. A world that owns an authored
+// start area (declared in that area's card, as in ownershipFindings()) must
+// therefore be the first declaration; otherwise the boot world is wrong.
+// Single-world sets are trivially ordered and are not checked.
+function bootOrderFindings(
+  world: CardEntry,
+  start: AreaLike,
+  worlds: readonly CardEntry[],
+): readonly Finding[] {
+  if (worlds.length < 2 || start.path !== world.path || worlds[0] === world) {
+    return [];
+  }
+  const id = asText(world.data['id']);
+  const startAreaId = asText(world.data['startAreaId']);
+  const bootWorldId = asText(worlds[0]?.data['id']);
+  return [
+    finding(
+      world.path,
+      world.entry,
+      `World '${id}' declares startAreaId '${startAreaId}' but is not the first world declared; GameState.createInitial() boots from worlds.all[0] ('${bootWorldId}')`,
+      'world-graph',
+    ),
+  ];
+}
+
 function startFindings(
   worlds: readonly CardEntry[],
   areaLikes: readonly AreaLike[],
@@ -104,16 +129,18 @@ function startFindings(
       ];
     }
     const startRoomId = asText(start.data['startRoomId']);
-    return roomIds.size > 0 && !roomIds.has(startRoomId)
-      ? [
-          finding(
-            start.path,
-            start.entry,
-            `startRoomId '${startRoomId}' does not name a room`,
-            'world-graph',
-          ),
-        ]
-      : [];
+    const startRoomFinding =
+      roomIds.size > 0 && !roomIds.has(startRoomId)
+        ? [
+            finding(
+              start.path,
+              start.entry,
+              `startRoomId '${startRoomId}' does not name a room`,
+              'world-graph',
+            ),
+          ]
+        : [];
+    return [...startRoomFinding, ...bootOrderFindings(world, start, worlds)];
   });
 }
 

@@ -17,8 +17,7 @@
         { "action": "subagent", "resource": "hint-writer", "effect": "allow" },
         { "action": "subagent", "resource": "content-critic", "effect": "allow" },
         { "action": "subagent", "resource": "pck-reviewer", "effect": "allow" },
-        { "action": "subagent", "resource": "browser-tester", "effect": "allow" },
-        { "action": "edit", "resource": ".opencode/scratchpad/**", "effect": "allow" }
+        { "action": "subagent", "resource": "browser-tester", "effect": "allow" }
       ]
     }
   },
