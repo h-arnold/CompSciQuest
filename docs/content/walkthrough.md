@@ -1,8 +1,9 @@
 # Walkthrough trace — V4
 
 **Status:** extended draft for final `content-critic` verification (W4/V4). Areas:
-`area-entry-interface`, `area-network-hub` and
-`area-1-2-1-data-representation` (The Switchyard), all in the single world
+`area-entry-interface`, `area-network-hub`,
+`area-1-2-1-data-representation` (The Switchyard) and
+`area-1-4-programming-constructs` (The Pattern Mill, §8), all in the single world
 `world-wjec-gcse-computer-science-2025-spec`.
 
 This trace is the editor's ordered, complete path from the world's start area and
@@ -45,6 +46,14 @@ has at least one `complete-topic` source on the path in §2 (puzzle `onSolve` or
 | `sound-representation` | `quiz-sound-representation` onPass (step 15, gated on `bit-rate-counted`), `puzzle-tune-sampling` (step 13), `puzzle-count-the-bit-rate` (step 15) |
 | `data-storage-units` | `quiz-storage-units` onPass, `puzzle-stack-the-bytes`, `puzzle-label-the-capacity` (step 15) |
 | `data-compression` | `quiz-data-compression` onPass, `puzzle-pack-the-archive`, `puzzle-choose-the-compression` (step 17) |
+| `algorithms-and-pseudocode` (Zone A, W5) | `quiz-pattern-bureau` onPass and `quiz-finished-rail` onPass (§8 steps 21, 30) |
+| `programming-constructs` (Zone A, W5) | the four construct quizzes' onPass and all six puzzles' onSolve (§8 steps 23–28) |
+
+With the Zone A rows the authored win set is **ten `covered` topics**; the end state
+itself moves to §8 step 30 (the rail quiz's pass), because `areQuizzesPassed`
+(`Session.ts`) also requires every quiz with questions to have been passed — Zone A's
+six quizzes join that set. Zone-1's step 18 was the end state when only the
+Switchyard's topics were `covered`; the annotation there records the move.
 
 ## 2. Ordered path from the world start to `game-won`
 
@@ -177,6 +186,10 @@ unavoidable losses.
 18. **All eight `covered` topics are complete** → `Session.observe` emits
     `game-won` with the final score (content-rules.md §8). Return in → hub if a final
     room transition is needed; no further gate applies.
+    *(End-state annotation, 2026-11-25: once Zone A's two topics flip `covered`
+    at W5 (§8), the win set is ten topics and the end state moves to §8 step 30 —
+    the rail quiz's pass — because `areQuizzesPassed` then also requires Zone A's
+    six quizzes. Zone-1's steps 1–18 remain exactly as verified.)*
 
 ## 3. Gate conditions and their in-world satisfaction
 
@@ -313,3 +326,263 @@ topic, quiz, puzzle, hazard trigger and hint target is reachable, every `covered
 has a `complete-topic` source, and no soft-lock remains. The first zone is integrated.
 Whole-game extension of this trace is not applicable until a further zone is
 integrated.
+
+*(2026-11-25: a further zone is now integrated — Zone A, §8. Zone-1's verdict above
+stands for its own area; the whole-game verdict is §8.7's, after the §8 final critic
+pass.)*
+
+## 8. Zone A — The Pattern Mill (1.4.1 programming constructs): the trace extension
+
+Zone A's cards are the accepted, editor-verified set under
+`docs/content/1-4-programming-constructs/` (`rooms.yaml` incl. the concourse and hub
+amendments, `npcs.yaml`, `puzzles.yaml`, `quizzes.yaml`, `hazards.yaml`, `hints.yaml`),
+built on the approved topic file `docs/content/topics/1-4-1-programming-constructs.md`
+and bible §§5–12. All ids used here are ratified (§9, 2026-11-25 review close-out);
+quotes byte-match the cards. The area's `startRoomId` is `room-pattern-bureau` — the
+return point for quiz failures and hazard teleports (lives reset on area change,
+content-rules.md §8).
+
+### 8.1 Zone A win-set contribution and completion sources
+
+Zone A contributes two topics; both need a completion source on the path (§1's table,
+rows added). The four construct quizzes each onPass `complete-topic programming-constructs`;
+the six puzzles each onSolve `complete-topic programming-constructs` (double-covered —
+puzzles ARE the completion sources for their own requirement flags). The two
+`algorithms-and-pseudocode` sources are `quiz-pattern-bureau` and `quiz-finished-rail`
+onPass (§6 of the topic file: L1169 is that topic's write/correct/test/interpret line;
+the rail quiz is the synthesis capstone).
+
+Because `areQuizzesPassed` (`Session.ts`) requires every quiz with questions to have
+been passed, the winning run passes all six Zone A quizzes (the route does anyway —
+every demonstration's quiz is on the path); `game-won` fires at §8 step 30, when the
+rail quiz passes (the last quiz) — by then every `covered` topic of the ten is
+complete.
+
+### 8.2 Ordered path, continued from step 18 (steps 19–30)
+
+Life arithmetic for the extension: entering `area-1-4-concourse` and then
+`area-1-4-programming-constructs` each resets lives to 3 (area change, §8). One
+scripted loss is unavoidable on the route — `hazard-dye-pad` fires on the first entry
+to `room-weft-counter` (the disarm topic is `in-room` scoped to that room, so the
+armed first entry cannot be preceded; the room description on that same entry is the
+telegraph). Two hazards are avoidable and are avoided: the avalanche never arms on
+the canonical route (the puzzle completes in the demonstration's own visit, so no
+re-entry happens armed), and the slop worksheet is never used. **End state: 2 of 3
+lives.**
+
+- **19 — Return to the hub** (out of the Compression Press, per zone-1's step 17).
+- **20 — North → `room-1-4-concourse`** (area change; lives reset to 3). The
+  concourse reads: the Rule Machine's front hall, "Y Felin" woven on the wall — the
+  mill's good morning. Two exits: south back to the hub, east to the mill.
+- **21 — East → `room-pattern-bureau`** (area change into Zone A; lives reset to 3;
+  the area's `startRoomId`). Read the five stencilled shapes with their glosses (the
+  terminator, input and output, the decision, the process, the flow lines), the
+  leaflet FIVE SHAPES AND WHAT THEY DO, the Demonstration Book, and the bolted east
+  door's legend UNTIL A DEMONSTRATION IS ON RECORD. Talk to the Loomwright:
+  `topic-loomwright-welcome` → `topic-loomwright-pseudocode` (learn-topic
+  `algorithms-and-pseudocode`) → `topic-loomwright-shapes`. Then
+  `topic-loomwright-demonstration` → **`quiz-pattern-bureau`** (4 questions) → pass:
+  `complete-topic algorithms-and-pseudocode`, `demo-on-record` set,
+  `quiz-passed:quiz-pattern-bureau` set. The east door's bolt draws.
+- **22 — East → `room-warp-walk`.** Read the five dark doorways (each a construct
+  rank), the mill board's 3, the woven door label, the stopped clock, and the east
+  rail door under its caption RUNS WHEN PROVEN: **four glass section lights** named
+  ORDER, COLOURS, COUNTS and END — the last carrying a second wick lit only when
+  both of the selvedge's actions are done — all four dark. Nothing gates the spokes;
+  only the rail door gates (the five flags across the four lights).
+- **23 — North → `room-threading-order`.** Read the pattern paper's five steps
+  (ground, first stripe, cross-stripe, border, hem), the shade cards hung in
+  somebody else's sequence, and the lectern's PATTERN WORKBOOK — **do not use it**
+  (`hazard-slop-worksheet` arms on `on-item-used`; the Warp Dresser's warning and the
+  room text are the telegraphs; the workbook is the tempting-object trap). Talk to
+  the Warp Dresser: `topic-warp-dresser-order` (learn-topic) →
+  `topic-warp-dresser-demonstration` → **`quiz-threading-order`** (4 questions) →
+  pass: `complete-topic programming-constructs`, `quiz-passed:quiz-threading-order`,
+  `grant-item item-pattern-card-sequence`. **GIVE the sequence card to the Warp
+  Dresser** (`topic-warp-dresser-give`): transfer + `card-sequence-given`. Then the
+  puzzle's action: **PUT the shade cards on the step hangers in the card's order**
+  (interaction pin P1, below) → `dressing-re-ordered`. Both requirements of
+  `puzzle-dress-the-warp` hold → onSolve → `threading-ordered` (Warp Walk light 1).
+  **TAKE the else plate** (portable; carried).
+- **24 — South → `room-warp-walk`. Out → `room-bobbin-window`.** Read the intake
+  bell, the addressing plate (its letter rack slopped the way the cousin's
+  find-and-replace left it), the postmark album and pad. **TAKE the shed plate**
+  (portable; carried). **USE the addressing plate** — work the letter rack,
+  re-lettering the slopped addresses back (interaction pin P2) →
+  `addressing-plate-re-lettered`. `bell-mended` still waits on the wire.
+- **25 — In → `room-warp-walk`. South → `room-weft-counter` (first entry).**
+  **`hazard-dye-pad` fires**: `on-room-enter`, `when quiz has not set `pad-checked``,
+  `once: true` — the dried pad miscounts the weft, **−1 life (3 → 2)**, teleport to
+  `room-pattern-bureau`. This loss is scripted and unavoidable (the crackle-test topic
+  is `in-room` to this room); the room text read on the same entry is the telegraph.
+  Re-enter (bureau → warp walk → south). Talk to the Weft Tally:
+  `topic-weft-tally-count` (learn-topic) → `topic-weft-tally-pad` (**the crackle-test:
+  sets `pad-checked`; the hazard is dead**) → `topic-weft-tally-prediction` (the
+  prediction beat: `pass-count-predicted` set — predict before any run) →
+  `topic-weft-tally-demonstration` → **`quiz-weft-tally`** (4 questions) → pass:
+  `complete-topic programming-constructs`, `quiz-passed:quiz-weft-tally`,
+  `grant-item item-pattern-card-count-iteration`. **GIVE the count card to the Weft
+  Tally** → `card-count-given`. Then the ratchet's two actions: **USE the slip tooth
+  on the counting ratchet** (interaction pin P7) → `slip-tooth-pried`; **USE the
+  counting ratchet** to re-seat it (pin P8) → `counting-ratchet-reseated`. All four
+  requirements of `puzzle-seat-the-ratchet` hold → onSolve → `weft-counted` (Warp
+  Walk light 3). **TAKE the bell wire** (portable; carried).
+- **26 — North → `room-warp-walk`. Out → `room-bobbin-window`.** **USE the bell wire
+  on the intake bell** (interaction pin P3) → `bell-wire-seated`. Both requirements
+  of `puzzle-mend-the-bell` hold (the wire seated; the plate re-lettered at 24) →
+  onSolve → `bell-mended` (the Bobbin Lad's beat reads it).
+- **27 — In → `room-warp-walk`. In → `room-colour-court`.** Read the case rail, the
+  plate frame's two slots, the pick trolley's tray (picks 9, 12, 15). Talk to the
+  Shed Opener: `topic-shed-opener-selection` (learn-topic) →
+  `topic-shed-opener-demonstration` → **`quiz-colour-court`** (4 questions) → pass:
+  `complete-topic programming-constructs`, `quiz-passed:quiz-colour-court`,
+  `grant-item item-pattern-card-selection`. **GIVE the selection card to the Shed
+  Opener** → `card-selection-given`. Then the puzzle's actions: **PUT the shed plate
+  in its diamond slot** (pin P4) → `shed-plate-returned`; **PUT the else plate in
+  its plain rectangular slot** (pin P5) → `else-plate-restored`; **route the tray by
+  the plate's condition** (pin P6) → `tray-routed-by-condition`. All four
+  requirements of `puzzle-lift-the-shed` hold → onSolve → `colours-lifted` (Warp
+  Walk light 2; the avalanche is disarmed by completion — no armed re-entry happens
+  on this route).
+- **28 — Out → `room-warp-walk`. Down → `room-endless-selvedge`.** Read WHILE THE
+  CLOTH IS NICE, the plate frame, the whist table, the skein shelf (the rogue
+  thread — the rogue value — reading −1), the counterfoil drawer, the signing
+  board, the dye vat. Talk to the Selvedge Warden:
+  `topic-selvedge-warden-until` (learn-topic) →
+  `topic-selvedge-warden-demonstration` → **`quiz-selvedge`** (4 questions) →
+  pass: `complete-topic programming-constructs`, `quiz-passed:quiz-selvedge`,
+  `grant-item item-pattern-card-condition-iteration`. **GIVE the condition card to
+  the Selvedge Warden** → `card-condition-given`. Then the two PUTs: **PUT the until
+  plate on the selvedge's empty exit frame** (pin P9) → `until-clause-restored`;
+  **PUT the rogue thread in the counterfoil drawer** (pin P10) →
+  `rogue-thread-in-drawer`. Both requirements of `puzzle-close-the-selvedge` hold →
+  onSolve → `condition-plate-set` (light 4); both requirements of
+  `puzzle-file-the-rogue-thread` hold → onSolve → `rogue-thread-filed` (light 4's
+  second half; the section light burns with both).
+- **29 — Up → `room-warp-walk`.** All four section lights are lit — ORDER,
+  COLOURS, COUNTS, and END with both of its wicks — the east rail door's
+  guard (threading-ordered, colours-lifted, weft-counted, condition-plate-set,
+  rogue-thread-filed) is satisfied. **East → `room-finished-rail`.** Read the master
+  cloth, the flowchart beside it, the rota board, PREDICT. THEN WEAVE. — and the
+  Loomwright, come up from the Bureau, ledger squared, to audit the despatch (the
+  audit topic is `in-room` scoped here).
+- **30 — `topic-loomwright-audit` → `quiz-finished-rail`** (4 questions — the
+  capstone: choose the construct for a fresh problem) → pass:
+  `complete-topic algorithms-and-pseudocode`, `quiz-passed:quiz-finished-rail`,
+  `master-demonstrated` set. **All ten `covered` topics are complete and every
+  quiz in the bundle has been passed** → `Session.observe` emits **`game-won`**
+  with the final score. End state: won, 2 of 3 lives (the dye-pad's scripted loss
+  is the route's only loss).
+
+### 8.3 Gate conditions and their in-world satisfaction
+
+| Gate | Condition | Satisfied at |
+| --- | --- | --- |
+| Bureau east door | `demo-on-record` | step 21 (`quiz-pattern-bureau` onPass) |
+| Warp Walk spoke doors | none | steps 23–28 walk in and out freely |
+| Warp Walk east rail door | `threading-ordered` AND `colours-lifted` AND `weft-counted` AND `condition-plate-set` AND `rogue-thread-filed` | steps 23, 27, 25, 28, 28 — door opens for step 29 |
+| Hub north → concourse | none (area change: lives reset) | step 20 |
+| Concourse east → Bureau | none (area change; the area's `startRoomId`) | step 21 |
+| Rail quiz | `topic-loomwright-audit` is `in-room: room-finished-rail` | step 30 (bible §11 item 12: presence without a placement field; the rail description carries the attendance) |
+
+The three hazards against the route: `hazard-dye-pad` fires once, scripted, at step
+25's first entry (predicted −1); `hazard-pick-avalanche` arms on `quiz-passed:
+quiz-colour-court` AND NOT `colours-lifted` on re-entry — never armed-and-entered on
+this route (the puzzle completes in the demonstration's visit); `hazard-slop-worksheet`
+arms on `on-item-used` of `item-slop-worksheet` — never used on this route (the
+workbook is read as the trap it is and left shut).
+
+### 8.4 Reachability table (Zone A)
+
+Every declared entity is reachable or triggerable on the path; the covering step is
+shown.
+
+| Entity | Covered at |
+| --- | --- |
+| `room-pattern-bureau` (+8 items: the four pattern cards — granted on the quizzes, filed on the gives — carthen, paned mug, leaflet, Demonstration Book) | step 21 (startRoomId; items read at 21) |
+| `room-1-4-concourse` | step 20 |
+| `room-warp-walk` (+ mill clock, woven label, mill board) | step 22 |
+| `room-threading-order` (+ else plate, slop worksheet) | step 23 |
+| `room-bobbin-window` (+ shed plate, addressing plate, postmark album + pad) | step 24 |
+| `room-weft-counter` (+ counting ratchet, slip tooth, bell wire, dye pad, mill duck) | step 25 (first entry fires the dye pad); all items used at 25–26 |
+| `room-colour-court` (+ pick trolley, quality book) | step 27 |
+| `room-endless-selvedge` (+ condition plate, rogue thread, whist cards, weft kettle, counterfoil drawer, signing board, dye vat) | step 28 |
+| `room-finished-rail` (+ rota board) | steps 29–30 |
+| All 29 exits (both concourse/hub pairs cross-file, per §8.3) | steps 19–29 |
+| `npc-the-loomwright` (7 topics: welcome, pseudocode, shapes, demonstration→`quiz-pattern-bureau`, cousin, audit→`quiz-finished-rail`, default) | steps 21, 29–30 (audit at the rail) |
+| `npc-the-warp-dresser` (7 topics: order, order-known, demonstration→`quiz-threading-order`, mended, give→`item-pattern-card-sequence`, stray, default) | step 23 |
+| `npc-the-shed-opener` (8 topics: selection, selection-known, demonstration→`quiz-colour-court`, mended, urgent, give→`item-pattern-card-selection`, stray, default) | step 27 |
+| `npc-the-weft-tally` (10 topics: count, count-known, demonstration→`quiz-weft-tally`, mended, pad (the crackle-test → `pad-checked`), tuesdays, prediction→`pass-count-predicted`, give→`item-pattern-card-count-iteration`, stray, default) | step 25 (pad at re-entry) |
+| `npc-the-selvedge-warden` (9 topics: until, until-known, demonstration→`quiz-selvedge`, mended, signal, whist, give→`item-pattern-card-condition-iteration`, stray, default) | step 28 |
+| `npc-the-bobbin-lad` (6 topics: trade, average, bell (reads `bell-mended`), prediction, paned, default — no give topic; the lad files nothing) | steps 24, 26 |
+| `npc-the-slop-cousin` (8 topics: seven per-room vandal beats — bureau, bobbin-window, warp-walk, threading-order, colour-court, weft-counter, selvedge — + default; flavour only) | encountered in any room; not a required step |
+| `npc-the-ai` (1 topic: `topic-ai-licence`, flavour-only, no flags/quiz — the Bureau cameo) | step 21 (optional) |
+| Six quizzes | steps 21, 23, 25, 27, 28, 30 |
+| Six puzzles | steps 23 (dress), 25 (ratchet), 26 (bell), 27 (shed), 28 (selvedge + rogue) |
+| Three hazard triggers | step 25 (dye pad, fires); 27 (avalanche, never armed-and-entered); 23 (worksheet, never used) |
+| Seven hint ladders (`hintSequences`) | every ladder's `targets` resolve to step-covered entities: bureau (21), threading (23), colour (27), tally (25), selvedge (28), rail (29–30), bobbin (24) |
+
+### 8.5 Per-topic evidence completion (Zone A)
+
+| Spec topic | References | Evidence on the path |
+| --- | --- | --- |
+| `programming-constructs` (1.4.1 constructs; L1161–1516) | the four constructs as the mill's four rank doors: sequence (L1253), selection (L1255), count-controlled (L1259), condition-controlled (L1218–1221); DIV/MOD bailing beat (L1292–1293) | taught in four rooms (dress/shed/tally/selvedge — learn-topic each), demonstrated in four quizzes (steps 23, 27, 25, 28), applied in six puzzles (the flags ARE the constructs' working steps), completed by the quizzes' `complete-topic` (steps 23, 25, 27, 28) and the puzzles' onSolve; the retrieval beats are the quizzes (P5 retries; the trace passes first-try) |
+| `algorithms-and-pseudocode` (1.4.1 algorithms; L1169) | the Bureau's five shapes (terminator, input, output, decision, process, flow lines); PREDICT. THEN WEAVE. | taught by the Loomwright (learn-topic, step 21), retrieved in `quiz-pattern-bureau` (step 21), synthesised in `quiz-finished-rail` (step 30 — the construct chosen for a fresh problem; master-demonstrated set), completed by both onPass sources |
+
+Arrays (L1261's strand) are prose-taught in the zone without a quiz or puzzle
+retrieval beat in Zone A — the W5 evidence note records the deferral to a later
+zone (the npc card's arrays pledge: the 1.2.2 applies-and-extends later).
+
+### 8.6 Trace-pinned verb-action rows (the W6 contract)
+
+The engine seam is landed (`src/core/commands/InteractionRules.ts` —
+`USE_INTERACTIONS`/`PUT_INTERACTIONS`, zone-1's rows present). W6 wires Zone A as the
+ten rows below (shape per `FlagInteraction`: itemId, optional targetId, roomId, flags,
+text) and declares the three new sceneries the rows need (`scenery-step-hangers` +
+`scenery-shade-cards` in room-threading-order; `scenery-intake-bell` in
+room-bobbin-window; `scenery-plate-frame` in room-colour-court's two-slot frame;
+`scenery-exit-frame` in room-endless-selvedge). Until W6 wires them, the actions are
+authored route the hints and useNotes teach — no card rewrite is needed either way.
+
+| # | Verb | itemId | targetId | roomId | flags | row text (suggested) |
+| --- | --- | --- | --- | --- | --- | --- |
+| P1 | PUT | `scenery-shade-cards` (W6 scenery) | `scenery-step-hangers` (W6 scenery) | `room-threading-order` | `dressing-re-ordered` | The shade cards go back on the hangers in the card's order: ground, first stripe, cross-stripe, border, hem. |
+| P2 | USE | `item-addressing-plate` | — (self) | `room-bobbin-window` | `addressing-plate-re-lettered` | You work the letter rack and the slopped addresses read true again. |
+| P3 | USE | `item-bell-wire` | `scenery-intake-bell` (W6 scenery) | `room-bobbin-window` | `bell-wire-seated` | The wire seats on the intake bell and the bell rings round. |
+| P4 | PUT | `item-shed-plate` | `scenery-plate-frame` (W6 scenery) | `room-colour-court` | `shed-plate-returned` | The shed plate seats into the diamond slot it was cut for. |
+| P5 | PUT | `item-else-plate` | `scenery-plate-frame` | `room-colour-court` | `else-plate-restored` | The else plate finds its plain rectangular slot beside the diamond. |
+| P6 | USE | `item-pick-trolley` | — (self) | `room-colour-court` | `tray-routed-by-condition` | The tray routes by the plate's condition: if the count is twelve or more, the pick lifts; else it posts routine — nine posts, twelve itself lifts, fifteen lifts. |
+| P7 | USE | `item-slip-tooth` | `item-counting-ratchet` | `room-weft-counter` | `slip-tooth-pried` | The slip tooth comes out of the ratchet. The chalk line reads count = count + 1. |
+| P8 | USE | `item-counting-ratchet` | — (self) | `room-weft-counter` | `counting-ratchet-reseated` | The ratchet seats true: one tooth, one pass. |
+| P9 | PUT | `item-condition-plate` | `scenery-exit-frame` (W6 scenery) | `room-endless-selvedge` | `until-clause-restored` | The until plate goes up on the exit frame and the selvedge can want an ending again. |
+| P10 | PUT | `item-rogue-thread` | `item-counterfoil-drawer` | `room-endless-selvedge` | `rogue-thread-in-drawer` | The rogue thread files in the counterfoil drawer, initialled W. |
+
+Solve coupling (engine-side, already the puzzle contract): a puzzle's onSolve fires
+when its requirement flags all hold — P1+step 23's give solve `puzzle-dress-the-warp`;
+P3+P2 solve `puzzle-mend-the-bell` (order-free); P4+P5+P6 + step 27's give solve
+`puzzle-lift-the-shed`; P7+P8 + step 25's prediction + give solve
+`puzzle-seat-the-ratchet`; P9 + step 28's give solve `puzzle-close-the-selvedge`;
+P10 + step 28's give solve `puzzle-file-the-rogue-thread`.
+
+### 8.7 Zone A verdict
+
+**PASS WITH MINORS (2026-11-25, final whole-set `content-critic` pass over the six
+Zone A cards, both amendment rooms cards and this §8 — rules V4, N2, N6, N7, D3).**
+No blocker, no major; nothing routed to writers. Three minors, all
+editor-dispositioned the same day: (1) V4 — the trace's rail-door prose said "five
+lights"; the room carries **four glass section lights across five flags** (the END
+light's second wick) — steps 22 and 29 corrected; (2) N6/H1 — `hint-bobbin-window`'s
+room shares a cousin vandal topic's room, but the keyword sets are disjoint (no C7
+capture risk) — recorded for the W6 record, no card change; (3) D3 — the §8.6 "W6
+scenery" ids are code-side declarations per this contract, not unregistered content
+ids — recorded so W6's reviewer does not re-flag them. The five editor judgement
+items returned sound: the avalanche race (entry-time guard evaluation + the puzzle
+completing in the demonstration's own visit), all ten rows conform to the useNotes,
+the selvedge frame shorthand describes one before/after state, zone-1's steps 1–18
+are byte-identical, and the hints' escalation passes with no leak level.
+
+The extension keeps zone-1's steps intact, orders Zone A from the hub through the
+concourse into the mill, satisfies every gate in order, accounts for every hazard
+(one scripted loss; two avoided), and completes both Zone A topics with the quizzes
+as retrieval beats. The trace-pinned interaction rows are the W6 contract. Zone A is
+accepted for the W5 coverage flip and the W6/W7 hand-off.

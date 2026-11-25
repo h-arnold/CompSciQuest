@@ -19,14 +19,16 @@ definition:
 rooms:
   - id: room-network-hub
     title: The Network Hub
-    aliases: [patch bay, broadcast bay, concourse]
+    aliases: [patch bay, broadcast bay]
     description: >-
       Around you, brass sockets crowd the hub, each with a little label, all
       humming one low note. A yellowed card reads 'since the 1990s' in fading
       ink. The hub copies every packet to every port, so all routes show at
-      once: one bright, the rest dark. The AI calls it 'on the record'; nobody
+      once: two bright, the rest dark. The AI calls it 'on the record'; nobody
       unplugged it. A port label on the east socket reads LIVE; that route goes
-      to the Switchyard. West leads to arrival; in, to the interface.
+      to the Switchyard. A fresh paper label on the north socket reads THE RULE
+      MACHINE; north goes to the rule quarters and the mill beyond them. West
+      leads to arrival; in, to the interface.
     topicIds: []
     exits:
       - direction: west
@@ -35,6 +37,8 @@ rooms:
         to: room-switch-floor
       - direction: in
         to: room-entry-interface
+      - direction: north
+        to: room-1-4-concourse
     score: 0
     authoring:
       interesting: >-

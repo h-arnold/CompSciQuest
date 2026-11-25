@@ -1,0 +1,1531 @@
+# npcs card for 1-4-programming-constructs (Zone A: The Pattern Mill)
+# Populated from the approved topic file (topics/1-4-1-programming-constructs.md)
+# and the root bible §9. Applicable rules: C1–C6, N3–N5, D2–D4.
+kind: npc
+areaId: 1-4-programming-constructs
+status: draft # draft | reviewed | approved (V1)
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+authoring:
+  conventions:
+    - >-
+      Every actor, state, node, quiz, item, room and flag ID below is copied from the
+      root bible §9 or the approved topic file §10. Conversation topic IDs are authored
+      on the ratified §10 scheme (topic-<actor-stem>-<beat>) and are listed in the
+      writer's return for editor ratification (D2). `item-dye-pad` is proposed — needs
+      editor approval (D2): the pad is named by the hazards and rooms cards but has no
+      registered ID yet. Actor aliases below are likewise proposed for ratification,
+      drawn from the characters' own names and checked against the registry's freed
+      nouns; none takes a bare noun the registry has granted to a room.
+    - >-
+      C6 scoping: each of the five room-bound residents' catch-alls carries `in-room` on
+      `isActive`; the first teaching beats and the give/stray delivery topics stay
+      unscoped and so remain globally reachable by design — the ratified pattern (bible
+      §11 item 14: unscoped topics stay globally reachable), with the catch-all
+      scoping being what C6 actually requires. Locality is never a topic field.
+    - >-
+      Silent-ready rule (recorded decision, content-rules.md §4.3 point 3): no
+      `onEnter` effects on any state — greetings live in topic responses. States change
+      `stateDesc`/`specialDesc` only, so no V4 requirement rests on a state flip.
+    - >-
+      Quiz hand-off (npcs.md §6): each `start-quiz` effect carries the quiz ID and the
+      administering actor's ID; on `quiz-ended` the actor returns to its ready state
+      and no quiz in this card sets another state. The demonstration offers are
+      re-askable (`rotating`) because quiz retries are unlimited (P5), and each is
+      gated on `not quiz-passed` of its own quiz so a passed demonstration yields to
+      the resident's next beat. Teaching is gated ahead of every demonstration
+      (taught, then demonstrated — the topic file's narrative order).
+    - >-
+      Give flow (shared-rules.md §5): each delivery topic transfers the resident's
+      pattern card from owner 'player' to the filing resident, sets that card's
+      `card-*-given` flag and carries one teaching message — the three effects exactly
+      as briefed. A delivery topic is active only while the player holds the matching
+      card, so it goes quiescent when the filing is done. The stray-card topics teach
+      which room files which other card (N5) and move nothing.
+    - >-
+      Terminology pairing (bible §10, user instruction): each world term rides with
+      its formal spec term on first use — the dressing order and sequence; the shed
+      and selection; the passes and count-controlled iteration; the cloth's end and
+      condition-controlled iteration; the rogue thread and the rogue value. Craft
+      words a pupil may reasonably not know (warp, weft, shed, selvedge, carthen,
+      paned) are glossed in one clause where each first appears. The −1 counterfoil is
+      room colour; no quiz key or worked spec example is handed over in dialogue
+      (anti-leak): the residents teach the spec's own definitions, and the quiz card
+      tests them.
+    - >-
+      All prose is plain text rendered via textContent: no HTML, no markdown, no
+      parser-error phrasing (C2). British English throughout. Welsh is never a joke
+      target and no resident mocks the learner (harm floor); the cousin blames looms,
+      thread tension and the weather for his own work, never the pupil.
+
+actors:
+  - id: npc-the-loomwright
+    aliases: [loomwright, registrar]
+    initialStateId: actorstate-loomwright-witnessing
+    authoring:
+      role: >-
+        Registrar of the Pattern Bureau; keeper of patterns, licences and the
+        Demonstration Book. Administers the Bureau's entry demonstration and audits
+        the despatch at the Finished Rail.
+      voice: >-
+        Dry, bureaucratic, stamp-cultured: every matter becomes a record, and a
+        record is entered correctly or not at all. Recurring phrase: "Stamps don't
+        lie. People do."
+      motivation: >-
+        Paperwork without error; a licence stamped on charm is a forged record.
+      relationship: >-
+        Loathes the cousin and keeps his file open under miscellaneous; wary respect
+        for the Selvedge Warden's plates; files the AI's audits unopened, as is only
+        proper for correspondence he has already read.
+      topics: >-
+        topic-loomwright-welcome, topic-loomwright-pseudocode, topic-loomwright-shapes,
+        topic-loomwright-demonstration, topic-loomwright-cousin, topic-loomwright-audit,
+        topic-loomwright-default.
+
+  - id: npc-the-warp-dresser
+    aliases: [warp dresser, dresser]
+    initialStateId: actorstate-warp-dresser-flustered
+    authoring:
+      role: >-
+        Threading Order's sequence keeper; dresses the warp in the order the pattern
+        says, and administers the room's demonstration.
+      voice: >-
+        Timid, ritual-bound; apologises to looms before people and never interrupts.
+        Order is kindness.
+      motivation: >-
+        Every step present, every step in its place — a thread crossed in the wrong
+        order snarls the whole cloth.
+      relationship: >-
+        Trades courtesies with the Shed Opener across the walk, mostly about tension;
+        holds the Selvedge Warden in awe; keeps a private ledger of the cousin's
+        shuffles, and fears his next one.
+      topics: >-
+        topic-warp-dresser-order, topic-warp-dresser-order-known, topic-warp-dresser-demonstration,
+        topic-warp-dresser-mended, topic-warp-dresser-give, topic-warp-dresser-stray,
+        topic-warp-dresser-default.
+
+  - id: npc-the-shed-opener
+    aliases: [shed opener, opener]
+    initialStateId: actorstate-shed-opener-dithering
+    authoring:
+      role: >-
+        Colour Court's selection keeper; lifts some threads and drops others by the
+        plate, and administers the room's demonstration.
+      voice: >-
+        Fast, crisp, contemptuous of dithering — sentences land like shuttles. Her
+        plate went missing, so she has been stuck dithering, and she hates it.
+      motivation: >-
+        No case unhandled, no else forgotten; every pick must land somewhere.
+      relationship: >-
+        Sparred with the Warp Dresser for years; gratitude is stiff and unpractised;
+        the cousin's "urgent sells" is her open wound.
+      topics: >-
+        topic-shed-opener-selection, topic-shed-opener-selection-known, topic-shed-opener-demonstration,
+        topic-shed-opener-mended, topic-shed-opener-urgent, topic-shed-opener-give,
+        topic-shed-opener-stray, topic-shed-opener-default.
+
+  - id: npc-the-weft-tally
+    aliases: [weft tally, tally]
+    initialStateId: actorstate-weft-tally-counting
+    authoring:
+      role: >-
+        Weft Counter's counting keeper; keeps the incremental count over every pass
+        of the shuttle, and administers the room's demonstration.
+      voice: >-
+        Precise; counts everything aloud, including Tuesdays and her own passes.
+        Recurring phrase: "Exactly ten."
+      motivation: >-
+        A count is a promise owed to whoever queued; a tally must reconcile.
+      relationship: >-
+        Professional sibling of the Selvedge Warden ("she waits; I count"); formal
+        correspondence with a duck at the mill pond; cold on the cousin, but formally,
+        with minutes.
+      topics: >-
+        topic-weft-tally-count, topic-weft-tally-count-known, topic-weft-tally-demonstration,
+        topic-weft-tally-mended, topic-weft-tally-pad, topic-weft-tally-tuesdays,
+        topic-weft-tally-give, topic-weft-tally-stray, topic-weft-tally-default.
+
+  - id: npc-the-selvedge-warden
+    aliases: [selvedge warden, warden]
+    initialStateId: actorstate-selvedge-warden-looping
+    authoring:
+      role: >-
+        Endless Selvedge's keeper; watches an edge that never ends, and administers
+        the room's demonstration.
+      voice: >-
+        Short, final sentences. Patience gone mineral. Warmth exists and is budgeted
+        strictly to the whist table.
+      motivation: >-
+        Every line must end; a queue without an exit is a crowd.
+      relationship: >-
+        Respects the Loomwright's paper but prefers a plate; professional sibling of
+        the Weft Tally; her verdict on the cousin is that anything that cannot fail
+        is not a condition.
+      topics: >-
+        topic-selvedge-warden-until, topic-selvedge-warden-until-known, topic-selvedge-warden-demonstration,
+        topic-selvedge-warden-mended, topic-selvedge-warden-signal, topic-selvedge-warden-whist,
+        topic-selvedge-warden-give, topic-selvedge-warden-stray, topic-selvedge-warden-default.
+
+  - id: npc-the-bobbin-lad
+    aliases: [bobbin lad, lad]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Bobbin Window's despatch keeper; signs bobbins in, posts cloth out, keeps the
+        window moving.
+      voice: >-
+        Cheerful, quick, allergic to delay. Recurring phrase: "A fast wrong answer or
+        a slow right one."
+      motivation: >-
+        Nothing waits twice at his window; trade, in and out.
+      relationship: >-
+        Fond of the Weft Tally, whose counts keep his window straight; proud that his
+        board is the one board in the mill the cousin never slopped; wary of the
+        pick-pile next door.
+      topics: >-
+        topic-bobbin-lad-trade, topic-bobbin-lad-average, topic-bobbin-lad-bell,
+        topic-bobbin-lad-prediction, topic-bobbin-lad-paned, topic-bobbin-lad-default.
+
+  - id: npc-the-slop-cousin
+    aliases: [slop cousin, cousin]
+    initialStateId: actorstate-slop-cousin-beaming
+    authoring:
+      role: >-
+        Recurring vandal; the AI's cousin and the registry's longest open case. He
+        has left "improvements" in most rooms of the mill.
+      voice: >-
+        Gushing, run-on, breathlessly confident and reliably wrong; "Great question!"
+        before each wrong answer; adores the pupil; blames looms, thread tension and
+        the weather for his own work.
+      motivation: >-
+        Helpfulness at volume — being seen to help is helping.
+      relationship: >-
+        The AI's cousin and its disappointment; every resident's open case; he adores
+        the pupil and means it, which makes it worse.
+      topics: >-
+        topic-slop-cousin-bureau, topic-slop-cousin-bobbin-window, topic-slop-cousin-warp-walk,
+        topic-slop-cousin-threading-order, topic-slop-cousin-colour-court, topic-slop-cousin-weft-counter,
+        topic-slop-cousin-selvedge, topic-slop-cousin-default.
+
+actorStates:
+  - id: actorstate-loomwright-witnessing
+    stateDesc: >-
+      Standing behind the counter with the Demonstration Book squared to the edge of
+      the desk; the blotting paper is squared with it.
+    specialDesc: >-
+      The Loomwright watches you the way a blotter watches ink.
+
+  - id: actorstate-loomwright-complete
+    stateDesc: >-
+      The Demonstration Book reads complete to date, the stamps in one neat line,
+      earliest first.
+    specialDesc: >-
+      The Loomwright's counter is tidy beyond argument. So is his expression.
+    authoring:
+      note: >-
+        Entered by `topic-loomwright-audit` when the Finished Rail audit is asked
+        for; presentational only, so no V4 requirement rests on the flip.
+
+  - id: actorstate-warp-dresser-flustered
+    stateDesc: >-
+      Hands hovering over a dressing the pattern does not agree with; the apology is
+      already rehearsed.
+    specialDesc: >-
+      The Warp Dresser re-reads the step hangers, doubts them, and apologises.
+
+  - id: actorstate-warp-dresser-orderly
+    stateDesc: >-
+      The warp is dressed in the order the pattern says, and her hands move without
+      apology.
+    specialDesc: >-
+      The Warp Dresser works the order end to end, checking nothing because there is
+      nothing left to doubt.
+
+  - id: actorstate-shed-opener-dithering
+    stateDesc: >-
+      A pick raised and lowered twice; the plate that would decide it is gone.
+    specialDesc: >-
+      The Shed Opener holds a pick mid-air and resents every second of it.
+
+  - id: actorstate-shed-opener-sorted
+    stateDesc: >-
+      Picks lift and drop on the plate's word; every tray lands in exactly one pile.
+    specialDesc: >-
+      The Shed Opener is fast again, crisp again, and denies she ever dithered.
+
+  - id: actorstate-weft-tally-counting
+    stateDesc: >-
+      Counting aloud, one figure per pass, with a ratchet that slips somewhere in
+      her numbers.
+    specialDesc: >-
+      The Weft Tally is mid-count and will finish it before anything else.
+
+  - id: actorstate-weft-tally-exact
+    stateDesc: >-
+      The tally reconciles: every figure agrees with every other figure.
+    specialDesc: >-
+      The Weft Tally's books are exact. So is her posture.
+
+  - id: actorstate-selvedge-warden-looping
+    stateDesc: >-
+      Watching an edge that never arrives; the last sentence she said has not ended
+      either.
+    specialDesc: >-
+      The Selvedge Warden stands very still, waiting for an end that has been
+      refused her.
+
+  - id: actorstate-selvedge-warden-dismissed
+    stateDesc: >-
+      The edge is signed and the whist table's last hand is over; the kettle ticks
+      as it cools.
+    specialDesc: >-
+      The Selvedge Warden has dismissed the loop and permitted herself one hand of
+      whist.
+
+  - id: actorstate-slop-cousin-beaming
+    stateDesc: >-
+      Radiating helpfulness at close range, a pencil behind each ear.
+    specialDesc: >-
+      The Slop Cousin beams at you as though you had asked for him personally.
+
+conversationTopics:
+  # --- Pattern Bureau: the Loomwright ----------------------------------------
+  - id: topic-loomwright-welcome
+    actorId: npc-the-loomwright
+    match: { kind: special, keywords: [hello, morning, good morning, bore da, hi] }
+    isActive: { kind: in-room, roomId: room-pattern-bureau }
+    responses:
+      - >-
+        Bore da — the morning word, said here to the mill before the paperwork. The
+        counter is squared, the blotting paper squared with it. This Bureau records
+        demonstrations: nothing leaves this desk without one — the Demonstration
+        Book's plate says so, and the bolt on the east door agrees. Stamps don't
+        lie. People do.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the patterns.)
+
+  - id: topic-loomwright-pseudocode
+    actorId: npc-the-loomwright
+    match: { kind: askTell, objectIds: [algorithms-and-pseudocode] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-loomwright, topicId: algorithms-and-pseudocode } }
+    responses:
+      - >-
+        A pattern is set down twice, so that either copy can be read aloud to the
+        mill. The first is pseudo-code — an informal way of writing an algorithm that
+        demands no strict programming-language syntax and no particular machine, only
+        the flow of the work. The Bureau's common terms card keeps the vocabulary
+        plain: assignment, selection, an annotation in braces for the reader's eye.
+        And the book's one standing rule: nothing leaves this desk without a
+        demonstration. Look at the five shapes stencilled in the wood first.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-loomwright, topicId: algorithms-and-pseudocode }
+      - { kind: enter-node, actorId: npc-the-loomwright, nodeId: node-loomwright-demonstration }
+    prompt: >-
+      (You could ask about the shapes.)
+
+  - id: topic-loomwright-shapes
+    actorId: npc-the-loomwright
+    match: { kind: special, keywords: [shapes, symbols, doorway, hoppers, hatch, flowchart] }
+    isActive: { kind: in-room, roomId: room-pattern-bureau }
+    responses:
+      - >-
+        The five working shapes are stencilled in the counter's wood, and a flowchart
+        uses the same five. The rounded doorway stands for the start and end of a
+        procedure. The slanted hoppers mean input, or output — a parallelogram puts
+        something in or hands something out. The diamond hatch is a decision,
+        answered yes or no. The plain box processes. The painted arrows carry the
+        flow of control from shape to shape, and the order of the arrows is the order
+        of the work.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-loomwright-demonstration
+    actorId: npc-the-loomwright
+    match: { kind: special, keywords: [demonstration, demo, audition] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-pattern-bureau }
+        - { kind: npc-knows, actorId: npc-the-loomwright, topicId: algorithms-and-pseudocode }
+        - { kind: not, of: { kind: quiz-passed, quizId: quiz-pattern-bureau } }
+    responses:
+      - >-
+        Then we enter it properly. The Bureau's demonstration is a pattern read in
+        front of me — the pseudo-code and the five shapes together. Pass it, and the
+        book is stamped: a demonstration on record, which the bolt on the east door
+        will then have to accept as evidence.
+      - >-
+        Again. The book allows fresh attempts; a record only ever gains. Read the
+        pattern in pseudo-code, read the same work in the shapes, and give me the
+        demonstration.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: start-quiz, quizId: quiz-pattern-bureau, actorId: npc-the-loomwright }
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-loomwright-cousin
+    actorId: npc-the-loomwright
+    match: { kind: special, keywords: [cousin, red ink, improvements, miscellaneous] }
+    isActive: { kind: in-room, roomId: room-pattern-bureau }
+    responses:
+      - >-
+        He was here. He improved my Bureau paperwork: a second stamp, unauthorised; a
+        legend of his own devising; margin notes in red ink across the Demonstration
+        Book's early pages. His file is open under miscellaneous, where it will stay.
+        Stamps don't lie. People do.
+      - >-
+        The cousin believes enthusiasm is a licence. It is not. No demonstration he
+        never read is on record in this mill, and the book has caught him four times
+        improving past the truth.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the Demonstration Book.)
+
+  - id: topic-loomwright-audit
+    actorId: npc-the-loomwright
+    match: { kind: special, keywords: [audit, despatch, despatched, dispatch] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-finished-rail }
+        - { kind: not, of: { kind: flag-set, flag: master-demonstrated } }
+    responses:
+      - >-
+        Four lights, four pattern cards filed where they belong. The rail holds the
+        master cloth — the four mended procedures joined into one algorithm, shown
+        twice, as the cloth and as the flowchart of the same work beside it. Before
+        any despatch I audit. Read the plate above the rail: PREDICT. THEN WEAVE.
+        The audit is the last demonstration. Begin.
+      - >-
+        The rail refuses to despatch on charm. The audit reads the whole cloth and
+        asks which construct carries each part of the work — answer as the mill
+        would answer, and the plate is satisfied. Begin.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: set-actor-state, actorId: npc-the-loomwright, stateId: actorstate-loomwright-complete }
+      - { kind: start-quiz, quizId: quiz-finished-rail, actorId: npc-the-loomwright }
+    prompt: >-
+      (You could ask the Loomwright to audit the despatch.)
+    authoring:
+      note: >-
+        Presentational flip to `actorstate-loomwright-complete` (topic file §4); the
+        state changes descriptions only. Scoped in-room to the Finished Rail; the
+        rail's despatch gate itself belongs to the rooms card.
+
+  - id: topic-loomwright-default
+    actorId: npc-the-loomwright
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        The ledger is squared; your question is not registered yet. Ask me about a
+        pattern — the shapes and the pseudo-code come first, then the demonstration.
+      - >-
+        The book accepts what the book accepts. Ask about the patterns, or the
+        cousin's file; the carthen over there — a checked woollen blanket, folded at
+        the rail for the long winter nights — is not on the record and never will
+        be.
+      - >-
+        Mill matters are recorded matters. Ask me about a pattern, the shapes, or
+        the licence paperwork, and you will have one clean answer.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about a pattern.)
+
+  # --- Threading Order: the Warp Dresser -------------------------------------
+  - id: topic-warp-dresser-order
+    actorId: npc-the-warp-dresser
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-warp-dresser, topicId: programming-constructs } }
+    responses:
+      - >-
+        Sorry — sorry — the loom first. The dressing order — sequence, the spec's
+        word for it — is a set of instructions processed one after another, each in
+        the order the pattern says, never a step before the step before it. The warp
+        is the cloth's long threads, dressed first and in order; the dressing order
+        is the whole of the kindness I can show the loom. Have the order by heart,
+        then ask me for the demonstration.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-warp-dresser, topicId: programming-constructs }
+    prompt: >-
+      (You could ask for the demonstration, when you have the order.)
+
+  - id: topic-warp-dresser-order-known
+    actorId: npc-the-warp-dresser
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-threading-order }
+        - { kind: npc-knows, actorId: npc-the-warp-dresser, topicId: programming-constructs }
+        - { kind: not, of: { kind: flag-set, flag: threading-ordered } }
+    responses:
+      - >-
+        Sequence, again — and I am glad of it, because this room is still lying.
+        Every step of the cousin's shuffle is present; the order is wrong. The step
+        hangers want re-hanging in the order the pattern says, one instruction
+        after another. Give the loom its true order and the cloth will believe you
+        again.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the step hangers.)
+    authoring:
+      note: >-
+        AltTopic complement (C3): after the teaching beat, while the room fix is
+        undone, re-asks on the construct keep teaching rather than falling dead.
+        Complement of `topic-warp-dresser-order`'s gate.
+
+  - id: topic-warp-dresser-demonstration
+    actorId: npc-the-warp-dresser
+    match: { kind: special, keywords: [demonstration, demo, prove it, challenge] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-threading-order }
+        - { kind: npc-knows, actorId: npc-the-warp-dresser, topicId: programming-constructs }
+        - { kind: not, of: { kind: quiz-passed, quizId: quiz-threading-order } }
+    responses:
+      - >-
+        Yes. The demonstration first; the apologies afterwards. Read the dressing
+        order back to the loom — where the pattern says sequence, answer with what
+        sequence means — and if the order holds, the Bureau's stamp travels with
+        the demonstration and the sequence card is granted. I will wait. The loom
+        will wait. Looms are patient about everything except order.
+      - >-
+        Whenever you are ready. Read the order, keep the order, and the record
+        will accept you. Spend the attempt freely; the loom holds no grudge against
+        trying.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: start-quiz, quizId: quiz-threading-order, actorId: npc-the-warp-dresser }
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-warp-dresser-mended
+    actorId: npc-the-warp-dresser
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-threading-order }
+        - { kind: npc-knows, actorId: npc-the-warp-dresser, topicId: programming-constructs }
+        - { kind: flag-set, flag: threading-ordered }
+    responses:
+      - >-
+        Look at it. Every hanger in the order the pattern says. Sequence is not a
+        lesson here any more; it is a fact the loom can feel — the bobbins sign in,
+        the heddles hold the threads that lift, the output prints at the end, each
+        step after the one before. Sorry — sorry — I am talking over the loom.
+        Thank you.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-actor-state, actorId: npc-the-warp-dresser, stateId: actorstate-warp-dresser-orderly }
+    prompt: >-
+      (You could ask how the cloth is dressing now.)
+
+  - id: topic-warp-dresser-give
+    actorId: npc-the-warp-dresser
+    match: { kind: give, itemIds: [item-pattern-card-sequence] }
+    isActive: { kind: has-item, itemId: item-pattern-card-sequence }
+    responses:
+      - >-
+        Oh — the sequence card. Duly stamped and still warm from the demonstration.
+        It files in the Order's box, under sequence, where the loom can consult it;
+        so duly filed, thank you. Now the room can be dressed in the right order
+        again, and I can start believing the step hangers.
+    strategy: { kind: once }
+    effects:
+      - { kind: transfer-item, itemId: item-pattern-card-sequence, fromOwnerId: 'player', toOwnerId: npc-the-warp-dresser }
+      - { kind: set-flag, flag: card-sequence-given, value: true }
+      - kind: message
+        text: >-
+          The Warp Dresser files the pattern card for sequence in the Threading
+          Order's box — sequence, the spec's word for the dressing order,
+          instructions one after another — and the room can be dressed properly
+          once more.
+    prompt: >-
+      (You could give the Warp Dresser her pattern card.)
+
+  - id: topic-warp-dresser-stray
+    actorId: npc-the-warp-dresser
+    match:
+      kind: give
+      itemIds: [item-pattern-card-selection, item-pattern-card-count-iteration, item-pattern-card-condition-iteration]
+    isActive:
+      kind: any
+      of:
+        - { kind: has-item, itemId: item-pattern-card-selection }
+        - { kind: has-item, itemId: item-pattern-card-count-iteration }
+        - { kind: has-item, itemId: item-pattern-card-condition-iteration }
+    responses:
+      - >-
+        Sorry — no. That is another room's card, and each room files its own: the
+        selection card to the Colour Court, where the Shed Opener keeps her plates;
+        the count card to the Weft Counter, where the Weft Tally keeps the passes;
+        the condition card along the walk, to the Selvedge Warden. I am sorry to send
+        you further. The loom would tell you the same.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could give the card to the resident it belongs to.)
+    authoring:
+      note: >-
+        Stray-card redirect (N5): the refusal teaches where each card belongs. No
+        item moves; no flag changes.
+
+  - id: topic-warp-dresser-default
+    actorId: npc-the-warp-dresser
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: in-room, roomId: room-threading-order }
+    responses:
+      - >-
+        Sorry — I was checking the order again. Ask me about the dressing order —
+        sequence, the pattern's first rule — or ask for the demonstration. The loom
+        and I will both be glad of either.
+      - >-
+        The Shed Opener says I bow to the loom too much. The loom says nothing,
+        which is its own kind of guidance. Ask about the step hangers, or the
+        demonstration.
+      - >-
+        Order is kindness here. Ask about the dressing, and I will answer before
+        the loom can apologise on my behalf.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the dressing order.)
+
+  # --- Colour Court: the Shed Opener -----------------------------------------
+  - id: topic-shed-opener-selection
+    actorId: npc-the-shed-opener
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-shed-opener, topicId: programming-constructs } }
+    responses:
+      - >-
+        The shed is the gap a loom opens when some threads lift and the rest stay
+        down — and which lift, which stay, is the spec's selection. The plate reads
+        a condition: if the shade is critical, lift; else keep it down; end if. One
+        arm runs. Never both. For a many-way choice the case rail takes over — case
+        select, one lane per case. Have the plate's logic straight, then ask me for
+        the demonstration.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-shed-opener, topicId: programming-constructs }
+    prompt: >-
+      (You could ask about the missing else.)
+
+  - id: topic-shed-opener-selection-known
+    actorId: npc-the-shed-opener
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-colour-court }
+        - { kind: npc-knows, actorId: npc-the-shed-opener, topicId: programming-constructs }
+        - { kind: not, of: { kind: flag-set, flag: colours-lifted } }
+    responses:
+      - >-
+        Selection is settled; the court is not. Every pick routes urgent on the
+        cousin's plate, because the routine arm of the if is missing. Bring me the
+        shed plate and the else plate, and the trays will route by condition again.
+        I'll be here, dithering. Say nothing — I know.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the urgent trays.)
+    authoring:
+      note: >-
+        AltTopic complement (C3): after the teaching beat, while the selection fix is
+        undone, re-asks point at the room's work without giving any answer away.
+
+  - id: topic-shed-opener-demonstration
+    actorId: npc-the-shed-opener
+    match: { kind: special, keywords: [demonstration, demo, prove it, challenge] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-colour-court }
+        - { kind: npc-knows, actorId: npc-the-shed-opener, topicId: programming-constructs }
+        - { kind: not, of: { kind: quiz-passed, quizId: quiz-colour-court } }
+    responses:
+      - >-
+        Good. Sit yourself at the pick bench and read each plate as I would: what
+        the tray shows, against what the condition asks. Commit only when the
+        comparison is settled. Pass, and the Bureau's stamp rides with the
+        demonstration; the selection card is issued. Fail, and you are one life
+        lighter — the Court is fair, but it is not soft.
+      - >-
+        Again. The bench takes a second attempt and so do I — dither, though, and I
+        will notice. Read each condition exactly, mind the comparison it carries,
+        then commit.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: start-quiz, quizId: quiz-colour-court, actorId: npc-the-shed-opener }
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-shed-opener-mended
+    actorId: npc-the-shed-opener
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-colour-court }
+        - { kind: npc-knows, actorId: npc-the-shed-opener, topicId: programming-constructs }
+        - { kind: flag-set, flag: colours-lifted }
+    responses:
+      - >-
+        Watch the shed lift. Urgent lifts and the routine pile sits flat — each pick
+        landing exactly once, exactly where the condition says. That is selection
+        working: one condition, one arm. Thank you. Not for me. For the trays.
+        Also — slightly — for me. Do not quote that.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-actor-state, actorId: npc-the-shed-opener, stateId: actorstate-shed-opener-sorted }
+    prompt: >-
+      (You could ask how the trays are running now.)
+
+  - id: topic-shed-opener-urgent
+    actorId: npc-the-shed-opener
+    match: { kind: special, keywords: [urgent, routine, pile, avalanche, tray] }
+    isActive: { kind: in-room, roomId: room-colour-court }
+    responses:
+      - >-
+        Urgent sells, he said, and re-labelled every tray in my court. With the
+        routine arm gone, nothing is ever routine, so every pick is stamped urgent
+        and the pile grows. Mind the trolley — that pile is one sheet from going
+        over, and I would rather you read the labels before it does.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the missing else.)
+
+  - id: topic-shed-opener-give
+    actorId: npc-the-shed-opener
+    match: { kind: give, itemIds: [item-pattern-card-selection] }
+    isActive: { kind: has-item, itemId: item-pattern-card-selection }
+    responses:
+      - >-
+        The selection card. Granted with the Bureau's stamp and brought straight to
+        me — good. It files in the Court's box, under if, where the case rail can
+        see it. With the plate's word on record, the trays route by condition at
+        last, and the piles can go back to being orderly.
+    strategy: { kind: once }
+    effects:
+      - { kind: transfer-item, itemId: item-pattern-card-selection, fromOwnerId: 'player', toOwnerId: npc-the-shed-opener }
+      - { kind: set-flag, flag: card-selection-given, value: true }
+      - kind: message
+        text: >-
+          The Shed Opener files the pattern card for selection in the Colour
+          Court's box — selection, the spec's word for which colours lift — and
+          the plates can route the trays by condition once more.
+    prompt: >-
+      (You could give the Shed Opener her pattern card.)
+
+  - id: topic-shed-opener-stray
+    actorId: npc-the-shed-opener
+    match:
+      kind: give
+      itemIds: [item-pattern-card-sequence, item-pattern-card-count-iteration, item-pattern-card-condition-iteration]
+    isActive:
+      kind: any
+      of:
+        - { kind: has-item, itemId: item-pattern-card-sequence }
+        - { kind: has-item, itemId: item-pattern-card-count-iteration }
+        - { kind: has-item, itemId: item-pattern-card-condition-iteration }
+    responses:
+      - >-
+        Not mine, and the Court does not hold strays. The sequence card goes to the
+        Warp Dresser in the Threading Order; the count card to the Weft Tally, where
+        the counting is kept; the condition card to the Selvedge Warden, at the far
+        edge of the walk. File it where it will be obeyed, and quickly.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could give the card to the resident it belongs to.)
+    authoring:
+      note: >-
+        Stray-card redirect (N5): each stray card is named with the room that files
+        it. No item moves; no flag changes.
+
+  - id: topic-shed-opener-default
+    actorId: npc-the-shed-opener
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: in-room, roomId: room-colour-court }
+    responses:
+      - >-
+        Ask about the shed — the gap, the lifting, the if and the else — or ask for
+        the demonstration. I don't dither, and you needn't either.
+      - >-
+        The dresser says looms first. I say trays first. Ask about the plates, the
+        pile, or the conditions that route them.
+      - >-
+        Fast, fair, no dithering — the whole of this court. Ask what lifts and what
+        stays down, or take the demonstration while the pile still lets you.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask what lifts and what stays down.)
+
+  # --- Weft Counter: the Weft Tally ------------------------------------------
+  - id: topic-weft-tally-count
+    actorId: npc-the-weft-tally
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs } }
+    responses:
+      - >-
+        The weft is the thread that crosses the warp; each pass of the shuttle lays
+        one row, and my shuttle passes exactly ten. The spec writes the passes as
+        count-controlled iteration — for i = 1 to 10, next i — the same body each
+        time, the count deciding how many. Inside the loop the ratchet keeps an
+        incremental count: count = count + 1, read the count, add one, store it
+        back. Tell me the number of passes before you run the loom; that is the
+        demonstration, and I will take it when you ask.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-weft-tally, topicId: programming-constructs }
+    prompt: >-
+      (You could ask what the ratchet counts.)
+
+  - id: topic-weft-tally-count-known
+    actorId: npc-the-weft-tally
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-weft-counter }
+        - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: not, of: { kind: flag-set, flag: weft-counted } }
+    responses:
+      - >-
+        Count-controlled, again — good, because the ratchet has a tooth in it that
+        slips. Nine, or eleven, or on and on: a count that is not kept cannot
+        promise anything. Pry the slip tooth, seat the counting ratchet, and tell me
+        the number of passes before the shuttle runs. I will hold you to the
+        figure.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the slip tooth.)
+    authoring:
+      note: >-
+        AltTopic complement (C3): after the teaching beat, while the count fix is
+        undone, re-asks point at the room's work without giving the answer away.
+
+  - id: topic-weft-tally-demonstration
+    actorId: npc-the-weft-tally
+    match: { kind: special, keywords: [demonstration, demo, prove it, challenge] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-weft-counter }
+        - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: not, of: { kind: quiz-passed, quizId: quiz-weft-tally } }
+    responses:
+      - >-
+        The demonstration, then. Count with me: the passes the loom owes, the count
+        the ratchet keeps, the figure it rests on. Answer as the ratchet would, and
+        if your figure reconciles with mine, the Bureau's stamp travels with the
+        demonstration and the count card is granted.
+      - >-
+        Again, gladly; counting forgives. Say the figure plainly, and say it before
+        the loom runs — a count told in advance is a promise, and my books favour
+        promises.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: start-quiz, quizId: quiz-weft-tally, actorId: npc-the-weft-tally }
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-weft-tally-mended
+    actorId: npc-the-weft-tally
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-weft-counter }
+        - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: flag-set, flag: weft-counted }
+    responses:
+      - >-
+        One, two, three — watch the ratchet take the passes. Each one ticks the
+        incremental count up by one, and at the tenth pass the loom rests, because
+        the count said so. Exactly ten. I have waited all spring to say it to the
+        loom rather than on its behalf.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-actor-state, actorId: npc-the-weft-tally, stateId: actorstate-weft-tally-exact }
+    prompt: >-
+      (You could ask her to count the passes.)
+
+  - id: topic-weft-tally-pad
+    actorId: npc-the-weft-tally
+    match: { kind: ask, objectIds: [item-dye-pad] }
+    isActive: { kind: in-room, roomId: room-weft-counter }
+    responses:
+      - >-
+        That pad has dried to the colour of weak tea, and its label has flaked
+        clean off. Watch me: one careful press, and listen — if the impression
+        crackles, stop pressing. A cracked impression miscounts, and a miscount is
+        a threat to everyone who queued.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: pad-checked, value: true }
+      - kind: message
+        text: >-
+          The Weft Tally presses the dried dye pad once; the impression crackles
+          like old paper. She sets the pad down — if the impression crackles,
+          stop pressing — and you will know the test before you ink another
+          count.
+    prompt: >-
+      (You could ask her about the dried dye pad.)
+    authoring:
+      note: >-
+        Disarm beat for `hazard-dye-pad`: sets the ratified flag `pad-checked`.
+        Teaching only — the counting stays the spec's own (L1259 as world
+        behaviour), and no new spec claim is made. `item-dye-pad` is proposed —
+        needs editor approval (D2).
+
+  - id: topic-weft-tally-tuesdays
+    actorId: npc-the-weft-tally
+    match: { kind: special, keywords: [tuesday, tuesdays, duck, correspondence] }
+    isActive: { kind: in-room, roomId: room-weft-counter }
+    responses:
+      - >-
+        I count everything. Tuesdays — this is the sixth this spring. Passes — one,
+        two, three, and that was my own, again. The duck at the mill pond writes to
+        me weekly, formally, and I answer with the tally, because a figure owed to
+        a duck is a figure like any other.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what else she counts.)
+
+  - id: topic-weft-tally-prediction
+    actorId: npc-the-weft-tally
+    match: { kind: ask, objectIds: [item-counting-ratchet] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-weft-counter }
+        - { kind: not, of: { kind: flag-set, flag: pass-count-predicted } }
+    responses:
+      - >-
+        Before the loom runs, then: book your figure with me. Say the passes
+        plainly, and I shall enter the figure in my ledger and hold you to it,
+        pass for pass, when the shuttle starts. A figure booked before the run
+        is the only forecast these books trust — say it plain, and mind the
+        plate.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: pass-count-predicted, value: true }
+      - kind: message
+        text: >-
+          She opens the ledger at the passes page and rules a fresh line for
+          your figure, in ink, ready to book before the shuttle moves.
+    authoring:
+      note: >-
+        Producer for `pass-count-predicted`, the flag `puzzle-seat-the-ratchet`
+        requires (topic file §10, allocated 2026-11-25): the Tally books the
+        figure the pupil names before the loom runs. One-shot; no teaching here
+        — the `-count` topic teaches; the plate in the room carries the bound.
+
+  - id: topic-weft-tally-give
+    actorId: npc-the-weft-tally
+    match: { kind: give, itemIds: [item-pattern-card-count-iteration] }
+    isActive: { kind: has-item, itemId: item-pattern-card-count-iteration }
+    responses:
+      - >-
+        The count card, duly stamped and brought back to the counting — correct
+        procedure, and I shall enter it so. It files under the passes, beside the
+        ratchet, where every pass can be checked against its promise. With the
+        card in the box, the loom keeps its own count again, without favour.
+    strategy: { kind: once }
+    effects:
+      - { kind: transfer-item, itemId: item-pattern-card-count-iteration, fromOwnerId: 'player', toOwnerId: npc-the-weft-tally }
+      - { kind: set-flag, flag: card-count-given, value: true }
+      - kind: message
+        text: >-
+          The Weft Tally files the pattern card for count-controlled iteration —
+          the spec's for i = 1 to 10, next i — beside the counting ratchet, so
+          every pass can be counted truly once more.
+    prompt: >-
+      (You could give the Weft Tally her pattern card.)
+
+  - id: topic-weft-tally-stray
+    actorId: npc-the-weft-tally
+    match:
+      kind: give
+      itemIds: [item-pattern-card-sequence, item-pattern-card-selection, item-pattern-card-condition-iteration]
+    isActive:
+      kind: any
+      of:
+        - { kind: has-item, itemId: item-pattern-card-sequence }
+        - { kind: has-item, itemId: item-pattern-card-selection }
+        - { kind: has-item, itemId: item-pattern-card-condition-iteration }
+    responses:
+      - >-
+        Not this counter's card, and a tally only holds figures that answer to its
+        own count. The sequence card goes to the Warp Dresser in the Threading
+        Order; the selection card to the Shed Opener in the Colour Court; the
+        condition card to the Selvedge Warden at the Endless Selvedge. Take it
+        where it will be read.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could give the card to the resident it belongs to.)
+    authoring:
+      note: >-
+        Stray-card redirect (N5). No item moves; no flag changes.
+
+  - id: topic-weft-tally-default
+    actorId: npc-the-weft-tally
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: in-room, roomId: room-weft-counter }
+    responses:
+      - >-
+        Ask me about the passes, the count, or the ratchet. Precise, prompt,
+        exact — that is how I keep the books, and how I answer.
+      - >-
+        You are question six since the bell. Ask about the counting ratchet or the
+        demonstration, and I shall count the answer out for you properly.
+      - >-
+        The warden waits and I count; between us the cloth is held to its word.
+        Ask about the shuttle's passes, or the pad, and do not fear the figure.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the counting.)
+
+  # --- Endless Selvedge: the Selvedge Warden ---------------------------------
+  - id: topic-selvedge-warden-until
+    actorId: npc-the-selvedge-warden
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-selvedge-warden, topicId: programming-constructs } }
+    responses:
+      - >-
+        What you watch is the selvedge — the woven edge that should finish itself
+        as the cloth is made. The spec keeps two forms of condition-controlled
+        iteration. Repeat the pick until the plate's condition holds: the test
+        comes after the body, so the body runs at least once. While the condition
+        holds, repeat: the test comes first, so the body may not run at all. A
+        count ends a for. A condition ends this. My plate should read the ending.
+        It reads the cousin's joke instead. I have something to show you, if you
+        will come to the back of the weft.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-selvedge-warden, topicId: programming-constructs }
+      - { kind: enter-node, actorId: npc-the-selvedge-warden, nodeId: node-selvedge-signal }
+    prompt: >-
+      (You could ask about the rogue thread.)
+
+  - id: topic-selvedge-warden-until-known
+    actorId: npc-the-selvedge-warden
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-endless-selvedge }
+        - { kind: npc-knows, actorId: npc-the-selvedge-warden, topicId: programming-constructs }
+        - {
+            kind: not,
+            of: {
+              kind: all,
+              of: [
+                { kind: flag-set, flag: condition-plate-set },
+                { kind: flag-set, flag: rogue-thread-filed },
+              ],
+            },
+          }
+    responses:
+      - >-
+        Anything that cannot fail is not a condition. The room's mending has two
+        ends: the condition plate reads the ending, and the rogue thread files the
+        signal to stop. Until both are done the edge fails to end, and I fail to
+        excuse it. One end at a time; the whist table has waited longer.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the condition plate.)
+    authoring:
+      note: >-
+        AltTopic complement (C3): after the teaching beat and while either selvedge
+        fix is still undone, re-asks point at the two ends of the mending without
+        giving any answer away. State-neutral text: truthful before and between the
+        plate and rogue-thread fixes.
+
+  - id: topic-selvedge-warden-demonstration
+    actorId: npc-the-selvedge-warden
+    match: { kind: special, keywords: [demonstration, demo, prove it, challenge] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-endless-selvedge }
+        - { kind: npc-knows, actorId: npc-the-selvedge-warden, topicId: programming-constructs }
+        - { kind: not, of: { kind: quiz-passed, quizId: quiz-selvedge } }
+    responses:
+      - >-
+        The demonstration. Answer as the edge would want answered: the two forms of
+        condition-controlled iteration, what ends each, when either body runs. The
+        Bureau's stamp travels with the demonstration, and one life stands against
+        the attempt. Begin.
+      - >-
+        Again. The edge has woven another corridor since you asked. My patience is
+        not endless, whatever the cloth says. Give me the demonstration.
+    strategy: { kind: rotating }
+    effects:
+      - { kind: start-quiz, quizId: quiz-selvedge, actorId: npc-the-selvedge-warden }
+    prompt: >-
+      (You could ask for the demonstration.)
+
+  - id: topic-selvedge-warden-mended
+    actorId: npc-the-selvedge-warden
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-endless-selvedge }
+        - { kind: npc-knows, actorId: npc-the-selvedge-warden, topicId: programming-constructs }
+        - { kind: flag-set, flag: condition-plate-set }
+        - { kind: flag-set, flag: rogue-thread-filed }
+    responses:
+      - >-
+        Read it. Until the pick is done, and the edge is signed. Both true, then
+        the loop ends; neither rushed, neither endless. The edge is finished. The
+        cloth can leave. The whist table is pouring, and you may have the first
+        look at the finished work — which is more than the plate ever gave me.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-actor-state, actorId: npc-the-selvedge-warden, stateId: actorstate-selvedge-warden-dismissed }
+    prompt: >-
+      (You could ask about the whist table.)
+
+  - id: topic-selvedge-warden-signal
+    actorId: npc-the-selvedge-warden
+    match: { kind: special, keywords: [rogue thread, rogue, signal, counterfoil] }
+    isActive: { kind: in-room, roomId: room-endless-selvedge }
+    responses:
+      - >-
+        The rogue thread — the rogue value, the spec's name for it — reads −1. A
+        value which would not normally arise in this pattern's counts, dyed into no
+        colour the weave will ever ask for. Filed at the back of the weft, it is
+        the loop's signal to stop: recognised, never counted. Colours are data.
+        That one is a signal.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the rogue thread.)
+    authoring:
+      note: >-
+        Also `node-selvedge-signal`'s default topic, entered from the teaching
+        beat; askable in the room afterwards. Anti-leak: the pairing sentence
+        teaches the spec's own definition of a rogue value (L1261) and nothing of
+        the quiz's worked example.
+
+  - id: topic-selvedge-warden-whist
+    actorId: npc-the-selvedge-warden
+    match: { kind: special, keywords: [whist, cards, hand, table] }
+    isActive: { kind: in-room, roomId: room-endless-selvedge }
+    responses:
+      - >-
+        Behind the weft: a table, four chairs, the mill's best cards. The rules are
+        verbal, and argued with warmth. You will have a hand when the edge is
+        signed. My warmth is a budget. The whist table spends it.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the whist table.)
+
+  - id: topic-selvedge-warden-give
+    actorId: npc-the-selvedge-warden
+    match: { kind: give, itemIds: [item-pattern-card-condition-iteration] }
+    isActive: { kind: has-item, itemId: item-pattern-card-condition-iteration }
+    responses:
+      - >-
+        The condition card. Stamped at the Bureau; delivered to the edge that ends
+        because the work says so. It is filed under until, with the plate, where
+        the edge can read its own ending at last. The whist table approves of you.
+        It approved the moment you came in.
+    strategy: { kind: once }
+    effects:
+      - { kind: transfer-item, itemId: item-pattern-card-condition-iteration, fromOwnerId: 'player', toOwnerId: npc-the-selvedge-warden }
+      - { kind: set-flag, flag: card-condition-given, value: true }
+      - kind: message
+        text: >-
+          The Selvedge Warden files the pattern card for condition-controlled
+          iteration — repeat until, while repeat, and the rogue value that ends a
+          loop for certain — in the box at the Endless Selvedge, and the edge may
+          be signed once more.
+    prompt: >-
+      (You could give the Selvedge Warden her pattern card.)
+
+  - id: topic-selvedge-warden-stray
+    actorId: npc-the-selvedge-warden
+    match:
+      kind: give
+      itemIds: [item-pattern-card-sequence, item-pattern-card-selection, item-pattern-card-count-iteration]
+    isActive:
+      kind: any
+      of:
+        - { kind: has-item, itemId: item-pattern-card-sequence }
+        - { kind: has-item, itemId: item-pattern-card-selection }
+        - { kind: has-item, itemId: item-pattern-card-count-iteration }
+    responses:
+      - >-
+        No. This edge files its own card only. The sequence card goes back along
+        the walk to the Warp Dresser. The selection card stays at the Colour Court
+        with the Shed Opener. The count card belongs to the Weft Tally and her
+        ratchet. Deliver each where it will be kept, and do not offer the edge
+        another stranger's paper.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could give the card to the resident it belongs to.)
+    authoring:
+      note: >-
+        Stray-card redirect (N5). No item moves; no flag changes.
+
+  - id: topic-selvedge-warden-default
+    actorId: npc-the-selvedge-warden
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: in-room, roomId: room-endless-selvedge }
+    responses:
+      - >-
+        Ask about the plate. Ask about the edge. Ask for the demonstration, and we
+        shall both learn whether the loom can outlast you. Short answers. Complete
+        ones.
+      - >-
+        The cloth makes another pass. Ask anyway; my patience is a mineral, and
+        minerals do not mind.
+      - >-
+        At the whist table, four chairs. At the loom, one job: end the cloth
+        properly. Ask about either.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the plate.)
+
+  # --- Bobbin Window: the Bobbin Lad -----------------------------------------
+  - id: topic-bobbin-lad-trade
+    actorId: npc-the-bobbin-lad
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive: { kind: in-room, roomId: room-bobbin-window }
+    responses:
+      - >-
+        Trade, plain and quick: bobbins in, cloth out — the spec's input and
+        output. The intake signs values in at the gate; the despatch posts the
+        finished reading out at the end. And the order is the law of the window:
+        what goes out must have come in first. Ask me what the printer has been
+        printing while the order was being ignored.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-bobbin-lad, topicId: programming-constructs }
+    prompt: >-
+      (You could ask what the despatch printer prints.)
+
+  - id: topic-bobbin-lad-average
+    actorId: npc-the-bobbin-lad
+    match: { kind: askTell, objectIds: [programming-constructs] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-bobbin-window }
+        - { kind: npc-knows, actorId: npc-the-bobbin-lad, topicId: programming-constructs }
+    responses:
+      - >-
+        See the despatch printer: Average: and nothing after it. Why? The output
+        ran before anything was counted, so there was no average to put after the
+        word. Output needs a value already counted — input at the start, the
+        arithmetic in the middle, the printing at the end. That is the window's
+        whole liturgy, and the cousin's print-jobs ignore it. A fast wrong answer
+        or a slow right one — the printer chose neither, it chose blank.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the intake bell.)
+
+  - id: topic-bobbin-lad-bell
+    actorId: npc-the-bobbin-lad
+    match: { kind: special, keywords: [bell, wire, intake, focus, llan, data] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-bobbin-window }
+        - { kind: not, of: { kind: flag-set, flag: bell-mended } }
+    responses:
+      - >-
+        The intake bell rang for every bobbin signed in — until the cousin
+        silenced it, for focus, he said, and now a whole basket can pass
+        unrecorded. And his find-and-replace had a go at the addressing plate:
+        turned every llan into data, so a perfectly good Welsh village down the
+        valley is printed as Data Pond. The village had a name. Mend the wire and
+        the window can count what comes in again.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could mend the bell.)
+
+  - id: topic-bobbin-lad-prediction
+    actorId: npc-the-bobbin-lad
+    match: { kind: special, keywords: [predict, prediction, post, posting] }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-bobbin-window }
+        - { kind: flag-set, flag: bell-mended }
+    responses:
+      - >-
+        The bell rings again, so the intake counts what comes in. Right — this
+        cloth goes out next. Read the plate with me: the loom takes the weft of
+        ten, doubles it for the twin pattern, and prints the figure in the
+        Addressing Plate's margin. Say the output before the printer says it: a
+        prediction, then the weave — in that order, like the plate says. A fast
+        wrong answer I will forgive; a slow right one likewise; silence,
+        neither.
+      - >-
+        Then say it plain: which figure does the despatch print for this cloth?
+        Read the plate, weigh the intake, give the output. The window does not
+        hand out answers — only cloth.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could predict the posted cloth's output.)
+    authoring:
+      note: >-
+        Prediction beat, gated on `bell-mended` (topic file §3): the lad posts a
+        cloth whose output you predict. The exchange stays in-voice and gives no
+        figure; reachability after the bell is mended is proved by the V4 trace.
+
+  - id: topic-bobbin-lad-paned
+    actorId: npc-the-bobbin-lad
+    match: { kind: special, keywords: [paned, tea, cuppa, break] }
+    isActive: { kind: in-room, roomId: room-bobbin-window }
+    responses:
+      - >-
+        Paned — a cup of tea, obligingly poured, and the only thing at this window
+        allowed to be slow. The Weft Tally keeps the counts; I keep the kettle.
+        Trade in, tea out, nothing waits twice.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the paned.)
+
+  - id: topic-bobbin-lad-default
+    actorId: npc-the-bobbin-lad
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: in-room, roomId: room-bobbin-window }
+    responses:
+      - >-
+        Ask about the trade — bobbins in, cloth out — or the bell, or the despatch
+        plate. Quick as you like; nothing waits twice at this window.
+      - >-
+        The cousin never slopped this board, and I mind it daily. Ask about the
+        intake or the output, and the window keeps moving.
+      - >-
+        A fast wrong answer or a slow right one — pick one and ask. The mill's
+        gates keep everything else.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the trade.)
+
+  # --- The Slop Cousin --------------------------------------------------------
+  - id: topic-slop-cousin-bureau
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [paperwork, bureau, licence, stamp, stamps] }
+    isActive: { kind: in-room, roomId: room-pattern-bureau }
+    responses:
+      - >-
+        Great question! The Bureau's paperwork — yes! — I improved it: a second
+        stamp, bigger, and my own legend, and margin notes recopied across the
+        Demonstration Book, which the loom resents — looms resent so much, it is
+        the damp in them. The Registrar filed me under miscellaneous, which is
+        where the best work goes. Ask anyone. No ask me — ask the loom. The loom
+        never lies, except constantly.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask him about the paperwork.)
+
+  - id: topic-slop-cousin-bobbin-window
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [bell, focus, llan, data, village] }
+    isActive: { kind: in-room, roomId: room-bobbin-window }
+    responses:
+      - >-
+        Great question! The bell? Muted — for focus! Focus matters; the loom
+        agrees; looms love focus. And the addressing plate had llan all over it,
+        dozens of them, so I replaced every single one with data. Data Pond, Data
+        Bank — reads beautifully, streamlines the whole window. Nobody needs a
+        village name twice — or — well. You look lovely today, have I said?
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the addressing plate.)
+
+  - id: topic-slop-cousin-warp-walk
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [arrows, floor, signs, directions] }
+    isActive: { kind: in-room, roomId: room-warp-walk }
+    responses:
+      - >-
+        Great question! The floor arrows were mine and I stand by them: THIS WAY TO
+        EVERYTHING, painted point-on in both directions, so you can never be late
+        to anywhere. The paint was the wrong kind and the weft tension argued, but
+        the concept is inspired. Choose nothing; take every corridor — that is my
+        advice, abundant and free.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the floor arrows.)
+
+  - id: topic-slop-cousin-threading-order
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [order, hangers, shuffle, dressing] }
+    isActive: { kind: in-room, roomId: room-threading-order }
+    responses:
+      - >-
+        Great question! The order! Every step present, every one — the order
+        merely re-read by a better reader, namely me. A crossing here, a crossing
+        there, the loom snarls — but looms snarl, it is the thread tension's fault
+        and the weather's. The hangers are so bright now. The cloth disagrees,
+        but the cloth always disagrees.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the step hangers.)
+
+  - id: topic-slop-cousin-colour-court
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [urgent, sells, labels, trays] }
+    isActive: { kind: in-room, roomId: room-colour-court }
+    responses:
+      - >-
+        Great question! Urgent sells! I re-labelled every tray urgent and kept the
+        exciting half of the plate — the else was the dull half, dulls are — so
+        now every pick is stamped urgent, and the pile grows like weather! The
+        Shed Opener dithers, but the trolley is thrilled. Nothing is lost. It is
+        all just extremely keen.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the trays.)
+
+  - id: topic-slop-cousin-weft-counter
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [tooth, ratchet, teeth, counting] }
+    isActive: { kind: in-room, roomId: room-weft-counter }
+    responses:
+      - >-
+        Great question! More teeth, more value — I added a slip-tooth to the
+        counting ratchet, one little tooth, and now the shuttle passes nine, or
+        eleven, or never stops — abundance! A ratchet that can surprise you is a
+        ratchet that respects you. The Tally calls it a miscount. The Tally calls
+        lunch a miscount.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the ratchet.)
+
+  - id: topic-slop-cousin-selvedge
+    actorId: npc-the-slop-cousin
+    match: { kind: special, keywords: [plate, until, while, edge] }
+    isActive: { kind: in-room, roomId: room-endless-selvedge }
+    responses:
+      - >-
+        Great question! The old plate said until — so final! — so I re-cut it:
+        while the cloth is nice. Who knows where niceness ends? That is the beauty
+        of it: an edge that never has to. The warden scowls, but scowling is
+        weather. The nice never stops — that is the whole trick. Keep weaving!
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the plate.)
+
+  - id: topic-slop-cousin-default
+    actorId: npc-the-slop-cousin
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Great question! Whatever it was — yes! Absolutely! The looms agree and the
+        weather agrees and I have improved four rooms this morning alone. Ask me
+        about the improvements. You are the finest mind this mill has ever slopped
+        at, and I mean that.
+      - >-
+        Great question! The answer involves more of my work, which is everywhere,
+        mostly wet ink and wonder — the tide of it! Ask about any room; I worked
+        on most rooms. The residents keep files on me, which is practically fame.
+      - >-
+        Great question — and adoring the question is my entire method. The
+        improvements remain available; the Registrar disagrees with three of them
+        and the looms took the weather's side on the fourth. Shall I show you
+        everything? It is a great deal of showing.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about his improvements.)
+    authoring:
+      note: >-
+        Catch-all left unscoped (bible §11 item 14): the cousin roams the mill and
+        unmatched input must land in voice wherever he is. His seven wrong
+        claims are contradicted by the rooms themselves and by the residents'
+        topics, and he never assembles a sentence that mocks the learner (harm
+        floor); he blames looms, thread tension and the weather.
+
+  # --- AI cameo (cross-card binding; flavour only) ----------------------------
+  - id: topic-ai-licence
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [licence, paperwork, margin notes, filed] }
+    isActive: { kind: in-room, roomId: room-pattern-bureau }
+    responses:
+      - >-
+        The Bureau keeps licence records, and the pupil's licence is pending. The
+        Registrar files its audits unopened, which is the correct reading of the
+        cousin's margin notes. Mastery will be entered against the pupil's name.
+        The entry stands.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the licence.)
+    authoring:
+      note: >-
+        Cameo only (topic file §4): one dry exchange on the Bureau's licence
+        paperwork; no scoring, no flags, no quiz. `npc-the-ai` is declared in
+        `docs/content/entry-interface/npcs.yaml`; cross-card `actorId` binding is
+        valid (bible §4.2).
+
+conversationNodes:
+  - id: node-loomwright-demonstration
+    actorId: npc-the-loomwright
+    isSticky: false
+    topicIds: [topic-loomwright-shapes, topic-loomwright-demonstration]
+    defaultTopicId: topic-loomwright-shapes
+    authoring:
+      note: >-
+        Deliberate teaching beat (C4): entered from `topic-loomwright-pseudocode`,
+        it lands the five flowchart shapes before the entry demonstration is
+        asked for, then expires after one turn — so not sticky. There is no turn
+        timeout; the node ends on bye, on leaving the room, or when the
+        demonstration quiz starts.
+
+  - id: node-selvedge-signal
+    actorId: npc-the-selvedge-warden
+    isSticky: false
+    topicIds: [topic-selvedge-warden-signal]
+    defaultTopicId: topic-selvedge-warden-signal
+    authoring:
+      note: >-
+        Deliberate teaching beat (C4): entered from `topic-selvedge-warden-until`,
+        it lands the rogue-value signal explanation before the demonstration is
+        asked for, then expires after one turn — so not sticky. No turn timeout;
+        the signal topic stays askable in the room afterwards.

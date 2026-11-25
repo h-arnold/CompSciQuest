@@ -1,0 +1,43 @@
+kind: area
+areaId: 1-4-concourse
+status: draft
+
+definition:
+  id: area-1-4-concourse
+  worldId: world-wjec-gcse-computer-science-2025-spec
+  name: The Rule Machine Concourse
+  startRoomId: room-1-4-concourse
+  lives: 3
+
+rooms:
+  - id: room-1-4-concourse
+    title: The Rule Machine Concourse
+    aliases: [concourse]
+    description: >-
+      Cold floor, cold light, and one warm label: over the east door THE PATTERN
+      MILL in gold on green, Y Felin painted smaller beneath it by a hand that
+      knew the letters, and the door standing open on the smell of looms. Three
+      more doors wait along the north wall, each taped over with a typed label —
+      SEARCHING AND SORTING, MAINTAINABLE PROGRAMS, VALIDATION AND VERIFICATION —
+      and a strip of brown paper over the handle marked RETURNED TO SENDER. The
+      floor hums under everything, one low note with nowhere to gather. A slate
+      by the south socket reads NETWORK HUB — IN SERVICE. South, the socket
+      leads back to the Network Hub; east, through the warm door, to the Pattern
+      Mill.
+    topicIds: []
+    exits:
+      - { direction: south, to: room-network-hub }
+      - { direction: east, to: room-pattern-bureau }
+    score: 0
+    authoring:
+      interesting: >-
+        One warm label and three cold taped doors; the mill is open, and nobody else has been let in.
+      pillar: >-
+        P-b; the machine's rule quarters as a place, with its next door open.
+      note: >-
+        P1: navigation-only — no teaching topic is scoped here (empty topicIds,
+        the way room-network-hub marks it). Brief: no items, no quiz, no hazard
+        in this build. The three taped doors are set dressing for Zones B–D and
+        are deliberately given no exits.
+
+items: []

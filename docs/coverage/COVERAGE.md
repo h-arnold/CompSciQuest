@@ -196,6 +196,78 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   taunt carry no spec assessment and gate no puzzle. Full ethics coverage belongs to
   a later zone. Not part of this zone's win set.
 
+## Topic: algorithms-and-pseudocode
+
+- Spec reference: 1.4.1 — algorithms: defining algorithms, pseudo-code and flowcharts
+  (`wjec-unit1.md` L1167; amplification L1197–1245 — pseudo-code common terms
+  L1197–1221; the five flowchart symbols L1223–1245).
+- Game content / room ID: `room-pattern-bureau`, `room-finished-rail`,
+  `quiz-pattern-bureau`, `quiz-finished-rail`, `hint-pattern-bureau`,
+  `hint-finished-rail`. The Mill Board (`room-warp-walk`) and the rota board
+  (`room-finished-rail`) carry the dual-representation beats.
+- Code location: *planned* `src/content/authored/rooms.ts`
+  (`room-pattern-bureau`, `room-finished-rail`); `src/content/authored/quizzes.ts`
+  (`quiz-pattern-bureau`, `quiz-finished-rail`). Not yet generated (W6). The
+  ten trace-pinned verb-action rows (walkthrough §8.6) land in
+  `src/core/commands/InteractionRules.ts` (seam already there; W6 wiring).
+- Status: covered
+- Evidence / notes: Zone A — The Pattern Mill (cards accepted 2026-11-25, W4;
+  V4 trace §8). Teaching — the five flowchart symbols stencilled in the
+  Bureau's wood and the Loomwright's pseudo-code demonstration
+  (`topic-loomwright-*`, learn-topic at trace step 21); the Mill Board
+  (`room-warp-walk`) and the rota board (`room-finished-rail`) carry the
+  dual-representation beats. Retrieval — `quiz-pattern-bureau` (4 questions,
+  score 2) and the Finished Rail synthesis quiz `quiz-finished-rail`
+  (4 questions, score 3 — the AO3 capstone: choose the construct for a
+  fresh problem; sets `master-demonstrated`). Application — the Finished
+  Rail's "PREDICT. THEN WEAVE." prediction of the master cloth beside its
+  flowchart (step 30). `maxScore` 5 = bureau 2 + rail 3 (recorded sums,
+  topic file §11).
+
+## Topic: programming-constructs
+
+- Spec reference: 1.4.1 — the construct strand: self-documenting identifiers,
+  subroutines, input/output, sequence, selection, iteration (count- and
+  condition-controlled), string handling, arithmetic and logical operations,
+  local and global variables, arrays up to two dimensions
+  (`wjec-unit1.md` L1169–1180; amplification L1247–1308; the two counting
+  conventions L1217 and L1308).
+- Game content / room ID: `room-1-4-concourse` (threshold, navigation-only),
+  `room-pattern-bureau`, the Warp Walk junction (`room-warp-walk`), the four
+  construct rooms (`room-threading-order`, `room-colour-court`,
+  `room-weft-counter`, `room-endless-selvedge`), the Bobbin Window
+  (`room-bobbin-window`), `room-finished-rail`, their four quizzes
+  (`quiz-threading-order`, `quiz-colour-court`, `quiz-weft-tally`,
+  `quiz-selvedge`) and six puzzles, the pattern cards (`item-pattern-card-*`),
+  `hint-threading-order`, `hint-colour-court`, `hint-weft-tally`,
+  `hint-selvedge`, `hint-bobbin-window`.
+- Code location: *planned* `src/content/authored/rooms.ts` (construct rooms);
+  `src/content/authored/puzzles.ts`; `src/content/authored/quizzes.ts`. Not yet
+  generated (W6). The ten trace-pinned verb-action rows (walkthrough §8.6)
+  land in `src/core/commands/InteractionRules.ts` (seam already there; W6
+  wiring).
+- Status: covered
+- Evidence / notes: Zone A — The Pattern Mill (cards accepted 2026-11-25, W4;
+  V4 trace §8). Teaching — each resident's beat pairing the world term with
+  the formal term on first use (sequence — the warp dress; selection — the
+  shed and the plate; count-controlled — the weft tally's ratchet and slip
+  tooth; condition-controlled — the selvedge's until plate; rogue values
+  L1257–1261 — the rogue thread; input/output L1251 — the mill's bell and
+  printer beat; local and global variables L1304–1306 — the Mill Board, the
+  mill's shared figure; DIV/MOD — the bailing beat L1292–1293). The mill's
+  own mechanics carry the abstractions: the shed is a selection of threads;
+  the Finished Rail's Duty Rota is the spec's 6×5 2D array (L1308).
+  Retrieval — the four construct quizzes (4 questions, score 2 each = 8).
+  Application — six puzzles mending the cousin's slop (score 1 each = 6):
+  the warp dress, the intake bell, the counting ratchet, the shed plate and
+  else branch, the condition plate, the rogue thread. `maxScore` 14 =
+  4×2 quiz + 6 puzzle (recorded sums, topic file §11). Deferrals: arrays
+  (1D pigeonholes; the 2D Duty Rota, L1308) and string handling (the
+  addressing plate's find-and-replace beat, L1263–1280, in spirit, no
+  Python method names) are taught in-zone without a dedicated quiz/puzzle
+  retrieval beat; the applying-and-extending beats belong to the 1.2.2 zone
+  (`maxScore` 0 there if both are live).
+
 ## Room index
 
 | Room ID | Purpose | Exits | Spec topics |
@@ -211,6 +283,15 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 | `room-sound-choir` | Sampling rate, bit depth, channels | down: `room-binary-hall` | sound-representation |
 | `room-storage-stacks` | Base-2 units and capacity | out: `room-binary-hall` | data-storage-units |
 | `room-compression-press` | Lossy, lossless, compression ratios | in: `room-binary-hall` | data-compression |
+| `room-1-4-concourse` | Zone A threshold: cold concourse under THE PATTERN MILL sign (Y Felin painted beneath) | south: `room-network-hub`, east: `room-pattern-bureau` | none (navigation-only) |
+| `room-pattern-bureau` | The Pattern Mill's start: the Loomwright, five flowchart symbols stencilled in the wood, the Demonstration Book | west: `room-1-4-concourse`, east: `room-warp-walk` | algorithms-and-pseudocode, programming-constructs (input/output beat) |
+| `room-warp-walk` | Junction corridor: the Mill Board (global-variable beat), all mill doors visible, the rail door under four glass section lights | west: `room-pattern-bureau`, north: `room-threading-order`, south: `room-weft-counter`, in: `room-colour-court`, out: `room-bobbin-window`, down: `room-endless-selvedge`, east: `room-finished-rail` (gated — the five flags) | programming-constructs (Mill Board, L1304–1306) |
+| `room-threading-order` | The warp dress: sequence | south: `room-warp-walk` | programming-constructs |
+| `room-colour-court` | The shed and selection: pick trolley routed by the plate's condition | out: `room-warp-walk` | programming-constructs |
+| `room-weft-counter` | Count-controlled iteration: the ratchet and slip tooth | north: `room-warp-walk` | programming-constructs |
+| `room-bobbin-window` | Input/output: mend the intake bell; the addressing plate's find-and-replace beat (string handling, in spirit) | in: `room-warp-walk` | programming-constructs |
+| `room-endless-selvedge` | Condition-controlled iteration: the until plate and the rogue thread | up: `room-warp-walk` | programming-constructs |
+| `room-finished-rail` | Capstone: the master cloth, the rota board (the 6×5 2D array), PREDICT. THEN WEAVE., the Loomwright's despatch audit | west: `room-warp-walk` | algorithms-and-pseudocode, programming-constructs |
 
 ## Integration verdict
 
@@ -241,6 +322,22 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   unaffected. A W7 re-run is owed after those fixes land and the in-flight card
   amendments are regenerated. Evidence:
   `.opencode/scratchpad/slices/w7-opening-walkthrough/qa-report.md`.
+- **Zone A PASS (2026-11-25).** The Pattern Mill's six cards (rooms including
+  the concourse and the hub exit amendment, npcs, puzzles, quizzes, hazards,
+  hints) validated clean before review; pck-reviewer returned PASS WITH MINORS
+  and content-critic's 8 majors and 12 minors were all resolved or
+  editor-routed. The final whole-set critic pass over the cards plus the trace
+  §8 extension (V4, N2, N6, N7, D3) returned PASS WITH MINORS — no blocker or
+  major; three minors dispositioned editor-side (the rail door's four-glass-
+  lights prose fix; the bobbin cousin-keyword disjoint note; the W6-scenery
+  ids declaration note). `programming-constructs` and
+  `algorithms-and-pseudocode` are `covered` with `maxScore` 14 + 5 = 19
+  (recorded sums, topic file §11); the win set is ten topics and the end
+  state is the rail quiz pass (trace §8 step 30). The ten verb-action rows
+  (trace §8.6) and four scenery declarations are the W6 contract;
+  `src/content/authored/*` for this area is still *planned* until code-lead
+  generates them, and a W7 browser walkthrough is owed after that wiring and
+  zone-1's runtime blockers are fixed.
 
 ## Open questions
 

@@ -1,0 +1,564 @@
+# puzzles card for 1-4-programming-constructs — The Pattern Mill (Zone A).
+# W3 brief PZ-PM-01 (2026-11-25). Six puzzles, all topicId: programming-constructs.
+# Applicable rules: N4, N5, N6, N7, P1, P2, P6, D2, D4.
+# Note: the scaffolded stub header said "kind: puzzles", which fails the schema's
+# KINDS list; this card carries the schema's "kind: puzzle" (zone-1 precedent).
+kind: puzzle
+areaId: 1-4-programming-constructs
+status: draft # draft | reviewed | approved (V1)
+topicIds: [algorithms-and-pseudocode, programming-constructs]
+
+puzzles:
+  - id: puzzle-mend-the-bell
+    requirements:
+      - { kind: flag-set, flag: bell-wire-seated }
+      - { kind: flag-set, flag: addressing-plate-re-lettered }
+    onSolve:
+      - { kind: set-flag, flag: bell-mended, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The wire bites home and the intake bell rings out over the yard, loud
+          and ordinary. A first batch of bobbins signs itself in and starts for
+          the loom. On the despatch address plate, the names read as places
+          again, every last one of them put back letter by letter. At the window
+          the Bobbin Lad posts a pale cloth and angles its printed line towards
+          you: the line stops where a number should be. "A fast wrong answer or
+          a slow right one," he says. "This one is yours."
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). Requirement flags
+        bell-wire-seated and addressing-plate-re-lettered are proposed with it
+        (not allocated in topic file section 10); the onSolve flag bell-mended
+        is allocated there and read by the Bobbin Lad's prediction topics.
+        hintSequenceId is left unset for the wave-2 hint card; bible section 9
+        registers no ladder for the Bobbin Window, so wave 2 needs an editor
+        decision before it can wire one.
+      pillar: >-
+        P-b, P-c — bobbins in, cloth out: input and output (L1251) as the
+        window's two instruments, and a fix that takes reasoning, not
+        possession.
+      task: >-
+        You mend the window's two broken instruments. The cousin cut the intake
+        bell's wire so nothing would interrupt him ("for focus," said a note in
+        his hand), and a bell that cannot ring is an input that cannot be
+        heard: input is what the loom takes in, and the bell is how the window
+        hears work arrive. The wire waits on a shelf by the Weft Counter's
+        ratchet, a walk away. Then there is the despatch address plate, where
+        one find-and-replace pass turned every llan into data — "Data Pond"
+        stands where a village name began — and the address strings no longer
+        read as places. This is string handling without a program's syntax:
+        find what was swapped, and set each name right, letter by letter.
+      producedBy: >-
+        USE the bell wire on the intake bell sets bell-wire-seated;
+        item-bell-wire (initialRoom room-weft-counter, per the rooms card) is
+        carried to room-bobbin-window for the seat. Owner: the bell wire's use
+        action, recorded in its useNotes — "Taking it to the Bobbin Window and
+        USING it on the intake bell is the bell puzzle's action; the puzzle's
+        onSolve sets bell-mended." Working the despatch address plate's letter
+        rack to restore each place-name sets addressing-plate-re-lettered
+        (item-addressing-plate — the fixture, now in the rooms card). Owner:
+        the plate fixture in room-bobbin-window — its useNotes, route settled:
+        "working the despatch plate's letter rack — re-lettering the slopped
+        addresses back — produces addressing-plate-re-lettered, and the zone
+        flag bell-mended lands only via puzzle-mend-the-bell's onSolve (topic
+        file §10)." Neither route reads a conversation: both are the fixtures'
+        own actions, and bell-mended lands only in this puzzle's onSolve.
+      clues:
+        - >-
+          room-bobbin-window description: "The intake bell hangs short: the
+          cousin silenced it, for focus, he said. The despatch printer
+          chatters at nothing and prints Average: — then nothing, an average
+          taken before anything went in." Output before anything is input —
+          the spec's own print example turned in-world (L1251).
+        - >-
+          room-bobbin-window, item-addressing-plate description: "DATA POND 4
+          where a village stood, CWM DATA 9 where a valley did. Every llan —
+          the word that begins so many Welsh village names — has become data."
+          One find-and-replace pass did this in seconds. The route is the
+          fixture's own (its useNotes): working the despatch plate's letter
+          rack — re-lettering the slopped addresses back — produces
+          addressing-plate-re-lettered.
+        - >-
+          item-bell-wire description (initialRoom room-weft-counter): "A
+          length of wire with a bell-shaped tag at one end, fallen behind the
+          pigeonholes where it has unravelled for weeks. It fits the intake
+          bell's empty hook exactly." The wire names its destination, and
+          carrying it there is part of the fix.
+        - >-
+          room-bobbin-window prose, the Bobbin Lad at work: "The Bobbin Lad
+          signs cloth at speed and posts it the moment it is named." Input
+          arrives first and output reports what was made of it; no window
+          prints what it never took in (L1251). This beat sets up the
+          prediction: his posted cloth's output line waits for the player's
+          answer, and his topics read bell-mended before they teach it — the
+          beat belongs to the NPC card (topic file section 10 stem
+          topic-bobbin-lad-*); no dialogue is invented here.
+
+  - id: puzzle-dress-the-warp
+    requirements:
+      - { kind: flag-set, flag: card-sequence-given }
+      - { kind: flag-set, flag: dressing-re-ordered }
+    onSolve:
+      - { kind: set-flag, flag: threading-ordered, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The last hanger clicks into its bracket and the loom takes the order
+          the pattern card reads: ground first, the stripes in their places,
+          the border before the hem, the hem after everything else. The loom
+          weaves a carthen straight and square, every step following the one
+          before. "Sorry," the Warp Dresser tells the loom. "You were dressed
+          out of order. That was never your fault."
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). The requirement flag
+        dressing-re-ordered is proposed with it (not allocated in topic file
+        section 10). card-sequence-given is allocated there and read by this
+        puzzle's guard; the brief's line for this puzzle omits it, and this
+        card follows topic file section 10, which lists card-sequence-given as
+        read by the Threading Order puzzle guard (flagged in the return for the
+        editor to confirm or strip). threading-ordered is allocated and feeds
+        the Warp Walk's first light.
+      pillar: >-
+        P-b, P-c — sequence (L1253) is a set of instructions processed one
+        after another, and the loom weaves whatever order it is actually given.
+      task: >-
+        The dressing order — the pattern's steps, one after another — needs its
+        order back. The cousin shuffled it as he "read the order better": every
+        step is still present on the shade cards and their step hangers, and
+        every step is in the wrong place. The pattern card filed at the
+        dresser's lectern gives the order the loom expects. A wrong order is
+        not refused: the loom weaves what it was told, and the room's own
+        telegraph shows the cloth that order makes — "she presses her hands to
+        her mouth at the cloth it would weave" (room-threading-order
+        description). Sequence is the name for instructions
+        processed one after another (L1253); the card is the authority on which
+        after is which.
+      producedBy: >-
+        PUT the shade cards on the step hangers in the pattern card's order
+        sets dressing-re-ordered; the handler scores only the card's order,
+        and any other order runs the loom without setting the flag. The wrong
+        order's failure telegraph is the room's own: "she presses her hands to
+        her mouth at the cloth it would weave" (N5). Owner: the step hangers
+        in room-threading-order, carried in the revised room description —
+        "her shade cards hang on the step hangers in somebody else's
+        sequence". card-sequence-given is set by the Warp Dresser's give
+        topic on item-pattern-card-sequence (topic file section 10; NPC
+        card).
+      clues:
+        - >-
+          room-threading-order description, the pattern paper and the wrong
+          hang: "Pattern paper pinned above the loom spells the five steps out
+          — ground, first stripe, cross-stripe, border, hem — the order a
+          player who reads the room can act on. Every step of the order is
+          present. The order itself is wrong: her shade cards hang on the step
+          hangers in somebody else's sequence, and she presses her hands to
+          her mouth at the cloth it would weave." The wrong order is in plain
+          sight, every step accounted for, and the right order is on the paper
+          for a player who reads only the room.
+        - >-
+          item-pattern-card-sequence description (filed after the give, per
+          topic file sections 5 and 10): "Down its margin, in the Warp
+          Dresser's careful print, the dressing order: ground first, then the
+          first stripe, the cross-stripe, the border, the hem." The re-hang
+          works to this card, and the room's paper spells the same five steps
+          for a player without it.
+        - >-
+          npc-the-warp-dresser dialogue (topic file section 10 stem
+          topic-warp-dresser-*; NPC card): sequence is steps one after another
+          (L1253); a thread crossed early snarls the whole cloth, which is why
+          the order is kindness. She also warns about the cousin's workbook on
+          the lectern (hazard-slop-worksheet telegraph is the hazard card's
+          to place, not this card's).
+        - >-
+          The wrong run's telegraph (room-threading-order description, N5 — in
+          the room's own text; no failure print is requested from the rooms
+          card): "she presses her hands to her mouth at the cloth it would
+          weave." A wrong order is not refused: the loom weaves what it was
+          told, and the telegraph shows the cloth that order would make. The
+          failure is the lesson: a wrong sequence still produces cloth, simply
+          cloth the card never ordered.
+
+  - id: puzzle-lift-the-shed
+    requirements:
+      - { kind: flag-set, flag: card-selection-given }
+      - { kind: flag-set, flag: shed-plate-returned }
+      - { kind: flag-set, flag: else-plate-restored }
+      - { kind: flag-set, flag: tray-routed-by-condition }
+    onSolve:
+      - { kind: set-flag, flag: colours-lifted, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The tray rolls under the plate and the shed opens across it. The
+          fifteen lifts. The twelve lifts: twelve or more means twelve as well,
+          the plate notes, in the small blameless way of plates. The nine stays
+          down and posts itself routine, first in a queue that has not moved in
+          weeks. The Shed Opener straightens her apron, and the pick-pile holds
+          still for the first time all season.
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). Requirement flags
+        shed-plate-returned, else-plate-restored and tray-routed-by-condition
+        are proposed with it (not allocated in topic file section 10);
+        card-selection-given is allocated there and read by this puzzle's
+        guard, and colours-lifted is allocated, feeding the Warp Walk's second
+        light and disarming hazard-pick-avalanche.
+      pillar: >-
+        P-b, P-c — selection (L1255) is which picks lift and which stay,
+        decided by the plate's condition; the shed is a selection of threads.
+      task: >-
+        The shed is the gap the loom opens when some threads lift and others
+        stay down, and which ones do which is decided by the plate. The cousin
+        "kept the exciting half": the shed plate is gone to the intake
+        shelving over at the Bobbin Window, the else plate's slot stands empty,
+        and without an else every failed pick runs urgent, so her pick-pile has
+        been growing towards the rafters. Return the diamond-cut plate, restore
+        the else branch so a failed pick has somewhere to go, then route one
+        tray by the plate's condition — naming your lifts before each pass,
+        because the condition compares counts (L1282–1291). The rail of cases
+        along the wall keeps case select to exact matches: one shade to a case,
+        read against its own label.
+      producedBy: >-
+        PUT the shed plate in its diamond-cut slot sets shed-plate-returned;
+        PUT the else plate in its plain slot sets else-plate-restored (owner
+        for both, settled in the rooms card: item-shed-plate and
+        item-else-plate seated at the Colour Court's plate frame —
+        item-shed-plate useNotes: "Carrying it back to the Colour Court and
+        seating it in the shed loom's empty diamond slot is the selection
+        puzzle's action"; item-else-plate's home is "a plain rectangular slot
+        beside the diamond slot" in that plate's own description). Routing
+        the tray under the restored plate with the lifts named before the
+        pass sets tray-routed-by-condition; owner: item-pick-trolley in
+        room-colour-court, its description: "On its tray three numbered picks
+        — 9, 12, 15 — wait to be routed by the plate's condition" — a
+        misprediction is answered by the pass itself, which lifts what the
+        condition says and prints the difference for the tray to be re-read
+        (N5). card-selection-given is set by the Shed Opener's give topic on
+        item-pattern-card-selection (topic file section 10; NPC card); the
+        loom takes the plates only once the licence is filed.
+      clues:
+        - >-
+          room-colour-court description: "the loom's selection, which colour
+          fills the gap, is decided by the plate in its diamond slot. The slot
+          is empty. The Shed Opener works the treadle — the pedal that lifts
+          the threads — while her pick-pile leans against sense behind her:
+          picks for every shed, all filed urgent. Every single one, urgent."
+          The missing plate and the symptom in one look; the plain slot for
+          the else plate waits in item-else-plate's own description.
+        - >-
+          npc-the-shed-opener dialogue (topic file section 10 stem
+          topic-shed-opener-*; NPC card): selection is the plate's condition
+          deciding which picks lift — if the count is twelve or more then the
+          pick lifts, else it posts routine (L1255); "or more" counts twelve
+          itself (L1282–1291, the same-as-or-higher reading). Without an
+          else, every pick runs as urgent; the boring half is still half the
+          job.
+        - >-
+          room-colour-court description, the case rail: "Her case rail runs
+          the loom's length — case select, for the patterns that say pick one
+          from many — one labelled case after another." Exact matches only —
+          case select (L1255) as furniture.
+        - >-
+          item-shed-plate description (initialRoom room-bobbin-window): "A
+          diamond-cut brass plate, its face the diamond hatch from the
+          Bureau's counter. Somebody filed it among the Bobbin Window's intake
+          shelving, where the shelves do not ask what shape things are." Its
+          shape says where it goes on arrival — the shed loom's empty diamond
+          slot.
+        - >-
+          item-else-plate description (initialRoom room-threading-order): "Its
+          home in the Colour Court's plate frame is a plain rectangular slot
+          beside the diamond slot, empty until the plate comes home." Without
+          it a failed pick has no routine post, which is how the pile grew.
+        - >-
+          item-pick-trolley description (initialRoom room-colour-court): "On
+          its tray three numbered picks — 9, 12, 15 — wait to be routed by the
+          plate's condition." The counts the condition is read against; the
+          predictions come before each pass.
+
+  - id: puzzle-seat-the-ratchet
+    requirements:
+      - { kind: flag-set, flag: card-count-given }
+      - { kind: flag-set, flag: slip-tooth-pried }
+      - { kind: flag-set, flag: counting-ratchet-reseated }
+      - { kind: flag-set, flag: pass-count-predicted }
+    onSolve:
+      - { kind: set-flag, flag: weft-counted, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The loom runs and the ratchet takes one tooth for every pass, no
+          tooth for anything else. You count with the Weft Tally, one pass at a
+          time. "Exactly ten," she says, and enters it twice, in ink, the way
+          sure numbers deserve. Then she bails the day's weft for posting, four
+          passes to a bundle, whole bundles only.
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). The requirement flags
+        slip-tooth-pried and counting-ratchet-reseated are proposed with it
+        (not allocated in topic file section 10); card-count-given is
+        allocated there and read by this puzzle's guard, and weft-counted is
+        allocated, feeding the Warp Walk's third light. pass-count-predicted
+        is allocated in topic file section 10 (2026-11-25, editor): its
+        producer is the Weft Tally's prediction topic,
+        topic-weft-tally-prediction (ask-topic; in-room; one-shot; NPC card),
+        and the puzzle cannot solve without the prediction beat.
+      pillar: >-
+        P-b, P-c — the passes are count-controlled iteration (L1217), the
+        ratchet's one tooth per pass is the incremental count (L1259), and the
+        prediction is the player's own dry run.
+      task: >-
+        The shuttle must pass exactly ten times: the room's bound reads "ten
+        passes to a pattern, no more, no fewer" (room-weft-counter
+        description), and the spec writes that bound as a count-controlled
+        loop, for i = 1 to 10 ... next i (L1217), running the passes its bound
+        names. The cousin added a slip tooth to the counting ratchet ("more
+        teeth, more value"), and with it the count lands nine, or eleven, or
+        never stops at all. Read the bound, predict the pass count to the Weft
+        Tally before the loom may run, then pry the slip tooth and re-seat the
+        ratchet so the count can only grow as the bound tells it to: one tooth
+        per pass — the chalk line on the wood reads count = count + 1
+        (L1259). Her ledger posts whole bundles only — 26 DIV 4 is 6 whole
+        bundles, and 26 MOD 4 leaves 2 over (L1292–1293) — the bailing beat
+        rides here, where it helps.
+      producedBy: >-
+        TAKE the slip tooth out of the counting ratchet sets slip-tooth-pried;
+        PUT the counting ratchet back on the ratchet post sets
+        counting-ratchet-reseated; owner for both: item-slip-tooth and
+        item-counting-ratchet in room-weft-counter (the prying and re-seating
+        are the route the rooms card records — item-slip-tooth useNotes:
+        "Prying the slip tooth from the counting ratchet is the count puzzle's
+        first act; with the ratchet re-seated, the puzzle's onSolve sets
+        weft-counted"). Telling the Weft Tally the predicted count before the
+        run sets pass-count-predicted — producer allocated in topic file
+        section 10: her prediction topic (ask-topic; in-room; one-shot; NPC
+        card). A wrong prediction gets her correction in new information — the
+        ratchet adds one and only one per pass, from the first pass to the
+        last the room's bound names ("ten passes to a pattern, no more, no
+        fewer") — and no flag (N5). card-count-given is set by the Weft
+        Tally's give topic on item-pattern-card-count-iteration (topic file
+        section 10; NPC card).
+      clues:
+        - >-
+          room-weft-counter description: "The counting ratchet clicks under
+          her hand, a slip tooth pried into its row — "more teeth, more
+          value," the cousin said — so the passes come nine, or eleven, or
+          will not stop. "Exactly ten," she says, in the voice of a promise.
+          Count-controlled is what the mill calls it: ten passes to a pattern,
+          no more, no fewer." The extra tooth and the loop's bound share the
+          one look (L1217).
+        - >-
+          item-slip-tooth description (initialRoom room-weft-counter): "A
+          tooth cut to slip into a counting ratchet unasked. Its back is
+          polished by somebody's thumb and stamped, in tiny letters, +1." The
+          cousin's tooth announces its own habits.
+        - >-
+          item-counting-ratchet description (initialRoom room-weft-counter):
+          "The weft loom's counting gear, lifted half out of its cradle so
+          somebody could add to it. Each tooth is numbered up the rim, and the
+          numbers run past ten to a tooth that bears no number at all." The
+          incremental count's seat is one to a pass (L1259); the room's chalk
+          line reads "count = count + 1" (room-weft-counter description).
+        - >-
+          npc-the-weft-tally dialogue (topic file section 10 stem
+          topic-weft-tally-*; NPC card): predict before the run — the bound is
+          in the room, "ten passes to a pattern, no more, no fewer"
+          (room-weft-counter description); walk the passes between; one to ten
+          counts both ends, ten passes (L1217; the shuttle must pass exactly
+          ten times). She takes the prediction in ink before the loom may run,
+          and her prediction topic is the producer of pass-count-predicted
+          (topic file section 10, allocated row).
+        - >-
+          room-weft-counter, the bailing bench (room description): "On the
+          bailing bench the chalk reads 26 DIV 4: 6 whole bundles, 2 over;
+          whole bundles only get posted." The lesson rides the chalk
+          (L1292–1293; DIV finds the whole number of times; MOD finds the
+          remainder). Her bailing beat rides the same numbers after the run
+          (npc-the-weft-tally dialogue, topic file section 10 stem
+          topic-weft-tally-*).
+
+  - id: puzzle-close-the-selvedge
+    requirements:
+      - { kind: flag-set, flag: card-condition-given }
+      - { kind: flag-set, flag: until-clause-restored }
+    onSolve:
+      - { kind: set-flag, flag: condition-plate-set, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The until plate goes up on the exit gate and the gate reads the
+          engraving: until the pick is done AND the edge is signed. Both halves
+          must arrive before the loop will stop, and both halves can. The
+          Selvedge Warden studies the engraving for a long moment, then turns
+          to the whist table and deals: a round with a promised end is worth
+          playing.
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). The requirement flag
+        until-clause-restored is proposed with it (not allocated in topic file
+        section 10); card-condition-given is allocated there and read by this
+        puzzle's guard, and condition-plate-set is allocated, feeding the Warp
+        Walk's fourth light together with rogue-thread-filed.
+      pillar: >-
+        P-b, P-c — condition-controlled iteration (L1218, L1221) is a loop that
+        stops when its condition arrives, and a selvedge is a line that ends
+        because the work says so.
+      task: >-
+        The corridor-loom weaves its edge on and on. On the exit gate hangs a
+        plate in the cousin's hand — WHILE THE CLOTH IS NICE — and nobody can
+        say what nice means, so nothing ever arrives to stop the edge. The
+        proper condition plate, the until plate, wants its place back: its
+        engraving reads until the pick is done AND the edge is signed, both
+        halves required before the loop stops (L1299). A repeat ... until loop
+        stops when its condition arrives, and not before; a while ... repeat
+        goes on only while its condition holds (L1218, L1221). Put the until
+        plate back on the gate and the loop has a stop that can actually fail.
+      producedBy: >-
+        PUT the condition plate on the exit gate sets until-clause-restored;
+        owner: item-condition-plate in room-endless-selvedge (the fixture is
+        recorded in the rooms card, initialRoom included; the cousin's dud
+        plate stays fixed prose scenery in the room's description) — its
+        useNotes: "PUT the until plate on the selvedge's empty exit frame: the
+        verb action sets the intermediate flag until-clause-restored, and the
+        zone flag condition-plate-set lands only via
+        puzzle-close-the-selvedge's onSolve (topic file §10)."
+        card-condition-given is set by the Selvedge Warden's give topic on
+        item-pattern-card-condition-iteration (topic file section 10; NPC
+        card).
+      siblingCheck: >-
+        No prose here mentions puzzle-file-the-rogue-thread or whether the
+        stop signal is filed; either selvedge action may be done first (N7).
+      clues:
+        - >-
+          room-endless-selvedge description: "Down here the corridor-loom
+          weaves its edge on and on — the selvedge, the woven edge that
+          finishes itself as the cloth is made — and no ending has come. The
+          exit plate wants its until back: the plate in its frame reads WHILE
+          THE CLOTH IS NICE, in the cousin's hand." Nobody can say what nice
+          means, so nothing ever arrives to stop the edge; the proper
+          condition plate is dealt into the whist table's last hand in the
+          same description.
+        - >-
+          room-endless-selvedge description, the Warden at the frame (her
+          teaching also rides npc-the-selvedge-warden dialogue, topic file
+          section 10 stem topic-selvedge-warden-*): "Condition-controlled," she
+          adds. "Repeat the work until the pick is done AND the edge is signed
+          — a shape that ends." A repeat ... until loop stops when its
+          condition arrives, and not before; a while ... repeat goes on only
+          while its condition holds (L1218, L1221). Her verdict on the plate
+          stands: anything that cannot fail is not a condition, and nice
+          cannot fail — it can never arrive.
+        - >-
+          item-condition-plate description (initialRoom room-endless-selvedge):
+          "A brass plate stamped UNTIL in letters cut to seat the selvedge's
+          exit frame. It was taken off the frame and never put back; the felt
+          of the whist table is worn where it has rested." The until plate,
+          cut clean and waiting to go back up.
+        - >-
+          The compound's own lesson (the Warden's line in the room description
+          carries it in prose): AND means both halves before the stop — "the
+          pick is done AND the edge is signed" (L1299). One half alone keeps
+          the loom going.
+
+  - id: puzzle-file-the-rogue-thread
+    requirements:
+      - { kind: flag-set, flag: card-condition-given }
+      - { kind: flag-set, flag: rogue-thread-in-drawer }
+    onSolve:
+      - { kind: set-flag, flag: rogue-thread-filed, value: true }
+      - { kind: complete-topic, topicId: programming-constructs }
+      - kind: message
+        text: >-
+          The counterfoil drawer slides shut on the rogue thread and the
+          Selvedge Warden initials the counterfoil: minus one, received; a
+          colour this pattern never asks for. "Filed," she says, and nothing
+          further, the record being exact. By the shelf, one skein has gone
+          where signals go, and the loom's reading of minus one has a drawer of
+          its own.
+    topicId: programming-constructs
+    score: 1
+    dependsOn: []
+    authoring:
+      note: >-
+        Puzzle id proposed - needs editor approval (D2). The requirement flag
+        rogue-thread-in-drawer is proposed with it (not allocated in topic file
+        section 10); card-condition-given is allocated there and read by this
+        puzzle's guard, and rogue-thread-filed is allocated, feeding the Warp
+        Walk's fourth light together with condition-plate-set.
+      pillar: >-
+        P-b, P-c — the rogue thread is the rogue value (L1261): a value which
+        would not normally arise, put into a loop to stop it. It is a signal,
+        and signals are filed, not spent.
+      task: >-
+        On the skein shelf by the door sits a thread dyed a colour that never
+        arises in this pattern; its bobbin reads -1. This is the rogue thread —
+        the rogue value, the mill's name for it — and a rogue value is a value
+        which would not normally arise, entered into a loop to stop it (L1261;
+        the spec's own example reads grade = -1). It is a signal, not a datum:
+        it goes to the counterfoil drawer beside the warden's signing board,
+        where a stop can be initialled, and never to the dye, where it would
+        be spent as a colour and leave the loop waiting for a stop that has
+        been filed as a shade.
+      producedBy: >-
+        PUT the rogue thread in the counterfoil drawer sets
+        rogue-thread-in-drawer; owner: item-counterfoil-drawer in
+        room-endless-selvedge ("The rogue thread belongs here, filed — never
+        woven", its description; its useNotes: "Filing the rogue thread here
+        (PUT) is the selvedge's second action"). PUT the rogue thread in the
+        dye vat is the side route: item-dye-vat reads "a loose thread would be
+        spent as a colour and leave the loop waiting", and its useNotes: "it
+        sets no flag" (N5) — the loom reads on, waiting for a stop spent as a
+        shade. card-condition-given is set by the Selvedge Warden's give topic
+        on item-pattern-card-condition-iteration (topic file section 10; NPC
+        card).
+      siblingCheck: >-
+        No prose here mentions puzzle-close-the-selvedge or the state of the
+        exit plate; either selvedge action may be done first (N7).
+      clues:
+        - >-
+          room-endless-selvedge description, the skein shelf: "On the skein
+          shelf — a skein is yarn not yet wound — one colour is dyed that
+          never arises in this pattern: the rogue thread — the rogue value,
+          the mill's name for it — reads -1."
+        - >-
+          npc-the-selvedge-warden, the signal beat (topic file section 10 stem
+          topic-selvedge-warden-*; NPC card; node-selvedge-signal is the
+          ratified teaching beat for it, bible section 9): a rogue value is one
+          which would not normally arise, put into a loop to stop it; the
+          spec's own example reads grade = -1 (L1261). A signal goes in
+          item-counterfoil-drawer, where it can be initialled — "The rogue
+          thread belongs here, filed — never woven" — beside item-signing-board
+          ("one initial per ended signal — and no line yet for a cloth that
+          never ends"); colours go in the dye vat, item-dye-vat.
+        - >-
+          The dye route's answer (item-dye-vat, N5 — the route the rooms card
+          now carries): "Holds every colour the pattern asks for — and no home
+          for a colour that never arises. Now with one extra: a loose thread
+          would be spent as a colour and leave the loop waiting; examining the
+          vat shows the colours kept ready, nothing more." Sent to the dye,
+          the loom reads on, waiting for a stop that has been mixed into a
+          shade. The failure names the difference between a signal and a
+          datum; no flag is set (useNotes: "it sets no flag").
+        - >-
+          item-rogue-thread description (initialRoom room-endless-selvedge, the
+          skein shelf): "A skein dyed a colour that never arises in this
+          pattern, its end tagged -1. The rogue thread — the rogue value, the
+          mill's name for it — is a signal, and a signal is filed, never
+          woven."
