@@ -218,7 +218,8 @@ follows. W1 and W2 (bible and approval) are unchanged.
   and `npx prettier --check` on the changed files. This replaces the former
   "conversion out of scope" step; it is a mechanical handoff, not a second
   authoring pass.
-- **W7 — Browser walkthrough.** `code-lead` dispatches `browser-tester` to walk
+- **W7 — Browser walkthrough.** `content-editor` dispatches `browser-tester`
+  directly to walk
   the accepted area's V4 trace in the running app against the generated
   authored bundle (content-rules.md V5), writing a QA report and screenshots
   into the slice scratchpad. The stub fixture has been retired, so the walkthrough
@@ -227,14 +228,14 @@ follows. W1 and W2 (bible and approval) are unchanged.
 
 ## 7. Ownership
 
-| Artefact                                                | Owner                              |
-| ------------------------------------------------------- | ---------------------------------- |
-| `docs/content/**/*.yaml` and `spec-topics.yaml`         | `content-editor` via writers       |
-| `tools/content/**`, validator and generator             | `code-lead` via `code-implementer` |
-| `src/content/authored/*.ts` (generated)                 | `code-lead`                        |
-| `package.json` dependencies (`zod`, `yaml`) and scripts | `code-lead`                        |
-| `e2e/**` and `slices/<id>/qa-report.md`                 | `code-lead` via `browser-tester`   |
-| `docs/developer/*.md`, `AGENTS.md`, `opencode.json`     | user-owned design authority        |
+| Artefact                                                | Owner                                      |
+| ------------------------------------------------------- | ------------------------------------------ |
+| `docs/content/**/*.yaml` and `spec-topics.yaml`         | `content-editor` via writers               |
+| `tools/content/**`, validator and generator             | `code-lead` via `code-implementer`         |
+| `src/content/authored/*.ts` (generated)                 | `code-lead`                                |
+| `package.json` dependencies (`zod`, `yaml`) and scripts | `code-lead`                                |
+| `e2e/**` and `slices/<id>/qa-report.md`                 | `browser-tester` (W7 via `content-editor`) |
+| `docs/developer/*.md`, `AGENTS.md`, `opencode.json`     | user-owned design authority                |
 
 Code agents never write cards or invent course facts; content agents never
 write TypeScript, schema or tooling.

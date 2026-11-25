@@ -140,8 +140,9 @@ Crafted valid saves remain appropriate for deterministic engine-level tests.
 
 ## Area browser walkthrough (W7)
 
-When `code-lead` briefs an accepted area, drive the app through the ordered path
-in `docs/content/walkthrough.md` step by step with the real authored content
+When `content-editor` briefs an accepted area directly for W7, drive the app
+through the ordered path in `docs/content/walkthrough.md` step by step with the
+real authored content
 IDs. For each step, confirm in the UI what the trace claims: room entry and
 text, each gated exit and the flag that opens it, item USE and SHOW actions, NPC
 topics and quiz doors, puzzle solves, hazard firings and safe re-entries, and
@@ -155,7 +156,8 @@ the normal finding format and cite the trace step number in the evidence field:
 
 Do not change a card, a generated file or the trace itself. Report a mismatch as
 a finding with the observed behaviour and the expected behaviour from the trace;
-`code-lead` routes content findings to `content-editor`.
+report content findings to `content-editor`, which dispatched you; send code
+findings to `code-lead`.
 
 ## Graphify as the map
 

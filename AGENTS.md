@@ -61,14 +61,14 @@ and `docs/coverage/COVERAGE.md`; `code-lead` owns code, tests and browser QA. Do
 not cross the boundary: content agents never write TypeScript, and code agents
 never write design cards or invent course facts. The default agent remains
 `content-editor`; select `code-lead` for code work. The five workers are
-subagents and are dispatched by `code-lead`, not used as primaries.
+subagents, not primaries: `code-lead` dispatches them for code slices, except
+that `content-editor` dispatches `browser-tester` directly for W7.
 
 For an accepted content area, `content-editor` hands the V4 trace in
-`docs/content/walkthrough.md` to `code-lead`, which dispatches `browser-tester`
+`docs/content/walkthrough.md` to `browser-tester`
 for the W7 browser walkthrough against the generated authored content
 (`content-rules.md` V5). Findings about content return to `content-editor`; code
-findings stay with `code-lead`. `content-editor` never drives or dispatches the
-browser itself.
+findings go to `code-lead`. `content-editor` never operates the browser itself.
 
 ### Agents and ownership
 
@@ -99,9 +99,9 @@ its exact output path; no agent invents one.
    green, then `graphify update .`), `code-reviewer` (independent findings), and
    `browser-tester` for UI-affecting slices (MCP exploration, screenshots,
    accessibility/aesthetics and e2e tests).
-3. For an accepted content area, run the W7 walkthrough: `browser-tester` drives
-   the trace's ordered path through the running app with the generated authored
-   IDs, captures screenshots, and writes
+3. For an accepted content area, `content-editor` dispatches `browser-tester`
+   directly for W7: it drives the trace's ordered path through the running app
+   with the generated authored IDs, captures screenshots, and writes
    `.opencode/scratchpad/slices/<id>/qa-report.md`. Content findings go to
    `content-editor`, not to a writer directly.
 4. Briefs must be self-contained: child agents have fresh context. Include the

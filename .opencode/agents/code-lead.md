@@ -136,10 +136,11 @@ For an accepted content area handed over by `content-editor` in W6, run
 files, and commit the generated TypeScript. This is a mechanical handoff, not a
 second authoring pass: do not rewrite YAML cards or invent course facts.
 
-For that area's W7 browser walkthrough, dispatch `browser-tester` with the
-accepted area's ordered path, gate table and reachability table from
-`docs/content/walkthrough.md`. The walkthrough uses the generated authored
-content and its real IDs, not a stub fixture. Its QA report and screenshots go
+For that area's W7 browser walkthrough, `content-editor` dispatches
+`browser-tester` directly with the accepted area's ordered path, gate table and
+reachability table from `docs/content/walkthrough.md`. The walkthrough uses the
+generated authored content and its real IDs, not a stub fixture. Its QA report
+and screenshots go
 to `.opencode/scratchpad/slices/<slice-id>/qa-report.md` and
 `.opencode/scratchpad/slices/<slice-id>/screenshots/`. Route findings about
 cards, IDs, flags or prose to `content-editor`, and code findings to the owning
