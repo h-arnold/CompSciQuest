@@ -1,0 +1,389 @@
+kind: puzzle
+areaId: 1-2-1-data-representation
+status: approved
+topicIds: [data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression]
+
+puzzles:
+  - id: puzzle-sort-the-data-types
+    requirements: [{ kind: flag-set, flag: types-sorted }]
+    onSolve: [{ kind: complete-topic, topicId: data-types }]
+    topicId: data-types
+    score: 1
+    hintSequenceId: hint-data-types
+    dependsOn: []
+    authoring:
+      pillar: >-
+        P-b, P-c — the five types are physical bins; one honest filing opens the next floor.
+      task: >-
+        You take the sixth sample, which bears a decimal value, and put it into the bin whose named characteristic fits, so the AI's compliance ledger has one true entry. The obvious route — filing it beside the whole numbers — fails because a decimal point marks a real value, not an integer; the bin carrying the temperature 36.4 is the one whose characteristic matches. (authoring) The five type labels and their examples are the spec's own (§1.2.1); its example for `real` is a temperature of 36.4.
+      producedBy: >-
+        `PUT the sample on the matching bin` sets `types-sorted`; owner: type bins fixture in `room-binary-hall` (topic file §3.1). `put` is a canonical verb (application-and-ui §5.1).
+      clues:
+        - >-
+          `room-binary-hall` description: "Five bins: 'if Valid = True', letter 'A', age 15, temperature 36.4, email 'computer.science@wjec.co.uk'; a sixth is unlabelled." The five labels are the specification's own examples of Boolean, character, integer, real and string (§1.2.1), and "temperature 36.4" is its `real` example.
+        - >-
+          `room-binary-hall` type bins fixture (editor correction 2026-11-24, topic file §3.1; placement request): the sixth item is an unlabelled **sample bearing a decimal value** — not an unlabelled bin, and not a sample that fits no type. Its decimal characteristic is the cue to match it to the `real` bin, whose own label is the temperature 36.4.
+        - >-
+          `npc-the-foreman` dialogue beside the bins in `room-binary-hall` (placement request): a Boolean holds a True/False condition, a character is a single number, letter or symbol, an integer is a whole number (positive or negative), a real has a decimal point, and a string is a sequence of characters (§1.2.1).
+
+  - id: puzzle-set-the-switches
+    requirements: [{ kind: flag-set, flag: switches-set }]
+    onSolve: [{ kind: complete-topic, topicId: number-conversion }]
+    topicId: number-conversion
+    score: 1
+    hintSequenceId: hint-number-systems
+    dependsOn: []
+    authoring:
+      pillar: >-
+        P-b, P-c — each switch is a bit, and setting the line opens the north arch.
+      task: >-
+        You read the denary value 37 marked on the gauge and set the belt to its binary pattern so the hall's north arch opens. The obvious route — taking the north stair straight away, or setting switches merely on and off — fails because the arch stays shut until the switches hold the converted value. (authoring) This exercises the spec verb "convert between denary, binary and hexadecimal" (L534–536); the conversion is the spec's own worked example (L598: 37 → `100101`). That result is the key, not a placed clue.
+      producedBy: >-
+        `USE the switch gauge on the belt of tiny black switches` sets `switches-set`; action wording copied from `item-switch-gauge` useNotes, which also set `switch-cooled` with the same action. The editor's re-brief adds the denary 37 marking (topic file §3.1). No flag name is changed here.
+      clues:
+        - >-
+          `item-switch-gauge` description (editor re-brief recorded in topic file §3.1; placement request): its stamped line reads "SET EVERY SWITCH, THEN TAKE THE NORTH STAIR", and the gauge carries the denary marking 37 — the value to convert, not a binary pattern to copy.
+        - >-
+          `room-switch-floor` description: "Each switch on the belt is no bigger than a speck, yet it decides whether a line carries a one or a zero" — the belt stores binary digits, so the denary marking must be converted before the switches can be set.
+        - >-
+          `npc-the-foreman` dialogue `topic-foreman-switches` / `node-foreman-switch-lesson` (placement request): the method — divide the denary value by 2, record the remainder (0 or 1), repeat until 0, then reverse the order of the remainders (§1.2.1 L596–598). Teach the method, never the result.
+        - >-
+          `room-binary-hall` description and painted route diagram: "north switches-set", and the north arch repeats "switches".
+
+  - id: puzzle-add-with-carries
+    requirements: [{ kind: flag-set, flag: carries-added }]
+    onSolve: [{ kind: complete-topic, topicId: number-conversion }]
+    topicId: number-conversion
+    score: 1
+    hintSequenceId: hint-number-systems
+    dependsOn: [puzzle-set-the-switches]
+    authoring:
+      pillar: >-
+        P-b, P-c — binary addition is a track with moving parts, and doing it honestly moves you on.
+      task: >-
+        With the north arch open, you work the carry track so the rightmost column adds correctly. The obvious route — reading 1 + 1 as 1 — fails because the painted rule says 1 + 1 = 0 with a carry of 1.
+      producedBy: >-
+        `USE the carry token on the rightmost column` sets `carries-added`; owner: carry track fixture in `room-hex-deck` (topic file §3.1).
+      clues:
+        - >-
+          `room-hex-deck` description: "the painted rule reads '1 + 1 = 0, carry 1', and a chained token waits by the rightmost column."
+        - >-
+          `npc-nibble-clerk` dialogue `topic-clerk-carries` (placement request): a carry is passed to the next column, taught as method only; §1.2.1 gives the rule 1 + 1 = 10 (0 with a carry of 1).
+        - >-
+          `item-hex-nibble-card` description: "A hollow at the top fits the carry token" — the token has a named resting place on the card.
+
+  - id: puzzle-shift-the-row
+    requirements: [{ kind: flag-set, flag: row-shifted }]
+    onSolve: [{ kind: complete-topic, topicId: number-conversion }]
+    topicId: number-conversion
+    score: 1
+    hintSequenceId: hint-number-systems
+    dependsOn: [puzzle-add-with-carries]
+    authoring:
+      pillar: >-
+        P-b, P-c — an arithmetic shift is a physical row you move, and explaining its effect is the gate.
+      task: >-
+        You work the shift gutter in the direction the arrow notches indicate and name the effect of the shift. The obvious route — treating the notch card as a ready answer — fails because the card holds only a question. (authoring) The effect is qualitative only: §1.2.1 has no worked shift or overflow numbers, so no numeric result is asserted.
+      producedBy: >-
+        `USE the shift lever on the row` sets `row-shifted`; owner: shift gutter fixture in `room-hex-deck` (topic file §3.1). That fixture carries the brief's spec-check flag: teach the effect, assert no number.
+      clues:
+        - >-
+          `room-hex-deck` description: "A shift gutter is cut with arrow notches, but its card holds only a question."
+        - >-
+          `npc-nibble-clerk` dialogue `topic-clerk-shifts` (placement request): a left shift is an arithmetic shift whose result performs a multiplication by a multiple of 2; a right shift performs a division by a multiple of 2 (glossary L2620/L2725). Anything that falls past the end of the row is named overflow. Teach the effect and the name, not a worked result.
+
+  - id: puzzle-read-nibbles
+    requirements: [{ kind: flag-set, flag: hex-read }]
+    onSolve: [{ kind: complete-topic, topicId: number-conversion }]
+    topicId: number-conversion
+    score: 1
+    hintSequenceId: hint-number-systems
+    dependsOn: [puzzle-set-the-switches]
+    authoring:
+      pillar: >-
+        P-b, P-c — hexadecimal is a case of groups of four, and reading it opens the east door.
+      task: >-
+        You read the nibble card's groups of four so the east door opens. The obvious route — reading the beads as one long string — fails because hexadecimal groups binary digits in sets of four from the right.
+      producedBy: >-
+        `USE the nibble card on the nibble groups` sets `hex-read`; owner: `item-hex-nibble-card` useNotes and the nibble groups in `room-hex-deck` (accepted `rooms.md`; topic file §3.1).
+      clues:
+        - >-
+          `item-hex-nibble-card` description: "A card divided into groups of four squares, one group per line. Its back is stamped READ THE NIBBLES BEFORE THE EAST DOOR OPENS."
+        - >-
+          `room-hex-deck` description: "Columns of four beads run along a carry track" — the grouping is visible before any conversion is attempted.
+        - >-
+          `npc-nibble-clerk` dialogue `topic-clerk-bases` (placement request): the specification's worked grouping `10100101` → `1010` (A) and `0101` (5) → `A5` (§1.2.1), taught as method.
+        - >-
+          `room-binary-hall` description and painted route diagram: east "hex-read", and the east arch repeats "nibbles".
+
+  - id: puzzle-match-characters
+    requirements: [{ kind: flag-set, flag: characters-matched }]
+    onSolve: [{ kind: complete-topic, topicId: character-representation }]
+    topicId: character-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-read-nibbles]
+    authoring:
+      pillar: >-
+        P-b, P-c — a character set is a case of marks, and matching them opens the gallery.
+      task: >-
+        You match the tiles in the character case so the south door opens. The obvious route — treating a whole word as a single tile — fails because a character is one number, letter or symbol and a string is a sequence of characters.
+      producedBy: >-
+        `USE the ascii stamp on the tiles in the character case` sets `characters-matched`; owner: `item-ascii-stamp` useNotes and the tiles in the character case in `room-character-tiles` (accepted `rooms.md`; topic file §3.1). Verify the tiles first: using the stamp before verification triggers `hazard-glyph-corruption`.
+      clues:
+        - >-
+          `item-ascii-stamp` description: a case lid listing "ASCII and Unicode: standardised character sets", scratched "MATCH THE TILES, THEN GO SOUTH".
+        - >-
+          `room-character-tiles` description: "A character case lies open, its tiles each holding a single mark."
+        - >-
+          `npc-the-typesetter` dialogue `topic-setter-ascii` (placement request): one symbol versus a word — character versus string — the fully spec-backed distinction (§1.2.1).
+
+  - id: puzzle-build-mosaic
+    requirements: [{ kind: flag-set, flag: picture-built }]
+    onSolve: [{ kind: complete-topic, topicId: graphics-representation }]
+    topicId: graphics-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-match-characters]
+    authoring:
+      pillar: >-
+        P-b, P-c — stored pixels become a buildable image, and building it opens the choir.
+      task: >-
+        You build the image from its stored squares so the up stair opens. The obvious route — counting one bit per pixel — fails because colour depth here is bits per channel: 8 bits for each of R, G and B makes 24 bits per pixel.
+      producedBy: >-
+        `USE the pixel lens on the mosaic` sets `picture-built`; owner: `item-pixel-lens` useNotes and the mosaic in `room-picture-mosaic` (accepted `rooms.md`; topic file §3.1).
+      clues:
+        - >-
+          `item-pixel-lens` description: "Through it, the mosaic squares turn into a tidy row of numbers", and its cap reads "BUILD THE IMAGE, THEN CLIMB".
+        - >-
+          `room-picture-mosaic` description: a label glosses bit depth as the bits used for the colour of each pixel and colour depth as measured in bits per channel (bpc); a ruler marks width and height.
+        - >-
+          `npc-mosaic-critic` dialogue `topic-critic-storage` (placement request): the specification's worked image — 1920 × 1080 at 8 bpc RGB = 24 bits per pixel = 49,766,400 bits = 6,220,800 bytes ≈ 6075 KB ≈ 5.93 MB (§1.2.1).
+
+  - id: puzzle-tune-sampling
+    requirements: [{ kind: flag-set, flag: sound-sampled }]
+    onSolve: [{ kind: complete-topic, topicId: sound-representation }]
+    topicId: sound-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-build-mosaic]
+    authoring:
+      pillar: >-
+        P-b, P-c — sound becomes timed measurements, and sampling one opens the stacks.
+      task: >-
+        You patch the blank dial and sample the sound so the in arch opens. The obvious route — treating one measurement as the whole recording — fails because a sample is one measurement at a specific point in time, taken at a sample rate.
+      producedBy: >-
+        `USE the sample fork on the bit-rate desk` sets `sound-sampled`; owner: `item-sample-fork` useNotes (verbatim).
+      clues:
+        - >-
+          `item-sample-fork` description: "two patch prongs and a paper tag: SAMPLE A SOUND, THEN GO IN. Its handle lists 'samples per second, bits per sample, channels' in faded ink."
+        - >-
+          `room-sound-choir` description: one dial is marked "samples per second", another "bits per sample"; a third dial is blank, waiting for a patch lead. A card defines a sample as one measurement at a specific point in time and lists channels, sample rate, bit depth and bit rate.
+        - >-
+          `npc-choirmaster` dialogue `topic-conductor-storage` (placement request): the specification's worked recording — stereo (2 channels), 44.1 kHz (44,100 samples per second), 16 bits, 180 seconds → 254,016,000 bits → 31,752,000 bytes ≈ 31,008 KB ≈ 30.2 MB (§1.2.1).
+
+  - id: puzzle-stack-the-bytes
+    requirements: [{ kind: flag-set, flag: stacks-sorted }]
+    onSolve: [{ kind: complete-topic, topicId: data-storage-units }]
+    topicId: data-storage-units
+    score: 1
+    hintSequenceId: hint-storage-capacity
+    dependsOn: [puzzle-tune-sampling]
+    authoring:
+      pillar: >-
+        P-b, P-c — capacity is a chain of shelves, and sorting it opens the press.
+      task: >-
+        You sort the crates onto the unit ladder so the out arch opens. The obvious route — treating each step as ×1000 — fails because the joints are marked ×1024 from byte upward.
+      producedBy: >-
+        `USE the sample fork on the unit ladder` sets `stacks-sorted`; owner: `item-sample-fork` useNotes in the accepted `rooms.md`. No flag name is changed here.
+      clues:
+        - >-
+          `room-storage-stacks` description: "Shelves rise in eight rungs: bit, nibble, byte, KB, MB, GB, TB, PB; from byte upward, each joint is marked ×1024."
+        - >-
+          `room-storage-stacks` description: "A brass plate states that one kilobyte holds 1,024 bytes", set among flaking labels, so the plate is the honest figure.
+        - >-
+          `npc-stack-keeper` dialogue `topic-keeper-units` (placement request): "Count twice, stack once" — a nibble is 4 bits, a byte is 8 bits and 1 KB is 1024 bytes (base 2, §1.2.1).
+
+  - id: puzzle-pack-the-archive
+    requirements: [{ kind: flag-set, flag: archive-packed }]
+    onSolve: [{ kind: complete-topic, topicId: data-compression }]
+    topicId: data-compression
+    score: 1
+    hintSequenceId: hint-compression-ratio
+    dependsOn: [puzzle-stack-the-bytes]
+    authoring:
+      pillar: >-
+        P-b, P-c, P-d — the press is a physical trade-off, delivered with a straight-faced sales pitch.
+      task: >-
+        You pack the archive with the die so the press finishes the zone. The obvious route — choosing whichever tray looks smaller — fails because lossless returns the file exactly while lossy reduces quality, and the ratio window shows which one you used.
+      producedBy: >-
+        `USE the compression die` sets `archive-packed`; owner: `item-compression-die` useNotes (verbatim).
+      clues:
+        - >-
+          `item-compression-die` description: "two settings cut into its rim, LOSSLESS and LOSSY. A small window shows an original column beside a compressed one."
+        - >-
+          `room-compression-press` description: "The first sample comes back exactly as it went in; the second returns smaller and a little blurred. A lever is labelled lossless at one end and lossy at the other."
+        - >-
+          `npc-press-operator` dialogue `topic-operator-ratio` (placement request): the specification's worked ratio 1000 ÷ 200 = 10:2 and 2000 KB at 10:2 → 400 KB (§1.2.1).
+
+  - id: puzzle-check-the-overflow-register
+    requirements: [{ kind: flag-set, flag: overflow-checked }]
+    onSolve: [{ kind: complete-topic, topicId: number-conversion }]
+    topicId: number-conversion
+    score: 1
+    hintSequenceId: hint-number-systems
+    dependsOn: [puzzle-add-with-carries]
+    authoring:
+      pillar: >-
+        P-b, P-c — a spare bit is a physical object in a tray, and accounting for it is the gate.
+      task: >-
+        You show the foreman the gauge when a carry runs off the register so the spare bits are accounted for. The obvious route — ignoring the tray — fails because a bit past the last switch drops into the tray instead of vanishing.
+      producedBy: >-
+        `SHOW the switch gauge to npc-the-foreman after the carry runs off the register` sets `overflow-checked`; owner: `item-switch-gauge` useNotes (verbatim).
+      clues:
+        - >-
+          `room-hex-deck` description: "A stuck carry lamp drips spare 1s into a tin tray scratched OVERFLOW."
+        - >-
+          `npc-the-foreman`'s response to SHOWing the gauge (`topic-foreman-show-gauge`, always active): he asks to see the gauge when a carry runs off the end, and explains overflow without a numeric result.
+        - >-
+          `item-switch-gauge` useNotes: "SHOW the switch gauge to the foreman after a carry runs off the register sets `overflow-checked`" — the condition and the target are both named (§1.2.1 asks only for the concept of overflow and underflow; no worked number is asserted).
+
+  - id: puzzle-weigh-the-pixels
+    requirements: [{ kind: flag-set, flag: pixels-weighed }]
+    onSolve: [{ kind: complete-topic, topicId: graphics-representation }]
+    topicId: graphics-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-build-mosaic]
+    authoring:
+      pillar: >-
+        P-b, P-c — stored squares can be compared against a nibble card, and the comparison is the gate.
+      task: >-
+        You weigh the mosaic's stored squares against the nibble card's groups of four. The obvious route — counting each square as one stored bit — fails because a pixel's colour takes several bits, set by bit depth and the number of channels.
+      producedBy: >-
+        `USE the pixel lens on the nibble card` sets `pixels-weighed`; owner: `item-pixel-lens` and `item-hex-nibble-card` useNotes (verbatim, same action in both).
+      siblingCheck: >-
+        No prose mentions the sibling leaf `puzzle-scale-the-badge`; either may be solved first (N7).
+      clues:
+        - >-
+          `item-pixel-lens` description: "Through it, the mosaic squares turn into a tidy row of numbers."
+        - >-
+          `item-hex-nibble-card` description: "A card divided into groups of four squares, one group per line" — a row of stored groups to compare with.
+        - >-
+          `room-picture-mosaic` description: bit depth is the number of bits used for the colour of each pixel, and colour depth is measured in bits per channel (bpc).
+
+  - id: puzzle-scale-the-badge
+    requirements: [{ kind: flag-set, flag: badge-scaled }]
+    onSolve: [{ kind: complete-topic, topicId: graphics-representation }]
+    topicId: graphics-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-build-mosaic]
+    authoring:
+      pillar: >-
+        P-b, P-c — vector curves are a material you can scale, and the clean edge is the gate.
+      task: >-
+        You show the foreman the lens at the drafting corner and scale the smooth badge without losing its clean edge. The obvious route — enlarging the pixel grid instead — fails because that grid squares off, while the vector curves scale cleanly.
+      producedBy: >-
+        `SHOW the pixel lens to npc-the-foreman` sets `badge-scaled`; owner: `item-pixel-lens` useNotes (verbatim).
+      siblingCheck: >-
+        No prose mentions the sibling leaf `puzzle-weigh-the-pixels`; either may be solved first (N7).
+      clues:
+        - >-
+          `room-picture-mosaic` description: "In the drafting corner, smooth vector curves scale cleanly; a pixel grid squares off."
+        - >-
+          `npc-mosaic-critic` dialogue `topic-critic-vectors` (placement request): vectors use mathematics (lines and curves), scale up without loss of apparent quality and suit logos and icons; an enlarged raster grid shows its squares (§1.2.1).
+        - >-
+          `npc-the-foreman`'s response to SHOWing the lens (`topic-foreman-show-lens`, always active): he wants to see the lens before signing off a scaled badge.
+
+  - id: puzzle-make-room-for-the-welsh-letter
+    requirements: [{ kind: flag-set, flag: unicode-tile-cut }]
+    onSolve: [{ kind: complete-topic, topicId: character-representation }]
+    topicId: character-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-match-characters]
+    authoring:
+      pillar: >-
+        P-b, P-c — a standardised set is a case with room for every mark; the Welsh touch is unobtrusive (topic file §8).
+      task: >-
+        You ask the typesetter to cut a tile for the spare mark so it has a place too. The obvious route — forcing it into the existing set — fails because the drawer calls it "a different character", and the typesetter refuses no character a tile.
+      producedBy: >-
+        `topic-setter-unicode` on `npc-the-typesetter` sets `unicode-tile-cut`; owner: NPC card, `topic-setter-unicode` (brief; no new conversation topic is introduced).
+      specCheck: >-
+        Do not state which characters ASCII covers and which Unicode covers; the ŵ is only "a different character" and no coverage claim is made.
+      clues:
+        - >-
+          `room-character-tiles` description: "in a spare drawer, a tile bearing ŵ waits, labelled only 'a different character'."
+        - >-
+          `npc-the-typesetter` dialogue `topic-setter-unicode` (placement request): "Every mark has its place" and no character is refused a tile; Unicode is named as a standardised character set (§1.2.1).
+
+  - id: puzzle-count-the-bit-rate
+    requirements: [{ kind: flag-set, flag: bit-rate-counted }]
+    onSolve: [{ kind: complete-topic, topicId: sound-representation }]
+    topicId: sound-representation
+    score: 1
+    hintSequenceId: hint-representation
+    dependsOn: [puzzle-tune-sampling]
+    authoring:
+      pillar: >-
+        P-b, P-c — the blank dial is a missing quantity, and working it out is the gate.
+      task: >-
+        You show the foreman the fork with the blank dial worked out. The obvious route — adding the two dial readings — fails because bit rate is the sample rate multiplied by the bit depth.
+      producedBy: >-
+        `SHOW the sample fork to npc-the-foreman` sets `bit-rate-counted`; owner: `item-sample-fork` useNotes (verbatim).
+      clues:
+        - >-
+          `room-sound-choir` description: at the bit-rate desk one dial reads "samples per second", another "bits per sample", and a third is blank, waiting for a patch lead.
+        - >-
+          `item-sample-fork` description: "Its handle lists 'samples per second, bits per sample, channels' in faded ink."
+        - >-
+          `npc-choirmaster` dialogue `topic-conductor-samples` (placement request): bit rate is the amount of data processed per second of sound, calculated by multiplying sample rate by bit depth (§1.2.1).
+
+  - id: puzzle-label-the-capacity
+    requirements: [{ kind: flag-set, flag: capacity-labelled }]
+    onSolve: [{ kind: complete-topic, topicId: data-storage-units }]
+    topicId: data-storage-units
+    score: 1
+    hintSequenceId: hint-storage-capacity
+    dependsOn: [puzzle-stack-the-bytes]
+    authoring:
+      pillar: >-
+        P-b, P-c — the ladder is a base-2 chain, and relabelling it honestly is the gate.
+      task: >-
+        You show the foreman the nibble card and relabel the unit ladder honestly. The obvious route — copying the flaking labels — fails because those labels have gone decimal; the brass plate and the ×1024 joints give the base-2 chain.
+      producedBy: >-
+        `SHOW the nibble card to npc-the-foreman` sets `capacity-labelled`; owner: `item-hex-nibble-card` useNotes (verbatim).
+      specCheck: >-
+        Use the base-2 prose chain at §1.2.1 L566–570 only; the "Equivalent" column at L683–685 is inconsistent and is not used.
+      clues:
+        - >-
+          `room-storage-stacks` description: "Shelves rise in eight rungs: bit, nibble, byte, KB, MB, GB, TB, PB; from byte upward, each joint is marked ×1024", plus "A brass plate states that one kilobyte holds 1,024 bytes."
+        - >-
+          `item-hex-nibble-card` description: "A card divided into groups of four squares, one group per line" — the nibble as four bits, the first honest rung above a bit.
+        - >-
+          `npc-stack-keeper` dialogue `topic-keeper-capacity` (placement request): "Count twice, stack once" and 1 KB = 1024 bytes, 1 MB = 1024 KB (base 2, §1.2.1).
+
+  - id: puzzle-choose-the-compression
+    requirements: [{ kind: flag-set, flag: compression-chosen }]
+    onSolve: [{ kind: complete-topic, topicId: data-compression }]
+    topicId: data-compression
+    score: 1
+    hintSequenceId: hint-compression-ratio
+    dependsOn: [puzzle-pack-the-archive]
+    authoring:
+      pillar: >-
+        P-b, P-c, P-d — the honest setting is a physical choice, sold in deadpan euphemisms.
+      task: >-
+        You choose the honest setting for the text stamp so the file comes back exactly. The obvious route — taking the smaller file — fails because lossy reduces quality, while lossless keeps the quality and lets the file be uncompressed to its original form.
+      producedBy: >-
+        `USE the compression die on the ascii stamp` sets `compression-chosen`; owner: `item-compression-die` and `item-ascii-stamp` useNotes (verbatim, same action in both).
+      clues:
+        - >-
+          `item-compression-die` description: "two settings cut into its rim, LOSSLESS and LOSSY. A small window shows an original column beside a compressed one."
+        - >-
+          `room-compression-press` description: "The first sample comes back exactly as it went in; the second returns smaller and a little blurred."
+        - >-
+          `npc-press-operator` dialogue `topic-operator-lossy` (placement request): lossy generally reduces size more but also reduces quality; lossless maintains quality and can be uncompressed to its original form (§1.2.1).
+        - >-
+          `npc-press-operator` dialogue `topic-operator-ratio` (placement request): 1000 ÷ 200 = 10:2 and 2000 KB at 10:2 → 400 KB, so the ratio window can be read, not guessed (§1.2.1).

@@ -1,0 +1,638 @@
+kind: quiz
+areaId: 1-2-1-data-representation
+status: approved
+topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression]
+
+quizzes:
+  - id: quiz-switchyard
+    actorId: npc-the-foreman
+    topicId: switch-to-bit
+    score: 0
+    questionIds: [q-dr-01, q-dr-02, q-dr-03]
+    passMark: 2
+    onPass:
+      - { kind: complete-topic, topicId: switch-to-bit }
+      - { kind: set-flag, flag: quiz-passed:quiz-switchyard, value: true }
+      - { kind: message, text: "The foreman checks the switch you set, nods once and signs the maintenance sheet. The belt keeps clicking. The stair up to the Binary Hall is open." }
+    onFail:
+      - { kind: change-lives, delta: 0, reason: "the foreman charges nothing for a rehearsal on the switch floor" }
+      - { kind: move-player, roomId: room-switch-floor, reason: "the gauge and the rehearsal switches are back on the switch floor" }
+      - { kind: message, text: "The foreman writes the slip on a scrap of paper and pockets it. 'Again, when you're ready.' Nothing on the belt has moved; the gauge still hangs by the door." }
+    hintSequenceId: hint-switchyard
+    authoring:
+      framing: >-
+        N3 — the foreman needs the switch described in writing before he will sign the AI's "paperwork"; a challenge on his own floor, never a stop-and-answer. Awareness depth only (§1.1.1), score 0 and no life loss (topic file §6, bible §12). Delta 0 and the switch-floor return are the user-approved prologue exception to the normal level-start fail path; flagged for the editor against the generic "declared level start" wording.
+
+  - id: quiz-data-types
+    actorId: npc-the-foreman
+    topicId: data-types
+    score: 1
+    questionIds: [q-dr-04, q-dr-05, q-dr-06, q-dr-07]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: data-types }
+      - { kind: set-flag, flag: quiz-passed:quiz-data-types, value: true }
+      - { kind: message, text: "The foreman tips the sixth sample into its bin and ticks the board. 'That's the lot sorted.' The route diagram stays on the wall; you can read it again any time." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "a sample went into the wrong bin" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the type bins and the route diagram are back in the Binary Hall" }
+      - { kind: message, text: "The foreman writes the bin number on his cuff and points back to the hall. 'The board hasn't moved.' The samples sit in their bins, still waiting." }
+    hintSequenceId: hint-data-types
+    authoring:
+      framing: >-
+        N3 — the foreman runs the type bins at the hall and needs each sample filed before he signs off the floor; the challenge belongs to his workspace.
+
+  - id: quiz-number-systems
+    actorId: npc-nibble-clerk
+    topicId: number-conversion
+    score: 1
+    questionIds: [q-dr-08, q-dr-09, q-dr-10, q-dr-11]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: number-conversion }
+      - { kind: set-flag, flag: quiz-passed:quiz-number-systems, value: true }
+      - { kind: message, text: "The clerk checks the four-bead columns and draws a neat line under them. 'Columns of four, please.' A small light on the carry track goes out." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "the audit found an unexplained bit" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the counters and the carry track are reached through the Binary Hall" }
+      - { kind: message, text: "The clerk circles the stray bit on the card and sets it down. 'The counters are still on the deck.' The carry lamp is still stuck, and the tray underneath has not been emptied." }
+    hintSequenceId: hint-number-systems
+    authoring:
+      framing: >-
+        N3 — the clerk audits the bead columns on the hex deck and will not sign off a ragged row; all four items use the guidance's own worked values or its stated rules. No worked shift or overflow numbers are asserted (spec-check flag in topic file §6).
+
+  - id: quiz-character-representation
+    actorId: npc-typesetter
+    topicId: character-representation
+    score: 1
+    questionIds: [q-dr-12, q-dr-13, q-dr-14, q-dr-15]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: character-representation }
+      - { kind: set-flag, flag: quiz-passed:quiz-character-representation, value: true }
+      - { kind: message, text: "The typesetter slides your tile into the case and closes the lid with a soft click. 'Every mark has its place.' The spare drawer stays open a finger's width." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "a tile went back into the wrong slot" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the character case is reached through the Binary Hall" }
+      - { kind: message, text: "The typesetter returns the tiles to their slots, one by one. 'The case is unchanged.' The spare drawer is still in its place, and the stamp waits on the bench." }
+    hintSequenceId: hint-representation
+    authoring:
+      framing: >-
+        N3 — the typesetter sets the challenge over the tile case and wants no mark refused a slot. No question fixes which character set covers ŵ; that key is blocked by the spec-check flag in topic file §6 and the fully spec-backed character/string alternative is used instead.
+
+  - id: quiz-graphics-representation
+    actorId: npc-mosaic-critic
+    topicId: graphics-representation
+    score: 1
+    questionIds: [q-dr-16, q-dr-17, q-dr-18, q-dr-19]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: graphics-representation }
+      - { kind: set-flag, flag: quiz-passed:quiz-graphics-representation, value: true }
+      - { kind: message, text: "The critic measures the mosaic twice, then nods at the drafting corner. 'Show me the pixels.' The curves held; the pixel grid stays squared off beside them." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "image storage counted on the wrong materials" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the picture mosaic is reached through the Binary Hall" }
+      - { kind: message, text: "The critic turns the ruler over and sets it down again. 'The mosaic is where you left it.' The drafting corner is still lit; the grid squares have not shifted." }
+    hintSequenceId: hint-representation
+    authoring:
+      framing: >-
+        N3 — the critic sets the challenge at the mosaic with the pixel lens, judging which material holds the better image. Colour depth is stated in bits per channel throughout; no older bits-per-pixel convention is used as a key (spec-check flag).
+
+  - id: quiz-sound-representation
+    actorId: npc-choirmaster
+    topicId: sound-representation
+    score: 1
+    questionIds: [q-dr-20, q-dr-21, q-dr-22, q-dr-23]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: sound-representation }
+      - { kind: set-flag, flag: quiz-passed:quiz-sound-representation, value: true }
+      - { kind: message, text: "The choirmaster listens to the patched recording and lowers the baton a fraction. 'Again, from the top — but that will do.' The blank dial now has its lead." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "a sample went unattended" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the sound choir is reached through the Binary Hall" }
+      - { kind: message, text: "The choirmaster sets the forks back on the rack. 'The recording is unchanged.' The blank dial waits, and the patch lead lies beside it." }
+    hintSequenceId: hint-representation
+    authoring:
+      framing: >-
+        N3 — the choirmaster challenges you at the sample forks and treats a dropped sample as a betrayal; the challenge uses only the spec's terms and worked figures, with no Nyquist, aliasing or codec detail.
+
+  - id: quiz-storage-units
+    actorId: npc-stack-keeper
+    topicId: data-storage-units
+    score: 1
+    questionIds: [q-dr-24, q-dr-25, q-dr-26, q-dr-27]
+    passMark: 3
+    onPass:
+      - { kind: complete-topic, topicId: data-storage-units }
+      - { kind: set-flag, flag: quiz-passed:quiz-storage-units, value: true }
+      - { kind: message, text: "The stack keeper ticks the ladder rung by rung and seals the ledger. 'Count twice, stack once.' The plate on the wall still reads one kilobyte to one thousand and twenty-four bytes." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "a shelf was counted in the wrong base" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the storage stacks are reached through the Binary Hall" }
+      - { kind: message, text: "The stack keeper dusts the brass plate and turns back to the shelves. 'The ladder hasn't moved. Count them again.' The crates are still by the open arch." }
+    hintSequenceId: hint-storage-capacity
+    authoring:
+      framing: >-
+        N3 — the stack keeper checks the ladder with you, the ledger having "gone decimal again"; every item uses the base-2 prose chain only. The L683–685 equivalences are a spec-check flag and are never used as a key (topic file §6).
+
+  - id: quiz-data-compression
+    actorId: npc-press-operator
+    topicId: data-compression
+    score: 1
+    questionIds: [q-dr-28, q-dr-29, q-dr-30, q-dr-31, q-dr-32]
+    passMark: 4
+    onPass:
+      - { kind: complete-topic, topicId: data-compression }
+      - { kind: set-flag, flag: quiz-passed:quiz-data-compression, value: true }
+      - { kind: message, text: "The press operator reads the ratio window aloud, shrugs, and stamps the archive 'streamlined'. The AI's compliance note prints itself, then stops. The predecessor's luggage comes out the other side, slightly flatter." }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: "the compliance figure did not balance" }
+      - { kind: move-player, roomId: room-binary-hall, reason: "the compression press is reached through the Binary Hall" }
+      - { kind: message, text: "The press operator lowers the lever and sets the file back on the tray. 'Nobody will miss it.' The ratio window still shows two columns, and the arch in is where it was." }
+    hintSequenceId: hint-compression-ratio
+    authoring:
+      framing: >-
+        N3 — the press operator demands the final figure at the press and calls compression "streamlining"; the zone climax gate. All format lists and worked figures come from the guidance's own examples only.
+
+questions:
+  - id: q-dr-01
+    prompt: >-
+      The foreman taps the retired rack against the wall, labelled 'before'. What did the tiny switches replace?
+    options: ["vacuum tubes", "integrated circuits", "microprocessors", "multi-core CPUs"]
+    correctOptionIds: [0]
+    explanation: >-
+      The retired rack against the wall is what the tiny switches replaced: vacuum tubes came first, and the switches made computers smaller, faster and more reliable. The other three are later arrivals on this floor, so none of them came before the switches.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Ordering slip — learners place integrated circuits, microprocessors or multi-core CPUs before the transistor because all four appear together in the historical list.
+      spec: >-
+        §1.1.1 L320 ("Early Transistors: Replaced vacuum tubes…"), under "learners should be aware of" historical development at L141–149 and L148.
+
+  - id: q-dr-02
+    prompt: >-
+      Which statement about the tiny switches matches what the foreman says about the 'before' rack?
+    options: ["They replaced vacuum tubes, making computers smaller, faster and more reliable.", "They replaced integrated circuits, making computers smaller, faster and more reliable.", "They appeared after microprocessors, making computers smaller, faster and more reliable.", "They replaced vacuum tubes, making computers larger, slower and less reliable."]
+    correctOptionIds: [0]
+    explanation: >-
+      The retired rack tells it plainly: the early switches replaced vacuum tubes and made computers smaller, faster and more reliable. The sign by the belt adds that the modern ones arrive packed onto chips; microprocessors and multi-core CPUs are later still. The last option gets the component right but reverses every stated effect.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Two slips: swapping early and later components in the historical sequence, and reversing the stated effects (smaller/faster/reliable) while keeping the sentence shape.
+      spec: >-
+        §1.1.1 L320–323 ("Early Transistors", "Integrated Circuits", "Microprocessors", "Modern Multi-core CPUs"); awareness depth at L141–149.
+
+  - id: q-dr-03
+    prompt: >-
+      The foreman points to one black switch on the belt. Set one way or the other, it decides whether a line carries one or zero. Which machine part is that?
+    options: ["a transistor used as a switch, choosing one or zero", "a vacuum tube used as a switch, choosing one or zero", "an integrated circuit used as a switch, choosing one or zero", "a byte used as a switch, choosing one or zero"]
+    correctOptionIds: [0]
+    explanation: >-
+      A transistor acts as a tiny switch, which is why this floor is built out of switches; the retired rack of vacuum tubes is the earlier technology the switches replaced. The sign by the belt speaks of many transistors packed onto a chip, not one switch, and a byte is a unit of eight bits, not a component.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Component confusion — choosing the earlier vacuum tube, the later integrated circuit or the data-storage unit byte instead of the single transistor. The tiny-switch framing is the approved awareness-depth gloss in the topic file §2, not a claim about transistor physics.
+      spec: >-
+        §1.1.1 L148 and L320–321 (historical development; early transistors; integrated circuits), framed as the tiny-switch teaching note in approved topic file §2; byte = 8 bits at §1.2.1 L680.
+
+  - id: q-dr-04
+    prompt: >-
+      The hall's 'age 15' bin holds a whole number. Which data type fits it?
+    options: ["integer", "real", "character", "Boolean"]
+    correctOptionIds: [0]
+    explanation: >-
+      The hall's 'age 15' sample is an integer: a whole number, positive or negative. A real has a decimal point, a character is one number, letter or symbol, and a Boolean is a logical comparison.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Treating a whole number as a real because all numbers are "numeric", or confusing the value 15 with the single character '1' or '5'.
+      spec: >-
+        §1.2.1 L527–532 (characteristics) and L584–590 (table: Integer, "age = 15").
+
+  - id: q-dr-05
+    prompt: >-
+      Which data type fits the bin labelled 'if Valid = True'?
+    options: ["Boolean", "integer", "string", "real"]
+    correctOptionIds: [0]
+    explanation: >-
+      The bin labelled 'if Valid = True' is the Boolean one, used for logical comparisons or conditions. Integers, strings and reals hold values rather than a True/False condition.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Reading "Valid" as text and choosing string, or reading "True" as a number and choosing integer or real.
+      spec: >-
+        §1.2.1 L525–532 (appropriate use, logical comparisons) and L584–590 (table: Boolean example).
+
+  - id: q-dr-06
+    prompt: >-
+      The hall's sixth bin is unlabelled. You need to store the single letter "A". Which bin and data type fit?
+    options: ["the character bin: 'A' is a single letter", "the string bin: 'A' is a sequence of characters", "the integer bin: 'A' is a whole number", "the Boolean bin: 'A' is a condition"]
+    correctOptionIds: [0]
+    explanation: >-
+      A character is a single number, letter or symbol, and the bin marked 'A' is exactly that. A string is a sequence of characters, like the email bin's label; a single letter is not a whole number or a True/False condition.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Filing one letter under string because letters "make up text", despite the guidance separating a single character from a sequence of characters.
+      spec: >-
+        §1.2.1 L587 (Character: "Single number, letter or symbol", example letter = 'A') and L590 (String example).
+
+  - id: q-dr-07
+    prompt: >-
+      Which of the samples on the hall's board is a real rather than an integer?
+    options: ["temperature = 36.4", "age = 15", "letter = 'A'", "if Valid = True"]
+    correctOptionIds: [0]
+    explanation: >-
+      A real is a number with a decimal point, and the bin labelled 'temperature 36.4' is the one. 'age 15' is the integer, 'A' the character and 'if Valid = True' the Boolean.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Classifying by topic rather than by characteristic — treating temperature as an integer because it is a measurement, or treating 36.4 as two integers because it contains digits.
+      spec: >-
+        §1.2.1 L584–590 (table: Real, "Numbers with decimal points", example temperature = 36.4).
+
+  - id: q-dr-08
+    prompt: >-
+      Convert denary 37 to binary. Which bit pattern results?
+    options: ["101001", "100110", "100100", "100101"]
+    correctOptionIds: [3]
+    explanation: >-
+      Divide by 2 and record the remainder each time, then reverse the order: the remainders 1, 0, 1, 0, 0, 1 reversed give 100101. 101001 is those same remainders written without reversing; 100110 and 100100 are off-by-one slips at the final remainder.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Forgetting to reverse the remainders (101001), or misreading the last division's remainder so the pattern is one out (100110, 100100).
+      spec: >-
+        §1.2.1 L596–598 (Denary to Binary; worked 37 → 100101 example), with the method at L534–536.
+
+  - id: q-dr-09
+    prompt: >-
+      Convert binary 10100101 to hexadecimal by grouping into fours from the right. Which value results?
+    options: ["5A", "AA", "55", "A5"]
+    correctOptionIds: [3]
+    explanation: >-
+      Group from the right: 1010 = 10 = A and 0101 = 5, so the value is A5. 5A swaps the two groups; AA reads both groups as 1010; 55 reads both as 0101.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Reversing the nibble order, or assuming both nibbles are the same and copying one conversion across the whole byte.
+      spec: >-
+        §1.2.1 L608 (Binary to Hexadecimal; worked 10100101 → A5 example), with the digit-to-value table at L596.
+
+  - id: q-dr-10
+    prompt: >-
+      On the carry track, the rightmost column contains 1 and 1. What does the painted rule put in that column and in the next one?
+    options: ["1 in the column, carry 1 to the next", "10 in the column, carry 0 to the next", "0 in the column, carry 0 to the next", "0 in the column, carry 1 to the next"]
+    correctOptionIds: [3]
+    explanation: >-
+      The painted rule is 1 + 1 = 10, meaning 0 in the column with a carry of 1 added to the next column. Writing 10 inside one column misses the carry step; 1 in the column borrows the rule for 1 + 1 + 1; carrying 0 drops the carry altogether.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Treating "10" as a single column entry instead of 0 plus a carry; confusing 1 + 1 with 1 + 1 + 1 = 11; or forgetting the carry.
+      spec: >-
+        §1.2.1 L610–615 (binary addition rules, especially L613 "1 + 1 = 10 (which is 0 with a carry of 1)").
+
+  - id: q-dr-11
+    prompt: >-
+      The clerk slides the switches along the arrow-notched gutter, then watches the last bit drop into the tin tray at the end. Which pair of ideas fits the gutter and the tray?
+    options: ["binary addition, then underflow", "an arithmetic shift, then underflow", "binary addition, then overflow", "an arithmetic shift, then overflow"]
+    correctOptionIds: [3]
+    explanation: >-
+      The gutter is where you use an arithmetic shift and explain its effect. A bit running past the last switch into the tray is overflow; underflow is the other idea on offer, but it is not this falling-bit case. Binary addition belongs to the carry track, not the gutter.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Confusing a shift with binary addition, or picking underflow because it sits next to overflow in the list without matching the tray's behaviour. The in-world gutter and tray are the accepted fixtures in rooms.md §3.1; the guidance names both concepts at L538–539 but gives no worked numbers.
+      spec: >-
+        §1.2.1 L538 "use arithmetic shift functions and explain their effect" and L539 "use the concept of overflow and underflow"; binary addition rules at L610–614.
+
+  - id: q-dr-12
+    prompt: >-
+      The stamp's case lid carries a definition. Which two character sets does it name as standardised?
+    options: ["binary and denary", "ASCII and Unicode", "JPEG and PNG", "WAV and FLAC"]
+    correctOptionIds: [1]
+    explanation: >-
+      The stamp's case lid names Unicode and American Standard Code for Information Interchange (ASCII) as standardised character sets for storing characters digitally. Binary and denary are counting systems; JPEG, PNG, WAV and FLAC belong to compression, not to the tile case.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Confusing standardised character sets with number systems or with the file formats given as compression examples in the same section.
+      spec: >-
+        §1.2.1 L541–546 ("digital storage of characters"; "standardised character sets, including: Unicode; ASCII"); format examples at L692 and L696.
+
+  - id: q-dr-13
+    prompt: >-
+      You need to store the single symbol "A" on one tile and the word "Wales" on a label. Which data types fit, in that order?
+    options: ["string, then character", "integer, then real", "character, then string", "Boolean, then string"]
+    correctOptionIds: [2]
+    explanation: >-
+      A character is a single number, letter or symbol, so "A" is a character; a string is a sequence of characters, so "Wales" is a string. Swapping the two misses the single-versus-sequence distinction; integers, reals and Booleans do not store letters or words.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Filing any text under string regardless of length, so one symbol becomes a string; or treating letters as numeric types.
+      spec: >-
+        §1.2.1 L587 and L590 (Character: single number, letter or symbol; String: a sequence of characters), applied as the spec-check fallback in topic file §6.
+
+  - id: q-dr-14
+    prompt: >-
+      One tile in the case holds a single number, letter or symbol. Which data type is that?
+    options: ["Boolean: logical comparisons or conditions", "character: a single number, letter or symbol", "string: a sequence of characters", "integer: whole numbers, positive and negative"]
+    correctOptionIds: [1]
+    explanation: >-
+      A character is a single number, letter or symbol, and the tile marked 'A' is the case's own example of one. A string is several characters, an integer is a whole number and a Boolean is a True/False condition.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Choosing string because a digit or letter can form text, or choosing integer when the single item happens to be a number.
+      spec: >-
+        §1.2.1 L584–590 (data types table, Character row).
+
+  - id: q-dr-15
+    prompt: >-
+      In the character case each mark has its own tile, including a spare tile kept in a drawer. What is being stored digitally here?
+    options: ["graphics, stored as pixels", "sound, stored as samples", "characters, using standardised character sets", "a compression ratio, original over compressed"]
+    correctOptionIds: [2]
+    explanation: >-
+      This is the digital storage of characters using standardised character sets, which the stamp's case lid names as ASCII and Unicode. Pixels belong to the mosaic, samples to the choir, and a ratio to the press. The case lid does not say which set covers any particular mark, so nothing here hangs on the spare tile's symbol.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Mixing the representation topics — identifying stored marks with pixels, audio samples or a compression ratio. The ŵ tile stays as in-world flavour only, per the spec-check flag.
+      spec: >-
+        §1.2.1 L541–546 (digital storage of characters; standardised character sets), with the flag recorded in topic file §6 noting L541–546 names the sets but not their coverage.
+
+  - id: q-dr-16
+    prompt: >-
+      How are the smooth curves in the drafting corner stored?
+    options: ["as a grid of pixels with colour values", "using mathematics, such as lines and curves", "as measurements taken at time intervals", "as an index file of redundancies"]
+    correctOptionIds: [1]
+    explanation: >-
+      A vector uses mathematical representations of geometrical objects such as lines and curves, which is why the drafting corner's curves stay smooth. Pixels with colour values describe the mosaic's raster side, time-interval measurements belong to the choir, and an index file is part of lossless compression.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Calling every image a pixel grid, or borrowing the sound and compression ideas from neighbouring parts of the same section.
+      spec: >-
+        §1.2.1 L615–620 (Vector graphics stored using mathematics; Raster graphics stored in pixels), with L695 (index file) and L657–658 (sampling).
+
+  - id: q-dr-17
+    prompt: >-
+      In the drafting corner the smooth curves grow larger while the pixel grid squares off. Which statement explains what you see?
+    options: ["vector, because maths can scale without apparent quality loss", "raster, because each pixel keeps its colour value", "raster, because higher resolution means higher quality", "neither, because scaling always changes quality"]
+    correctOptionIds: [0]
+    explanation: >-
+      The curves stay smooth because a vector can be scaled up without loss of apparent quality. A raster image stores a colour value in each pixel, and higher resolution does raise quality and file size, but neither makes a pixel grid scale cleanly; the last option denies the vector property altogether.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Assuming the pixel-based image must scale better because each pixel keeps its value or because its resolution is higher, and missing the vector scaling property.
+      spec: >-
+        §1.2.1 L616 (vector scales without loss of apparent quality), L620 (raster pixels carry colour values), L627–629 (resolution and quality/file size).
+
+  - id: q-dr-18
+    prompt: >-
+      The label in the mosaic calls an RGB image '8-bit colour depth'. What does that mean here?
+    options: ["8 bits for the whole pixel, as in older bpp systems", "8 bits for each of red, green and blue", "8 bits for the red channel only", "24 bits for each of red, green and blue"]
+    correctOptionIds: [1]
+    explanation: >-
+      Colour depth is given in bits per channel (bpc): 8-bit RGB means 8 bits for red, 8 for green and 8 for blue. Older systems used bits per pixel (bpp), so the whole-pixel reading belongs to that older convention; 24 bits is the combined total across the three channels, not the value of each.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Applying the historical bits-per-pixel convention to a specification that uses bits per channel, or confusing the per-channel value (8) with the combined bits per pixel (24).
+      spec: >-
+        §1.2.1 L637–642 (Colour Depth, "bits per channel" (bpc), 8-bit RGB example and the note on historical bpp); calculation at L647–648.
+
+  - id: q-dr-19
+    prompt: >-
+      One mosaic image measures 1920 × 1080 with 8-bit RGB and uses 24 bits per pixel. How many bits are stored in the whole image?
+    options: ["49,766,400", "16,588,800", "6,220,800", "2,073,600"]
+    correctOptionIds: [0]
+    explanation: >-
+      Resolution gives 2,073,600 pixels and 24 bits per pixel, so the total is 2,073,600 × 24 = 49,766,400 bits. 16,588,800 uses only the 8-bit depth; 6,220,800 is the byte total after dividing by 8; 2,073,600 is the pixel count alone.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Using bit depth instead of bits per pixel, stopping at the pixel count, or confusing the bit total with the later byte total in the guidance's worked chain.
+      spec: >-
+        §1.2.1 L643–653 (storage calculation; worked 1920 × 1080, 8-bit RGB, 24 bpp, 2,073,600 pixels, 49,766,400 bits, 6,220,800 bytes).
+
+  - id: q-dr-20
+    prompt: >-
+      What is a sample, as the card by the bit-rate desk has it?
+    options: ["a single measurement of sound at a point in time", "the number of audio channels in the recording", "the number of bits used to record each sample", "the data processed per second of sound"]
+    correctOptionIds: [0]
+    explanation: >-
+      The card by the bit-rate desk defines a sample as a single measurement of sound taken at a specific point in time. Channels, bit depth and bit rate are the other quantities on that card, not the sample itself.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Confusing a single measurement with the settings around it — channel count, bit depth or bit rate.
+      spec: >-
+        §1.2.1 L657–664 (definitions of sample, channels, sample rate, bit depth, bit rate and sample quality).
+
+  - id: q-dr-21
+    prompt: >-
+      One recording uses a single audio channel and the other uses two. Which counts do those correspond to?
+    options: ["mono = 2, stereo = 1", "mono = 1, stereo = 4", "mono = 0, stereo = 2", "mono = 1, stereo = 2"]
+    correctOptionIds: [3]
+    explanation: >-
+      Mono is 1 channel and stereo is 2. Swapping the counts, inventing a fourth channel or giving mono no channel all break that.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: easy
+      misconception: >-
+        Swapping mono and stereo, or treating "single channel" as zero because no second channel is present.
+      spec: >-
+        §1.2.1 L659 ("Channels: The number of audio channels, mono being 1 channel and stereo being 2 channels").
+
+  - id: q-dr-22
+    prompt: >-
+      The bit-rate desk has dials for samples per second and bits per sample. How do you find the bit rate?
+    options: ["divide the sample rate by the bit depth", "multiply the bit depth by the channel count", "multiply the sample rate by the bit depth", "multiply the sample rate by the duration"]
+    correctOptionIds: [2]
+    explanation: >-
+      Bit rate is the amount of data processed per second of sound and is found by multiplying the sample rate by the bit depth. Multiplying by duration belongs to the total-storage calculation, and the other options misuse the desk's quantities.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Confusing bit rate with total storage (which includes channels and duration), or substituting channels for the sample rate in the product.
+      spec: >-
+        §1.2.1 L663 (Bit Rate = sample rate × bit depth), contrasted with L666 (total storage formula).
+
+  - id: q-dr-23
+    prompt: >-
+      Using the choir's own figures — stereo, 44.1 kHz, 16-bit depth, three minutes — which expression gives the total bits stored?
+    options: ["44,100 × 16 × 180", "44.1 × 16 × 2 × 180", "44,100 × 2 × 180", "44,100 × 16 × 2 × 180"]
+    correctOptionIds: [3]
+    explanation: >-
+      Storage size is sample rate × bit depth × channels × duration. That means 44,100 samples per second, 16 bits per sample, 2 channels for stereo and 180 seconds. The first option omits channels, the third omits bit depth, and the second uses the kHz label instead of 44,100 samples per second.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Dropping the channel factor for stereo, dropping bit depth, or multiplying by the kHz figure (44.1) without converting to samples per second.
+      spec: >-
+        §1.2.1 L666–670 (storage formula and worked stereo 44.1 kHz, 16-bit, 180-second example).
+
+  - id: q-dr-24
+    prompt: >-
+      The brass plate on the stacks gives one honest figure. How many bytes are in one kilobyte?
+    options: ["1,024", "1,000", "512", "8"]
+    correctOptionIds: [0]
+    explanation: >-
+      The brass plate states that one kilobyte holds 1,024 bytes. 1,000 is the decimal reading the ladder excludes; 8 is the number of bits in a byte; 512 is half a kilobyte.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Applying the decimal prefix meaning to a base-2 unit, or confusing bytes with bits.
+      spec: >-
+        §1.2.1 L562–566 ("kilobyte (i.e. 1,024 bytes)"); brass plate in accepted rooms.md §3.
+
+  - id: q-dr-25
+    prompt: >-
+      Which sequence matches the rungs of the ladder in the stacks?
+    options: ["bit → byte → nibble → KB → MB → GB → TB → PB", "bit → nibble → byte → KB → MB → GB → TB → PB", "bit → nibble → byte → KB → MB → GB → PB → TB", "byte → nibble → bit → KB → MB → GB → TB → PB"]
+    correctOptionIds: [1]
+    explanation: >-
+      The ladder runs bit, nibble, byte, kilobyte, megabyte, gigabyte, terabyte, petabyte, each rung from byte upward holding 1,024 of the one below. The other options swap nibble and byte, swap the final two rungs, or reverse the opening three.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Putting byte before nibble because it is the better-known unit, or placing petabyte before terabyte.
+      spec: >-
+        §1.2.1 L562–570 (base-2 prefixes in order, with 1,024 relationships), using the prose chain only, not the flagged equivalences at L683–685.
+
+  - id: q-dr-26
+    prompt: >-
+      A shelf holds 3 KB. How many bytes is that?
+    options: ["3,072", "3,000", "24", "1,024"]
+    correctOptionIds: [0]
+    explanation: >-
+      Each KB holds 1,024 bytes, so 3 KB holds 3 × 1,024 = 3,072 bytes. 3,000 uses a decimal thousand; 24 mistakes the count for bits (3 × 8); 1,024 is a single KB, not three.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Multiplying by 1,000 instead of 1,024, multiplying by bits per byte instead of bytes per KB, or forgetting to scale beyond one unit.
+      spec: >-
+        §1.2.1 L566 (1 KB = 1,024 bytes), with 1 byte = 8 bits at L680.
+
+  - id: q-dr-27
+    prompt: >-
+      A crate holds 2 GB. How many MB is that?
+    options: ["2,000", "1,024", "16,384", "2,048"]
+    correctOptionIds: [3]
+    explanation: >-
+      One gigabyte holds 1,024 megabytes, so 2 GB holds 2 × 1,024 = 2,048 MB. 2,000 uses decimal prefixes; 1,024 is only one GB; 16,384 comes from wrongly bringing the eight-bits-per-byte factor into a byte-to-byte conversion.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Using decimal multipliers for base-2 prefixes, stopping at one unit, or mixing bit and byte conversions.
+      spec: >-
+        §1.2.1 L568 ("gigabyte (i.e. 1,024 megabytes)"), with the prose chain at L562–570.
+
+  - id: q-dr-28
+    prompt: >-
+      Which list gives the lossy compression formats?
+    options: ["MP3, JPEG, MPEG", "WAV, PNG, FLAC", "JPEG, PNG, BMP", "ASCII, Unicode, RGB"]
+    correctOptionIds: [0]
+    explanation: >-
+      MP3, JPEG and MPEG are the lossy formats. WAV, PNG, BMP and FLAC are the lossless ones; the third list mixes the two, and ASCII, Unicode and RGB belong to the tile case and the colour model, not to the press.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: medium
+      misconception: >-
+        Reversing the two format lists, half-recalling a mixed list, or treating character-set and colour-model names as file formats.
+      spec: >-
+        §1.2.1 L692 (lossy examples MP3, JPEG, MPEG) and L696 (lossless examples WAV, PNG, BMP, FLAC); RGB at L641–642.
+
+  - id: q-dr-29
+    prompt: >-
+      What does lossless compression offer that lossy compression does not?
+    options: ["It reduces the file more than lossy compression does.", "It can be uncompressed back to its original form.", "It removes detail the user is unlikely to notice.", "It lowers the quality so the file shrinks further."]
+    correctOptionIds: [1]
+    explanation: >-
+      Lossless compression maintains quality and enables the file to be uncompressed to its original form, which lossy compression cannot do. Lossy generally reduces size by a greater amount and removes data considered less important, at the cost of quality.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Swapping the defining properties of the two types — believing lossless gives the bigger saving, or that removing unnoticed detail and lowering quality belong to lossless.
+      spec: >-
+        §1.2.1 L689–696 (lossy reduces quality and removes less-important data; lossless maintains quality and restores the original form).
+
+  - id: q-dr-30
+    prompt: >-
+      The ratio window has an original column and a compressed column. How is the compression ratio worked out?
+    options: ["original size ÷ compressed size", "compressed size ÷ original size", "original size − compressed size", "original size × compressed size"]
+    correctOptionIds: [0]
+    explanation: >-
+      The ratio window gives compression ratio = original data size / compressed data size. Reversing the division, subtracting or multiplying all change both the value and the meaning of the ratio.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Putting the compressed size on top, or treating a ratio as a difference or product of the two sizes.
+      spec: >-
+        §1.2.1 L696 (compression ratio = original data size / compressed data size).
+
+  - id: q-dr-31
+    prompt: >-
+      On the ratio window's sample tray the original size is 1000 and the compressed size is 200. Which expression gives the compression ratio?
+    options: ["200 ÷ 1000, written 2:10", "1000 − 200, written 800:1", "1000 × 200, written 200,000:1", "1000 ÷ 200, written 10:2"]
+    correctOptionIds: [3]
+    explanation: >-
+      The ratio is original ÷ compressed, so 1000 ÷ 200, which the window shows as 10:2. Reversing the division, subtracting or multiplying do not follow that definition.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Dividing compressed by original, or using a difference or product in place of the stated ratio.
+      spec: >-
+        §1.2.1 L696–697 (worked example 1000 and 200 → 1000/200, written 10:2).
+
+  - id: q-dr-32
+    prompt: >-
+      Using the press's own figures, a 2000 KB file is compressed at a ratio of 10:2. What is the compressed file size?
+    options: ["10,000 KB", "200 KB", "1,000 KB", "400 KB"]
+    correctOptionIds: [3]
+    explanation: >-
+      Compressed size = original size ÷ compression ratio, so 2000 ÷ (10 ÷ 2) = 400 KB. 10,000 KB comes from applying the original-size formula in the wrong direction; 200 KB divides by 10 alone; 1,000 KB simply halves the original.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: hard
+      misconception: >-
+        Confusing the compressed-size formula with the original-size formula, using only the first figure of a 10:2 ratio, or guessing a half rather than evaluating the ratio.
+      spec: >-
+        §1.2.1 L697–698 (compressed file size = original / ratio; worked 2000 KB at 10:2 → 400 KB), contrasted with L698–700 (original size formula).

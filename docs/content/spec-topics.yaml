@@ -1,0 +1,90 @@
+kind: spec-topics
+status: approved
+topics:
+  - id: switch-to-bit
+    title: Switch to bit
+    specReference: >-
+      1.1.1 Components, "learners should be aware of" — historical development from early transistors to modern microprocessors (`wjec-unit1.md` L318–325, "Early Transistors" / "Integrated Circuits").
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Awareness depth only — a transistor is a tiny switch, early transistors replaced vacuum tubes, and transistors are packed onto chips (teaching in the accepted `rooms.md` room description and `topic-foreman-switches`; retrieval in `quiz-switchyard`, `q-dr-01`–`q-dr-03`). No transistor physics, thresholds or truth tables. `maxScore 0` so it is not double-scored against the parked `hardware-ethics-and-history` topic. Prologue quiz scores 0 with no life loss (user-approved).
+    roomIds: [room-switch-floor]
+    maxScore: 0
+
+  - id: data-types
+    title: Data types
+    specReference: >-
+      1.2.1 — appropriate use and characteristics of Boolean, character, integer, real and string (`wjec-unit1.md` L525–532; table L584–590).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — five labelled bins using the spec's own examples plus one unlabelled decimal sample matched to `real` (`rooms.md` fixtureNotes); foreman's five-type beat with formal terms and glosses (`npcs.md` `topic-foreman-lift`). Retrieval — `quiz-data-types` (`q-dr-04`–`q-dr-07`). Application — `puzzle-sort-the-data-types` (PUT the decimal sample on the `real` bin sets `types-sorted`). The sixth item is a sample bearing a decimal value, never a sixth type or bin.
+    roomIds: [room-binary-hall]
+    maxScore: 2
+
+  - id: number-conversion
+    title: Number conversion
+    specReference: >-
+      1.2.1 — convert between denary, binary and hexadecimal; binary addition; arithmetic shifts and their effect; overflow and underflow (`wjec-unit1.md` L534–539; worked examples L592–615; glossary shift/overflow).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — carry rule "1 + 1 = 0, carry 1", shift gutter (qualitative effect only), gauge tab "denary 37 — what binary pattern?" (`rooms.md`); clerk topics (`npcs.md`). Retrieval — `quiz-number-systems` (`q-dr-08`–`q-dr-11`), including 37 → `100101` and `10100101` → `A5`. Application — `puzzle-set-the-switches` (convert 37 to `100101`), `puzzle-add-with-carries`, `puzzle-shift-the-row`, `puzzle-read-nibbles`, `puzzle-check-the-overflow-register`. No worked shift or overflow number is asserted anywhere (spec-check flag). Base 2 used in the prose chain only.
+    roomIds: [room-binary-hall, room-hex-deck]
+    maxScore: 6
+
+  - id: character-representation
+    title: Character representation
+    specReference: >-
+      1.2.1 — digital storage of characters; standardised character sets including Unicode and ASCII (`wjec-unit1.md` L541–546).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — character case with single-mark tiles, ASCII stamp case lid, spare `ŵ` tile labelled only "a different character" (`rooms.md`); typesetter topics (`npcs.md`). Retrieval — `quiz-character-representation` (`q-dr-12`–`q-dr-15`), character-vs-string and standardised-set items. Application — `puzzle-match-characters` (sets `characters-matched`) and `puzzle-make-room-for-the-welsh-letter` (sets `unicode-tile-cut`). No claim about which characters ASCII or Unicode covers is asserted; `ŵ` is a subtle Welsh reference, never a lesson or punchline (spec-check flag).
+    roomIds: [room-character-tiles]
+    maxScore: 3
+
+  - id: graphics-representation
+    title: Graphics representation
+    specReference: >-
+      1.2.1 — digital storage of graphics; effect of resolution, bit depth and colour depth on quality; storage calculations (`wjec-unit1.md` L548–552; worked image example L637–657; bits per channel L640–643).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — pixel mosaic, vector-versus-raster drafting corner, ruler and bit-depth/colour-depth label in bits per channel (`rooms.md`); critic topics (`npcs.md`). Retrieval — `quiz-graphics-representation` (`q-dr-16`–`q-dr-19`). Application — `puzzle-build-mosaic`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge`. Bits-per-channel convention stated explicitly; no older bits-per-pixel material (spec-check flag).
+    roomIds: [room-picture-mosaic]
+    maxScore: 4
+
+  - id: sound-representation
+    title: Sound representation
+    specReference: >-
+      1.2.1 — digital storage of sound; sampling-rate effect on quality; storage calculations (`wjec-unit1.md` L554–558; sample definition and bit-rate rule L657–670; worked stereo example L670–672).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — bit-rate desk with samples-per-second and bits-per-sample dials plus a blank dial, and the sample definition card (`rooms.md`); choirmaster topics (`npcs.md`). Retrieval — `quiz-sound-representation` (`q-dr-20`–`q-dr-23`). Application — `puzzle-tune-sampling` and `puzzle-count-the-bit-rate` (bit rate = sample rate × bit depth). Spec sound terms only; no Nyquist, aliasing or codec internals.
+    roomIds: [room-sound-choir]
+    maxScore: 3
+
+  - id: data-storage-units
+    title: Data storage units
+    specReference: >-
+      1.2.1 — relationship between base-2 prefixes bit, nibble, byte, KB, MB, GB, TB, PB; data capacity calculations (`wjec-unit1.md` L560–571; 1 KB = 1,024 bytes at L566).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — eight-rung unit ladder marked ×1024 from byte upward and a brass plate stating 1 KB = 1,024 bytes (`rooms.md`); keeper topics (`npcs.md`). Retrieval — `quiz-storage-units` (`q-dr-24`–`q-dr-27`). Application — `puzzle-stack-the-bytes` and `puzzle-label-the-capacity`. Base-2 prose chain only; the inconsistent "Equivalent" column is not used (spec-check flag).
+    roomIds: [room-storage-stacks]
+    maxScore: 3
+
+  - id: data-compression
+    title: Data compression
+    specReference: >-
+      1.2.1 — principles of data compression, lossy and lossless; compression ratios and file-size reduction (`wjec-unit1.md` L573–578; worked ratios L696–700; lossless definition L694).
+    codeLocation: src/content/authored/rooms.ts
+    status: covered
+    evidence: >-
+      Teaching — two sample trays, lossless/lossy lever and glass ratio window (`rooms.md`); press operator topics (`npcs.md`). Retrieval — `quiz-data-compression` (`q-dr-28`–`q-dr-32`), ratio 10:2 and 2,000 KB → 400 KB. Application — `puzzle-pack-the-archive` and `puzzle-choose-the-compression`. Spec compression examples only; no codec internals.
+    roomIds: [room-compression-press]
+    maxScore: 3

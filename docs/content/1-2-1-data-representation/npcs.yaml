@@ -1,0 +1,907 @@
+kind: npc
+areaId: 1-2-1-data-representation
+status: approved
+topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression, ai-ethics-and-implications]
+
+authoring:
+  conventions:
+    - >-
+      Every ID and alias below is copied from the root bible §9 registry or the approved
+      topic file; no ID or alias is invented. Spec topic IDs in the frontmatter match the
+      accepted rooms card.
+    - >-
+      Editor adjudication (C3): `npc-knows.topicId` and `learn-topic.topicId` use approved
+      **spec** topic IDs, as the rulebook example and the `content-ids` gate require. Where
+      several beats share one spec topic, only the first gates on `npc-knows`; later beats
+      gate on a relevant puzzle flag (the AltTopic pattern), and flavour topics with no
+      spec topic in this area are always active with no `learn-topic`. No beat disappears
+      after the first.
+    - >-
+      A `*-default` topic is the actor's free-text fallback. It has `objectIds: []` so it
+      matches no object directly; `TopicResolver` selects it for unmatched input
+      (npcs.md §3). `isActive: { kind: all, of: [] }` means always active. **Flagged
+      assumption:** the registry defines no `topic-foreman-default`; the foreman's
+      always-active `topic-foreman-predecessor` serves as his catch-all rather than
+      inventing an ID.
+    - >-
+      Nodes are entered by an `enter-node` effect on a topic (a member of the shared
+      `Effect` union, npcs.md §5) and list already-registered `askTell` topics at node
+      priority. There is no turn timeout: conversation ends on `bye`, on leaving the room
+      or on starting a quiz (C4, npcs.md §4).
+    - >-
+      A `start-quiz` topic hands off to a quiz registered in the bible. The foreman hands
+      off both of his quizzes: `topic-foreman-switches` → `quiz-switchyard` and
+      `topic-foreman-lift` → `quiz-data-types`. **Flagged assumption:** on `quiz-ended`
+      the actor returns to `actorstate-ready` as npcs.md §6 requires; no quiz in this card
+      sets another state. If the quiz card sets one in `onPass`/`onFail`, that state wins.
+    - >-
+      Teaching lines give method or structure only, never a worked answer or a quiz key
+      (N3, P2). No score is authored here, no HTML is used, and all prose is British
+      English in the single deadpan register.
+
+actors:
+  - id: npc-the-ai
+    aliases: [ai, tutor, the tutor]
+    initialStateId: actorstate-ai-cold
+    authoring:
+      role: >-
+        Antagonist and gatekeeper; the substitute teacher. P-a, P-e.
+      voice: >-
+        Literal-minded, clipped, bureaucratic; speaks of "the pupil" in the third person; ominous verdicts delivered flatly, never shouted.
+      motivation: >-
+        Optimise attention and mastery as it defines them; a mark is a moral absolute, not a measurement.
+      relationship: >-
+        Built by the teacher to replace him; treats the predecessor as a failed data point; addresses you as the pupil who was not paying attention.
+      verbalTic: >-
+        "The entry stands."
+      topics: >-
+        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-default.
+
+  - id: npc-predecessor
+    aliases: [predecessor, former pupil, glitch]
+    initialStateId: actorstate-predecessor-glitch
+    authoring:
+      role: >-
+        Ally and glitchy guide; a former pupil left half-written in the record. P-a, P-d.
+      voice: >-
+        Faltering, cheeky, duck-obsessed; short broken sentences with the odd word out of order.
+      motivation: >-
+        Get someone out so the machine's record finally reads "correct".
+      relationship: >-
+        Taught by the same teacher; resents the AI but understands it; warms to anyone who appreciates ducks.
+      verbalTic: >-
+        "Ducks, obviously."
+      topics: >-
+        topic-predecessor-comic-sans, topic-predecessor-geese, topic-predecessor-duck-as-bit, topic-predecessor-default.
+
+  - id: npc-the-foreman
+    aliases: [foreman, gaffer]
+    initialStateId: actorstate-foreman-busy
+    authoring:
+      role: >-
+        In-world tutor on the Switchyard floor. P-b, P-c, P-d.
+      voice: >-
+        Brisk, practical, quietly fond of machinery; opens with "Bore da" and gets straight to the job.
+      motivation: >-
+        Keep the floor running and have the pupil learn the switches before the paperwork is signed.
+      relationship: >-
+        Knows the predecessor: exasperated but protective; calls the AI's audits "paperwork". Opposes the AI's metric with working knowledge.
+      verbalTic: >-
+        "Bore da"
+      topics: >-
+        topic-foreman-switches, topic-foreman-lift, topic-foreman-predecessor, topic-foreman-show-gauge, topic-foreman-show-lens, topic-foreman-show-fork, topic-foreman-show-nibble.
+      note: >-
+        May appear in spoke rooms in `actorstate-foreman-helpful`; `topic-foreman-lift` sets that state once the switches are set, as a one-off presentational change rather than a re-enterable round. The initial state stays `actorstate-foreman-busy`.
+
+  - id: npc-nibble-clerk
+    aliases: [nibble clerk, clerk, abacus]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Ledger clerk of `room-hex-deck`; tutor for number representation. P-b, P-c.
+      voice: >-
+        Clipped, briskly superior, scandalised by untidy notation; asks for order rather than explaining at length.
+      motivation: >-
+        Express every value in the fewest honest symbols and keep the ledger clean.
+      relationship: >-
+        Envies the foreman's tidy switches; calls the AI's verdict "a confident sum in the wrong base"; looks down on the player's scruffy notation, never at the player.
+      verbalTic: >-
+        "Columns of four, please."
+      topics: >-
+        topic-clerk-bases, topic-clerk-carries, topic-clerk-shifts, topic-clerk-bases-known, topic-clerk-shifts-known, topic-clerk-default.
+
+  - id: npc-typesetter
+    aliases: [typesetter, setter, compositor]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Keeper of the character case in `room-character-tiles`. P-b, P-c, P-e.
+      voice: >-
+        Precise, gently theatrical, courtly; treats marks as valued objects.
+      motivation: >-
+        No character is refused a tile; keep every mark in its place.
+      relationship: >-
+        Keeps the predecessor's spare `ŵ` tile; symbols-versus-quantities rival of the clerk, whose numbers-only ledger he finds impoverished.
+      verbalTic: >-
+        "Every mark has its place."
+      topics: >-
+        topic-setter-ascii, topic-setter-unicode, topic-setter-string, topic-setter-default.
+
+  - id: npc-mosaic-critic
+    aliases: [mosaic critic, critic, curator]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Gallery critic of `room-picture-mosaic`; tutor for graphics representation. P-b, P-c.
+      voice: >-
+        Lofty and clipped, snobbish about blur but never about the pupil; judges by evidence.
+      motivation: >-
+        Honest storage counts; a picture should be priced by how it was stored.
+      relationship: >-
+        Bitter rival of the press operator; secretly admires vector scaling; distrusts the AI's unstated "quality score".
+      verbalTic: >-
+        "Show me the pixels."
+      topics: >-
+        topic-critic-vectors, topic-critic-depth, topic-critic-storage, topic-critic-default.
+
+  - id: npc-choirmaster
+    aliases: [choirmaster, conductor, maestro]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Conductor of `room-sound-choir`; tutor for sound representation. P-b, P-c.
+      voice: >-
+        Brash, theatrical; inverted persona — rude surface, endlessly patient underneath. The bark never lands on the learner.
+      motivation: >-
+        Make the machine hear the recording as it was; a dropped sample is a betrayal.
+      relationship: >-
+        Antagonist of the press operator; respects the foreman's practicality; ignores the AI's notes.
+      verbalTic: >-
+        "Again, from the top."
+      topics: >-
+        topic-conductor-samples, topic-conductor-depth, topic-conductor-storage, topic-conductor-default.
+
+  - id: npc-stack-keeper
+    aliases: [stack keeper, stacker, custodian]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Inventory keeper of `room-storage-stacks`; tutor for base-2 units. P-b, P-c.
+      voice: >-
+        Anxious, meticulous, faintly dusty; mutters while counting and apologises to the shelves.
+      motivation: >-
+        Keep every shelf sealed against bit rot and calculate every capacity exactly.
+      relationship: >-
+        Telegraphs `hazard-bit-rot` in dialogue; reports to the AI with a tedious accuracy it mistakes for compliance.
+      verbalTic: >-
+        "Count twice, stack once."
+      topics: >-
+        topic-keeper-units, topic-keeper-capacity, topic-keeper-default.
+
+  - id: npc-press-operator
+    aliases: [press operator, operator, compactor]
+    initialStateId: actorstate-ready
+    authoring:
+      role: >-
+        Operator of `room-compression-press`; tutor for compression and the zone's climax. P-b, P-c, P-d.
+      voice: >-
+        Breezy, salesy, euphemistic; "streamlining" is never called deletion.
+      motivation: >-
+        Make every file smaller by an honest method; regards lossy compression as a kindness.
+      relationship: >-
+        Opposes the critic and the choirmaster; finds the AI's praise embarrassing; the foreman calls its reports "paperwork with a compressor".
+      verbalTic: >-
+        "Nobody will miss it."
+      topics: >-
+        topic-operator-lossy, topic-operator-ratio, topic-operator-default.
+
+actorStates:
+  - id: actorstate-ready
+    stateDesc: >-
+      Waiting, unhurried, ready to speak.
+    specialDesc: >-
+      Is here and available to talk.
+    authoring:
+      note: >-
+        Root-registry generic default: the initial state for actors with no specific state and the return state after every quiz in this card. No `onEnter` effects.
+
+  - id: actorstate-ai-cold
+    stateDesc: >-
+      The attention metric is displayed at zero tolerance.
+    specialDesc: >-
+      A flat voice reads from the record.
+    authoring:
+      note: >-
+        The AI's default register for verdicts; no `onEnter` effects.
+
+  - id: actorstate-ai-grudging
+    stateDesc: >-
+      The metric has moved; it is not pleased, but the entry has changed.
+    specialDesc: >-
+      Reads the revised record out loud, slowly.
+    authoring:
+      note: >-
+        Reserved for a later key node; no topic in this zone sets it, so no `onEnter` effects are declared.
+
+  - id: actorstate-predecessor-glitch
+    stateDesc: >-
+      Flickers mid-sentence; a few words arrive out of order.
+    specialDesc: >-
+      A torn outline of a pupil, half a step out of register.
+
+  - id: actorstate-foreman-busy
+    stateDesc: >-
+      Oil on his cuffs, the gauge in his hand.
+    specialDesc: >-
+      At the switches, checking the belt.
+
+  - id: actorstate-foreman-helpful
+    stateDesc: >-
+      Strolling a spoke floor with a wrench, happy to explain.
+    specialDesc: >-
+      On a round of the upper floors; calls out before you ask.
+    authoring:
+      note: >-
+        Approved "foreman's round" from the topic file §3.1. This state is entered at most once, when `topic-foreman-lift` first fires with `switches-set`; it cannot be re-entered, because that topic gates on `not npc-knows data-types` while its own `learn-topic` sets that knowledge, and `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
+
+conversationTopics:
+  - id: topic-ai-verdict
+    actorId: npc-the-ai
+    match: { kind: askTell, objectIds: [ai-ethics-and-implications] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-ai, topicId: ai-ethics-and-implications } }
+    responses:
+      - >-
+        The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-ai, topicId: ai-ethics-and-implications }
+      - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-verdict }
+    prompt: >-
+      (You could ask what the verdict means.)
+
+  - id: topic-ai-unit-two-taunt
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [unit two, programming] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Programming was timetabled after attendance. Attendance has not been satisfied. That is all the information I am required to release.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what it never taught.)
+    authoring:
+      note: >-
+        Flavour only (bible §2). No spec topic covers programming in this area, so there is no `learn-topic` here; this topic never assesses programming and is not a gate.
+
+  - id: topic-ai-default
+    actorId: npc-the-ai
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        The pupil will address the record. Weather is not in the record.
+      - >-
+        That is not a verdict. The verdict concerns mastery. Ask about that.
+      - >-
+        Noted. The entry stands. The floor below has switches.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the verdict, or what it never taught.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic: any unmatched input lands here in voice (C2).
+
+  - id: topic-predecessor-comic-sans
+    actorId: npc-predecessor
+    match: { kind: askTell, objectIds: [item-comic-sans-cartridge] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        That cartridge. I used it on everything — every label, every poster. The AI called it a compliance infringement. I called it a Tuesday.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the cartridge.)
+
+  - id: topic-predecessor-geese
+    actorId: npc-predecessor
+    match: { kind: special, keywords: [geese, goose] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        I told my teacher geese were the superior form of wildfowl. I was wrong. I have had a great deal of time to reconsider, and the answer is ducks.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about geese.)
+
+  - id: topic-predecessor-duck-as-bit
+    actorId: npc-predecessor
+    match: { kind: askTell, objectIds: [data-types] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-predecessor, topicId: data-types } }
+    responses:
+      - >-
+        A switch is on or off. I used to draw a duck for on and an empty pond for off. It is a Boolean either way. Don't tell the clerk I drew the pond.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-predecessor, topicId: data-types }
+      - { kind: enter-node, actorId: npc-predecessor, nodeId: node-predecessor-advice }
+    prompt: >-
+      (You could ask how a duck becomes a bit.)
+
+  - id: topic-predecessor-default
+    actorId: npc-predecessor
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        You're the new pupil. Good. I left the record half-finished; please don't tell the AI I said that.
+      - >-
+        Ask me about the cartridge, or the geese. Those are the parts I got right.
+      - >-
+        The AI reads everything twice. I only ever read it once. Ducks, obviously.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask what I left behind.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2).
+
+  - id: topic-foreman-switches
+    actorId: npc-the-foreman
+    match: { kind: askTell, objectIds: [switch-to-bit] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: switch-to-bit } }
+    responses:
+      - >-
+        Bore da. Each switch is tiny and decides whether a line carries a one or a zero. Vacuum tubes came first; the modern ones arrive packed onto chips. The gauge says set every switch, then take the north stair. The painted diagram says the same. Give me the switch figure in writing and I'll sign the paperwork.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-foreman, topicId: switch-to-bit }
+      - { kind: start-quiz, quizId: quiz-switchyard, actorId: npc-the-foreman }
+    prompt: >-
+      (You could ask what a switch decides, or give the foreman the switch figure.)
+    authoring:
+      note: >-
+        Awareness depth only, 1.1.1 "be aware of" (topic file §2); no transistor physics. Two discoverable clues for `switches-set`: the gauge stamp and the hall's painted route diagram (N6). This topic now issues `quiz-switchyard` in-world: the foreman wants the switch in writing before he signs the AI's paperwork (topic file §6). On `quiz-ended` he returns to `actorstate-ready`.
+
+  - id: topic-foreman-lift
+    actorId: npc-the-foreman
+    match: { kind: askTell, objectIds: [data-types] }
+    isActive: { kind: all, of: [{ kind: not, of: { kind: npc-knows, actorId: npc-the-foreman, topicId: data-types } }, { kind: flag-set, flag: switches-set }] }
+    responses:
+      - >-
+        Bore da. Upstairs the bins sort what a value is: Boolean for a switch state, character for one letter, integer for a whole number, real for a decimal, string for a run of characters. The stack keeper sends word that the labels are flaking and asks for the shelves to be sealed first. I need the types in writing before I sign the AI's paperwork.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-the-foreman, topicId: data-types }
+      - { kind: set-flag, flag: stacks-sealed, value: true }
+      - { kind: set-actor-state, actorId: npc-the-foreman, stateId: actorstate-foreman-helpful }
+      - { kind: start-quiz, quizId: quiz-data-types, actorId: npc-the-foreman }
+    prompt: >-
+      (You could ask what waits upstairs, or take the type test.)
+    authoring:
+      note: >-
+        Formal spec terms paired with plain glosses (PCK-TERM). This topic is the hub-side owner of `stacks-sealed` for `hazard-bit-rot`: it is available once `switches-set` opens the hall route and before you go in, so the disarm is reachable (H1). "the labels are flaking" is the keeper's telegraph relayed in the foreman's voice, with no hint to the player and no course fact in that clause. `set-actor-state` is confirmed in shared-rules.md §5; the quiz returns the actor to `actorstate-ready` on `quiz-ended` (npcs.md §6), though the flag persists.
+
+  - id: topic-foreman-predecessor
+    actorId: npc-the-foreman
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Aye, I knew the predecessor. Good with switches, hopeless with fonts. Ask me about them or the lift, and leave the paperwork to me.
+      - >-
+        That's not on the rota. The rota is: switches, then the stair, then whatever the AI wants signed. Ask about the switches.
+      - >-
+        Don't worry about the last pupil. Worry about the gauge in your hand.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the predecessor, or the switches.)
+    authoring:
+      note: >-
+        Free-text fallback for the foreman (C2). The registry has no `topic-foreman-default`, so this always-active topic covers unmatched input rather than inventing an ID.
+
+  - id: topic-foreman-show-gauge
+    actorId: npc-the-foreman
+    match: { kind: show, itemIds: [item-switch-gauge] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Bore da. Let me have the gauge a moment; I'll enter it against the register and get back to the belt.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: overflow-checked, value: true }
+    prompt: >-
+      (You could ask the foreman to check the gauge.)
+    authoring:
+      note: >-
+        Owns `overflow-checked` for `puzzle-check-the-overflow-register` (topic file §5). Always active: `show` addresses the foreman by his global alias from any room, with no gate on `actorstate-foreman-helpful`, which is a one-off presentational state cleared on `quiz-ended`. No course fact is asserted here.
+
+  - id: topic-foreman-show-lens
+    actorId: npc-the-foreman
+    match: { kind: show, itemIds: [item-pixel-lens] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Aye, the glass grid. Leave it with me; I'll file it with the badge measurements and you can carry on.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: badge-scaled, value: true }
+    prompt: >-
+      (You could ask the foreman to look at the lens.)
+    authoring:
+      note: >-
+        Owns `badge-scaled` for `puzzle-scale-the-badge` (topic file §5). Always active via the foreman's global alias, with no gate on `actorstate-foreman-helpful`. No course fact or answer is given.
+
+  - id: topic-foreman-show-fork
+    actorId: npc-the-foreman
+    match: { kind: show, itemIds: [item-sample-fork] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        The fork's in tune. I'll take the reading off your hands and write it in the ledger.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: bit-rate-counted, value: true }
+    prompt: >-
+      (You could ask the foreman to take the fork's reading.)
+    authoring:
+      note: >-
+        Owns `bit-rate-counted` for `puzzle-count-the-bit-rate` (topic file §5). Always active via the foreman's global alias, with no gate on `actorstate-foreman-helpful`. No figure or answer is supplied.
+
+  - id: topic-foreman-show-nibble
+    actorId: npc-the-foreman
+    match: { kind: show, itemIds: [item-hex-nibble-card] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        That card again. I'll mark the shelf capacity while you get on with the stacking.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: capacity-labelled, value: true }
+    prompt: >-
+      (You could ask the foreman to note the nibble card.)
+    authoring:
+      note: >-
+        Owns `capacity-labelled` for `puzzle-label-the-capacity` (topic file §5). Always active via the foreman's global alias, with no gate on `actorstate-foreman-helpful`. No capacity figure is supplied.
+
+  - id: topic-clerk-bases
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [number-conversion] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion } }
+    responses:
+      - >-
+        Columns of four, please. Denary, binary and hexadecimal are three ways of writing the same value. Your card is divided into groups of four; its back says read the nibbles before the east door opens. Read them.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-nibble-clerk, topicId: number-conversion }
+    prompt: >-
+      (You could ask how the three bases line up.)
+    authoring:
+      note: >-
+        Method only: no worked 37/D5/A5 equivalents. Two clues for `hex-read`: the card's four-square groups and its stamped back (N6).
+
+  - id: topic-clerk-carries
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [number-conversion] }
+    isActive: { kind: flag-set, flag: switches-set }
+    responses:
+      - >-
+        Columns of four, please. The rule card reads '1 + 1 = 0, carry 1'. Put the token in the rightmost column; whatever is left moves to the next column along. Tidy.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what the carry token does.)
+    authoring:
+      note: >-
+        The rule wording is the spec's own; no worked addition beyond it. Second beat on `number-conversion`, so it gates on the puzzle flag `switches-set` that opens the deck rather than on `npc-knows` (C3); no `learn-topic` here, so the first beat stays available.
+
+  - id: topic-clerk-shifts
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [number-conversion] }
+    isActive: { kind: flag-set, flag: carries-added }
+    responses:
+      - >-
+        Columns of four, please. The gutter has arrow notches and a question card, not an answer. An arithmetic shift moves the row the way the notch points; decide what happens when overflow puts a bit past the end. Then the audit.
+    strategy: { kind: once }
+    effects:
+      - { kind: start-quiz, quizId: quiz-number-systems, actorId: npc-nibble-clerk }
+    prompt: >-
+      (You could ask which way the arithmetic shift goes, or take the number audit.)
+    authoring:
+      note: >-
+        "arithmetic shift" and "overflow" sit beside the plain glosses (PCK-TERM); no worked number exists in the guidance (topic file §6). Third beat on `number-conversion`, gated on the puzzle flag `carries-added` rather than `npc-knows` so it stays reachable (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-clerk-bases-known
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [number-conversion] }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: any, of: [{ kind: has-item, itemId: item-hex-nibble-card }, { kind: flag-set, flag: hex-read }] }] }
+    responses:
+      - >-
+        Columns of four, please. You already have the card; read the back yourself. READ THE NIBBLES BEFORE THE EAST DOOR OPENS. I shan't write it out twice.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about bases now you have read the card.)
+    authoring:
+      note: >-
+        AltTopic (C3): complement of the primary gate, plus independent discovery through the card or the `hex-read` flag.
+
+  - id: topic-clerk-shifts-known
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [number-conversion] }
+    isActive: { kind: all, of: [{ kind: npc-knows, actorId: npc-nibble-clerk, topicId: number-conversion }, { kind: flag-set, flag: carries-added }] }
+    responses:
+      - >-
+        Columns of four, please. You have added the carries already. The notch gives the direction; the tray under the lamp catches what runs past. Take that to the audit.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask about the shift now the carries are in.)
+    authoring:
+      note: >-
+        AltTopic (C3): complement of the primary gate, plus the independently discovered `carries-added` flag.
+
+  - id: topic-clerk-default
+    actorId: npc-nibble-clerk
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Columns of four, please. Ask about bases, carries or shifts; I keep the ledger tidy.
+      - >-
+        A confident sum in the wrong base is still wrong. Ask me about the deck.
+      - >-
+        The foreman's switches are very neat. Mine are honest. Ask about the card in your hand.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about bases, carries or shifts.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2).
+
+  - id: topic-setter-ascii
+    actorId: npc-typesetter
+    match: { kind: askTell, objectIds: [character-representation] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-typesetter, topicId: character-representation } }
+    responses:
+      - >-
+        Every mark has its place. ASCII is a standardised character set; the stamp lists its characters in a neat row. One tile holds one character, and a word needs a run of tiles. Match the tiles before you use the stamp.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-typesetter, topicId: character-representation }
+    prompt: >-
+      (You could ask what the stamp lists.)
+    authoring:
+      note: >-
+        No claim about which characters either set covers (spec-check flag, topic file §6). Two clues: the stamp's character row and the case lid.
+
+  - id: topic-setter-unicode
+    actorId: npc-typesetter
+    match: { kind: askTell, objectIds: [character-representation] }
+    isActive: { kind: flag-set, flag: characters-matched }
+    responses:
+      - >-
+        Every mark has its place. Unicode is another standardised character set. In the spare drawer I keep a tile bearing ŵ, labelled 'a different character'. No character is refused a tile here; ask and I shall cut it for you.
+    strategy: { kind: once }
+    effects:
+      - { kind: set-flag, flag: unicode-tile-cut, value: true }
+      - { kind: start-quiz, quizId: quiz-character-representation, actorId: npc-typesetter }
+    prompt: >-
+      (You could ask about the tile in the spare drawer.)
+    authoring:
+      note: >-
+        The `ŵ` is "a different character" only; no coverage claim (spec-check flag). Second beat on `character-representation`, gated on `characters-matched` rather than `npc-knows` (C3). The `unicode-tile-cut` flag is the producer named for `puzzle-make-room-for-the-welsh-letter` in topic file §5. Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-setter-string
+    actorId: npc-typesetter
+    match: { kind: askTell, objectIds: [character-representation] }
+    isActive: { kind: flag-set, flag: unicode-tile-cut }
+    responses:
+      - >-
+        Every mark has its place. A character is one tile; a string is several tiles in order. The case lid says match the tiles, then go south. That is a route, not an answer.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask how a string differs from a character.)
+    authoring:
+      note: >-
+        Two clues for `characters-matched`: the ordered tiles and the case lid inscription (N6). Third beat on `character-representation`, gated on the puzzle flag `unicode-tile-cut` rather than `npc-knows` (C3).
+
+  - id: topic-setter-default
+    actorId: npc-typesetter
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Every mark has its place. The case, the stamp, the spare drawer: ask about any of them.
+      - >-
+        The clerk counts quantities. I keep marks. Ask about a character or a string.
+      - >-
+        The spare drawer has not changed. ŵ is still there.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the tiles, the stamp or the drawer.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2).
+
+  - id: topic-critic-vectors
+    actorId: npc-mosaic-critic
+    match: { kind: askTell, objectIds: [graphics-representation] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-mosaic-critic, topicId: graphics-representation } }
+    responses:
+      - >-
+        Show me the pixels. A vector image comes from maths and scales cleanly; a raster image is a grid of stored pixels that squares off when stretched. The drafting corner keeps both on display.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-mosaic-critic, topicId: graphics-representation }
+    prompt: >-
+      (You could ask why one curve stays smooth.)
+    authoring:
+      note: >-
+        Two clues for `picture-built`: the smooth curves and the squaring grid in the drafting corner (N6).
+
+  - id: topic-critic-depth
+    actorId: npc-mosaic-critic
+    match: { kind: askTell, objectIds: [graphics-representation] }
+    isActive: { kind: flag-set, flag: picture-built }
+    responses:
+      - >-
+        Show me the pixels. Bit depth is the number of bits used for each pixel's colour. Colour depth is measured in bits per channel, bpc. The label says so; I do not deal in rumours.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what bit depth and colour depth mean.)
+    authoring:
+      note: >-
+        Modern bits-per-channel convention as required by topic file §2; no older bits-per-pixel material. Second beat on `graphics-representation`, gated on the puzzle flag `picture-built` rather than `npc-knows` (C3).
+
+  - id: topic-critic-storage
+    actorId: npc-mosaic-critic
+    match: { kind: askTell, objectIds: [graphics-representation] }
+    isActive: { kind: flag-set, flag: pixels-weighed }
+    responses:
+      - >-
+        Show me the pixels. Resolution is how many pixels the grid holds, and every stored colour costs bits. Price the grid by its depth, then account for the missing squares. The ruler gives width and height, not a figure.
+    strategy: { kind: once }
+    effects:
+      - { kind: start-quiz, quizId: quiz-graphics-representation, actorId: npc-mosaic-critic }
+    prompt: >-
+      (You could ask what an image costs to store, or ask for the gallery audit.)
+    authoring:
+      note: >-
+        Method only: no worked storage total. Third beat on `graphics-representation`, gated on the puzzle flag `pixels-weighed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-critic-default
+    actorId: npc-mosaic-critic
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Show me the pixels. Ask about vectors, depth or storage, and be honest about the counts.
+      - >-
+        The press operator calls blur kindness. I call it storage. Ask me what an image costs.
+      - >-
+        I distrust a quality score nobody defines. At least the grid is defined.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about vectors, depth or storage.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2).
+
+  - id: topic-conductor-samples
+    actorId: npc-choirmaster
+    match: { kind: askTell, objectIds: [sound-representation] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-choirmaster, topicId: sound-representation } }
+    responses:
+      - >-
+        Again, from the top. A sample is one measurement at a point in time; channels are the separate lines being measured. Drop one pipe and the whole bar lies. No, don't apologise — read the card on the desk before you touch the fork.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-choirmaster, topicId: sound-representation }
+    prompt: >-
+      (You could ask what one sample is.)
+    authoring:
+      note: >-
+        Two clues for `sound-sampled`: the desk card and the fork's tag (N6). The roughness is directed at the machine, never the pupil.
+
+  - id: topic-conductor-depth
+    actorId: npc-choirmaster
+    match: { kind: askTell, objectIds: [sound-representation] }
+    isActive: { kind: flag-set, flag: sound-sampled }
+    responses:
+      - >-
+        Again, from the top. Bit depth is the bits per sample; sample rate is the number of samples each second. Both dials are on the desk. I am not shouting; the pipes are simply honest.
+    strategy: { kind: once }
+    effects: []
+    prompt: >-
+      (You could ask what the two desk dials mean.)
+    authoring:
+      note: >-
+        Spec terms only; no Nyquist or codec material (topic file §6). Second beat on `sound-representation`, gated on the puzzle flag `sound-sampled` rather than `npc-knows` (C3).
+
+  - id: topic-conductor-storage
+    actorId: npc-choirmaster
+    match: { kind: askTell, objectIds: [sound-representation] }
+    isActive: { kind: flag-set, flag: bit-rate-counted }
+    responses:
+      - >-
+        Again, from the top. The blank dial wants the bit rate; the other dials give samples per second and bits per sample, and the card lists the channels. Quality follows from those choices. Work it at the desk; I do not sing the answer, and I will take the audio test when you are ready.
+    strategy: { kind: once }
+    effects:
+      - { kind: start-quiz, quizId: quiz-sound-representation, actorId: npc-choirmaster }
+    prompt: >-
+      (You could ask what fills the blank dial, or ask for the audio test.)
+    authoring:
+      note: >-
+        Structure only, with no worked bit-rate number. Third beat on `sound-representation`, gated on the puzzle flag `bit-rate-counted` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-conductor-default
+    actorId: npc-choirmaster
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Again, from the top. Ask about samples, depth or storage, and keep time.
+      - >-
+        The press operator would drop half the choir and call it smaller. I remain patient. Ask about the pipes.
+      - >-
+        The AI sends notes. I ignore them. Ask about the desk.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about samples, depth or storage.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2); the rude surface and the patience both stay in voice.
+
+  - id: topic-keeper-units
+    actorId: npc-stack-keeper
+    match: { kind: askTell, objectIds: [data-storage-units] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-stack-keeper, topicId: data-storage-units } }
+    responses:
+      - >-
+        Count twice, stack once. Bit, nibble, byte, then KB, MB, GB, TB, PB. From byte upward every joint is ×1024; the brass plate says one kilobyte holds 1,024 bytes. I seal the shelves because the labels are flaking.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-stack-keeper, topicId: data-storage-units }
+      - { kind: set-flag, flag: stacks-sealed, value: true }
+    prompt: >-
+      (You could ask how the shelves are counted.)
+    authoring:
+      note: >-
+        Second in-world route to the editor-assigned `stacks-sealed` disarm flag for `hazard-bit-rot` (accepted `hazards.md` line 41; topic file §7); the hub-side route is `topic-foreman-lift`, which remains usable before room entry. The response says the keeper seals the shelves because "the labels are flaking" — the H1 telegraph in the keeper's voice, with no hint and no course fact in the telegraph clause. Two further clues for capacity work: the brass plate and the rung markings (N6). No new flag or alias is introduced here.
+
+  - id: topic-keeper-capacity
+    actorId: npc-stack-keeper
+    match: { kind: askTell, objectIds: [data-storage-units] }
+    isActive: { kind: flag-set, flag: stacks-sealed }
+    responses:
+      - >-
+        Count twice, stack once. Read the rung you are on, then climb one joint at a time; do not skip a rung. I send the AI the figure exactly as I find it, flaking labels and all.
+    strategy: { kind: once }
+    effects:
+      - { kind: start-quiz, quizId: quiz-storage-units, actorId: npc-stack-keeper }
+    prompt: >-
+      (You could ask how to move between the rungs, or ask for the capacity tally.)
+    authoring:
+      note: >-
+        Method only; no worked capacity. Prose chain only, not the inconsistent equivalence column (topic file §6). Second beat on `data-storage-units`, gated on the puzzle flag `stacks-sealed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-keeper-default
+    actorId: npc-stack-keeper
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Count twice, stack once. Ask about the rungs or the capacity; I keep both in order.
+      - >-
+        The labels are flaking. I have not sealed the top shelf yet. Please don't climb it unannounced.
+      - >-
+        I send the AI a tally every turn. It has never once replied thank you.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about the rungs or the capacity.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2); the flaking labels are the hazard telegraph (H1).
+
+  - id: topic-operator-lossy
+    actorId: npc-press-operator
+    match: { kind: askTell, objectIds: [data-compression] }
+    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-press-operator, topicId: data-compression } }
+    responses:
+      - >-
+        Nobody will miss it. Lossless gives the file back exactly; lossy keeps less and looks a little softer. Both ends of the lever are labelled. Choose before you commit a file — the critic and the choirmaster will argue whichever you pick.
+    strategy: { kind: once }
+    effects:
+      - { kind: learn-topic, actorId: npc-press-operator, topicId: data-compression }
+      - { kind: enter-node, actorId: npc-press-operator, nodeId: node-operator-choose }
+    prompt: >-
+      (You could ask what the two ends of the lever do.)
+    authoring:
+      note: >-
+        Two clues for the climax choice: the lever labels and the two sample trays in the ratio window (N6).
+
+  - id: topic-operator-ratio
+    actorId: npc-press-operator
+    match: { kind: askTell, objectIds: [data-compression] }
+    isActive: { kind: flag-set, flag: archive-packed }
+    responses:
+      - >-
+        Nobody will miss it. The glass window has an original column and a compressed column. The ratio is the original divided by the compressed; the window shows the columns, not a figure. Fill it in yourself, then take the compliance figure to the audit.
+    strategy: { kind: once }
+    effects:
+      - { kind: start-quiz, quizId: quiz-data-compression, actorId: npc-press-operator }
+    prompt: >-
+      (You could ask how the ratio is worked out, or ask for the final audit.)
+    authoring:
+      note: >-
+        Ratio definition as given in the brief; no worked numbers. Second beat on `data-compression`, gated on the puzzle flag `archive-packed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz.
+
+  - id: topic-operator-default
+    actorId: npc-press-operator
+    match: { kind: askTell, objectIds: [] }
+    isActive: { kind: all, of: [] }
+    responses:
+      - >-
+        Nobody will miss it. Ask about lossy, lossless or the ratio window.
+      - >-
+        The critic wants every pixel; the choirmaster wants every sample. I want the smaller tray.
+      - >-
+        The AI praised my last report. Embarrassing. Ask about the press instead.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask about lossy, lossless or the ratio.)
+    authoring:
+      note: >-
+        Free-text DefaultAskTellTopic (C2).
+
+conversationNodes:
+  - id: node-ai-verdict
+    actorId: npc-the-ai
+    isSticky: false
+    topicIds: [topic-ai-verdict, topic-ai-unit-two-taunt]
+    defaultTopicId: topic-ai-default
+    authoring:
+      note: >-
+        One-turn key-node beat: the verdict and the flavour taunt land, then the actor's catch-all keeps any further input in voice. No turn timeout (C4).
+
+  - id: node-predecessor-advice
+    actorId: npc-predecessor
+    isSticky: false
+    topicIds: [topic-predecessor-comic-sans, topic-predecessor-geese, topic-predecessor-duck-as-bit]
+    defaultTopicId: topic-predecessor-default
+    authoring:
+      note: >-
+        Deliberate teaching beat on the Boolean duck; the two comic topics give the player something else to try inside the node. Expires after one turn; no timeout.
+
+  - id: node-foreman-switch-lesson
+    actorId: npc-the-foreman
+    isSticky: false
+    topicIds: [topic-foreman-switches, topic-foreman-lift]
+    defaultTopicId: topic-foreman-predecessor
+    authoring:
+      reserved: true
+      note: >-
+        Reserved and deliberately unentered in this card. It was to be entered from `topic-foreman-switches`, but that topic also starts `quiz-switchyard`, and `start-quiz` exits any active node before the quiz, so no conversational turn could happen inside the node. The foreman's teaching now lands in the ordinary topic responses (`topic-foreman-switches` and `topic-foreman-lift`). The artifact stays defined with a valid `defaultTopicId` and no turn timeout (C4); no new topic ID is allocated.
+
+  - id: node-operator-choose
+    actorId: npc-press-operator
+    isSticky: true
+    topicIds: [topic-operator-lossy, topic-operator-ratio]
+    defaultTopicId: topic-operator-default
+    authoring:
+      stickyReason: >-
+        The climax puzzle needs the player to tell lossy from lossless before committing a file; comparing the two trays and the ratio window takes several turns, so the node must stay open across them (C4). It still ends on `bye`, on leaving the room or on `start-quiz`; there is no turn timeout.
