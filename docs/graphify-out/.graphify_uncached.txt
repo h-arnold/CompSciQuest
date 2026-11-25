@@ -1,3 +1,0 @@
-/workspaces/CompSciQuest/docs/coverage/COVERAGE.md
-/workspaces/CompSciQuest/docs/developer/architecture.md
-/workspaces/CompSciQuest/docs/exam-specs/wjec-unit1.md
