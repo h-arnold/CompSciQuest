@@ -190,8 +190,23 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
     game.submit('bye');
 
     expect(bus.events.length).toBeGreaterThan(0);
+    const suppressedTypes = new Set<GameEvent['type']>([
+      'flag-changed',
+      'item-moved',
+      'actor-state-changed',
+      'knowledge-gained',
+      'node-entered',
+      'node-exited',
+      'scheduled',
+    ]);
     for (const event of bus.events) {
-      expect(formatEvent(event, bundle).length).toBeGreaterThan(0);
+      const lines = formatEvent(event, bundle);
+      const isNonGainScore = event.type === 'score-changed' && event.delta <= 0;
+      if (isNonGainScore || suppressedTypes.has(event.type)) {
+        expect(lines).toEqual([]);
+      } else {
+        expect(lines.length).toBeGreaterThan(0);
+      }
     }
     const started = bus.events.find(
       (event) => event.type === 'conversation-started',

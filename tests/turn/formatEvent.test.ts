@@ -1,5 +1,6 @@
-// Event formatting contract from application-and-ui.md §6.1: every event kind
-// yields at least one transcript line, with exits and numbered options shown.
+// Event formatting contract from application-and-ui.md §6.1 as settled for
+// issue #5: player-facing events yield lines, but internal bookkeeping and
+// non-gain scores are silent. Exits and numbered options are still shown.
 import { describe, expect, it } from 'vitest';
 import type { GameEvent } from '../../src/core/events/GameEvent';
 import { makeBundle } from '../fixtures/persistence';
@@ -75,16 +76,72 @@ const EVENTS: readonly GameEvent[] = [
   },
 ];
 
+// Canonical GameEvent "bookkeeping" group: internal state must stay in view
+// data, not in the player-facing transcript (ENGINE_ISSUES.md Batch E2).
+const INTERNAL_STATE_TYPES = new Set<GameEvent['type']>([
+  'flag-changed',
+  'item-moved',
+  'actor-state-changed',
+  'knowledge-gained',
+  'node-entered',
+  'node-exited',
+  'scheduled',
+]);
+
+// These have their own replacements in sibling issues 28 and 22 on later
+// branches; this slice asserts no wording for them.
+const SIBLING_OWNED_TYPES = new Set<GameEvent['type']>([
+  'puzzle-activated',
+  'puzzle-solved',
+  'quiz-ended',
+]);
+
+const NO_GAIN_SCORES: readonly Extract<
+  GameEvent,
+  { readonly type: 'score-changed' }
+>[] = [
+  {
+    type: 'score-changed',
+    delta: 0,
+    total: 5,
+    reason: 'room:room-stub-start',
+  },
+  { type: 'score-changed', delta: -1, total: 4, reason: 'hint:hint-1' },
+];
+
 describe('formatEvent', () => {
-  it('P-TURN-11: every event kind yields a line; rooms show exits and questions show numbered options', async () => {
+  it('P-TURN-11 (ENG5-SCOREGAIN-01): player-facing events yield lines; internal bookkeeping and non-gain scores stay silent', async () => {
     const formatEvent = await loadFormatEvent();
     const bundle = makeBundle();
 
-    for (const event of EVENTS) {
+    const playerFacing = EVENTS.filter(
+      (event) =>
+        event.type !== 'score-changed' &&
+        !INTERNAL_STATE_TYPES.has(event.type) &&
+        !SIBLING_OWNED_TYPES.has(event.type),
+    );
+    for (const event of playerFacing) {
       expect(
         formatEvent(event, bundle).length,
         `${event.type} must render a line`,
       ).toBeGreaterThan(0);
+    }
+
+    const silentEvents = EVENTS.filter((entry) =>
+      INTERNAL_STATE_TYPES.has(entry.type),
+    );
+    for (const event of silentEvents) {
+      expect(
+        formatEvent(event, bundle),
+        `${event.type} must render no lines`,
+      ).toEqual([]);
+    }
+
+    for (const event of NO_GAIN_SCORES) {
+      expect(
+        formatEvent(event, bundle),
+        `score-changed with delta ${event.delta} must render no lines`,
+      ).toEqual([]);
     }
 
     const roomLines = formatEvent(EVENTS[1]!, bundle).join('\n');

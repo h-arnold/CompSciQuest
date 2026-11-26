@@ -1,5 +1,6 @@
-// Pure GameEvent → transcript lines (application-and-ui.md §6.1). Every event
-// yields at least one line; labels come from the injected content bundle.
+// Pure GameEvent → transcript lines (application-and-ui.md §6.1). Internal-state
+// events are suppressed; score-changed prints once only on a real gain, in
+// friendly wording without a room ID. Labels come from the injected bundle.
 import type { ContentBundle } from '../content/ContentBundle';
 import type { GameEvent } from '../core/events/GameEvent';
 
@@ -45,9 +46,7 @@ export function formatEvent(
       ];
     }
     case 'score-changed': {
-      return [
-        `Score (${event.reason}): ${event.delta} — total ${event.total}.`,
-      ];
+      return event.delta > 0 ? [`You earned ${event.delta} points.`] : [];
     }
     case 'topic-completed': {
       return [`Topic completed: ${topicLabel(bundle, event.topicId)}.`];
@@ -95,30 +94,14 @@ export function formatEvent(
     case 'hint-penalty-applied': {
       return [`Hint penalty: ${event.delta}.`];
     }
-    case 'flag-changed': {
-      return [`${event.flag} = ${event.value}.`];
-    }
-    case 'item-moved': {
-      return [
-        `${label(bundle, event.itemId)} moved from ${event.fromOwnerId} to ${event.toOwnerId}.`,
-      ];
-    }
-    case 'actor-state-changed': {
-      return [`${label(bundle, event.actorId)} is now ${event.stateId}.`];
-    }
-    case 'knowledge-gained': {
-      return [`You learned about ${topicLabel(bundle, event.topicId)}.`];
-    }
-    case 'node-entered': {
-      return [`Entered conversation node ${event.nodeId}.`];
-    }
-    case 'node-exited': {
-      return ['Left the conversation node.'];
-    }
+    case 'flag-changed':
+    case 'item-moved':
+    case 'actor-state-changed':
+    case 'knowledge-gained':
+    case 'node-entered':
+    case 'node-exited':
     case 'scheduled': {
-      return [
-        `${event.kind} ${event.eventId} scheduled for ${event.remainingTurns} turn(s).`,
-      ];
+      return [];
     }
     default: {
       return ['An unrecognised event occurred.'];

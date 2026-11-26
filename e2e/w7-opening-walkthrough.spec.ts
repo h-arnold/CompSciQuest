@@ -114,8 +114,11 @@ async function enter(page: Page, direction: string, title: string, description: 
   return lines;
 }
 
-function expectFlag(lines: readonly string[], flag: string): void {
-  expect(lines).toContain(`${flag} = true.`);
+// prettier-ignore
+async function expectFlags(page: Page, flags: readonly string[]): Promise<void> {
+  if (flags.length === 0) return;
+  const state = await savedGame(page);
+  for (const flag of flags) expect(state.flags[flag]).toBe(true);
 }
 
 function expectPuzzle(lines: readonly string[], puzzleId: string): void {
@@ -149,20 +152,23 @@ async function expectOwners(page: Page, itemId: string, expected: readonly strin
   expect(ownersOf(state, itemId)).toEqual(expected);
 }
 
-function expectTransfer(lines: readonly string[], itemName: string): void {
-  expect(
-    lines.filter((line) => line.includes(`${itemName} moved from player to`)),
-  ).toHaveLength(1);
+async function expectTransfer(page: Page, step: TraceStep): Promise<void> {
+  if (step.transfer === undefined) return;
+  const itemId = step.owner?.[0] ?? step.singleOwner;
+  if (itemId === undefined) throw new Error(`No item ID for ${step.transfer}`);
+  const owners = ownersOf(await savedGame(page), itemId);
+  expect(owners).not.toContain('player');
+  expect(owners).toHaveLength(1);
 }
 
+// prettier-ignore
 async function runStep(page: Page, step: TraceStep): Promise<string[]> {
   const lines = await command(page, step.raw);
   if (step.entry !== undefined) expectEntry(lines, ...step.entry);
-  const flags = step.flags ?? [];
+  await expectFlags(page, step.flags ?? []);
   const puzzles = step.puzzles ?? [];
-  for (const flag of flags) expectFlag(lines, flag);
   for (const puzzleId of puzzles) expectPuzzle(lines, puzzleId);
-  if (step.transfer !== undefined) expectTransfer(lines, step.transfer);
+  await expectTransfer(page, step);
   if (step.owner !== undefined) await expectOwners(page, ...step.owner);
   if (step.singleOwner !== undefined) {
     const state = await savedGame(page);
@@ -184,14 +190,8 @@ async function runStep(page: Page, step: TraceStep): Promise<string[]> {
     expect(player.inventory).toContain(step.item);
   }
   if (step.position !== undefined) await expectPosition(page, ...step.position);
-  if (step.hazard !== undefined)
-    expect(
-      lines.some((line) => line.startsWith(`Hazard ${step.hazard}:`)),
-    ).toBe(true);
-  if (step.noHazard !== undefined)
-    expect(lines.some((line) => line.includes(step.noHazard ?? ''))).toBe(
-      false,
-    );
+  if (step.hazard !== undefined) expect(lines.some((l) => l.startsWith(`Hazard ${step.hazard}:`))).toBe(true);
+  if (step.noHazard !== undefined) expect(lines.some((l) => l.includes(step.noHazard ?? ''))).toBe(false);
   if (step.blocked !== undefined) expect(joined(lines)).toContain(step.blocked);
   if (step.topic !== undefined) expect(lines).toContain(step.topic);
   return lines;

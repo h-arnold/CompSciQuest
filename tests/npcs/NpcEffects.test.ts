@@ -113,8 +113,23 @@ describe('NPC effects (npcs.md §4, §8)', () => {
     expect(types.indexOf('message')).toBeLessThan(
       types.indexOf('knowledge-gained'),
     );
+    const suppressedTypes = new Set<GameEvent['type']>([
+      'flag-changed',
+      'item-moved',
+      'actor-state-changed',
+      'knowledge-gained',
+      'node-entered',
+      'node-exited',
+      'scheduled',
+    ]);
     for (const event of mapped) {
-      expect(formatEvent(event, bundle).length).toBeGreaterThan(0);
+      const lines = formatEvent(event, bundle);
+      const isNonGainScore = event.type === 'score-changed' && event.delta <= 0;
+      if (isNonGainScore || suppressedTypes.has(event.type)) {
+        expect(lines).toEqual([]);
+      } else {
+        expect(lines.length).toBeGreaterThan(0);
+      }
     }
   });
 
