@@ -250,13 +250,14 @@ function inventoryHandler(
   command: Command,
   context: TurnContext,
 ): readonly Effect[] {
-  return command.kind === 'inventory'
-    ? [
-        message(
-          `You are carrying ${context.state.player.inventory.join(', ') || 'nothing'}.`,
-        ),
-      ]
-    : [];
+  if (command.kind !== 'inventory') {
+    return [];
+  }
+  // Catalogue names are authoritative; unresolved IDs fall back to the raw ID.
+  const names: readonly string[] = context.state.player.inventory.map(
+    (id) => context.bundle.items.getById(id)?.name ?? id,
+  );
+  return [message(`You are carrying ${names.join(', ') || 'nothing'}.`)];
 }
 
 function scoreHandler(
