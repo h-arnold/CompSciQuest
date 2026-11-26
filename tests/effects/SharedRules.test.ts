@@ -311,7 +311,23 @@ describe('shared reaction pipeline (shared-rules.md §2, §5)', () => {
     expect(observed.some((event) => event.type === 'score-changed')).toBe(
       false,
     );
+    // The §9 event must survive observation; only its transcript rendering is
+    // suppressed at render time (application-and-ui.md §6.1, issue #22).
+    expect(
+      observed.filter(
+        (event) =>
+          event.type === 'puzzle-solved' && event.puzzleId === PUZZLE_ID,
+      ),
+      'ScoreTracker.observe() must preserve the puzzle-solved event',
+    ).toHaveLength(1);
     for (const event of observed) {
+      if (event.type === 'puzzle-solved') {
+        expect(
+          formatEvent(event, bundle),
+          'puzzle-solved must emit no transcript line',
+        ).toEqual([]);
+        continue;
+      }
       expect(formatEvent(event, bundle).length).toBeGreaterThan(0);
     }
     expect(tracker.getTotal()).toBe(before);

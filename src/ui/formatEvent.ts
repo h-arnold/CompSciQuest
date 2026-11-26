@@ -54,14 +54,9 @@ export function formatEvent(
     case 'puzzle-activated': {
       return [`Puzzle ${event.puzzleId} is now active.`];
     }
+    // Render-time suppression: topic-completed carries the friendly outcome.
     case 'puzzle-solved': {
-      return [
-        `Puzzle ${event.puzzleId} solved${
-          event.topicId === undefined
-            ? '.'
-            : ` (${topicLabel(bundle, event.topicId)}).`
-        }`,
-      ];
+      return [];
     }
     // Internal-state and bookkeeping events: panels carry state through
     // GameViewData (§7.2) rather than replaying the batch.

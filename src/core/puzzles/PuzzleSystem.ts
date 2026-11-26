@@ -76,10 +76,19 @@ function solveEffects(puzzle: Puzzle, wasUnsolved: boolean): readonly Effect[] {
   const activation: Effect[] = wasUnsolved
     ? [{ kind: 'set-puzzle-active', puzzleId: puzzle.id }]
     : [];
+  const { topicId } = puzzle;
+  // An authored completion already emits topic-completed; deriving another
+  // would show the outcome twice (PLAYTEST_ISSUES.md §22).
+  const alreadyCompleted =
+    topicId !== undefined &&
+    puzzle.onSolve.some(
+      (effect) =>
+        effect.kind === 'complete-topic' && effect.topicId === topicId,
+    );
   const completion: Effect[] =
-    puzzle.topicId === undefined
+    topicId === undefined || alreadyCompleted
       ? []
-      : [{ kind: 'complete-topic', topicId: puzzle.topicId }];
+      : [{ kind: 'complete-topic', topicId }];
   return [
     ...activation,
     { kind: 'set-puzzle-solved', puzzleId: puzzle.id },

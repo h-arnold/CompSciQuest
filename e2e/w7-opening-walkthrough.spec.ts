@@ -124,9 +124,13 @@ async function expectFlags(page: Page, flags: readonly string[]): Promise<void> 
 }
 
 function expectPuzzle(lines: readonly string[], puzzleId: string): void {
+  // Issue 22 supersedes the old `Puzzle <id> solved` transcript line: the
+  // solve is confirmed by the flags already checked in runStep, and the
+  // friendly topic-completed line is the only completion wording now rendered.
   expect(
     lines.some((line) => line.startsWith(`Puzzle ${puzzleId} solved`)),
-  ).toBe(true);
+  ).toBe(false);
+  expect(lines.some((line) => line.startsWith('Topic completed: '))).toBe(true);
 }
 
 // prettier-ignore
