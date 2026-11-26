@@ -4,15 +4,6 @@
 import type { ContentBundle } from '../content/ContentBundle';
 import type { GameEvent } from '../core/events/GameEvent';
 
-function label(bundle: ContentBundle, id: string): string {
-  return (
-    bundle.items.getById(id)?.name ??
-    bundle.actors.getById(id)?.aliases[0] ??
-    bundle.rooms.getById(id)?.title ??
-    id
-  );
-}
-
 function topicLabel(bundle: ContentBundle, topicId: string): string {
   return bundle.specTopics.getById(topicId)?.title ?? topicId;
 }
@@ -60,17 +51,6 @@ export function formatEvent(
     case 'game-won': {
       return [`You have won! Final score: ${event.finalScore}.`];
     }
-    case 'conversation-started': {
-      return [`Conversation started with ${label(bundle, event.actorId)}.`];
-    }
-    case 'conversation-ended': {
-      return [
-        `Conversation with ${label(bundle, event.actorId)} ended (${event.reason}).`,
-      ];
-    }
-    case 'hazard-triggered': {
-      return [`Hazard ${event.hazardId}: ${event.reason}.`];
-    }
     case 'puzzle-activated': {
       return [`Puzzle ${event.puzzleId} is now active.`];
     }
@@ -83,24 +63,21 @@ export function formatEvent(
         }`,
       ];
     }
-    case 'quiz-started': {
-      return [`Quiz ${event.quizId} started.`];
-    }
-    case 'quiz-ended': {
-      return [
-        `Quiz ${event.quizId} ${event.passed ? 'passed' : 'failed'}: ${event.reason}.`,
-      ];
-    }
-    case 'hint-penalty-applied': {
-      return [`Hint penalty: ${event.delta}.`];
-    }
+    // Internal-state and bookkeeping events: panels carry state through
+    // GameViewData (§7.2) rather than replaying the batch.
     case 'flag-changed':
     case 'item-moved':
     case 'actor-state-changed':
     case 'knowledge-gained':
     case 'node-entered':
     case 'node-exited':
-    case 'scheduled': {
+    case 'scheduled':
+    case 'quiz-started':
+    case 'quiz-ended':
+    case 'hazard-triggered':
+    case 'conversation-started':
+    case 'conversation-ended':
+    case 'hint-penalty-applied': {
       return [];
     }
     default: {

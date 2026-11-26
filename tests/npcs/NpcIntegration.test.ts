@@ -168,7 +168,7 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
     expect(game.getViewData().conversation).toBeUndefined();
   });
 
-  it('NPC-INTEG-05: every event in a full NPC batch yields at least one formatted transcript line', async () => {
+  it('NPC-INTEG-05: internal-state events stay silent and NPC dialogue still renders in a full batch', async () => {
     const bundle = npcBundle({
       topics: [topic({ prompt: '(You could ask why.)' }), defaultTopic()],
     });
@@ -190,7 +190,15 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
     game.submit('bye');
 
     expect(bus.events.length).toBeGreaterThan(0);
+    // ENG8-LOGID-01: the six internal-state kinds are suppressed in addition
+    // to the bookkeeping group; the player-facing NPC text is still rendered.
     const suppressedTypes = new Set<GameEvent['type']>([
+      'quiz-started',
+      'quiz-ended',
+      'hazard-triggered',
+      'conversation-started',
+      'conversation-ended',
+      'hint-penalty-applied',
       'flag-changed',
       'item-moved',
       'actor-state-changed',
@@ -203,9 +211,14 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
       const lines = formatEvent(event, bundle);
       const isNonGainScore = event.type === 'score-changed' && event.delta <= 0;
       if (isNonGainScore || suppressedTypes.has(event.type)) {
-        expect(lines).toEqual([]);
+        expect(lines, `${event.type} must render no transcript line`).toEqual(
+          [],
+        );
       } else {
-        expect(lines.length).toBeGreaterThan(0);
+        expect(
+          lines.length,
+          `${event.type} must still render text`,
+        ).toBeGreaterThan(0);
       }
     }
     const started = bus.events.find(
@@ -213,6 +226,30 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
     );
     expect(started).toBeDefined();
     if (started === undefined) return;
-    expect(formatEvent(started, bundle).join(' ')).toContain(ACTOR_ALIAS);
+    expect(formatEvent(started, bundle)).toEqual([]);
+
+    const dialogueTypes = new Set<GameEvent['type']>([
+      'npc-spoke',
+      'topic-suggested',
+      'message',
+    ]);
+    const dialogueEvents = bus.events.filter(
+      (
+        event,
+      ): event is Extract<
+        GameEvent,
+        { type: 'npc-spoke' | 'topic-suggested' | 'message' }
+      > => dialogueTypes.has(event.type),
+    );
+    expect(dialogueEvents.length).toBeGreaterThan(0);
+    const renderedDialogue = dialogueEvents
+      .flatMap((event) => formatEvent(event, bundle))
+      .join('\n');
+    for (const event of dialogueEvents) {
+      expect(
+        renderedDialogue,
+        `${event.type} text must reach the player-facing log`,
+      ).toContain(event.text);
+    }
   });
 });

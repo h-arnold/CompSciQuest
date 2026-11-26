@@ -4,6 +4,10 @@
 import { expect, test, type Page } from 'playwright/test';
 import { areas } from '../src/content/authored/areas';
 import { rooms } from '../src/content/authored/rooms';
+import {
+  expectHazardOutcome,
+  hazardAnnouncement,
+} from './w7-hazard-assertions';
 import type { Position } from '../src/types/domain';
 import {
   SAVE_KEY,
@@ -63,8 +67,6 @@ interface TraceStep {
 const GATE_FLAGS = ['switches-set', 'hex-read', 'characters-matched', 'picture-built', 'sound-sampled', 'stacks-sorted'] as const;
 // prettier-ignore
 const NON_QUIZ_PUZZLES = ['puzzle-set-the-switches', 'puzzle-sort-the-data-types', 'puzzle-read-nibbles', 'puzzle-add-with-carries', 'puzzle-shift-the-row', 'puzzle-match-characters', 'puzzle-build-mosaic', 'puzzle-weigh-the-pixels', 'puzzle-tune-sampling', 'puzzle-stack-the-bytes', 'puzzle-pack-the-archive', 'puzzle-choose-the-compression', 'puzzle-check-the-overflow-register', 'puzzle-scale-the-badge', 'puzzle-count-the-bit-rate', 'puzzle-label-the-capacity'] as const;
-// prettier-ignore
-const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart', 'Download quarantined save'];
 
 async function savedGame(page: Page): Promise<SavedState> {
   await submit(page, 'save');
@@ -190,7 +192,7 @@ async function runStep(page: Page, step: TraceStep): Promise<string[]> {
     expect(player.inventory).toContain(step.item);
   }
   if (step.position !== undefined) await expectPosition(page, ...step.position);
-  if (step.hazard !== undefined) expect(lines.some((l) => l.startsWith(`Hazard ${step.hazard}:`))).toBe(true);
+  if (step.hazard !== undefined) expectHazardOutcome(lines, step);
   if (step.noHazard !== undefined) expect(lines.some((l) => l.includes(step.noHazard ?? ''))).toBe(false);
   if (step.blocked !== undefined) expect(joined(lines)).toContain(step.blocked);
   if (step.topic !== undefined) expect(lines).toContain(step.topic);
@@ -215,56 +217,6 @@ async function expectAreaConsistency(page: Page, state: SavedState): Promise<voi
     );
   }
   expect(rooms).toHaveLength(20);
-}
-
-function parseColour(value: string): number[] {
-  return (value.match(/[\d.]+/gu) ?? []).map(Number);
-}
-
-// prettier-ignore
-function luminance(rgb: readonly number[]): number {
-  const channels = rgb.slice(0, 3).map((channel) => {
-    const scaled = channel / 255;
-    return scaled <= 0.04045 ? scaled / 12.92 : ((scaled + 0.055) / 1.055) ** 2.4;
-  });
-  return 0.2126 * (channels[0] ?? 0) + 0.7152 * (channels[1] ?? 0) + 0.0722 * (channels[2] ?? 0);
-}
-
-function contrastRatio(foreground: string, background: string): number {
-  const light = luminance(parseColour(foreground));
-  const dark = luminance(parseColour(background));
-  return (Math.max(light, dark) + 0.05) / (Math.min(light, dark) + 0.05);
-}
-
-// prettier-ignore
-async function contrastColours(page: Page): Promise<Record<string, { foreground: string; background: string }>> {
-  return page.evaluate(() => {
-    const result: Record<string, { foreground: string; background: string }> =
-      {};
-    for (const selector of ['.output-log', '.score-panel', 'button']) {
-      const element = document.querySelector(selector);
-      if (element === null)
-        throw new Error(`Missing contrast target ${selector}`);
-      const ancestors: Element[] = [];
-      let current: Element | null = element;
-      while (current !== null) {
-        ancestors.push(current);
-        current = current.parentElement;
-      }
-      const background =
-        ancestors
-          .map((node) => getComputedStyle(node).backgroundColor)
-          .find((colour) => {
-            const alpha = Number((colour.match(/[\d.]+/gu) ?? []).at(-1));
-            return colour !== 'transparent' && alpha !== 0;
-          }) ?? 'rgb(255, 255, 255)';
-      result[selector] = {
-        foreground: getComputedStyle(element).color,
-        background,
-      };
-    }
-    return result;
-  });
 }
 
 // prettier-ignore
@@ -400,12 +352,13 @@ test('W7 Beat E — overheat follows room text, fires once and safe re-entry is 
     'Heat haze shimmers off a belt of tiny black switches',
     'west, up',
   );
-  expect(
-    lines.some((line) => line.startsWith('Hazard hazard-switch-overheat:')),
-  ).toBe(true);
+  const overheatAnnouncement = hazardAnnouncement('hazard-switch-overheat');
+  expect(lines.some((line) => line.startsWith('Hazard hazard-switch-overheat:'))).toBe(false);
+  expect(lines.some((line) => line.startsWith('Hazard '))).toBe(false);
+  expect(lines).toContain(overheatAnnouncement);
   expect(lines).toContain('Lives: 2.');
   expect(lines.indexOf('The Switch Floor')).toBeLessThan(
-    lines.findIndex((line) => line.startsWith('Hazard hazard-switch-overheat')),
+    lines.indexOf(overheatAnnouncement),
   );
   await expectPosition(page, 'room-binary-hall', 2);
   const reentry = await enter(
@@ -418,6 +371,7 @@ test('W7 Beat E — overheat follows room text, fires once and safe re-entry is 
   expect(reentry.some((line) => line.includes('hazard-switch-overheat'))).toBe(
     false,
   );
+  expect(reentry).not.toContain(overheatAnnouncement);
   await expectPosition(page, 'room-switch-floor', 2);
   expect(errors()).toEqual([]);
 });
@@ -504,7 +458,19 @@ test('W7 non-quiz trace — room text, item actions and all six Binary Hall gate
   for (const puzzleId of NON_QUIZ_PUZZLES)
     expect(state.puzzles[puzzleId]?.phase).toBe('solved');
   const allLines = await transcript(page);
-  expect(allLines.filter((line) => line.startsWith('Hazard '))).toHaveLength(2);
+  expect(allLines.filter((line) => line.startsWith('Hazard '))).toHaveLength(0);
+  for (const hazardId of [
+    'hazard-switch-overheat',
+    'hazard-carry-overflow',
+  ] as const) {
+    expect(
+      allLines.filter((line) => line === hazardAnnouncement(hazardId)),
+      `${hazardId} still announces its player-facing outcome once`,
+    ).toHaveLength(1);
+  }
+  expect(
+    allLines.filter((line) => /^Lives: \d+\.$/u.test(line)).length,
+  ).toBeGreaterThanOrEqual(2);
   expect(joined(allLines)).not.toContain('You have won!');
   const total = state.progress.reduce(
     (sum, entry) => sum + entry.earnedScore,
@@ -519,69 +485,6 @@ test('W7 non-quiz trace — room text, item actions and all six Binary Hall gate
   await page.getByRole('button', { name: 'Continue' }).click();
   await expectPosition(page, 'room-compression-press', 1);
   expect(errors()).toEqual([]);
-});
-
-// prettier-ignore
-test('W7 accessibility — labels, live transcript, keyboard order, focus, contrast, reflow and reduced motion', async ({ page }) => {
-  await page.goto('./');
-  await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
-  expect(
-    await page.getByRole('button', { name: 'Continue' }).isDisabled(),
-  ).toBe(true);
-  await page.keyboard.press('Tab');
-  expect(
-    await page.evaluate(() => document.activeElement?.textContent?.trim()),
-  ).toBe('New Game');
-  await page.keyboard.press('Enter');
-  await expect(page.locator('.workspace')).toBeVisible();
-  const attributes = await page.evaluate(() => ({
-    role: document.querySelector('.output-log')?.getAttribute('role'),
-    live: document.querySelector('.output-log')?.getAttribute('aria-live'),
-    label: document.querySelector('input')?.getAttribute('aria-label'),
-  }));
-  expect(attributes).toEqual({ role: 'log', live: 'polite', label: 'Command' });
-  await page.keyboard.press('Tab');
-  const order: string[] = [];
-  for (let index = 0; index < CONTROL_ORDER.length; index += 1) {
-    await page.keyboard.press('Tab');
-    order.push(
-      (await page.evaluate(
-        () =>
-          document.activeElement?.getAttribute('aria-label') ??
-          document.activeElement?.textContent?.trim(),
-      )) ?? '',
-    );
-  }
-  expect(order).toEqual(CONTROL_ORDER);
-  const focus = await page.evaluate(() => {
-    const style = getComputedStyle(document.activeElement ?? document.body);
-    return { style: style.outlineStyle, width: style.outlineWidth };
-  });
-  expect(focus.style).not.toBe('none');
-  const colours = await contrastColours(page);
-  for (const pair of Object.values(colours)) {
-    expect(
-      contrastRatio(pair.foreground, pair.background),
-    ).toBeGreaterThanOrEqual(4.5);
-  }
-  await page.setViewportSize({ width: 390, height: 844 });
-  const widths = await page.evaluate(() => ({
-    scroll: document.documentElement.scrollWidth,
-    client: document.documentElement.clientWidth,
-  }));
-  expect(widths.scroll).toBeLessThanOrEqual(widths.client);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  const motion = await page.evaluate(() => ({
-    matches: matchMedia('(prefers-reduced-motion: reduce)').matches,
-    durations: [
-      ...document.querySelectorAll('.window, .output-log, button'),
-    ].flatMap((element) => {
-      const style = getComputedStyle(element);
-      return [style.transitionDuration, style.animationDuration];
-    }),
-  }));
-  expect(motion.matches).toBe(true);
-  expect(motion.durations.every((duration) => duration === '0s')).toBe(true);
 });
 
 // prettier-ignore

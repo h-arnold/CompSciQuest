@@ -76,9 +76,16 @@ const EVENTS: readonly GameEvent[] = [
   },
 ];
 
-// Canonical GameEvent "bookkeeping" group: internal state must stay in view
-// data, not in the player-facing transcript (ENGINE_ISSUES.md Batch E2).
+// Canonical GameEvent internal-state group: these must stay in view data, not
+// in the player-facing transcript (ENGINE_ISSUES.md Batch E2, issue #8).
+// The six non-bookkeeping kinds are owned by ENG8-LOGID-01.
 const INTERNAL_STATE_TYPES = new Set<GameEvent['type']>([
+  'quiz-started',
+  'quiz-ended',
+  'hazard-triggered',
+  'conversation-started',
+  'conversation-ended',
+  'hint-penalty-applied',
   'flag-changed',
   'item-moved',
   'actor-state-changed',
@@ -93,7 +100,6 @@ const INTERNAL_STATE_TYPES = new Set<GameEvent['type']>([
 const SIBLING_OWNED_TYPES = new Set<GameEvent['type']>([
   'puzzle-activated',
   'puzzle-solved',
-  'quiz-ended',
 ]);
 
 const NO_GAIN_SCORES: readonly Extract<
