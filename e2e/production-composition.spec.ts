@@ -12,6 +12,7 @@ import {
   SAVED_AT,
   scorePanel,
   seedStorage,
+  START_ROOM_TITLE,
   startNewGame,
   submit,
   transcript,
@@ -77,7 +78,7 @@ test.describe('production composition through the real browser', () => {
         .trim().length,
     ).toBeGreaterThan(0);
     // The room description is produced by the verb handler, not by the echo.
-    expect(lines.slice(echoAt + 1).join('\n')).toContain(before[0] ?? '');
+    expect(lines.slice(echoAt + 1).join('\n')).toContain(START_ROOM_TITLE);
     await expect(scorePanel(page)).toBeVisible();
     await expect(scorePanel(page)).toContainText('Score:');
   });
