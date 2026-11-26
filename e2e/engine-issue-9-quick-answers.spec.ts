@@ -5,6 +5,8 @@
 import { expect, test, type Page } from 'playwright/test';
 import { conversationTopics } from '../src/content/authored/conversation-topics';
 import { nodes } from '../src/content/authored/nodes';
+import { questions } from '../src/content/authored/questions';
+import { quizzes } from '../src/content/authored/quizzes';
 import {
   SAVE_KEY,
   readStorage,
@@ -18,7 +20,6 @@ import {
 
 const UNKNOWN = "I don't understand that.";
 const OUT_OF_RANGE = 'That answer is not one of the choices.';
-const QUIZ_STARTED = 'Quiz quiz-switchyard started.';
 const AI_ID = 'npc-the-ai';
 const ARRIVAL_ANSWER = 'The classroom folded along its grid lines';
 const BUREAU_ANSWER =
@@ -81,6 +82,21 @@ async function savedQuiz(page: Page): Promise<QuizState> {
   return (JSON.parse(raw) as { state: { quiz: QuizState } }).state.quiz;
 }
 
+// quiz-started is a suppressed internal event; question-asked renders the
+// authored prompt (application-and-ui.md §6.1). The quiz shuffles its question
+// ids, so any authored switchyard prompt may be the player-facing first one.
+function switchyardPrompts(): readonly string[] {
+  const quiz = quizzes.find((candidate) => candidate.id === 'quiz-switchyard');
+  if (quiz === undefined) throw new Error('No authored quiz-switchyard');
+  return quiz.questionIds.map((questionId) => {
+    const question = questions.find((candidate) => candidate.id === questionId);
+    if (question === undefined) {
+      throw new Error(`No authored question ${questionId}`);
+    }
+    return question.prompt;
+  });
+}
+
 async function enterSwitchFloorQuiz(page: Page): Promise<void> {
   await startNewGame(page);
   await submit(page, 'east');
@@ -88,7 +104,13 @@ async function enterSwitchFloorQuiz(page: Page): Promise<void> {
   await submit(page, 'east');
   await waitForLine(page, 'The Switch Floor');
   await submit(page, 'ask foreman about switch-to-bit');
-  await waitForLine(page, QUIZ_STARTED);
+  const prompts = switchyardPrompts();
+  await expect
+    .poll(async () => {
+      const lines = await transcript(page);
+      return prompts.some((prompt) => lines.includes(prompt));
+    })
+    .toBe(true);
   await expect(page.locator('.quiz-panel')).toBeVisible();
 }
 

@@ -1,14 +1,15 @@
 // Browser coverage for ENG11-SIDEBAR-STATE-01 (ENGINE_ISSUES.md L63–64, L80).
 // The sidebar renders only the area matching GameViewData.position, with that
 // area's reconciled totals; issue-25 title/status lines remain and citations
-// never appear. This worktree's dev server uses port 5211, so pin baseURL
-// explicitly while the shared config keeps its own 5173 webServer.
+// never appear. Playwright's configured baseURL is used by default; CSQ_E2E_URL
+// may point a local repro at another server.
 import { expect, test, type Page } from 'playwright/test';
 import { areas } from '../src/content/authored/areas';
 import { specTopics } from '../src/content/authored/spec-topics';
 import { worlds } from '../src/content/authored/worlds';
 
-test.use({ baseURL: 'http://localhost:5211/CompSciQuest/' });
+const csqUrl = process.env['CSQ_E2E_URL'];
+if (csqUrl !== undefined) test.use({ baseURL: csqUrl });
 
 const worldId = worlds[0]?.id;
 if (worldId === undefined) throw new Error('No authored world');
@@ -294,7 +295,9 @@ test('ENG11-SIDEBAR-STATE-01: ordinary play across four areas keeps only the cur
   );
 
   await submit(page, 'west');
-  await expectCurrentCard(page, hub.id, 0, 0, 1, hub.roomIds.length, 0, 3);
+  // The switchyard quiz is unsolved, so the gated area change carries the life
+  // lost to the overheat hazard across the boundary (application-and-ui.md §3.2).
+  await expectCurrentCard(page, hub.id, 0, 0, 1, hub.roomIds.length, 0, 2);
 
   await submit(page, 'north');
   const concourse = authoredArea('area-1-4-concourse');

@@ -1,13 +1,14 @@
 // Browser coverage for ENG25-CITATION-01: the sidebar progress panel shows
 // each authored topic's title and status, but never its spec citation.
-// This worktree's dev server uses port 5225; the shared config still owns the
-// 5173 webServer for the other specs, so pin this spec's baseURL explicitly.
+// Playwright's configured baseURL is used by default; CSQ_E2E_URL may point a
+// local repro at another server.
 import { expect, test } from 'playwright/test';
 import { areas } from '../src/content/authored/areas';
 import { specTopics } from '../src/content/authored/spec-topics';
 import { worlds } from '../src/content/authored/worlds';
 
-test.use({ baseURL: 'http://localhost:5225/CompSciQuest/' });
+const csqUrl = process.env['CSQ_E2E_URL'];
+if (csqUrl !== undefined) test.use({ baseURL: csqUrl });
 
 const SAVE_KEY = 'compsciquest:save:v1';
 const QUARANTINE_KEY = 'compsciquest:save:v1:corrupt';

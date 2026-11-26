@@ -1,8 +1,8 @@
 // Engine issue 2 / ENG2-HELP-01 (Batch E Group A). The player-facing help reply
 // is generated from the canonical command table, so these checks assert the
 // promised syntax and aliases through the browser rather than pinning content
-// IDs. The dev server for this slice runs on 5202; 5173 belongs to another
-// worktree and the committed Playwright config is unchanged.
+// IDs. Navigation uses Playwright's configured baseURL by default; CSQ_E2E_URL
+// may point a local repro at another server.
 import { expect, test, type Page } from 'playwright/test';
 import {
   seedStorage,
@@ -12,8 +12,7 @@ import {
   watchConsole,
 } from './helpers';
 
-const APP_URL =
-  process.env['CSQ_E2E_URL'] ?? 'http://localhost:5202/CompSciQuest/';
+const APP_URL = process.env['CSQ_E2E_URL'];
 
 const HELP_LEAD = 'Available commands:';
 
@@ -54,7 +53,7 @@ function helpEntry(lines: readonly string[]): string {
 }
 
 async function bootNewGame(page: Page): Promise<void> {
-  await page.goto(APP_URL);
+  await page.goto(APP_URL ?? './');
   await page.getByRole('button', { name: 'New Game' }).click();
   await expect(page.locator('.workspace')).toBeVisible();
 }
@@ -118,7 +117,7 @@ test.describe('engine issue 2 help output', () => {
   test('ENG2-HELP-01 — the help transcript stays accessible and the input stays usable', async ({
     page,
   }) => {
-    await page.goto(APP_URL);
+    await page.goto(APP_URL ?? './');
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
 
     await page.getByRole('button', { name: 'New Game' }).click();

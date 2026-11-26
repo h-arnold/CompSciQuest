@@ -1,8 +1,8 @@
 // Engine issue 1 / Batch E1 onboarding slots (matrix ENG1-ONBOARD-01).
 // Scope: title-screen copy slots, the "type help" prompt and the first two
 // transcript lines. Command-table and parser behaviour belong to sibling issues.
-// The app runs on 5201 in this slice because 5173 is occupied by another
-// worktree; the committed config is unchanged.
+// Navigation uses Playwright's configured baseURL by default; CSQ_E2E_URL may
+// point a local repro at another server.
 import { expect, test, type Page } from 'playwright/test';
 import {
   makeSave,
@@ -14,8 +14,7 @@ import {
   watchConsole,
 } from './helpers';
 
-const APP_URL =
-  process.env['CSQ_E2E_URL'] ?? 'http://localhost:5201/CompSciQuest/';
+const APP_URL = process.env['CSQ_E2E_URL'];
 
 const OBJECTIVE = 'Objective copy to follow.';
 const CONTROLS = 'Controls copy to follow.';
@@ -24,7 +23,7 @@ const HELP_PROMPT = 'Type help to see available commands.';
 const noConsoleErrors: () => readonly string[] = () => [];
 
 async function boot(page: Page): Promise<void> {
-  await page.goto(APP_URL);
+  await page.goto(APP_URL ?? './');
 }
 
 async function openSession(page: Page, button: 'New Game' | 'Continue') {
