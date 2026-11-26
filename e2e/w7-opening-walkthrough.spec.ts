@@ -207,19 +207,19 @@ async function runStep(page: Page, step: TraceStep): Promise<string[]> {
 async function expectAreaConsistency(page: Page, state: SavedState): Promise<void> {
   const areaById = new Map(areas.map((area) => [area.id, area]));
   for (const progress of state.progress) {
-    const area = areaById.get(progress.areaId);
-    if (area === undefined)
-      throw new Error(`Unknown saved area ${progress.areaId}`);
+    const area = areaById.get(progress.areaId); if (area === undefined) throw new Error(`Unknown saved area ${progress.areaId}`);
     const visited = new Set(progress.visitedRooms);
     expect(visited.size).toBe(progress.visitedRooms.length);
     expect(visited.size).toBeLessThanOrEqual(area.roomIds.length);
-    expect([...visited].every((roomId) => area.roomIds.includes(roomId))).toBe(
-      true,
-    );
-    await expect(page.locator('.score-panel')).toContainText(
-      `Rooms visited: ${visited.size} / ${area.roomIds.length}`,
-    );
+    expect([...visited].every((roomId) => area.roomIds.includes(roomId))).toBe(true);
   }
+  const current = state.progress.find((row) => row.areaId === state.player.position.areaId); if (current === undefined) throw new Error(`No saved progress for ${state.player.position.areaId}`);
+  const currentArea = areaById.get(current.areaId); if (currentArea === undefined) throw new Error(`Unknown saved area ${current.areaId}`);
+  const lines = await page.locator('.score-panel > div').allTextContents(); const shown = lines.filter((line) => areas.some((area) => line.endsWith(` — ${area.name}`)));
+  expect(shown).toHaveLength(1); expect(shown[0]).toContain(currentArea.name);
+  expect(lines.filter((line) => line === `Score: ${current.earnedScore} / ${current.maxScore}`)).toHaveLength(1);
+  expect(lines.filter((line) => line.startsWith('Rooms visited:'))).toEqual([`Rooms visited: ${new Set(current.visitedRooms).size} / ${currentArea.roomIds.length}`]);
+  expect(state.progress.filter((row) => row.areaId !== current.areaId).every((row) => shown.every((line) => !line.endsWith(` — ${areaById.get(row.areaId)?.name ?? ''}`)))).toBe(true);
   expect(rooms).toHaveLength(20);
 }
 

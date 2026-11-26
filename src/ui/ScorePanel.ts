@@ -9,10 +9,7 @@ import type {
 import { appendLine } from './appendLine';
 
 function renderTopic(parent: HTMLElement, topic: SpecTopicView): void {
-  appendLine(
-    parent,
-    `${topic.title} (${topic.specReference}) — ${topic.status}`,
-  );
+  appendLine(parent, `${topic.title} — ${topic.status}`);
 }
 
 function renderArea(parent: HTMLElement, area: AreaProgressView): void {
@@ -42,8 +39,13 @@ export class ScorePanel {
     this.element.textContent = '';
     appendLine(this.element, `Score: ${data.score}`);
     appendLine(this.element, `Lives: ${data.lives}`);
-    for (const area of data.areas) {
-      renderArea(this.element, area);
+    const currentArea = data.areas.find(
+      (area) =>
+        area.worldId === data.position.worldId &&
+        area.areaId === data.position.areaId,
+    );
+    if (currentArea !== undefined) {
+      renderArea(this.element, currentArea);
     }
   }
 }
