@@ -7,7 +7,9 @@ import type { Command } from '../core/commands/Command';
 import { createNameResolver } from '../core/commands/NameResolver';
 import { parse } from '../core/commands/Parser';
 import type { GameState } from '../core/GameState';
-import type { Direction } from '../types/domain';
+import type { ConversationTopic } from '../core/npcs/ConversationTopic';
+import type { Condition } from '../core/rules/Condition';
+import type { Direction, Position } from '../types/domain';
 
 // Both the full name and the shortcut are aliases of `go` (§5.2), so both map
 // to the canonical Direction name held in the table.
@@ -107,15 +109,91 @@ function actorAndRemainder(
   return undefined;
 }
 
+type LocationCondition = Extract<
+  Condition,
+  { readonly kind: 'in-room' | 'in-area' }
+>;
+
+function isLocationMatch(
+  condition: LocationCondition,
+  position: Position,
+): boolean {
+  return condition.kind === 'in-room'
+    ? condition.roomId === position.roomId
+    : condition.worldId === position.worldId &&
+        condition.areaId === position.areaId;
+}
+
+// shared-rules.md §3: a location scope is an in-room/in-area condition or an
+// all holding at least one. `not` and `any` are never a single location scope.
+function isMatchingLocationScope(
+  condition: Condition,
+  position: Position,
+): boolean {
+  if (condition.kind === 'in-room' || condition.kind === 'in-area') {
+    return isLocationMatch(condition, position);
+  }
+  if (condition.kind === 'all') {
+    return condition.of.some(
+      (of) =>
+        (of.kind === 'in-room' || of.kind === 'in-area') &&
+        isLocationMatch(of, position),
+    );
+  }
+  return false;
+}
+
+// `ask about <topic>` names no actor. Infer one only when the existing bundle
+// relations identify exactly one present, actor-bound topic (npcs.md §2), so
+// there is never a disambiguation prompt (application-and-ui.md §5.2).
+function inferAskActor(
+  tokens: readonly string[],
+  state: GameState,
+  bundle: ContentBundle,
+): string | undefined {
+  if (tokens[0] !== 'about' || tokens.length < 2) return undefined;
+  const position = state.player.position;
+  const topics: readonly ConversationTopic[] = [
+    ...bundle.conversationTopics.all,
+    ...bundle.nodes.all.flatMap((node) => node.topics),
+  ];
+  const present = new Set<string>();
+  for (const topic of topics) {
+    const actorId = topic.actorId;
+    if (
+      actorId === undefined ||
+      bundle.actors.getById(actorId) === undefined ||
+      !isMatchingLocationScope(topic.isActive, position)
+    ) {
+      continue;
+    }
+    present.add(actorId);
+  }
+  return present.size === 1 ? [...present][0] : undefined;
+}
+
 function conversationCommand(
   kind: 'ask' | 'tell' | 'give' | 'show',
   tokens: readonly string[],
   resolve: (phrase: string) => string | undefined,
   bundle: ContentBundle,
+  state: GameState,
   unknown: () => Command,
 ): Command {
   const parts = actorAndRemainder(tokens, resolve, bundle);
-  if (parts === undefined) return unknown();
+  if (parts === undefined) {
+    if (kind === 'ask') {
+      const actorId = inferAskActor(tokens, state, bundle);
+      if (actorId !== undefined) {
+        return {
+          kind: 'ask',
+          actorId,
+          topic: tokens.slice(1).join(' '),
+        };
+      }
+    }
+    return unknown();
+  }
   const [actorId, remainder] = parts;
   if (kind === 'ask' || kind === 'tell') {
     const topic = remainder[0] === 'about' ? remainder.slice(1) : remainder;
@@ -188,6 +266,7 @@ function targetedCommand(
   tokens: readonly string[],
   resolve: (phrase: string) => string | undefined,
   bundle: ContentBundle,
+  state: GameState,
   unknown: () => Command,
 ): Command {
   switch (verb) {
@@ -195,7 +274,7 @@ function targetedCommand(
     case 'tell':
     case 'give':
     case 'show': {
-      return conversationCommand(verb, tokens, resolve, bundle, unknown);
+      return conversationCommand(verb, tokens, resolve, bundle, state, unknown);
     }
     case 'use': {
       return useCommand(tokens, resolve, unknown);
@@ -213,6 +292,20 @@ function targetedCommand(
         : (singleIdCommand(verb, id) ?? unknown());
     }
   }
+}
+
+// A bare number is the documented bare form of `answer N` (combat.md §4),
+// but only while a quiz is active; elsewhere it stays a friendly unknown.
+function bareAnswerCommand(
+  verb: string,
+  state: GameState,
+): Command | undefined {
+  if (!/^\d+$/u.test(verb)) return undefined;
+  const option = Number(verb);
+  if (!Number.isSafeInteger(option)) return undefined;
+  return state.quiz.activeQuizId === undefined
+    ? undefined
+    : { kind: 'answer', option };
 }
 
 function answerCommand(
@@ -262,6 +355,10 @@ export function resolveGameCommand(
     return directionCommand(tokens[0]) ?? unknown();
   }
   if (parsed.verb === 'answer') return answerCommand(tokens, state, bundle);
+  if (tokens.length === 0) {
+    const bareAnswer = bareAnswerCommand(parsed.verb, state);
+    if (bareAnswer !== undefined) return bareAnswer;
+  }
   if (parsed.verb === 'hint') {
     if (tokens.length === 0) return { kind: 'hint' };
     const targetId = resolve(tokens.join(' '));
@@ -271,5 +368,5 @@ export function resolveGameCommand(
       ? { kind: 'hint' }
       : { kind: 'hint', targetId };
   }
-  return targetedCommand(parsed.verb, tokens, resolve, bundle, unknown);
+  return targetedCommand(parsed.verb, tokens, resolve, bundle, state, unknown);
 }
