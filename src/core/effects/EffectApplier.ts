@@ -147,10 +147,13 @@ function roomSummary(
       };
 }
 
-// walkthrough.md §8.2: entering a new area resets lives to that area's
-// declared value. The value comes from the injected bundle, never from a
-// literal; the change-lives branch above remains the sole writer and emits the
-// canonical lives-changed event (application-and-ui.md §9).
+// application-and-ui.md §3.2 (canonical owner) with ENGINE_ISSUES.md Batch E2
+// issue 15: entering a new area resets lives to the destination's declared
+// value only when every quiz and puzzle of the DEPARTED area is solved;
+// otherwise lives carry across the boundary. Topics map to an area through the
+// existing specTopics relation. The value comes from the injected bundle,
+// never from a literal; the change-lives branch above remains the sole writer
+// and emits the canonical lives-changed event (application-and-ui.md §9).
 function areaChangeEvents(
   state: GameState,
   bundle: ContentBundle | undefined,
@@ -162,6 +165,23 @@ function areaChangeEvents(
   }
   const area = bundle?.areas.getById(next.areaId);
   if (area === undefined || area.worldId !== next.worldId) return [];
+  if (bundle !== undefined) {
+    const topicIds = new Set(
+      bundle.specTopics
+        .getByAreaId(previous.worldId, previous.areaId)
+        .map((topic) => topic.id),
+    );
+    const quizzesPassed = bundle.quizzes.all
+      .filter((quiz) => topicIds.has(quiz.topicId))
+      .every((quiz) => state.flags[`quiz-passed:${quiz.id}`] === true);
+    const puzzlesSolved = bundle.puzzles.all
+      .filter((puzzle) => {
+        const topicId = puzzle.topicId;
+        return topicId !== undefined && topicIds.has(topicId);
+      })
+      .every((puzzle) => state.puzzles[puzzle.id]?.phase === 'solved');
+    if (!quizzesPassed || !puzzlesSolved) return [];
+  }
   const player = state.player as { lives: number };
   const delta = area.lives - player.lives;
   return delta === 0

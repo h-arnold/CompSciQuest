@@ -171,8 +171,10 @@ reasons, quarantine and flow are canonical in
 ### 6.5 Losing a life and winning
 
 Life loss comes from hazards and failed adversarial quizzes; both emit
-`lives-changed`, and `Session` turns `lives === 0` into `game-over`. The win and
-loss conditions are owned by
+`lives-changed`, and `Session` turns `lives === 0` into `game-over`. A qualifying
+area change emits `lives-changed` too; the gate is owned by
+[application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions).
+The win and loss conditions are owned by
 [application-and-ui.md §11](application-and-ui.md#11-win-check-owner).
 
 ## 7. Core contracts

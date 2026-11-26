@@ -144,9 +144,17 @@ export interface ItemDefinition {
 [content-rules.md](content-rules.md) D4 owns the authoring rule for `startRoomId`
 and `lives`. A new game starts with 3 lives: `Session.newGame` assigns them after
 `createInitial` has read `WorldDefinition.lives`, so a world that declares
-another value is not yet honoured. On an area change, lives reset to the new
-area's `AreaDefinition.lives`. After the start, lives change through
-`change-lives` and on area change.
+another value is not yet honoured. After the start, lives change through
+`change-lives` and on a gated area change.
+
+A `move-player` across an area or world boundary resets lives to the destination
+area's `AreaDefinition.lives` only when every quiz and puzzle of the **departed**
+area is solved; otherwise lives carry across unchanged. Quizzes and puzzles map
+to that area through their `topicId` and
+`bundle.specTopics.getByAreaId(worldId, areaId)`; an area with none satisfies the
+gate. A quiz counts solved when `quiz-passed:<quizId>` is true, a puzzle when
+`state.puzzles[id].phase` is `solved`. Movement within one area never resets
+lives, and the reset still runs through `change-lives` (§9).
 
 ### 3.3 Loading and validation
 
