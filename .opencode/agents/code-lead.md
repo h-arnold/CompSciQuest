@@ -46,6 +46,9 @@ permissions:
   - action: subagent
     resource: "content-editor"
     effect: allow
+  - action: subagent
+    resource: "play-tester"
+    effect: allow
 ---
 You are the code lead for CompSciQuest. You own the **code** workflow only; the
 content workflow belongs to `content-editor` and its writers and reviewers. When
