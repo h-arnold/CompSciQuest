@@ -5,25 +5,31 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../../src/content/index';
 import { parseCardSet } from '../../tools/content/schema.ts';
 import type { ContentBundle } from '../../src/content/ContentBundle';
+import type { ParsedCardSet } from '../fixtures/contentToolchain';
 import {
   ZONE1_CATALOGUES,
   ZONE1_SPEC_TOPIC_IDS,
+  expectedZone1Counts,
   zone1CardSet,
   zone1DeclaredStart,
 } from '../fixtures/zone1';
 
-function generatedRoomIds(): readonly string[] {
+function zone1Cards(): ParsedCardSet {
   const parsed = parseCardSet(zone1CardSet());
   expect(
     parsed.findings,
-    'clean zone-1 cards must parse without findings',
+    'the accepted cards must parse without findings',
   ).toEqual([]);
-  return zone1DeclaredStart({
+  return {
     cards: Object.entries(parsed.parsed).map(([path, data]) => ({
       path,
       data,
     })),
-  }).roomIds;
+  };
+}
+
+function generatedRoomIds(): readonly string[] {
+  return zone1DeclaredStart(zone1Cards()).roomIds;
 }
 
 function cataloguesOf(
@@ -54,13 +60,19 @@ describe('generated content registration (application-and-ui.md §3.1, §3.3)', 
   it('CT-HAND-07: loadContent returns populated catalogues at the approved counts', () => {
     const bundle = loadContent();
     const catalogues = cataloguesOf(bundle);
+    const counts = expectedZone1Counts(zone1Cards());
 
     expect(Object.keys(catalogues)).toHaveLength(14);
     for (const catalogue of ZONE1_CATALOGUES) {
+      const expected = counts[catalogue.name];
+      expect(
+        expected,
+        `${catalogue.name} must have a count derived from the accepted cards`,
+      ).toBeTypeOf('number');
       expect(
         catalogues[catalogue.name],
         `${catalogue.name} must hold the approved generated count`,
-      ).toHaveLength(catalogue.count);
+      ).toHaveLength(expected ?? -1);
     }
     for (const [name, all] of Object.entries(catalogues)) {
       expect(name).toBeTypeOf('string');
@@ -86,7 +98,7 @@ describe('generated content registration (application-and-ui.md §3.1, §3.3)', 
     expect(() => rooms.getById('no-such-room')).not.toThrow();
   });
 
-  it('CT-HAND-07: specTopics resolves all eight generated topic IDs', () => {
+  it('CT-HAND-07: specTopics resolves all ten generated topic IDs', () => {
     const specTopics = loadContent().specTopics;
 
     for (const id of ZONE1_SPEC_TOPIC_IDS) {

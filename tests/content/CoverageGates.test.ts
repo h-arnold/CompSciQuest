@@ -105,7 +105,7 @@ describe('deferred mechanics gates (content-rules.md §7)', () => {
     // quiz-content, puzzle-graph, hint-content, hazard-content and npc-content
     // are declared but have no behaviour yet, so the local fixture and the real
     // generated bundle must both pass the one shared boot/Vitest validator when
-    // the canonical nine-heading coverage index is injected.
+    // the canonical eleven-heading coverage index is injected.
     expect(validate(localBundle, COVERAGE_TOPIC_IDS)).toEqual([]);
     expect(validate(loadContent(), COVERAGE_TOPIC_IDS)).toEqual([]);
   });

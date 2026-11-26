@@ -15,11 +15,13 @@ import { catalogueOf, importModule, makeBundle } from './persistence';
 
 export { makeBundle } from './persistence';
 
-// The coverage index is an injected representation of the `## Topic: <name>`
-// headings in COVERAGE.md (already converted to topic IDs). Static-first means
-// the runtime cannot read that Markdown file, so validation takes the index as
-// data (application-and-ui.md §3.3; content-rules.md §7). The last heading is
-// `in progress` in COVERAGE.md but is still a canonical coverage heading.
+// The coverage index is an injected representation of all eleven
+// `## Topic: <name>` headings in COVERAGE.md (already converted to topic IDs).
+// Static-first means the runtime cannot read that Markdown file, so validation
+// takes the index as data (application-and-ui.md §3.3; content-rules.md §7).
+// `ai-ethics-and-implications` is `in progress` in COVERAGE.md but is still a
+// canonical coverage heading; the two Zone A headings are part of the accepted
+// W5 coverage flip recorded in COVERAGE.md and docs/content/status.md.
 export type CoverageTopicIds = readonly string[];
 
 export interface ValidateContent {
@@ -36,6 +38,8 @@ export const COVERAGE_TOPIC_IDS: CoverageTopicIds = [
   'data-storage-units',
   'data-compression',
   'ai-ethics-and-implications',
+  'algorithms-and-pseudocode',
+  'programming-constructs',
 ];
 
 // Coverage index for the local deterministic fixture only. `makeTopic()` and

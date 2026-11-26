@@ -1,218 +1,27 @@
 // Authored completion and clean-start win acceptance for QUIZ-HINT-11/E2E-4.
 // The run uses only generated catalogue data and submitted commands; its only
-// save is the final observation of the persisted result.
+// save is the final observation of the persisted result. The command path is
+// the accepted whole-game V4 trace in docs/content/walkthrough.md §2 and §8
+// steps 1–30, including its teaching ladders and scripted hazard lifetimes.
 import { describe, expect, it } from 'vitest';
 import { createSaveManager } from '../../src/application/SaveManager';
 import { createEffectApplier } from '../../src/core/effects/EffectApplier';
 import type { GameEvent } from '../../src/core/events/GameEvent';
 import { createSession } from '../../src/core/lifecycle/Session';
 import { createScoreTracker } from '../../src/core/scoring/ScoreTracker';
-import type { Direction } from '../../src/types/domain';
 import {
   authoredBundle,
-  authoredGame,
   authoredState,
-  changedFlags,
   readSave,
   switchyardProgress,
 } from '../fixtures/authored';
 import { FakeRandom, FixedClock, MemoryStorage } from '../fixtures/persistence';
-
-const TRACE_FLAGS: readonly string[] = [
-  'switches-set',
-  'hex-read',
-  'characters-matched',
-  'picture-built',
-  'sound-sampled',
-  'stacks-sorted',
-];
-
-function gateFlag(
-  exit: (typeof authoredBundle.rooms.all)[number]['exits'][number],
-): string {
-  const condition = exit.preconditions.find(
-    (candidate) => candidate.kind === 'flag-set',
-  );
-  return condition?.kind === 'flag-set' ? condition.flag : '';
-}
-
-function lastQuestion(
-  batch: readonly GameEvent[],
-): Extract<GameEvent, { type: 'question-asked' }> | undefined {
-  for (let index = batch.length - 1; index >= 0; index -= 1) {
-    const event = batch[index];
-    if (event?.type === 'question-asked') return event;
-  }
-  return undefined;
-}
-
-function lastWinningBatch(
-  batches: readonly GameEvent[][],
-): readonly GameEvent[] | undefined {
-  for (let index = batches.length - 1; index >= 0; index -= 1) {
-    const batch = batches[index];
-    if (batch?.some((event) => event.type === 'game-won')) return batch;
-  }
-  return undefined;
-}
-
-class AuthoredRun {
-  readonly game: ReturnType<typeof authoredGame>['game'];
-  readonly bus: ReturnType<typeof authoredGame>['bus'];
-  readonly storage: ReturnType<typeof authoredGame>['storage'];
-  readonly batches: GameEvent[][] = [];
-  readonly flags = new Set<string>();
-  readonly passedQuizzes = new Set<string>();
-  readonly failures: string[] = [];
-
-  constructor() {
-    const fixture = authoredGame();
-    this.game = fixture.game;
-    this.bus = fixture.bus;
-    this.storage = fixture.storage;
-    this.game.newGame();
-    this.batches.push([...(this.bus.batches.at(-1) ?? [])]);
-  }
-
-  private pathTo(targetRoomId: string): readonly Direction[] | undefined {
-    const start = this.game.getViewData().position.roomId;
-    if (start === targetRoomId) return [];
-    const queue: Array<{
-      readonly roomId: string;
-      readonly path: readonly Direction[];
-    }> = [{ roomId: start, path: [] }];
-    const seen = new Set<string>([start]);
-    while (queue.length > 0) {
-      const current = queue.shift();
-      if (current === undefined) break;
-      const room = authoredBundle.rooms.getById(current.roomId);
-      const exits = room?.exits ?? [];
-      for (const exit of exits) {
-        if (seen.has(exit.targetRoomId)) continue;
-        const open = exit.preconditions.every(
-          (condition) =>
-            condition.kind !== 'flag-set' || this.flags.has(condition.flag),
-        );
-        if (!open) continue;
-        const path = [...current.path, exit.direction];
-        if (exit.targetRoomId === targetRoomId) return path;
-        seen.add(exit.targetRoomId);
-        queue.push({ roomId: exit.targetRoomId, path });
-      }
-    }
-    return undefined;
-  }
-
-  private followPath(path: readonly Direction[]): boolean {
-    for (const direction of path) {
-      const expected = authoredBundle.rooms
-        .getById(this.game.getViewData().position.roomId)
-        ?.exits.find((exit) => exit.direction === direction)?.targetRoomId;
-      this.submit(direction);
-      if (
-        expected !== undefined &&
-        this.game.getViewData().position.roomId !== expected
-      ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  submit(raw: string): readonly GameEvent[] {
-    const batch = this.game.submit(raw);
-    this.batches.push([...batch]);
-    for (const flag of changedFlags(batch)) this.flags.add(flag);
-    for (const event of batch) {
-      if (event.type === 'quiz-ended' && event.passed)
-        this.passedQuizzes.add(event.quizId);
-    }
-    return batch;
-  }
-
-  travelTo(targetRoomId: string): void {
-    for (let attempt = 0; attempt < 12; attempt += 1) {
-      if (this.game.getViewData().position.roomId === targetRoomId) return;
-      const path = this.pathTo(targetRoomId);
-      if (path === undefined) {
-        this.failures.push(`no authored route to ${targetRoomId}`);
-        return;
-      }
-      if (!this.followPath(path)) continue;
-    }
-    this.failures.push(
-      `travel to ${targetRoomId} did not settle after a hazard ejection`,
-    );
-  }
-
-  attemptGates(): void {
-    const gated = authoredBundle.rooms.all.flatMap((room) =>
-      room.exits
-        .filter((exit) =>
-          exit.preconditions.some((condition) => condition.kind === 'flag-set'),
-        )
-        .map((exit) => ({ roomId: room.id, exit })),
-    );
-    const ordered = TRACE_FLAGS.flatMap((flag) =>
-      gated.filter((entry) => gateFlag(entry.exit) === flag),
-    );
-    expect(ordered).toHaveLength(6);
-    for (const { roomId, exit } of ordered) {
-      this.travelTo(roomId);
-      const before = this.game.getViewData();
-      const batch = this.submit(exit.direction);
-      const after = this.game.getViewData();
-      if (batch.some((event) => event.type !== 'message')) {
-        this.failures.push(
-          `closed gate ${exit.direction} changed gameplay state`,
-        );
-      }
-      if (
-        after.position.roomId !== before.position.roomId ||
-        after.lives !== before.lives ||
-        after.score !== before.score
-      ) {
-        this.failures.push(
-          `closed gate ${exit.direction} moved or penalised the player`,
-        );
-      }
-      if (after.turn !== before.turn + 1) {
-        this.failures.push(
-          `closed gate ${exit.direction} did not advance exactly one turn`,
-        );
-      }
-    }
-  }
-
-  startQuiz(raw: string, quizId: string): void {
-    let batch = this.submit(raw);
-    const started = batch.find((event) => event.type === 'quiz-started');
-    if (started?.type !== 'quiz-started' || started.quizId !== quizId) {
-      this.failures.push(`${raw} did not start ${quizId}`);
-      return;
-    }
-    for (let guard = 0; guard < 10; guard += 1) {
-      if (batch.some((event) => event.type === 'quiz-ended')) return;
-      const asked = lastQuestion(batch);
-      if (asked === undefined) {
-        this.failures.push(`${quizId} did not ask its first question`);
-        return;
-      }
-      const question = authoredBundle.questions.getById(asked.questionId);
-      const option = question?.correctOptionIds[0];
-      if (question === undefined || option === undefined) {
-        this.failures.push(
-          `${quizId} referenced a missing question or correct option`,
-        );
-        return;
-      }
-      batch = this.submit(`answer ${option + 1}`);
-    }
-    this.failures.push(
-      `${quizId} did not finish within its authored question count`,
-    );
-  }
-}
+import {
+  AuthoredRun,
+  MILL_FLAGS,
+  TRACE_FLAGS,
+  lastWinningBatch,
+} from './AuthoredWinPathRun';
 
 describe('authored win transition', () => {
   it('QUIZ-HINT-11: all eight authored completion sources win once with the final score and restore derives the end state without an event', () => {
@@ -268,98 +77,304 @@ describe('authored win transition', () => {
     expect(createSession(restored, authoredBundle).observe([])).toEqual([]);
   });
 
-  it('E2E-4: the clean authored command path opens the six gates, loses exactly two hazard lives, passes eight quizzes and wins once', () => {
+  it('W7R-QUIZ-01: E2E-4 follows walkthrough §8 steps 1–30, including teaching beats, two zone-one hazard lives, fourteen quiz handoffs, ten completed topics and one game-won', () => {
     const run = new AuthoredRun();
-    run.travelTo('room-network-hub');
-    run.travelTo('room-binary-hall');
+
+    // Opening beats A–C (walkthrough §2): the verdict, the scoped AI topics
+    // and the hub's two live ports before the Switchyard is entered.
+    run.submit('ask ai about verdict');
+    run.submit('ask ai about why here');
+    run.submit('ask ai about failure');
+    run.submit('east');
+    run.expectRoom('the east route', 'room-network-hub');
+    run.submit('ask ai about escape');
+
+    // Beat E: the first switch-floor entry overheats and ejects to the hall.
+    run.expectHazard('east', 'hazard-switch-overheat');
+    run.expectRoom('the overheat ejection', 'room-binary-hall');
+
+    // Steps 1–5: read the bins, prove the six closed gates, then set the
+    // switches and pass the foreman's two handoffs.
     run.attemptGates();
-
-    run.travelTo('room-switch-floor');
-    run.submit('take switch gauge');
-    run.submit('use switch gauge on belt');
+    run.submit('down');
+    run.expectRoom('the safe switch-floor re-entry', 'room-switch-floor');
+    run.step('take switch gauge');
+    run.step('use switch gauge on belt', 'switch-cooled', 'switches-set');
     run.startQuiz('ask foreman about switches', 'quiz-switchyard');
-    run.startQuiz('ask foreman about lift', 'quiz-data-types');
+    run.startQuiz('ask foreman about lift', 'quiz-data-types', 'stacks-sealed');
+    run.submit('up');
+    run.expectRoom('step 4', 'room-binary-hall');
+    run.step('take decimal sample');
+    run.step('put decimal sample on real bin', 'types-sorted');
 
-    run.travelTo('room-binary-hall');
-    const sample = authoredBundle.items.all.find((item) =>
-      item.name.toLowerCase().includes('decimal sample'),
-    );
-    if (sample === undefined) {
-      run.failures.push('the authored decimal sample is missing');
-    } else {
-      run.submit('take decimal sample');
-      run.submit('put decimal sample on real bin');
-    }
+    // Step 6: the first hex-deck entry overflows and ejects to the hall.
+    run.expectHazard('north', 'hazard-carry-overflow');
+    run.expectRoom('the overflow ejection', 'room-binary-hall');
+    run.submit('north');
+    run.expectRoom('the safe hex-deck re-entry', 'room-hex-deck');
+    run.step('take nibble card');
 
-    run.travelTo('room-hex-deck');
-    run.submit('take nibble card');
-    run.submit('use nibble card on carry lamp');
-    run.submit('use nibble card on nibble groups');
-    run.submit('use carry token on rightmost column');
-    run.submit('use shift lever on row');
-    run.submit('show foreman switch gauge');
+    // Step 7: nibble counterplay, the clerk's teaching ladder, then the audit.
+    run.step('use nibble card on carry lamp', 'carry-cleared');
+    run.step('use nibble card on nibble groups', 'hex-read');
+    run.submit('ask clerk about bases');
+    run.step('ask clerk about carries', 'clerk-carry-heard');
+    run.submit('ask clerk about the back'); // topic-clerk-bases-known
+    run.step('use carry token on rightmost column', 'carries-added');
+    run.step('use shift lever on row', 'row-shifted');
+    run.step('show foreman switch gauge', 'overflow-checked');
     run.startQuiz('ask clerk about shifts', 'quiz-number-systems');
 
-    run.travelTo('room-character-tiles');
-    run.submit('take ascii stamp');
-    run.submit('examine tiles');
-    run.submit('use ascii stamp on tiles');
+    // Steps 8–9: the character case, tiles verified before the stamp, and
+    // the typesetter's ascii → unicode ladder.
+    run.submit('south');
+    run.submit('east');
+    run.expectRoom('step 8', 'room-character-tiles');
+    run.step('take ascii stamp');
+    run.step('examine tiles', 'tiles-verified');
+    run.step('use ascii stamp on tiles', 'characters-matched');
+    run.submit('ask typesetter about ascii');
     run.startQuiz(
       'ask typesetter about unicode',
       'quiz-character-representation',
     );
 
-    run.travelTo('room-picture-mosaic');
-    run.submit('take pixel lens');
-    run.submit('use pixel lens on mosaic');
-    run.submit('use pixel lens on nibble card');
-    run.submit('show foreman pixel lens');
+    // Steps 10–11: mosaic, leaf actions, and the critic's depth ladder.
+    run.submit('west');
+    run.submit('south');
+    run.expectRoom('step 10', 'room-picture-mosaic');
+    run.step('take pixel lens');
+    run.step('use pixel lens on mosaic', 'picture-built');
+    run.step('use pixel lens on nibble card', 'pixels-weighed');
+    run.step('show foreman pixel lens', 'badge-scaled');
+    run.submit('ask critic about vectors');
+    run.step('ask critic about depth', 'critic-depth-heard');
     run.startQuiz('ask critic about storage', 'quiz-graphics-representation');
 
-    run.travelTo('room-sound-choir');
-    run.submit('take sample fork');
-    run.submit('use sample fork on bit-rate desk');
-    run.travelTo('room-storage-stacks');
-    run.submit('use sample fork on unit ladder');
-    run.submit('show foreman sample fork');
-    run.submit('show foreman nibble card');
+    // Steps 12–13: sample first; the audio quiz waits for step 15's SHOW.
+    run.submit('north');
+    run.submit('up');
+    run.expectRoom('step 12', 'room-sound-choir');
+    run.step('take sample fork');
+    run.step('use sample fork on bit-rate desk', 'sound-sampled');
+    run.submit('ask choirmaster about samples');
+    run.step('ask choirmaster about depth', 'conductor-depth-heard');
+
+    // Steps 14–15: stacks sorted, fork SHOW, audio quiz, capacity SHOW and
+    // the keeper's unit ladder before the capacity quiz.
+    run.submit('down');
+    run.submit('in');
+    run.expectRoom('step 14', 'room-storage-stacks');
+    run.step('use sample fork on unit ladder', 'stacks-sorted');
+    run.step('show foreman sample fork', 'bit-rate-counted');
     run.startQuiz('ask choirmaster about storage', 'quiz-sound-representation');
+    run.step('show foreman nibble card', 'capacity-labelled');
+    run.submit('ask keeper about units');
     run.startQuiz('ask keeper about capacity', 'quiz-storage-units');
 
-    run.travelTo('room-compression-press');
-    run.submit('take compression die');
-    run.submit('use compression die');
-    run.submit('use compression die on ascii stamp');
+    // Steps 16–18: lossy teaching before the die uses, then the ratio quiz.
+    run.submit('out');
+    run.submit('out');
+    run.expectRoom('step 16', 'room-compression-press');
+    run.step('take compression die');
+    run.submit('ask operator about lossy');
+    run.step('use compression die', 'archive-packed');
+    run.step('use compression die on ascii stamp', 'compression-chosen');
     run.startQuiz('ask operator about ratio', 'quiz-data-compression');
 
+    // The zone-one milestone at step 18: two lives lost, eight topics and
+    // eight quizzes complete, and no end event yet.
+    const zoneOneTopics = new Set(
+      authoredBundle.quizzes.all.slice(0, 8).map((quiz) => quiz.topicId),
+    );
+    const completedAt18 = new Set(
+      readSave(run.game, run.storage).dto.state.progress.flatMap(
+        (entry) => entry.completedTopics,
+      ),
+    );
+    expect(completedAt18).toEqual(zoneOneTopics);
+    expect(run.passedQuizzes.size).toBe(8);
+    run.expectLives('step 18', 1);
+    expect(run.game.getViewData().lives).toBe(1);
+    expect(
+      run.events
+        .filter((event) => event.type === 'hazard-triggered')
+        .map((event) =>
+          event.type === 'hazard-triggered' ? event.hazardId : '',
+        ),
+    ).toEqual(['hazard-switch-overheat', 'hazard-carry-overflow']);
+    expect(run.events.filter((event) => event.type === 'game-won')).toEqual([]);
+
+    // Step 19–20: back through the hall to the hub, then north to the
+    // concourse; step 21 enters the mill at its start room.
+    run.submit('in');
+    run.expectRoom('step 19 hall return', 'room-binary-hall');
+    run.submit('west');
+    run.expectRoom('step 19 hub return', 'room-network-hub');
+    run.submit('north');
+    run.expectRoom('step 20', 'room-1-4-concourse');
+    run.expectLives('step 20 area-change reset', 3);
+    run.submit('east');
+    run.expectRoom('step 21', 'room-pattern-bureau');
+    run.expectLives('step 21 area-change reset', 3);
+
+    // Step 21: welcome, pseudo-code, shapes and the Bureau demonstration.
+    run.submit('ask loomwright about hello');
+    run.submit('ask loomwright about pseudocode');
+    run.submit('ask loomwright about shapes');
+    run.startQuiz('ask loomwright about demonstration', 'quiz-pattern-bureau');
+
+    // Step 22–23: the warp walk, the dressing ladder, the give and P1.
+    run.step('east', 'demo-on-record');
+    run.expectRoom('step 22', 'room-warp-walk');
+    run.submit('north');
+    run.expectRoom('step 23', 'room-threading-order');
+    run.submit('ask warp dresser about constructs');
+    run.submit('ask warp dresser about order'); // the keyword middle beat
+    run.startQuiz(
+      'ask warp dresser about demonstration',
+      'quiz-threading-order',
+    );
+    run.step('give warp dresser sequence card', 'card-sequence-given');
+    run.step('put shade cards on step hangers', 'dressing-re-ordered');
+    run.expectFlag('threading-ordered', 'puzzle-dress-the-warp');
+    run.step('take else plate');
+
+    // Step 24: the shed plate and the addressing plate's letter rack (P2).
+    run.submit('south');
+    run.submit('out');
+    run.expectRoom('step 24', 'room-bobbin-window');
+    run.step('take shed plate');
+    run.step('use addressing plate', 'addressing-plate-re-lettered');
+
+    // Step 25: the scripted dye-pad life, the tally ladders, the count quiz,
+    // the give and the ratchet's two actions (P7/P8).
+    run.submit('in');
+    run.expectHazard('south', 'hazard-dye-pad');
+    run.expectRoom('the dye-pad ejection', 'room-pattern-bureau');
+    run.expectLives('the dye-pad loss', 2);
+    run.submit('east');
+    run.submit('south');
+    run.expectRoom('the safe weft-counter re-entry', 'room-weft-counter');
+    run.submit('ask weft tally about constructs');
+    run.step('ask weft tally about dye pad', 'pad-checked');
+    run.step('ask weft tally about constructs', 'weft-ratchet-heard');
+    run.step('ask weft tally about ratchet', 'pass-count-predicted');
+    run.startQuiz('ask weft tally about demonstration', 'quiz-weft-tally');
+    run.step('give weft tally count card', 'card-count-given');
+    run.step('use slip tooth on counting ratchet', 'slip-tooth-pried');
+    run.step('use counting ratchet', 'counting-ratchet-reseated');
+    run.expectFlag('weft-counted', 'puzzle-seat-the-ratchet');
+    run.step('take bell wire');
+
+    // Step 26–27: the bell wire (P3), then the selection ladder, give and
+    // the three plates/trolley actions (P4/P5/P6).
+    run.submit('north');
+    run.submit('out');
+    run.expectRoom('step 26', 'room-bobbin-window');
+    run.step('use bell wire on intake bell', 'bell-wire-seated');
+    run.expectFlag('bell-mended', 'puzzle-mend-the-bell');
+    run.submit('in');
+    run.submit('in');
+    run.expectRoom('step 27', 'room-colour-court');
+    run.submit('ask shed opener about constructs');
+    run.submit('ask shed opener about shed'); // the keyword middle beat
+    run.startQuiz('ask shed opener about demonstration', 'quiz-colour-court');
+    run.step('give shed opener selection card', 'card-selection-given');
+    run.step('put shed plate in plate frame', 'shed-plate-returned');
+    run.step('put else plate in plate frame', 'else-plate-restored');
+    run.step('use pick trolley', 'tray-routed-by-condition');
+    run.expectFlag('colours-lifted', 'puzzle-lift-the-shed');
+
+    // Step 28: the until ladder, give and the exit frame/drawer (P9/P10).
+    run.submit('out');
+    run.submit('down');
+    run.expectRoom('step 28', 'room-endless-selvedge');
+    run.submit('ask selvedge warden about constructs');
+    run.submit('ask selvedge warden about next'); // the keyword middle beat
+    run.startQuiz('ask selvedge warden about demonstration', 'quiz-selvedge');
+    run.step('give selvedge warden condition card', 'card-condition-given');
+    run.step('put until plate on exit frame', 'until-clause-restored');
+    run.expectFlag('condition-plate-set', 'puzzle-close-the-selvedge');
+    run.step(
+      'put rogue thread in counterfoil drawer',
+      'rogue-thread-in-drawer',
+    );
+    run.expectFlag('rogue-thread-filed', 'puzzle-file-the-rogue-thread');
+
+    // Steps 29–30: all four section lights open the rail; the audit is the
+    // last of the fourteen quizzes and fires game-won in its own batch.
+    run.submit('up');
+    run.expectRoom('step 29 warp walk', 'room-warp-walk');
+    run.step('east');
+    run.expectRoom('step 29 rail', 'room-finished-rail');
+    run.startQuiz('ask loomwright about audit', 'quiz-finished-rail');
+    run.expectFlag('master-demonstrated', 'quiz-finished-rail');
+
     expect(run.failures).toEqual([]);
-    const allEvents = run.batches.flat();
+    const allEvents = run.events;
     const hazards = allEvents.filter(
       (event) => event.type === 'hazard-triggered',
     );
     expect(new Set(hazards.map((event) => event.hazardId))).toEqual(
-      new Set(['hazard-switch-overheat', 'hazard-carry-overflow']),
+      new Set([
+        'hazard-switch-overheat',
+        'hazard-carry-overflow',
+        'hazard-dye-pad',
+      ]),
     );
-    expect(hazards).toHaveLength(2);
-    expect(run.game.getViewData().lives).toBe(1);
+    expect(hazards).toHaveLength(3);
+    expect(run.game.getViewData().lives).toBe(2);
     expect(run.game.getViewData().status).toBe('won');
-    expect(run.passedQuizzes.size).toBe(8);
-    for (const flag of TRACE_FLAGS) expect(run.flags.has(flag)).toBe(true);
+    expect(run.passedQuizzes.size).toBe(14);
+    expect(run.passedQuizzes).toEqual(
+      new Set(authoredBundle.quizzes.all.map((quiz) => quiz.id)),
+    );
+    for (const flag of [...TRACE_FLAGS, ...MILL_FLAGS])
+      expect(run.flags.has(flag)).toBe(true);
+    const solved = allEvents.filter((event) => event.type === 'puzzle-solved');
+    expect(solved).toHaveLength(23);
+    expect(new Set(solved.map((event) => event.puzzleId))).toEqual(
+      new Set(authoredBundle.puzzles.all.map((puzzle) => puzzle.id)),
+    );
 
     const wins = allEvents.filter((event) => event.type === 'game-won');
     expect(wins).toHaveLength(1);
     expect(lastWinningBatch(run.batches)).toBe(run.batches.at(-1));
-    const saved = readSave(run.game, run.storage).dto.state;
+    const savedDto = readSave(run.game, run.storage).dto;
+    const saved = savedDto.state;
     const completed = new Set(
       saved.progress.flatMap((entry) => entry.completedTopics),
     );
     expect(completed).toEqual(
       new Set(authoredBundle.quizzes.all.map((quiz) => quiz.topicId)),
     );
+    expect(completed.size).toBe(10);
+    expect(completed).toEqual(
+      new Set(
+        authoredBundle.areas.all.flatMap((area) =>
+          authoredBundle.specTopics
+            .getByAreaId(area.worldId, area.id)
+            .filter((topic) => topic.status === 'covered' && topic.evidence)
+            .map((topic) => topic.id),
+        ),
+      ),
+    );
     const finalScore = saved.progress.reduce(
       (total, entry) => total + entry.earnedScore,
       0,
     );
+    expect(finalScore).toBe(43);
     expect(wins).toEqual([{ type: 'game-won', finalScore }]);
+
+    const manager = createSaveManager({
+      storage: run.storage,
+      clock: new FixedClock(),
+      bundle: authoredBundle,
+    });
+    const restored = manager.restore(savedDto);
+    expect(restored.status).toBe('won');
+    expect(restored.score).toBe(43);
+    expect(createSession(restored, authoredBundle).observe([])).toEqual([]);
   });
 });

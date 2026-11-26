@@ -147,27 +147,53 @@ function roomSummary(
       };
 }
 
+// walkthrough.md §8.2: entering a new area resets lives to that area's
+// declared value. The value comes from the injected bundle, never from a
+// literal; the change-lives branch above remains the sole writer and emits the
+// canonical lives-changed event (application-and-ui.md §9).
+function areaChangeEvents(
+  state: GameState,
+  bundle: ContentBundle | undefined,
+  previous: { readonly worldId: string; readonly areaId: string },
+  next: { readonly worldId: string; readonly areaId: string },
+): readonly GameEvent[] {
+  if (previous.worldId === next.worldId && previous.areaId === next.areaId) {
+    return [];
+  }
+  const area = bundle?.areas.getById(next.areaId);
+  if (area === undefined || area.worldId !== next.worldId) return [];
+  const player = state.player as { lives: number };
+  const delta = area.lives - player.lives;
+  return delta === 0
+    ? []
+    : (applyStateEffect(
+        state,
+        { kind: 'change-lives', delta, reason: 'area change' },
+        bundle,
+      ) ?? []);
+}
+
 function applyEntityEffect(
   state: GameState,
   effect: Effect,
   bundle: ContentBundle | undefined,
 ): readonly GameEvent[] | undefined {
   if (effect.kind === 'move-player') {
-    const pair = areaPairForRoom(bundle, effect.roomId) ?? {
-      worldId: state.player.position.worldId,
-      areaId: state.player.position.areaId,
+    const player = state.player as {
+      lives: number;
+      position: { worldId: string; areaId: string; roomId: string };
     };
-    (
-      state.player as {
-        position: { worldId: string; areaId: string; roomId: string };
-      }
-    ).position = { ...pair, roomId: effect.roomId };
-    return [
+    const previous = player.position;
+    const pair = areaPairForRoom(bundle, effect.roomId) ?? previous;
+    const events: GameEvent[] = [
       {
         type: 'room-entered',
         room: roomSummary(bundle, effect.roomId),
       },
+      ...areaChangeEvents(state, bundle, previous, pair),
     ];
+    player.position = { ...pair, roomId: effect.roomId };
+    return events;
   }
   if (effect.kind === 'set-actor-state') {
     const npc = state.npcs[effect.actorId] as { stateId: string } | undefined;

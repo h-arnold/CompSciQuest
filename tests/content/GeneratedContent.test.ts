@@ -15,7 +15,9 @@ import {
   GENERATED_HEADER,
   ZONE1_CATALOGUES,
   ZONE1_OPTIONS,
+  acceptedEmittedDates,
   emittedEntries,
+  expectedZone1Counts,
   expectedZone1Ids,
   zone1CardSet,
 } from '../fixtures/zone1';
@@ -85,6 +87,8 @@ describe('generated content emission (content-toolchain.md §5)', () => {
 
   it('CT-GEN-08: all 14 declared modules carry exact counts, headers and no timestamps', () => {
     const result = zone1Generation();
+    const counts = expectedZone1Counts(zone1Cards());
+    const datePattern = /\b20\d{2}-\d{2}-\d{2}\b/gu;
 
     expect(
       result.files.map((file) => file.path),
@@ -95,16 +99,25 @@ describe('generated content emission (content-toolchain.md §5)', () => {
         file.text,
         `${file.path} must carry the generated header`,
       ).toContain(GENERATED_HEADER);
-      expect(
-        /\b20\d{2}-\d{2}-\d{2}\b/u.test(file.text),
-        `${file.path} must carry no timestamp`,
-      ).toBe(false);
     }
+    // content-toolchain.md §5 forbids generator-added timestamps. The accepted
+    // Zone A spec-topic evidence itself quotes its 2026-11-25 acceptance date,
+    // so the emitted dates must match the accepted cards exactly: no invented
+    // generation stamp and no dropped piece of accepted prose.
+    expect(
+      result.files.flatMap((file) => file.text.match(datePattern) ?? []),
+      'generated modules must carry no timestamp beyond accepted card text',
+    ).toEqual(acceptedEmittedDates(zone1Cards()));
     for (const catalogue of ZONE1_CATALOGUES) {
+      const expected = counts[catalogue.name];
+      expect(
+        expected,
+        `${catalogue.name} must have a count derived from the accepted cards`,
+      ).toBeTypeOf('number');
       expect(
         emittedEntries(generatedFile(result.files, catalogue.path)),
         `${catalogue.name} must emit the approved entry count`,
-      ).toHaveLength(catalogue.count);
+      ).toHaveLength(expected ?? -1);
     }
   });
 

@@ -120,9 +120,19 @@ function unlockHandler(
 
 function putHandler(command: Command, context: TurnContext): readonly Effect[] {
   if (command.kind !== 'put') return [];
-  if (!hasItem(context, command.itemId)) {
+  // Fixtures and items in the room are reachable sources as well as carried
+  // ones (walkthrough.md §8.6 P1/P5/P9/P10).
+  const item = context.bundle.items.getById(command.itemId);
+  const canReach =
+    item === undefined
+      ? isSceneryVisible(context, command.itemId)
+      : isVisible(context, command.itemId);
+  if (!canReach) {
     return [message('You are not carrying that.')];
   }
+  const fromOwnerId = hasItem(context, command.itemId)
+    ? 'player'
+    : context.state.player.position.roomId;
   if (
     !isVisible(context, command.targetId) &&
     !isSceneryVisible(context, command.targetId)
@@ -139,7 +149,7 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
     {
       kind: 'transfer-item',
       itemId: command.itemId,
-      fromOwnerId: 'player',
+      fromOwnerId,
       toOwnerId,
     },
     ...putInteraction(command, context),
@@ -150,14 +160,10 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
 function useHandler(command: Command, context: TurnContext): readonly Effect[] {
   if (command.kind !== 'use') return [];
   const item = context.bundle.items.getById(command.itemId);
-  let canReach: boolean;
-  if (item === undefined) {
-    canReach = isSceneryVisible(context, command.itemId);
-  } else if (item.portable) {
-    canReach = hasItem(context, command.itemId);
-  } else {
-    canReach = isVisible(context, command.itemId);
-  }
+  const canReach =
+    item === undefined
+      ? isSceneryVisible(context, command.itemId)
+      : isVisible(context, command.itemId);
   if (!canReach) return [message('You are not carrying that.')];
   if (
     command.targetId !== undefined &&

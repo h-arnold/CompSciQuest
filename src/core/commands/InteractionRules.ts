@@ -1,4 +1,4 @@
-// Trace-pinned authored interactions from walkthrough.md §2. The generator
+// Trace-pinned authored interactions from walkthrough.md §2 and §8.6. The generator
 // intentionally drops authoring.useNotes, so the runtime keeps this small,
 // declarative action table separate from content definitions and prose.
 import type { Effect } from '../effects/Effect';
@@ -93,6 +93,36 @@ const SCENERY: readonly SceneryDefinition[] = [
     aliases: ['real bin', 'bin'],
     description: 'The real bin is labelled for a number with a decimal point.',
   },
+  {
+    id: 'scenery-shade-cards',
+    roomId: 'room-threading-order',
+    aliases: ['shade cards', 'cards'],
+    description: "The shade cards hang in somebody else's sequence.",
+  },
+  {
+    id: 'scenery-step-hangers',
+    roomId: 'room-threading-order',
+    aliases: ['step hangers', 'hangers'],
+    description: 'The step hangers carry the five steps of the pattern.',
+  },
+  {
+    id: 'scenery-intake-bell',
+    roomId: 'room-bobbin-window',
+    aliases: ['intake bell', 'bell'],
+    description: 'The intake bell hangs short, its hook empty.',
+  },
+  {
+    id: 'scenery-plate-frame',
+    roomId: 'room-colour-court',
+    aliases: ['plate frame', 'frame'],
+    description: 'The plate frame holds a diamond slot and a plain slot.',
+  },
+  {
+    id: 'scenery-exit-frame',
+    roomId: 'room-endless-selvedge',
+    aliases: ['exit frame'],
+    description: 'The exit frame waits for the plate that reads until.',
+  },
 ];
 
 const USE_INTERACTIONS: readonly FlagInteraction[] = [
@@ -179,6 +209,38 @@ const USE_INTERACTIONS: readonly FlagInteraction[] = [
     flags: ['compression-chosen'],
     text: 'You compare the stamped characters and choose the compression setting.',
   },
+  {
+    itemId: 'item-addressing-plate',
+    roomId: 'room-bobbin-window',
+    flags: ['addressing-plate-re-lettered'],
+    text: 'You work the letter rack and the slopped addresses read true again.',
+  },
+  {
+    itemId: 'item-bell-wire',
+    targetId: 'scenery-intake-bell',
+    roomId: 'room-bobbin-window',
+    flags: ['bell-wire-seated'],
+    text: 'The wire seats on the intake bell and the bell rings round.',
+  },
+  {
+    itemId: 'item-pick-trolley',
+    roomId: 'room-colour-court',
+    flags: ['tray-routed-by-condition'],
+    text: "The tray routes by the plate's condition: if the count is twelve or more, the pick lifts; else it posts routine — nine posts, twelve itself lifts, fifteen lifts.",
+  },
+  {
+    itemId: 'item-slip-tooth',
+    targetId: 'item-counting-ratchet',
+    roomId: 'room-weft-counter',
+    flags: ['slip-tooth-pried'],
+    text: 'The slip tooth comes out of the ratchet. The chalk line reads count = count + 1.',
+  },
+  {
+    itemId: 'item-counting-ratchet',
+    roomId: 'room-weft-counter',
+    flags: ['counting-ratchet-reseated'],
+    text: 'The ratchet seats true: one tooth, one pass.',
+  },
 ];
 
 const PUT_INTERACTIONS: readonly FlagInteraction[] = [
@@ -188,6 +250,41 @@ const PUT_INTERACTIONS: readonly FlagInteraction[] = [
     roomId: 'room-binary-hall',
     flags: ['types-sorted'],
     text: 'You place the decimal sample in the real bin.',
+  },
+  {
+    itemId: 'scenery-shade-cards',
+    targetId: 'scenery-step-hangers',
+    roomId: 'room-threading-order',
+    flags: ['dressing-re-ordered'],
+    text: "The shade cards go back on the hangers in the card's order: ground, first stripe, cross-stripe, border, hem.",
+  },
+  {
+    itemId: 'item-shed-plate',
+    targetId: 'scenery-plate-frame',
+    roomId: 'room-colour-court',
+    flags: ['shed-plate-returned'],
+    text: 'The shed plate seats into the diamond slot it was cut for.',
+  },
+  {
+    itemId: 'item-else-plate',
+    targetId: 'scenery-plate-frame',
+    roomId: 'room-colour-court',
+    flags: ['else-plate-restored'],
+    text: 'The else plate finds its plain rectangular slot beside the diamond.',
+  },
+  {
+    itemId: 'item-condition-plate',
+    targetId: 'scenery-exit-frame',
+    roomId: 'room-endless-selvedge',
+    flags: ['until-clause-restored'],
+    text: 'The until plate goes up on the exit frame and the selvedge can want an ending again.',
+  },
+  {
+    itemId: 'item-rogue-thread',
+    targetId: 'item-counterfoil-drawer',
+    roomId: 'room-endless-selvedge',
+    flags: ['rogue-thread-in-drawer'],
+    text: 'The rogue thread files in the counterfoil drawer, initialled W.',
   },
 ];
 

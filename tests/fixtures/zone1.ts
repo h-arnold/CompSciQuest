@@ -1,6 +1,8 @@
-// Declared, deterministic view of the clean zone-1 card set for C3 red tests.
-// The YAML text is inlined at build time by Vite's raw glob: no runtime file
-// system, clock, randomness, network or storage is touched. No card is written.
+// Declared, deterministic view of the accepted whole-game card set for C3/W6
+// red tests. The YAML text is inlined at build time by Vite's raw glob: no
+// runtime file system, clock, randomness, network or storage is touched. No
+// card is written. The declared paths, coverage headings and spec-topic IDs
+// come from the accepted cards and COVERAGE.md, not from the generated bundle.
 import { expect } from 'vitest';
 import {
   AREA_ID,
@@ -19,9 +21,11 @@ const CARD_PREFIX = '../../docs/content/';
 export const GENERATED_HEADER =
   '// GENERATED FILE — do not edit. Regenerate with npm run content:generate.';
 
-// Injected representation of the `## Topic:` headings in COVERAGE.md
+// Injected representation of all eleven `## Topic:` headings in COVERAGE.md
 // (content-toolchain.md §2). A fixed list keeps the tests independent of the
-// Markdown file while still supplying every heading the clean cards declare.
+// Markdown file while still supplying every heading the accepted cards declare.
+// `ai-ethics-and-implications` remains `in progress` but is still canonical;
+// the final two headings record the accepted W5 coverage flip for Zone A.
 export const ZONE1_COVERAGE_HEADINGS: readonly string[] = [
   '## Topic: switch-to-bit',
   '## Topic: data-types',
@@ -32,45 +36,49 @@ export const ZONE1_COVERAGE_HEADINGS: readonly string[] = [
   '## Topic: data-storage-units',
   '## Topic: data-compression',
   '## Topic: ai-ethics-and-implications',
+  '## Topic: algorithms-and-pseudocode',
+  '## Topic: programming-constructs',
 ];
 
 export const ZONE1_OPTIONS: ValidationOptions = {
   coverageHeadings: ZONE1_COVERAGE_HEADINGS,
 };
 
+// The declared generated module table from content-toolchain.md §5. Expected
+// counts are not literals here: expectedZone1Counts() derives them from the
+// accepted YAML cards, so a stale generated bundle fails against the cards.
 export const ZONE1_CATALOGUES: readonly {
   readonly path: string;
   readonly name: string;
-  readonly count: number;
 }[] = [
-  { path: 'src/content/authored/rooms.ts', name: 'rooms', count: 11 },
-  { path: 'src/content/authored/items.ts', name: 'items', count: 19 },
-  { path: 'src/content/authored/areas.ts', name: 'areas', count: 3 },
-  { path: 'src/content/authored/worlds.ts', name: 'worlds', count: 1 },
-  { path: 'src/content/authored/actors.ts', name: 'actors', count: 9 },
+  { path: 'src/content/authored/rooms.ts', name: 'rooms' },
+  { path: 'src/content/authored/items.ts', name: 'items' },
+  { path: 'src/content/authored/areas.ts', name: 'areas' },
+  { path: 'src/content/authored/worlds.ts', name: 'worlds' },
+  { path: 'src/content/authored/actors.ts', name: 'actors' },
   {
     path: 'src/content/authored/actor-states.ts',
     name: 'actorStates',
-    count: 6,
   },
   {
     path: 'src/content/authored/conversation-topics.ts',
     name: 'conversationTopics',
-    count: 41,
   },
-  { path: 'src/content/authored/nodes.ts', name: 'nodes', count: 4 },
-  { path: 'src/content/authored/quizzes.ts', name: 'quizzes', count: 8 },
-  { path: 'src/content/authored/questions.ts', name: 'questions', count: 32 },
-  { path: 'src/content/authored/puzzles.ts', name: 'puzzles', count: 17 },
-  { path: 'src/content/authored/hazards.ts', name: 'hazards', count: 5 },
-  { path: 'src/content/authored/hints.ts', name: 'hints', count: 6 },
+  { path: 'src/content/authored/nodes.ts', name: 'nodes' },
+  { path: 'src/content/authored/quizzes.ts', name: 'quizzes' },
+  { path: 'src/content/authored/questions.ts', name: 'questions' },
+  { path: 'src/content/authored/puzzles.ts', name: 'puzzles' },
+  { path: 'src/content/authored/hazards.ts', name: 'hazards' },
+  { path: 'src/content/authored/hints.ts', name: 'hints' },
   {
     path: 'src/content/authored/spec-topics.ts',
     name: 'specTopics',
-    count: 8,
   },
 ];
 
+// The ten `covered` topics declared by docs/content/spec-topics.yaml (HANDOFF
+// §7); `ai-ethics-and-implications` is a canonical heading but `in progress`,
+// so it has no spec topic and is deliberately absent here.
 export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
   'switch-to-bit',
   'data-types',
@@ -80,6 +88,8 @@ export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
   'sound-representation',
   'data-storage-units',
   'data-compression',
+  'algorithms-and-pseudocode',
+  'programming-constructs',
 ];
 
 export function zone1CardSet(): CardSet {
@@ -100,6 +110,13 @@ export function zone1CardSet(): CardSet {
     `${AREA_ID}/puzzles.yaml`,
     `${AREA_ID}/quizzes.yaml`,
     `${AREA_ID}/rooms.yaml`,
+    '1-4-concourse/rooms.yaml',
+    '1-4-programming-constructs/hazards.yaml',
+    '1-4-programming-constructs/hints.yaml',
+    '1-4-programming-constructs/npcs.yaml',
+    '1-4-programming-constructs/puzzles.yaml',
+    '1-4-programming-constructs/quizzes.yaml',
+    '1-4-programming-constructs/rooms.yaml',
     'entry-interface/npcs.yaml',
     'entry-interface/rooms.yaml',
     'network-hub/npcs.yaml',
@@ -131,16 +148,27 @@ function allIds(cards: ParsedCardSet, key: string): readonly string[] {
   return cards.cards.flatMap((card) => idsOf(card.data[key]));
 }
 
-function cardData(
+// Zone A adds a second quizzes, puzzles, hazards and hints card, so these
+// collections must be merged across every matching card in declaration order
+// exactly as generateContent() merges them (content-toolchain.md §5).
+function cardDataAll(
   cards: ParsedCardSet,
   suffix: string,
-): Record<string, unknown> {
-  const card = cards.cards.find((entry) => entry.path.endsWith(suffix));
+): readonly Record<string, unknown>[] {
+  const matches = cards.cards.filter((entry) => entry.path.endsWith(suffix));
   expect(
-    card,
-    `the ${suffix} card must be present in the zone-1 set`,
-  ).toBeDefined();
-  return card?.data ?? {};
+    matches.length,
+    `the ${suffix} cards must be present in the accepted set`,
+  ).toBeGreaterThan(0);
+  return matches.map((entry) => entry.data);
+}
+
+function idsFromCards(
+  cards: ParsedCardSet,
+  suffix: string,
+  key: string,
+): readonly string[] {
+  return cardDataAll(cards, suffix).flatMap((data) => idsOf(data[key]));
 }
 
 export interface Zone1Start {
@@ -178,11 +206,6 @@ export function zone1DeclaredStart(cards: ParsedCardSet): Zone1Start {
 export function expectedZone1Ids(
   cards: ParsedCardSet,
 ): Readonly<Record<string, readonly string[]>> {
-  const quizzes = cardData(cards, '/quizzes.yaml');
-  const puzzles = cardData(cards, '/puzzles.yaml');
-  const hazards = cardData(cards, '/hazards.yaml');
-  const hints = cardData(cards, '/hints.yaml');
-  const spec = cardData(cards, 'spec-topics.yaml');
   return {
     rooms: allIds(cards, 'rooms'),
     items: allIds(cards, 'items'),
@@ -198,13 +221,49 @@ export function expectedZone1Ids(
     actorStates: allIds(cards, 'actorStates'),
     conversationTopics: allIds(cards, 'conversationTopics'),
     nodes: allIds(cards, 'conversationNodes'),
-    quizzes: idsOf(quizzes['quizzes']),
-    questions: idsOf(quizzes['questions']),
-    puzzles: idsOf(puzzles['puzzles']),
-    hazards: idsOf(hazards['hazards']),
-    hints: idsOf(hints['hintSequences']),
-    specTopics: idsOf(spec['topics']),
+    quizzes: idsFromCards(cards, '/quizzes.yaml', 'quizzes'),
+    questions: idsFromCards(cards, '/quizzes.yaml', 'questions'),
+    puzzles: idsFromCards(cards, '/puzzles.yaml', 'puzzles'),
+    hazards: idsFromCards(cards, '/hazards.yaml', 'hazards'),
+    hints: idsFromCards(cards, '/hints.yaml', 'hintSequences'),
+    specTopics: idsFromCards(cards, 'spec-topics.yaml', 'topics'),
   };
+}
+
+// Approved counts are read from the accepted cards, never from the generated
+// bundle under test (HANDOFF §7 records the same whole-game totals).
+export function expectedZone1Counts(
+  cards: ParsedCardSet,
+): Readonly<Record<string, number>> {
+  const ids = expectedZone1Ids(cards);
+  const counts: Record<string, number> = {};
+  for (const [name, entries] of Object.entries(ids)) {
+    counts[name] = entries.length;
+  }
+  return counts;
+}
+
+// Dates that survive the handoff belong to the accepted card prose: authoring
+// notes are stripped before emission (content-toolchain.md §5). The Zone A
+// spec-topic evidence quotes its acceptance date twice; nothing else is dated.
+export function acceptedEmittedDates(cards: ParsedCardSet): readonly string[] {
+  const datePattern = /\b20\d{2}-\d{2}-\d{2}\b/gu;
+  const withoutAuthoring = (value: unknown): unknown => {
+    if (Array.isArray(value))
+      return value.map((item) => withoutAuthoring(item));
+    if (isRecord(value)) {
+      return Object.fromEntries(
+        Object.entries(value)
+          .filter(([key]) => key !== 'authoring')
+          .map(([key, child]) => [key, withoutAuthoring(child)]),
+      );
+    }
+    return value;
+  };
+  return cards.cards.flatMap((card) => {
+    const text = JSON.stringify(withoutAuthoring(card.data));
+    return text.match(datePattern) ?? [];
+  });
 }
 
 export function emittedEntries(

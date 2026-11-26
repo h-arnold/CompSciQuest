@@ -1,4 +1,4 @@
-// C3 static handoff guards (content-toolchain.md §5, §8; application-and-ui.md
+// C3 static handoff guards (content-toolchain.md §5; application-and-ui.md
 // §3.3; architecture.md §12). Source text is inlined at build time by Vite; no
 // runtime file system, clock, randomness, network or storage is consulted.
 import { describe, expect, it } from 'vitest';

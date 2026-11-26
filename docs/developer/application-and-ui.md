@@ -115,7 +115,7 @@ export interface AreaDefinition {
   readonly name: string;
   readonly roomIds: readonly string[];
   readonly startRoomId: string; // level start for hazards and quiz failures
-  readonly lives: number; // declared reset value; the runtime does not apply it
+  readonly lives: number; // reset value on entering the area
 }
 
 // src/content/RoomDefinition.ts
@@ -144,9 +144,9 @@ export interface ItemDefinition {
 [content-rules.md](content-rules.md) D4 owns the authoring rule for `startRoomId`
 and `lives`. A new game starts with 3 lives: `Session.newGame` assigns them after
 `createInitial` has read `WorldDefinition.lives`, so a world that declares
-another value is not yet honoured. `AreaDefinition.lives` is the declared reset
-value, and the current runtime does not apply it; after the start, lives change
-only through `change-lives`.
+another value is not yet honoured. On an area change, lives reset to the new
+area's `AreaDefinition.lives`. After the start, lives change through
+`change-lives` and on area change.
 
 ### 3.3 Loading and validation
 
@@ -302,12 +302,12 @@ Doors and containers have dedicated verbs in v1 rather than relying solely on
 | `open <target>`          | Open an unlocked door or container                          | `door-open:<itemId>` / `container-open:<itemId>` = `true`         |
 | `close <target>`         | Close an open door or container                             | the same flag = `false`                                           |
 | `unlock <item> <target>` | Use a key-like item; sets the action flag but does not open | `door-unlocked:<itemId>` / `container-unlocked:<itemId>` = `true` |
-| `put <item> <target>`    | Place a portable item into a container                      | `transfer-item` to the container owner                            |
+| `put <item> <target>`    | Place a visible item or scenery on a visible target         | `transfer-item` to the target owner (the room for scenery)        |
 
 The `flags` convention and the one-owner-per-item rule are owned by
-[storage-schema.md §3.3](storage-schema.md#33-invariants). Each handler checks
-preconditions through `RuleEngine` (key held, target visible, target not already
-open). An invalid attempt emits a friendly in-voice message and leaves state
+[storage-schema.md §3.3](storage-schema.md#33-invariants). Handlers check their
+own preconditions; `RuleEngine` gates `go` through declared exit preconditions
+(§8). An invalid attempt emits a friendly in-voice message and leaves state
 unchanged. `use <item> on <target>` remains supported as a general interaction,
 including puzzle solutions.
 
@@ -362,6 +362,15 @@ as absent. This is in-world feedback under
 [content-rules.md §3 N5](content-rules.md#3-rule-catalogue), not a parser-style
 denial. `drop` shares `takeHandler()` and is unaffected
 by `portable`: it transfers from the player to the room and emits "Dropped.".
+
+`use` and `put` accept a **visible source**: a carried item, a visible room item
+or a visible scenery ID. `use` has an optional target and `put` requires one;
+both targets must be visible. `put` derives `fromOwnerId` from live state —
+`player` when the source is carried, otherwise the current room — and sends a
+scenery target's transfer to that room. An unreachable source still emits
+"You are not carrying that.". This is the runtime allowance for the authored
+trace, whose rows act on room items and scenery without an intervening `take`
+([walkthrough.md §8.6](../content/walkthrough.md#86-trace-pinned-verb-action-rows-the-w6-contract)).
 
 ## 6. Canonical event union and rendering
 
