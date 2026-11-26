@@ -48,7 +48,8 @@ async function command(page: Page, raw: string): Promise<string[]> {
         .some((line) => line.textContent === `> ${text}`),
     { text: raw, count: before },
   );
-  return (await transcript(page)).slice(before);
+  const lines = await transcript(page);
+  return lines.slice(before);
 }
 
 test('ENG13-INVENTORY-01 — an empty inventory yields the friendly line', async ({
