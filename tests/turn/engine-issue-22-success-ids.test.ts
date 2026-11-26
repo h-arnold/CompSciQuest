@@ -13,8 +13,10 @@
 //
 // Every collaborator is an in-memory fake: no clock, storage, random source,
 // network, file system or DOM is used. No wording outside this row's contract
-// is asserted — puzzle-activated belongs to issue 28, the answer-evaluated
-// prefix to issue 10, and topic-completed wording is not prescribed.
+// is asserted — puzzle-activated belongs to issue 28 and topic-completed
+// wording is not prescribed. The answer-evaluated arm now carries the fixed
+// `Correct. `/`Incorrect. ` verdict prefix settled by issue 10 / §6.1; the
+// other player-facing arms below stay exactly as inherited.
 import { describe, expect, it } from 'vitest';
 import type { GameEvent } from '../../src/core/events/GameEvent';
 import { makeBundle, makeTopic } from '../fixtures/persistence';
@@ -86,7 +88,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
     expect(rendered).not.toMatch(/\bPuzzle\b/);
   });
 
-  it('ENG22-SUCCESSIDS-01: player-facing text arms stay exactly as inherited', async () => {
+  it('ENG22-SUCCESSIDS-01: player-facing text arms keep their contracted transcript lines', async () => {
     const formatEvent = await loadFormatEvent();
     const cases: readonly (readonly [GameEvent, readonly string[]])[] = [
       [
@@ -118,6 +120,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
         },
         ['Try the switch.'],
       ],
+      // Issue 10 / §6.1: verdict prefix is fixed copy; the explanation is verbatim.
       [
         {
           type: 'answer-evaluated',
@@ -126,14 +129,14 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
           correct: true,
           explanation: 'A loop repeats.',
         },
-        ['A loop repeats.'],
+        ['Correct. A loop repeats.'],
       ],
     ];
 
     for (const [event, expected] of cases) {
       expect(
         formatEvent(event, BUNDLE),
-        `${event.type} must stay exactly as inherited`,
+        `${event.type} must keep its contracted transcript line`,
       ).toEqual(expected);
     }
   });

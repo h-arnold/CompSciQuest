@@ -20,7 +20,9 @@ export function formatEvent(
       return [event.text];
     }
     case 'answer-evaluated': {
-      return [event.explanation];
+      return [
+        `${event.correct ? 'Correct.' : 'Incorrect.'} ${event.explanation}`,
+      ];
     }
     case 'room-entered': {
       return [
