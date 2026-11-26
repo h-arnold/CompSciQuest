@@ -28,5 +28,10 @@ export class QuizPanel {
       appendLine(this.element, `${index + 1}. ${option}`);
       index += 1;
     }
+    // Kept outside the numbered option divs so the inherited panel structure
+    // stays unchanged; the values arrive ready-calculated from the view model.
+    const requirement = document.createElement('p');
+    requirement.textContent = `Pass mark: ${quiz.passMark} correct of ${quiz.questionCount}. Wrong answers allowed: ${quiz.remainingWrong}.`;
+    this.element.append(requirement);
   }
 }

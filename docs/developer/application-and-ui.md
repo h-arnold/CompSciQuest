@@ -632,6 +632,8 @@ export interface QuizView {
   readonly options: readonly string[];
   readonly questionNumber: number;
   readonly questionCount: number;
+  readonly passMark: number;
+  readonly remainingWrong: number;
 }
 
 export interface ConversationView {
@@ -666,11 +668,16 @@ linked spec topics using `SpecTopicCatalogue` labels. `Game.getViewData()` caps
 `visitedRoomCount` at the area's declared `roomIds.length`, so the panel never
 shows more visits than the area has rooms.
 
+`QuizView.passMark` is the authored `quiz.passMark` count, and
+`QuizView.remainingWrong` is `questionCount - quiz.passMark`.
+`Game.getViewData()` derives both at view-build time from those two values,
+independent of answers so far, attempts, lives and score; panels present them
+as supplied.
+
 `Terminal` owns a bounded in-memory command history with no persistence and no
 duplicate suppression, navigated with the up/down arrows. It calls
 `Game.submit(raw)` on Enter and renders the returned batch after echoing the
-command. During a quiz, `answer N` is typed into the same input; `QuizPanel`
-only displays the question and options.
+command. During a quiz, `answer N` is typed into the same input.
 
 `SaveControls` renders one button per meta action and maps each
 `LoadFailureReason` to a distinct friendly message using its own copy table.

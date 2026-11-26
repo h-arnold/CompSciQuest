@@ -182,12 +182,17 @@ function quizView(
   const question =
     questionId === undefined ? undefined : bundle.questions.getById(questionId);
   if (question === undefined) return undefined;
+  const quiz = bundle.quizzes.getById(quizId);
+  if (quiz === undefined) return undefined;
+  const questionCount = state.quiz.questionIds.length;
   return {
     quizId,
     prompt: question.prompt,
     options: question.options,
     questionNumber: state.quiz.index + 1,
-    questionCount: state.quiz.questionIds.length,
+    questionCount,
+    passMark: quiz.passMark,
+    remainingWrong: questionCount - quiz.passMark,
   };
 }
 
