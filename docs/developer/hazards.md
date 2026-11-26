@@ -61,8 +61,6 @@ iterates `bundle.hazards.all` in declaration order:
    ([shared-rules.md §5](shared-rules.md#5-effect-and-effectapplier)).
    `HazardSystem` never applies `set-puzzle-*` effects; puzzle phase belongs to
    `PuzzleSystem`.
-5. Return the resulting `GameEvent[]` for the turn buffer. `HazardSystem` never
-   emits to the `EventBus`.
 
 `on-room-enter` matches a buffered `room-entered` event. The first turn buffers
 none, so the area's start room counts as entered: entry hazards there fire after

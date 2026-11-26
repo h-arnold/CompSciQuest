@@ -427,7 +427,7 @@ items:
     initialRoom: room-picture-mosaic
     authoring:
       useNotes: >-
-        USE the pixel lens in the drafting corner sets `mosaic-calibrated` (authoring note only: a proposed hazard has no card yet, so no hazard depends on this flag in this card). SHOW the pixel lens to the foreman sets `badge-scaled`. USE the pixel lens on the nibble card sets `pixels-weighed`. BUILDING the image (USE the pixel lens on the mosaic) sets `picture-built`.
+        USE the pixel lens in the drafting corner would set `mosaic-calibrated`, a proposal only: no card implements this action and no hazard, puzzle or exit consumes the flag; it is recorded here so the idea is not lost. SHOW the pixel lens to the foreman sets `badge-scaled`. USE the pixel lens on the nibble card sets `pixels-weighed`. BUILDING the image (USE the pixel lens on the mosaic) sets `picture-built`.
 
   - id: item-mosaic-ruler
     name: mosaic ruler

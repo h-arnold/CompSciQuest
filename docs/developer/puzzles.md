@@ -63,10 +63,6 @@ For each puzzle in declaration order:
 A solved puzzle stays solved. `PuzzleSystem` owns puzzle phase, so no hazard
 teleport or flag reset can revert it.
 
-`PuzzleSystem` returns the `GameEvent[]` produced by its applier, while `Game`
-owns the turn buffer
-([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
-
 **Critical authoring rule:** requirements must be _action-set flags_, not mere
 possession. "Has the brass key" must not auto-solve "unlock the door"; the
 `use key on door` handler sets `door-unlocked`, and _that flag_ is a

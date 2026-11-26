@@ -365,6 +365,7 @@ Runtime **flags** (kebab-case, no prefix; unique in-world):
 | `demo-on-record` | `quiz-pattern-bureau` onPass | Bureau's east exit guard |
 | `bell-mended` | `puzzle-mend-the-bell` (id proposed by the puzzle-writer) onSolve | Bobbin Lad topics (prediction beat) |
 | `pad-checked` (ratified, 2026-11-25) — the dye-pad disarm | the Weft Tally's crackle-test topic (ask her about the dried pad; set-flag in its effects; examining the pad in-room is the in-fiction route) | `hazard-dye-pad`'s `when` guard (hazards card, wave 1) |
+| `weft-ratchet-heard` (allocated 2026-11-25; content key, not a registry id — D2 does not apply) | the Weft Tally's `topic-weft-tally-count-known` (first ask) | `topic-weft-tally-prediction` |
 | `card-sequence-given` | Warp Dresser's give topic | Threading Order puzzle guard |
 | `card-selection-given` | Shed Opener's give topic | Colour Court puzzle guard |
 | `card-count-given` | Weft Tally's give topic | Weft Counter puzzle guard |

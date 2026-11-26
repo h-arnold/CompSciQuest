@@ -104,10 +104,10 @@ rooms:
         flagged in the writer's return). Each return pairs its inverse (up
         back to the Walk).
       clues: |-
-        N6 — the east gate's clues, discoverable before it opens:
+        N6 — the east gate's clues, discoverable before it opens (two counted):
         - In this room: the four section lights with woven tags ORDER, COLOURS, COUNTS, END over the caption RUNS WHEN PROVEN, all dark.
         - In this room: the selvedge light's second wick — its room needs two actions done before its light lights (both condition-plate-set and rogue-thread-filed).
-        - In the Bureau next door (adjacent, NPC dialogue): the Loomwright's line "the door counts demonstrations, not intentions".
+        - Candidate placement, NOT counted — no card contains this line: a Loomwright line in the Bureau next door ("the door counts demonstrations, not intentions"). It is not written in the NPC card, so it cannot be cited as a discoverable clue; the editor must add it there before it counts. The gate stands on the two clues above.
 
   - id: room-threading-order
     title: The Threading Order
@@ -118,7 +118,7 @@ rooms:
       cords that hold the threads that lift — one after another, in the order
       the pattern says. Pattern paper pinned above the loom spells the five
       steps out — ground, first stripe, cross-stripe, border, hem — the order
-      a player who reads the room can act on. Every step of the order is
+      you can act on. Every step of the order is
       present. The order itself
       is wrong: her shade cards hang on the step hangers in somebody else's
       sequence, and she presses her hands to her mouth at the cloth it would
@@ -502,7 +502,7 @@ items:
     initialRoom: room-weft-counter
     authoring:
       note: >-
-        proposed — needs editor approval (D2): added so the examine-first
+        ratified 2026-11-25 (§9): added so the examine-first
         disarm and its telegraph have a registered noun (N6 — no
         guess-the-noun). The hazard card (hazard-dye-pad) owns the disarm
         flag's exact key and its wiring; this item sets no flag itself.
@@ -659,7 +659,10 @@ items:
     authoring:
       useNotes: >-
         EXAMINE the pick trolley to see its raised sides and the tally card
-        pinned to it. Purely decorative: examining it sets no flag.
+        pinned to it. USE the pick trolley routes the tray by the plate's
+        condition — nine posts itself routine, twelve lifts, fifteen lifts —
+        and sets tray-routed-by-condition, which puzzle-lift-the-shed requires.
+        The tray is worked in the room; the trolley is not carried.
 
   - id: item-quality-book
     name: quality book
@@ -711,7 +714,7 @@ items:
     initialRoom: room-warp-walk
     authoring:
       note: >-
-        proposed — needs editor approval (D2): proposed in the brief as the
+        ratified 2026-11-25 (§9): proposed in the brief as the
         global-variable beat's prop.
       useNotes: >-
         EXAMINE the mill board to read the mill's shared figure — one figure
@@ -733,7 +736,7 @@ items:
     initialRoom: room-pattern-bureau
     authoring:
       note: >-
-        proposed — needs editor approval (D2): proposed in the brief; its
+        ratified 2026-11-25 (§9): proposed in the brief; its
         plate is a bounded clue for the Bureau's east gate.
       useNotes: >-
         EXAMINE the demonstration book to read its brass plate — one of the
@@ -751,7 +754,7 @@ items:
     initialRoom: room-finished-rail
     authoring:
       note: >-
-        proposed — needs editor approval (D2): proposed in the brief as the
+        ratified 2026-11-25 (§9): proposed in the brief as the
         2D arrays beat's prop (the spec's own 6x5 shape).
       useNotes: >-
         EXAMINE the rota board to read the duty rota — rows and columns both
@@ -770,7 +773,7 @@ items:
     initialRoom: room-threading-order
     authoring:
       note: >-
-        proposed — needs editor approval (D2): REQUIRED by the brief — the
+        ratified 2026-11-25 (§9): REQUIRED by the brief — the
         hazard card (hazard-slop-worksheet) references this exact id. Its
         red-ink enthusiasm and trigger are the hazard card's; taking the
         workbook away mends nothing and strands no one (a pure detour, never
@@ -794,7 +797,7 @@ items:
     initialRoom: room-bobbin-window
     authoring:
       note: >-
-        proposed — needs editor approval (D2): proposed in the brief as the
+        ratified 2026-11-25 (§9): proposed in the brief as the
         Bobbin Window's string-handling prop.
       useNotes: >-
         EXAMINE the addressing plate to read what the find-and-replace did to
@@ -815,7 +818,7 @@ items:
     initialRoom: room-endless-selvedge
     authoring:
       note: >-
-        proposed — needs editor approval (D2): the selvedge's PUT target for
+        ratified 2026-11-25 (§9): the selvedge's PUT target for
         filing the rogue thread.
       useNotes: >-
         Filing the rogue thread here (PUT) is the selvedge's second action;
@@ -833,7 +836,7 @@ items:
     initialRoom: room-endless-selvedge
     authoring:
       note: >-
-        proposed — needs editor approval (D2): fixture beside the counterfoil
+        ratified 2026-11-25 (§9): fixture beside the counterfoil
         drawer; no flag of its own.
       useNotes: >-
         EXAMINE the signing board to read the ruled lines and the warden's
@@ -851,7 +854,7 @@ items:
     initialRoom: room-endless-selvedge
     authoring:
       note: >-
-        proposed — needs editor approval (D2): the N5 failure framing (a
+        ratified 2026-11-25 (§9): the N5 failure framing (a
         thread spent as a colour leaves the loop waiting).
       useNotes: >-
         EXAMINE the dye vat to see the colours kept ready; it sets no flag.

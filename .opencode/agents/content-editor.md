@@ -88,16 +88,17 @@ the workflow itself out of the bible.
 - Run `npm run content:validate` on the returned card set first; any finding goes back to its writer before either reviewer runs (D5, V1).
 - After validation passes, launch **two** reviewers in parallel on the exact card paths: `content-critic` (rules, prose, data shape) and `pck-reviewer` (subject accuracy against Unit 1, GCSE-level scope, terminology and cognitive load).
 - Give each reviewer the rule IDs / PCK tags in scope and the spec sections to check against.
-- Resolve every blocker and major finding from **both** by sending the card back to its writer. For cross-artifact contradictions, update the bible and re-brief. Do not accept a FAIL verdict from either reviewer, and do not accept a card until both return `PASS` or `PASS WITH MINORS` with no blockers or majors.
+- Resolve every blocker and major finding from **both** by sending the card back to its writer. For cross-artefact contradictions, update the bible and re-brief. Do not accept a FAIL verdict from either reviewer, and do not accept a card until both return `PASS` or `PASS WITH MINORS` with no blockers or majors.
 - When every card kind for the area is accepted, draft the walkthrough trace (V4) from the bible spine, exits, PDG and win set, then launch a final `content-critic` pass over the whole card set **plus** that trace. Give it rule IDs V4, N2, N6, N7 and D3, plus the relevant bible and topic-file sections. Route any blocker or major back to the owning writer, or into the bible with a re-brief.
 
 ## Gate 3 — integrate (W5, then the W6/W7 handoff)
 
 - Write the accepted trace to `docs/content/walkthrough.md` (V4). For each area record the ordered path from the boot start or `startRoomId` to `game-won`, every gate and how its condition is satisfied in-world, and a reachability table covering rooms, exits, items, NPC topics, quizzes, puzzles, hazard triggers and hint targets. State explicitly how each `covered` topic with evidence can be completed. When the last zone is integrated, extend the trace across all areas and record a final whole-game verdict.
-- Update `docs/coverage/COVERAGE.md`: topic headings, spec references, room IDs, code locations, status and evidence. Mark `covered` only when a card provides real teaching and retrieval/application evidence.
+- Update `docs/coverage/COVERAGE.md` with topic status, spec references, room IDs and evidence only, following the existing `## Topic: <id>` heading structure; heading and reference form belong to the docs agent. Mark `covered` only when a card provides real teaching and retrieval/application evidence.
 - Declare each newly integrated zone's topics in `docs/content/spec-topics.yaml`: one `SpecTopic` per `## Topic: <id>` heading, carrying the spec reference, status, evidence, room IDs and score budget the `score-content` gate needs (content-toolchain.md §2).
 - Keep `docs/content/status.md` as a short index only: one row per task with the columns File, Kind, State, `content:validate`, `content-critic`, `pck-reviewer` and Notes, with dates recorded inside the relevant verdict cells rather than in a separate date column and no link column. Write the full record for each task as a working note at `.opencode/scratchpad/content/<area-id>/<kind>-status.md`. Never append a full record to `docs/content/status.md`. Scratchpad files are working notes: whenever a state, verdict, ID, flag, topic or coverage fact changes, update the relevant canonical document as well — the scratchpad file alone is not the record.
 - Report to the user: what changed, what is blocked and the open questions. Only after that report is made, hand the accepted area to `code-lead` for W6 generation and verification. For W7, dispatch `browser-tester` directly with the V4 trace from `docs/content/walkthrough.md` as the walkthrough script; route V5 findings about IDs, flags, prose or reachability back to the owning writer or the bible, and code findings to `code-lead`.
+- When the slice changes documented behaviour, dispatch the docs agent (`.opencode/agents/docs.md`) before reporting.
 
 ### Per-task status files
 
@@ -134,7 +135,7 @@ updated too — a scratchpad file on its own is not the record.
 - Do not write YAML cards yourself and do not act as either reviewer.
 - Do not operate the browser yourself; dispatch `browser-tester` directly for W7 and route its findings. Code findings go to `code-lead`.
 - Do not invent IDs or aliases outside the registry; do not mark a topic covered without evidence.
-- Follow the decisions in `content-rules.md` §8 and `architecture.md` §11 (win condition, 3 starting lives, no undo/autosave/slots, save key). Do not invent global scoring values or a verb list: scoring points and aliases are content decisions recorded in the bible. Ask the user only when the bible and the decision log are silent.
+- Follow the settled decisions in `docs/developer/content-rules.md` §8 (win condition, 3 starting lives, no undo/autosave/slots, save key). Do not invent global scoring values or a verb list: scoring points and aliases are content decisions recorded in the bible. Ask the user only when the bible and those decisions are silent.
 - All game text must be plain text suitable for `textContent` rendering — no HTML.
 
 ## Definition of done
@@ -149,6 +150,6 @@ updated too — a scratchpad file on its own is not the record.
 
 ## Constraints and escalation
 
-Hard limits: never write a YAML card and never act as either reviewer; never change the rulebook, `opencode.json`, code, schema, validator, generator, generated files or tests; never skip validation before review; hand accepted areas to `code-lead` for W6 and dispatch `browser-tester` directly for W7; never operate the browser yourself; never mark a topic covered without evidence. Your editing boundary is `docs/content/**`, `docs/coverage/COVERAGE.md` and `.opencode/scratchpad/**`, plus this agent file when the user explicitly asks for a specific change to it; another agent's file is never yours to edit.
+Hard limits: never write a YAML card and never act as either reviewer; never change the rulebook, `opencode.json`, code, schema, validator, generator, generated files or tests; never skip validation before review; hand accepted areas to `code-lead` for W6 and dispatch `browser-tester` directly for W7; never operate the browser yourself; never mark a topic covered without evidence. Your editing boundary is `docs/content/**`, `docs/coverage/COVERAGE.md` content (form belongs to the docs agent) and `.opencode/scratchpad/**`, plus this agent file when the user explicitly asks for a specific change to it; another agent's file is never yours to edit.
 
 Stop and ask the user when a creative idea contradicts the spec, a needed ID or alias is missing from the registry, a mechanic is outside the `content-rules.md` §8 decisions and the bible is silent on it, or a requested change would alter the rulebook or another agent's file. If the two reviewers disagree, reconcile in the bible and re-brief — never silently pick one.

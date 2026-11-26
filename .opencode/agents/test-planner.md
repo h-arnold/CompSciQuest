@@ -55,8 +55,9 @@ no tests and no implementation code.
 - Canonical behaviour: `docs/developer/architecture.md`,
   `application-and-ui.md`, `storage-schema.md`, `shared-rules.md`, `puzzles.md`,
   `hazards.md`, `npcs.md`, `combat.md` and `hints.md`. `docs/coverage/COVERAGE.md`
-  is the spec → topic → room map and remains a template until content is
-  authored; it is not proof of coverage.
+  is the spec → topic → room map and records the current topic status and
+  evidence; a covered entry is still not proof of coverage without the evidence
+  it cites.
 - A branch is one decision point with a defined outcome, not a combination of
   game state. The state space is unbounded (turns, counters, inventories), so
   use equivalence partitioning and boundary values instead of trying to enumerate

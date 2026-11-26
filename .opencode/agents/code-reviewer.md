@@ -66,16 +66,17 @@ Canonical docs, by domain. Bare file names are relative to `docs/developer/`.
 The `docs` agent keeps this list synchronised; a documentation change routes
 an update here.
 
-| Domain                                        | Canonical docs                                                              |
-| --------------------------------------------- | --------------------------------------------------------------------------- |
-| Architecture, module map, build order         | `architecture.md` (§8 conventions, §6 flows, §12 doc map)                    |
-| Application shell, UI, view model, end states | `application-and-ui.md` (§§4–9, §11)                                         |
-| Persistence                                   | `storage-schema.md` (§§3, 7–9)                                               |
-| Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §11)                                               |
-| Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`               |
-| Content authoring and toolchain               | `content-rules.md`, `content-toolchain.md`                                   |
-| Spec topics and coverage                      | `docs/coverage/COVERAGE.md` (coverage decisions owned by `content-editor`)   |
-| Documentation writing rules                   | `docs/developer/documentation-style-guide.md` and `docs/developer/README.md` |
+| Domain                                        | Canonical docs                                                                |
+| --------------------------------------------- | ----------------------------------------------------------------------------- |
+| Architecture and module map                   | `architecture.md` (§§3–5, §6 flows, §8 conventions)                           |
+| Application shell, UI, view model, win check  | `application-and-ui.md` (§§4–9, §11)                                          |
+| Persistence                                   | `storage-schema.md` (§§3, 7–9)                                                |
+| Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
+| Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                |
+| Content authoring and toolchain               | `content-rules.md`, `content-toolchain.md`                                    |
+| Spec topics and coverage                      | `docs/coverage/COVERAGE.md` (coverage decisions owned by `content-editor`)    |
+| Documentation writing rules                   | `docs/developer/documentation-style-guide.md`                                 |
+| Developer documentation index                 | `docs/developer/README.md`                                                    |
 
 Review inputs, not documentation references:
 

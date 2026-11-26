@@ -3,7 +3,7 @@
 # and the root bible §9. Applicable rules: C1–C6, N3–N5, D2–D4.
 kind: npc
 areaId: 1-4-programming-constructs
-status: draft # draft | reviewed | approved (V1)
+status: approved # draft | reviewed | approved (V1)
 topicIds: [algorithms-and-pseudocode, programming-constructs]
 
 authoring:
@@ -12,11 +12,11 @@ authoring:
       Every actor, state, node, quiz, item, room and flag ID below is copied from the
       root bible §9 or the approved topic file §10. Conversation topic IDs are authored
       on the ratified §10 scheme (topic-<actor-stem>-<beat>) and are listed in the
-      writer's return for editor ratification (D2). `item-dye-pad` is proposed — needs
-      editor approval (D2): the pad is named by the hazards and rooms cards but has no
-      registered ID yet. Actor aliases below are likewise proposed for ratification,
-      drawn from the characters' own names and checked against the registry's freed
-      nouns; none takes a bare noun the registry has granted to a room.
+      writer's return for editor ratification (D2). `item-dye-pad` is ratified
+      2026-11-25 (§9): the pad is named by the hazards and rooms cards and its ID is
+      registered. Actor aliases below are ratified 2026-11-25 (§9), drawn from the
+      characters' own names and checked against the registry's freed nouns; none takes
+      a bare noun the registry has granted to a room.
     - >-
       C6 scoping: each of the five room-bound residents' catch-alls carries `in-room` on
       `isActive`; the first teaching beats and the give/stray delivery topics stay
@@ -143,7 +143,8 @@ actors:
       topics: >-
         topic-weft-tally-count, topic-weft-tally-count-known, topic-weft-tally-demonstration,
         topic-weft-tally-mended, topic-weft-tally-pad, topic-weft-tally-tuesdays,
-        topic-weft-tally-give, topic-weft-tally-stray, topic-weft-tally-default.
+        topic-weft-tally-prediction, topic-weft-tally-give, topic-weft-tally-stray,
+        topic-weft-tally-default.
 
   - id: npc-the-selvedge-warden
     aliases: [selvedge warden, warden]
@@ -461,7 +462,7 @@ conversationTopics:
 
   - id: topic-warp-dresser-order-known
     actorId: npc-the-warp-dresser
-    match: { kind: askTell, objectIds: [programming-constructs] }
+    match: { kind: special, keywords: [next, order, sequence] }
     isActive:
       kind: all
       of:
@@ -478,12 +479,15 @@ conversationTopics:
     strategy: { kind: rotating }
     effects: []
     prompt: >-
-      (You could ask about the step hangers.)
+      (You could ask what to do next.)
     authoring:
       note: >-
-        AltTopic complement (C3): after the teaching beat, while the room fix is
-        undone, re-asks on the construct keep teaching rather than falling dead.
-        Complement of `topic-warp-dresser-order`'s gate.
+        Keyword-addressed C3 AltTopic: after the teaching beat, while the room fix
+        is undone, the beat is reachable as a `special` on [next, order, sequence]
+        rather than by free text. It is no longer `askTell` because the `special`
+        demonstration must not be shadowed once `isIdMatchingPhrase` is removed
+        (npcs.md §3); the V4 trace does not ask this beat. Complement of
+        `topic-warp-dresser-order`'s gate.
 
   - id: topic-warp-dresser-demonstration
     actorId: npc-the-warp-dresser
@@ -625,7 +629,7 @@ conversationTopics:
 
   - id: topic-shed-opener-selection-known
     actorId: npc-the-shed-opener
-    match: { kind: askTell, objectIds: [programming-constructs] }
+    match: { kind: special, keywords: [next, shed, selection] }
     isActive:
       kind: all
       of:
@@ -641,11 +645,15 @@ conversationTopics:
     strategy: { kind: rotating }
     effects: []
     prompt: >-
-      (You could ask about the urgent trays.)
+      (You could ask what to lift next.)
     authoring:
       note: >-
-        AltTopic complement (C3): after the teaching beat, while the selection fix is
-        undone, re-asks point at the room's work without giving any answer away.
+        Keyword-addressed C3 AltTopic: after the teaching beat, while the selection
+        fix is undone, the beat is reachable as a `special` on [next, shed,
+        selection] rather than by free text. It is no longer `askTell` because the
+        `special` demonstration must not be shadowed once `isIdMatchingPhrase` is
+        removed (npcs.md §3); the V4 trace does not ask this beat. The text points
+        at the room's work without giving any answer away.
 
   - id: topic-shed-opener-demonstration
     actorId: npc-the-shed-opener
@@ -804,7 +812,9 @@ conversationTopics:
       of:
         - { kind: in-room, roomId: room-weft-counter }
         - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: flag-set, flag: pad-checked }
         - { kind: not, of: { kind: flag-set, flag: weft-counted } }
+        - { kind: not, of: { kind: flag-set, flag: weft-ratchet-heard } }
     responses:
       - >-
         Count-controlled, again — good, because the ratchet has a tooth in it that
@@ -813,13 +823,22 @@ conversationTopics:
         the number of passes before the shuttle runs. I will hold you to the
         figure.
     strategy: { kind: rotating }
-    effects: []
+    effects:
+      - { kind: set-flag, flag: weft-ratchet-heard, value: true }
     prompt: >-
       (You could ask about the slip tooth.)
     authoring:
       note: >-
-        AltTopic complement (C3): after the teaching beat, while the count fix is
-        undone, re-asks point at the room's work without giving the answer away.
+        C7 ladder rung and C3 AltTopic: after the teaching beat, active only at
+        the Weft Counter (C6) once the construct is known and `pad-checked` is
+        set, while the count fix is undone (`not weft-counted`) and the ratchet
+        guidance has not yet been given (`not weft-ratchet-heard`). Its first ask
+        sets `weft-ratchet-heard`, the positive literal
+        `topic-weft-tally-prediction` requires, so the pair is exclusive by
+        evidence and never by declaration order or an ID word. The response gives
+        no answer away. `weft-ratchet-heard` is a content key, not a registry id
+        (D2 does not apply). British English (D4); no quiz, score or retry change
+        (P5); the card stays draft at V1.
 
   - id: topic-weft-tally-demonstration
     actorId: npc-the-weft-tally
@@ -854,7 +873,9 @@ conversationTopics:
       of:
         - { kind: in-room, roomId: room-weft-counter }
         - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: flag-set, flag: pad-checked }
         - { kind: flag-set, flag: weft-counted }
+        - { kind: flag-set, flag: pass-count-predicted }
     responses:
       - >-
         One, two, three — watch the ratchet take the passes. Each one ticks the
@@ -866,11 +887,27 @@ conversationTopics:
       - { kind: set-actor-state, actorId: npc-the-weft-tally, stateId: actorstate-weft-tally-exact }
     prompt: >-
       (You could ask her to count the passes.)
+    authoring:
+      note: >-
+        C7 gate: active only at the Weft Counter (C6) once the construct is
+        known, `pad-checked` and the prediction beat are on record, and the
+        count fix is done (`weft-counted`). The ratchet link runs
+        `weft-ratchet-heard` (set by the first ask of `count-known`) →
+        `prediction` → `pass-count-predicted`; the `not pass-count-predicted`
+        gate on `prediction` and the `not weft-counted` gate on `count-known`
+        make each pair exclusive by a positive/negated literal, never by
+        declaration order (C7). British English (D4); no quiz, score or retry
+        change (P5); the card stays draft at V1.
 
   - id: topic-weft-tally-pad
     actorId: npc-the-weft-tally
     match: { kind: ask, objectIds: [item-dye-pad] }
-    isActive: { kind: in-room, roomId: room-weft-counter }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-weft-counter }
+        - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: not, of: { kind: flag-set, flag: pad-checked } }
     responses:
       - >-
         That pad has dried to the colour of weak tea, and its label has flaked
@@ -891,9 +928,16 @@ conversationTopics:
     authoring:
       note: >-
         Disarm beat for `hazard-dye-pad`: sets the ratified flag `pad-checked`.
-        Teaching only — the counting stays the spec's own (L1259 as world
-        behaviour), and no new spec claim is made. `item-dye-pad` is proposed —
-        needs editor approval (D2).
+        C7 gate (content-rules.md C7, npcs.md §3): askable at the Weft Counter
+        (C6) once the construct is known and while `pad-checked` is unset, so it
+        is exclusive with `topic-weft-tally-count-known` and
+        `topic-weft-tally-prediction`, which both require `pad-checked`. Setting
+        `pad-checked` opens `count-known`, whose first ask sets
+        `weft-ratchet-heard` for `prediction` (C3 ladder). Teaching only — the
+        counting stays the spec's own (L1259 as world behaviour), and no new
+        spec claim is made. `item-dye-pad` is ratified 2026-11-25 (§9). British
+        English (D4); no quiz, score or retry change (P5); the card stays draft
+        at V1.
 
   - id: topic-weft-tally-tuesdays
     actorId: npc-the-weft-tally
@@ -917,6 +961,9 @@ conversationTopics:
       kind: all
       of:
         - { kind: in-room, roomId: room-weft-counter }
+        - { kind: npc-knows, actorId: npc-the-weft-tally, topicId: programming-constructs }
+        - { kind: flag-set, flag: pad-checked }
+        - { kind: flag-set, flag: weft-ratchet-heard }
         - { kind: not, of: { kind: flag-set, flag: pass-count-predicted } }
     responses:
       - >-
@@ -936,8 +983,14 @@ conversationTopics:
       note: >-
         Producer for `pass-count-predicted`, the flag `puzzle-seat-the-ratchet`
         requires (topic file §10, allocated 2026-11-25): the Tally books the
-        figure the pupil names before the loom runs. One-shot; no teaching here
-        — the `-count` topic teaches; the plate in the room carries the bound.
+        figure the pupil names before the loom runs. C7 gate: active only at the
+        Weft Counter (C6) after `pad-checked` and `weft-ratchet-heard` are set —
+        the latter by the first ask of `topic-weft-tally-count-known` — and while
+        `pass-count-predicted` is unset; the positive/negated pair separates it
+        from `count-known` and `mended`. One-shot; no teaching here — the
+        `-count` topic teaches; the plate in the room carries the bound. British
+        English (D4); no quiz, score or retry change (P5); the card stays draft
+        at V1.
 
   - id: topic-weft-tally-give
     actorId: npc-the-weft-tally
@@ -1030,7 +1083,7 @@ conversationTopics:
 
   - id: topic-selvedge-warden-until-known
     actorId: npc-the-selvedge-warden
-    match: { kind: askTell, objectIds: [programming-constructs] }
+    match: { kind: special, keywords: [next, mend, mending] }
     isActive:
       kind: all
       of:
@@ -1055,13 +1108,16 @@ conversationTopics:
     strategy: { kind: rotating }
     effects: []
     prompt: >-
-      (You could ask about the condition plate.)
+      (You could ask what to mend next.)
     authoring:
       note: >-
-        AltTopic complement (C3): after the teaching beat and while either selvedge
-        fix is still undone, re-asks point at the two ends of the mending without
-        giving any answer away. State-neutral text: truthful before and between the
-        plate and rogue-thread fixes.
+        Keyword-addressed C3 AltTopic: after the teaching beat and while either
+        selvedge fix is still undone, the beat is reachable as a `special` on
+        [next, mend, mending] rather than by free text. It is no longer `askTell`
+        because the `special` demonstration must not be shadowed once
+        `isIdMatchingPhrase` is removed (npcs.md §3); the V4 trace does not ask
+        this beat. State-neutral text: truthful before and between the plate and
+        rogue-thread fixes, and it gives no answer away.
 
   - id: topic-selvedge-warden-demonstration
     actorId: npc-the-selvedge-warden
@@ -1218,7 +1274,11 @@ conversationTopics:
   - id: topic-bobbin-lad-trade
     actorId: npc-the-bobbin-lad
     match: { kind: askTell, objectIds: [programming-constructs] }
-    isActive: { kind: in-room, roomId: room-bobbin-window }
+    isActive:
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-bobbin-window }
+        - { kind: not, of: { kind: npc-knows, actorId: npc-the-bobbin-lad, topicId: programming-constructs } }
     responses:
       - >-
         Trade, plain and quick: bobbins in, cloth out — the spec's input and
@@ -1231,6 +1291,14 @@ conversationTopics:
       - { kind: learn-topic, actorId: npc-the-bobbin-lad, topicId: programming-constructs }
     prompt: >-
       (You could ask what the despatch printer prints.)
+    authoring:
+      note: >-
+        C7 gate: askable at the Bobbin Window (C6) only before the construct is
+        known. `topic-bobbin-lad-average` asserts the same `npc-knows` literal,
+        so the two free-text beats are provably exclusive by evidence, not by
+        declaration order (C7). This pair is separate from the Weft Tally's
+        `weft-ratchet-heard` ladder. British English (D4); no quiz, score or
+        retry change (P5); the card stays draft at V1.
 
   - id: topic-bobbin-lad-average
     actorId: npc-the-bobbin-lad
@@ -1509,23 +1577,28 @@ conversationNodes:
     actorId: npc-the-loomwright
     isSticky: false
     topicIds: [topic-loomwright-shapes, topic-loomwright-demonstration]
-    defaultTopicId: topic-loomwright-shapes
+    defaultTopicId: topic-loomwright-default
     authoring:
       note: >-
         Deliberate teaching beat (C4): entered from `topic-loomwright-pseudocode`,
         it lands the five flowchart shapes before the entry demonstration is
-        asked for, then expires after one turn — so not sticky. There is no turn
-        timeout; the node ends on bye, on leaving the room, or when the
-        demonstration quiz starts.
+        asked for, then expires after one turn — so not sticky.
+        `topic-loomwright-shapes` stays in `topicIds`; `defaultTopicId` points at
+        the catch-all `topic-loomwright-default` because a `special` default is
+        ignored at runtime (npcs.md §4.3, C4). There is no turn timeout; the node
+        ends on bye, on leaving the room, or when the demonstration quiz starts.
 
   - id: node-selvedge-signal
     actorId: npc-the-selvedge-warden
     isSticky: false
     topicIds: [topic-selvedge-warden-signal]
-    defaultTopicId: topic-selvedge-warden-signal
+    defaultTopicId: topic-selvedge-warden-default
     authoring:
       note: >-
         Deliberate teaching beat (C4): entered from `topic-selvedge-warden-until`,
         it lands the rogue-value signal explanation before the demonstration is
-        asked for, then expires after one turn — so not sticky. No turn timeout;
-        the signal topic stays askable in the room afterwards.
+        asked for, then expires after one turn — so not sticky.
+        `topic-selvedge-warden-signal` stays in `topicIds`; `defaultTopicId`
+        points at the catch-all `topic-selvedge-warden-default` because a
+        `special` default is ignored at runtime (npcs.md §4.3, C4). No turn
+        timeout; the signal topic stays askable in the room afterwards.

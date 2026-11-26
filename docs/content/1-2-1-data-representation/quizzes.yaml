@@ -17,7 +17,7 @@ quizzes:
     onFail:
       - { kind: change-lives, delta: 0, reason: "the foreman charges nothing for a rehearsal on the switch floor" }
       - { kind: move-player, roomId: room-switch-floor, reason: "the gauge and the rehearsal switches are back on the switch floor" }
-      - { kind: message, text: "The foreman writes the slip on a scrap of paper and pockets it without reading it back. 'Again, when you're ready.' The belt keeps its patient click; the gauge still hangs by the door, its needle resting on the same mark." }
+      - { kind: message, text: "The foreman writes the slip on a scrap of paper and pockets it without reading it back. 'Again, when you're ready.' The belt keeps its patient click, its needles resting where the rehearsal left them." }
     hintSequenceId: hint-switchyard
     authoring:
       framing: >-
@@ -32,11 +32,11 @@ quizzes:
     onPass:
       - { kind: complete-topic, topicId: data-types }
       - { kind: set-flag, flag: quiz-passed:quiz-data-types, value: true }
-      - { kind: message, text: "The foreman tips the sixth sample into its bin and ticks the board with a square, satisfied stroke. 'That's the lot sorted.' The route diagram stays on the wall, one corner lifted by the draught; you can read it again any time." }
+      - { kind: message, text: "The foreman squares the board with a satisfied stroke. 'That's the lot sorted.' The route diagram stays on the wall, one corner lifted by the draught; you can read it again any time." }
     onFail:
       - { kind: change-lives, delta: -1, reason: "a sample went into the wrong bin" }
       - { kind: move-player, roomId: room-binary-hall, reason: "the type bins and the route diagram are back in the Binary Hall" }
-      - { kind: message, text: "The foreman writes the bin number on his cuff, glances at the board and points back to the hall. 'Samples are patient. Go and be too.' The bins keep their places; the loose sample waits where you left it." }
+      - { kind: message, text: "The foreman writes the bin number on his cuff, glances at the board and points back to the hall. 'Samples are patient. Go and be too.' The bins keep their places. Bring the sample when you are ready." }
     hintSequenceId: hint-data-types
     authoring:
       framing: >-
@@ -55,7 +55,7 @@ quizzes:
     onFail:
       - { kind: change-lives, delta: -1, reason: "the audit found an unexplained bit" }
       - { kind: move-player, roomId: room-binary-hall, reason: "the counters and the carry track are reached through the Binary Hall" }
-      - { kind: message, text: "The clerk circles the stray bit on the card and sets it down with the reverence of someone filing a complaint. 'The counters are still on the deck.' The carry lamp is stuck as ever, and the tray underneath waits, unemptied, for the bit that went missing." }
+      - { kind: message, text: "The clerk circles the stray bit on the card and sets it down with the reverence of someone filing a complaint. 'The counters are still on the deck.' The carry track keeps its patient click, and the tray underneath waits for the bit that went missing." }
     hintSequenceId: hint-number-systems
     authoring:
       framing: >-
@@ -74,7 +74,7 @@ quizzes:
     onFail:
       - { kind: change-lives, delta: -1, reason: "a tile went back into the wrong slot" }
       - { kind: move-player, roomId: room-binary-hall, reason: "the character case is reached through the Binary Hall" }
-      - { kind: message, text: "The typesetter returns the tiles to their slots, one by one, with the patience of someone who has done it all before. 'The case is unchanged.' The spare drawer is still in its place; the stamp waits on the bench, its face up." }
+      - { kind: message, text: "The typesetter returns the tiles to their slots, one by one, with the patience of someone who has done it all before. 'The case is unchanged.' The spare drawer is still in its place; the case waits, unchanged." }
     hintSequenceId: hint-representation
     authoring:
       framing: >-

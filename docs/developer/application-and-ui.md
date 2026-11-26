@@ -142,9 +142,11 @@ export interface ItemDefinition {
 
 `startRoomId` is the runtime level start for hazards and quiz-failure teleports;
 [content-rules.md](content-rules.md) D4 owns the authoring rule for `startRoomId`
-and `lives`. `WorldDefinition.lives` sets the starting lives at new game.
-`AreaDefinition.lives` is the declared reset value, and the current runtime does
-not apply it: lives change only through `change-lives`.
+and `lives`. A new game starts with 3 lives: `Session.newGame` assigns them after
+`createInitial` has read `WorldDefinition.lives`, so a world that declares
+another value is not yet honoured. `AreaDefinition.lives` is the declared reset
+value, and the current runtime does not apply it; after the start, lives change
+only through `change-lives`.
 
 ### 3.3 Loading and validation
 
@@ -159,27 +161,29 @@ export function validateContent(bundle: ContentBundle): readonly string[];
 `loadContent()` returns the `ContentBundle` assembled from the committed generated
 files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
-means valid. At boot it runs the runtime-mirrored gates from
-[content-rules.md §7](content-rules.md#7-structural-validation-gates) against the
-bundle, including:
+means valid. At boot it re-runs the runtime mirrors of `content-ids`,
+`puzzle-graph`, `hazard-content` and `score-content`
+([content-rules.md §7](content-rules.md#7-structural-validation-gates)) against
+the bundle:
 
 - unique artefact IDs and globally unique object/NPC aliases;
-- every exit target, `initialRoom`, `startRoomId` and `move-player` target exists;
-- the start resolves through the world's `startAreaId` and that area's
-  `startRoomId`, never by array position;
-- topic IDs, puzzle dependencies and hazard/quiz/hint targets exist;
+- every exit target, item `initialRoom`, `area.startRoomId` and `move-player`
+  target exists, with valid exit directions;
+- puzzle dependencies resolve and the graph is acyclic;
+- hazard authoring rules hold (telegraph present, no `set-puzzle-*`, positive
+  schedule);
 - per-topic score budgets hold (§10 of this document).
 
-NPC actor binding is resolved: every authored topic and node carries an
-`actorId` that resolves to one actor, and the authoring-time `npc-content` gate
+NPC actor binding is checked at authoring time: every authored topic and node
+carries an `actorId` that resolves to one actor, and the `npc-content` gate
 enforces it ([content-rules.md §4.3 "Actor binding"](content-rules.md#43-npc-card),
-[§8](content-rules.md#8-fixed-contracts-content-must-use)). Its runtime mirror
-is deferred with the other mechanics gates — `quiz-content`, `hint-content` and
-`npc-content` ([content-toolchain.md §4](content-toolchain.md#4-validation)).
-Authoring-only checks (stray keys outside `authoring:`, document status,
-unresolved `todo` placeholders) run in `npm run content:validate` on the YAML and
-cannot run on the runtime bundle. Apart from those, authoring-time, test-time and
-boot-time validation use the same gate functions and cannot drift.
+[§8](content-rules.md#8-fixed-contracts-content-must-use)). That gate is
+authoring-only, so boot does not re-check it. Authoring-only shape checks (stray
+keys outside `authoring:`, document `status`, unresolved `todo` placeholders)
+also run only in `npm run content:validate` on the YAML. The four
+runtime-mirrored gates share one check function across authoring, test and boot;
+`world-graph`, `quiz-content`, `hint-content` and `npc-content` run at authoring
+time only.
 
 `createInitial(bundle?)` takes its world, area, room and room inventory from the
 supplied bundle and resolves the area by the world's `startAreaId` and the room

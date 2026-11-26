@@ -59,26 +59,35 @@ Switchyard's topics were `covered`; the annotation there records the move.
 
 World boot start is `room-arrival`, resolved through `area-entry-interface`'s
 `startRoomId`; the Switchyard area's own `startRoomId` remains `room-binary-hall` for
-hazard and quiz-failure returns. Starting lives are 3. Rooms are entered from the
-hub unless stated; every spoke exits back to the hub (N2). Hazards are noted where
-they can fire.
+hazard and quiz-failure returns. Starting lives are 3. Within the Switchyard, rooms
+are entered from the Binary Hall unless stated; every spoke exits back to the Binary
+Hall (N2). Hazards are noted where they can fire.
 
 **Opening beats (new, ungated):**
 
 - **A — `room-arrival`.** The classroom mark is read, the room folds into switches
-  and you land in the cable bay. The AI is present and states the verdict.
+  and you land in the cable bay. The AI is present and states the verdict. **Ask it
+  about the verdict** (`topic-ai-verdict`; words such as "verdict" or "mastery"): it
+  reads the mark and the mastery demand, sets `npc-knows ai-ethics-and-implications`
+  and enters `node-ai-verdict`. The verdict is keyword-addressed, so it cannot
+  swallow the two scoped questions below (C7); its prompt and the catch-all steer
+  the player to it.
 - **B — Conversation with `npc-the-ai` in `room-arrival`.** `topic-ai-why-here`
   (keywords such as "why here", "attendance") explains the mark and the mastery
   demand; `topic-ai-failure` ("fail", "deletion", "lives") states the cartoon
   deletion, three lives, area-change reset and no progress loss. Both carry
   `isActive: { kind: in-room, roomId: room-arrival }`, so they are answerable only
-  at the verdict beat. The existing `topic-ai-verdict`, `topic-ai-unit-two-taunt`
-  and `topic-ai-default` remain globally available and in voice (C2).
-- **C — East → `room-network-hub`.** The hub shows every route at once with only
-  the east port live. Ask `npc-the-ai` about "escape", "route" or "door":
+  in the arrival room; the verdict is already on record, so neither is shadowed by
+  it. `topic-ai-unit-two-taunt` stays global and keyword-addressed, and
+  `topic-ai-default` keeps the AI in voice in every room (C2).
+- **C — East → `room-network-hub`.** The hub shows every route at once with two
+  ports live: the east socket, labelled LIVE, to the Switchyard, and the north
+  socket, under a fresh paper label, to the Rule Machine Concourse. The walkthrough
+  takes east first because the Switchyard is the first zone; it returns for north
+  at §8 step 20. Ask `npc-the-ai` about "escape", "route" or "door":
   `topic-ai-escape` carries `isActive: { kind: in-room, roomId: room-network-hub }`
-  and says there is no door until mastery and to follow the route provided. The
-  hub itself is navigation-only and owns no teaching topic or score.
+  and says the doors stay sealed until mastery and to follow the routes provided.
+  The hub itself is navigation-only and owns no teaching topic or score.
 - **D — Optional `in` → `room-entry-interface` → `out` → `room-network-hub`.** The
   older interface room remains reachable: its east arrow goes to the Switch Floor
   and its `out` exit returns to the hub. This detour gates nothing.
@@ -87,12 +96,15 @@ they can fire.
   costing one life and ejecting you to `room-binary-hall`. The verified Switchyard
   path resumes from that room.
 
-**Life budget:** the only unavoidable losses on this path are the two
-first-entry hazard firings (step E and step 6), leaving one life; `bit-rot` and
-`glyph-corruption` are disarmed before their rooms are entered, the cartridge is left
-unused, and all eight quizzes are passed, so a clean run reaches `game-won` with one
-life remaining. Beats A–D cost no life; step E costs the first of the two
-unavoidable losses.
+**Life budget (Switchyard, steps E–18):** the only unavoidable losses in this zone
+are the two first-entry hazard firings (step E and step 6), leaving one life at
+step 18. Beats A–D cost no life; step E costs the first of the two. `bit-rot` is
+disarmed before the Storage Stacks are entered (`stacks-sealed`, step 3);
+`glyph-corruption` is disarmed in the room (`tiles-verified`, step 9) before the
+stamp is used; the cartridge is left unused; and all eight quizzes are passed.
+**Whole-game end state:** §8 step 30, 2 of 3 lives — entering the concourse and then
+the mill resets lives to 3, and the dye pad's scripted loss is the only Zone A loss
+(§8.2).
 
 1. **`room-binary-hall` (returned here by the step E ejection).** Read the five type
    bins, the sixth unlabelled decimal sample and the painted route diagram (all
@@ -129,7 +141,7 @@ unavoidable losses.
    `quiz-number-systems` → `complete-topic number-conversion`. The shift beat stays
    askable until that audit passes; a failed attempt lands you in the Binary Hall, so
    walk north again (`switches-set` still holds) and re-ask.
-8. **South → hub. East → `room-character-tiles`** (gate `hex-read`). Take
+8. **South → the Binary Hall. East → `room-character-tiles`** (gate `hex-read`). Take
    `item-ascii-stamp`.
 9. **EXAMINE the tiles in the character case** → `tiles-verified` (disarms
    `hazard-glyph-corruption`). **USE the ASCII stamp on the tiles in the character
@@ -140,7 +152,7 @@ unavoidable losses.
    `complete-topic character-representation`. The unicode beat stays askable until
    the test is passed, so a failed attempt can re-open it; `topic-setter-string`
    opens once the pass is recorded.
-10. **West → hub. South → `room-picture-mosaic`** (gate `characters-matched`). Take
+10. **West → the Binary Hall. South → `room-picture-mosaic`** (gate `characters-matched`). Take
     `item-pixel-lens`.
 11. **USE the pixel lens on the mosaic** → `picture-built`, solving
     `puzzle-build-mosaic` (opens the up arch). **USE the pixel lens on the nibble
@@ -150,7 +162,7 @@ unavoidable losses.
     and colour depth), then `topic-critic-storage` → `quiz-graphics-representation`
     → `complete-topic graphics-representation`; that beat stays askable until the
     test passes.
-12. **North → hub. Up → `room-sound-choir`** (gate `picture-built`). Take
+12. **North → the Binary Hall. Up → `room-sound-choir`** (gate `picture-built`). Take
     `item-sample-fork`.
 13. **USE the sample fork on the bit-rate desk** → `sound-sampled`, solving
     `puzzle-tune-sampling` (opens the in arch). Ask the choirmaster
@@ -159,7 +171,7 @@ unavoidable losses.
     gates on `bit-rate-counted`, so the audio test is taken in step 15, after the
     fork is shown. The fork is shown to the foreman in step 15, after its last USE,
     so a `show`-transferred fork cannot strand the ladder task.
-14. **Down → hub. In → `room-storage-stacks`** (gate `sound-sampled`).
+14. **Down → the Binary Hall. In → `room-storage-stacks`** (gate `sound-sampled`).
     `hazard-bit-rot` is disarmed by `stacks-sealed` set at step 3; the keeper's
     `topic-keeper-units` is the alternative route. Read the flaking-label telegraph.
 15. **USE the sample fork on the unit ladder** → `stacks-sorted`, solving
@@ -174,7 +186,7 @@ unavoidable losses.
     ladder and the 1,024 rule), then `topic-keeper-capacity` → `quiz-storage-units`
     → `complete-topic data-storage-units`; that beat stays askable until the test
     passes.
-16. **Out → hub. Out → `room-compression-press`** (gate `stacks-sorted`). Take
+16. **Out → the Binary Hall. Out → `room-compression-press`** (gate `stacks-sorted`). Take
     `item-compression-die`.
 17. Talk to the press operator first: `topic-operator-lossy` (lossless versus lossy,
     and the choice the lever offers); that beat is what `topic-operator-ratio`
@@ -183,9 +195,9 @@ unavoidable losses.
     `compression-chosen` (`puzzle-choose-the-compression`). Then
     `topic-operator-ratio` → `quiz-data-compression` → `complete-topic
     data-compression`; the ratio beat stays askable until that test passes.
-18. **All eight `covered` topics are complete** → `Session.observe` emits
-    `game-won` with the final score (content-rules.md §8). Return in → hub if a final
-    room transition is needed; no further gate applies.
+18. **All eight Switchyard `covered` topics are complete** — the zone-1 milestone.
+    The whole-game win is §8 step 30, once Zone A's two topics and six quizzes are
+    also complete; continue at step 19. No zone-1 gate remains.
     *(End-state annotation, 2026-11-25: once Zone A's two topics flip `covered`
     at W5 (§8), the win set is ten topics and the end state moves to §8 step 30 —
     the rail quiz's pass — because `areQuizzesPassed` then also requires Zone A's
@@ -195,9 +207,11 @@ unavoidable losses.
 
 The opening exits are ungated and need no completion source: `room-arrival` east →
 `room-network-hub` (signposted by "An east route glows"); the hub's
-east → `room-switch-floor` (the only live port, named in the hub description); the
-hub's `in` → `room-entry-interface` and that room's `out` → the hub (both named in
-their descriptions); `room-switch-floor` west → the hub (named in its description).
+east → `room-switch-floor` and north → `room-1-4-concourse` (both live and named in
+the description: east is labelled LIVE, north carries THE RULE MACHINE paper label;
+the ordered path takes east first and returns for north at §8 step 20); the hub's
+`in` → `room-entry-interface` and that room's `out` → the hub (both named in their
+descriptions); `room-switch-floor` west → the hub (named in its description).
 The three room-scoped AI conversation topics set no flag and gate no exit:
 `topic-ai-why-here` and `topic-ai-failure` are active only in `room-arrival` (step
 B) and `topic-ai-escape` only in `room-network-hub` (step C), each via `in-room` in
@@ -217,17 +231,20 @@ the win set or the eight scored topics.
 The Binary Hall's `down` and `west` exits are ungated; the six gated exits form the PDG chain
 with no cycle (topic file §5).
 
-## 4. Reachability table
+## 4. Reachability table (Switchyard and the two opening areas)
+
+This table covers the Switchyard and the two opening area cards; Zone A's table is
+§8.4. Totals below are for this slice, not the whole bundle.
 
 | Kind | Declarations | Reached / triggered at |
 | --- | --- | --- |
-| Rooms | 11 (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the hub |
-| Exits | all declared in the four `rooms.yaml` cards | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
-| Items | 19 total: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
-| NPC topics | 41 total: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; each middle beat records a `*-heard` flag (`clerk-carry-heard`, `critic-depth-heard`, `conductor-depth-heard`) that the next beat requires, and the predecessor's cartridge beat records `predecessor-cartridge-heard` for the duck-as-bit beat (`topic-predecessor-geese` is a keyword topic); every quiz handoff gates on `not quiz-passed <its quiz>` and stays askable, re-issuing the test, until that pass (P5), which makes steps 3, 7, 9, 11, 13, 15 and 17 retryable; `topic-foreman-lift` requires `quiz-passed quiz-switchyard`, `topic-setter-string` requires `quiz-passed quiz-character-representation`, and `topic-operator-ratio` requires the lossy beat plus `archive-packed`; `topic-clerk-shifts-known` is reachable on the add-carries-first branch and `topic-clerk-bases-known` between the carry beat and the token; four foreman `show` topics are always active |
+| Rooms | 11 in this slice (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the Binary Hall, whose `west` exit returns to the hub |
+| Exits | all declared in the three in-scope rooms cards (`entry-interface`, `network-hub`, `1-2-1-data-representation`) | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
+| Items | 19 in this slice: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
+| NPC topics | 41 in this slice: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; each middle beat records a `*-heard` flag (`clerk-carry-heard`, `critic-depth-heard`, `conductor-depth-heard`) that the next beat requires, and the predecessor's cartridge beat records `predecessor-cartridge-heard` for the duck-as-bit beat (`topic-predecessor-geese` is a keyword topic); every quiz handoff gates on `not quiz-passed <its quiz>` and stays askable, re-issuing the test, until that pass (P5), which makes steps 3, 7, 9, 11, 15 and 17 retryable; `topic-foreman-lift` requires `quiz-passed quiz-switchyard`, `topic-setter-string` requires `quiz-passed quiz-character-representation`, and `topic-operator-ratio` requires the lossy beat plus `archive-packed`; `topic-clerk-shifts-known` is reachable on the add-carries-first branch and `topic-clerk-bases-known` between the carry beat and the token; four foreman `show` topics are always active |
 | Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
 | Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |
-| Hazard triggers | 5 | overheat at step E (first entry), carry-overflow at step 6 (first entry), bit-rot at step 14, glyph-corruption on stamp use at step 9, detention-bell on optional cartridge use at step 1 (`once: true`) |
+| Hazard triggers | 5 | overheat at step E (first entry) and carry-overflow at step 6 (first entry) fire; detention-bell is optional on cartridge use at step 1 (`once: true`). bit-rot is disarmed at step 3 (`stacks-sealed`) before the Stacks are entered, and glyph-corruption is disarmed at step 9 (`tiles-verified`) in the room before the stamp is used; both remain triggerable in an alternate pre-disarm state. |
 | Hint targets | 6 ladders (`hint-switchyard` … `hint-compression-ratio`) | every target topic/quiz/puzzle ID exists on the path; unlock counters use the approved keys only |
 
 ## 5. Per-topic evidence completion
@@ -235,8 +252,9 @@ with no cycle (topic file §5).
 The two new areas add no teaching, retrieval or application evidence: `room-arrival`
 is the verdict beat, the three new AI topics are flavour only and the Network Hub is
 navigation-only with `topicIds: []`. `ai-ethics-and-implications` remains `in progress`
-and outside the win set (COVERAGE.md L187–197). The eight `covered` topics below are
-unchanged by this amendment.
+and outside the win set (COVERAGE.md L187–197). The eight zone-1 `covered` topics
+below are unchanged by this amendment; Zone A's two topics and their evidence are
+§8.1.
 
 Each `covered` topic has a teaching beat (room fixture or NPC), a retrieval beat
 (quiz question) and an application beat (puzzle), except `switch-to-bit` which is
@@ -264,7 +282,9 @@ Each `covered` topic has a teaching beat (room fixture or NPC), a retrieval beat
 These were the reachability risks the whole-set `content-critic` passes were asked to
 adjudicate. The first pass (FAIL) confirmed the first, third and fourth as blockers or
 majors; the editor routed fixes to the owning writers, recorded below. Three further
-passes closed successive findings, and the fourth returned PASS.
+passes closed successive findings, and the fourth returned PASS on 2026-11-24. The
+opening amendment and the Zone A fold each added their own pass on 2026-11-25; the
+verdicts are recorded in §7.
 
 1. **Entry-hazard counterplay reachability — RESOLVED.** `hazard-switch-overheat`
    (step E) and `hazard-carry-overflow` (step 6) are `on-room-enter` ejectors whose
@@ -276,11 +296,11 @@ passes closed successive findings, and the fourth returned PASS.
    and `carry-cleared`/`hex-read`. The trace places the overheat firing at step E and
    the overflow firing at step 6; steps 2 and 6 continue with the safe re-entry where
    the counterplay item is taken.
-2. **`bit-rot` hub disarm lifetime — RESOLVED.** `stacks-sealed` is set from the hub by
-   `topic-foreman-lift` (open once `quiz-switchyard` has passed, and until
-   `quiz-data-types` passes, so the hub disarm is obtainable before step 14).
-   `hazard-bit-rot` now also has
-   `once: true`, so even without the hub disarm the in-room keeper route is reachable
+2. **`bit-rot` disarm lifetime — RESOLVED.** `stacks-sealed` is set by
+   `topic-foreman-lift` (askable wherever the foreman is, including the Binary Hall;
+   open once `quiz-switchyard` has passed, and until `quiz-data-types` passes, so the
+   disarm is obtainable before step 14). `hazard-bit-rot` now also has
+   `once: true`, so even without that disarm the in-room keeper route is reachable
    on a later entry.
 3. **Foreman "SHOW" flag producers — RESOLVED.** The four leaf flags had no runtime
    producer because the foreman had no `show`-matched topics and his helpful state is
@@ -312,24 +332,53 @@ pass also corrected the stale leaf-step list in §4.
 a topic whose ID words appear in the free-text phrase (`isIdMatchingPhrase`). That
 contradicts `npcs.md` §3 ("content must not rely on a keyword or an ID word as a
 tie-break") and would let the phrase in a trace step reach a topic its conditions do
-not select. The cards no longer depend on it — every actor's ask/tell pair is
-provably exclusive on `isActive` after the 2026-11-25 repair — but the runtime
-preference must be removed by `code-lead` and the trace phrases re-audited before the
-W7 browser pass, so a green walkthrough cannot be won by an ID word.
+not select. The win path no longer depends on it — every actor's ask/tell pair is
+provably exclusive on `isActive` after the 2026-11-25 repairs; the AI verdict and the
+three Pattern Mill demonstrations are keyword-addressed, so no live askTell absorbs
+them; and the trace's required phrases reach their topics by keyword. A few flavour specials — the Bobbin Lad's `bell`/`prediction`/`paned` (shadowed by
+`average`), the Weft Tally's `tuesdays` (shadowed by `mended`), the Shed Opener's
+`urgent` (shadowed by `mended` after the puzzle), the Selvedge Warden's
+`signal`/`whist` (shadowed by `mended` after the puzzle), and the predecessor's
+`geese` in the pre-cartridge state — can still be shadowed by a live askTell until
+`code-lead` adds keyword priority or a later content pass converts those beats. The
+slop cousin has only the catch-all, so its room beats are not affected. The runtime
+preference must be removed and the trace phrases re-audited before the W7 browser
+pass, so a green walkthrough cannot be won by an ID word.
 
 ## 7. Verdict
 
-**PASS (2026-11-24).** The fourth whole-set `content-critic` pass (V4, N2, N6, N7, D3)
-returned no blocker or major. The ordered path from `room-binary-hall` to `game-won`
-is complete, every gate is satisfiable in order, every declared room, exit, item, NPC
-topic, quiz, puzzle, hazard trigger and hint target is reachable, every `covered` topic
-has a `complete-topic` source, and no soft-lock remains. The first zone is integrated.
-Whole-game extension of this trace is not applicable until a further zone is
-integrated.
+**PASS WITH MINORS (2026-11-25, final whole-game `content-critic` pass — V4, N2, N6,
+N7, D3 — over the two opening area cards, the Switchyard's six cards, Zone A's six
+cards, the two amendment rooms cards and this trace).** No blocker and no major
+remains.
 
-*(2026-11-25: a further zone is now integrated — Zone A, §8. Zone-1's verdict above
-stands for its own area; the whole-game verdict is §8.7's, after the §8 final critic
-pass.)*
+The pass follows four earlier acceptances: the zone-1 fourth pass (PASS,
+2026-11-24), the opening extension (PASS WITH MINORS, 2026-11-25), the Switchyard NPC
+C7/P5 repair (content-critic PASS WITH MINORS round 2; pck-reviewer PASS WITH MINORS
+round 3, 2026-11-25) and Zone A's §8 acceptance (PASS WITH MINORS, 2026-11-25, §8.7).
+Its own first run returned FAIL with three majors — the AI verdict shadowing its
+scoped topics, the two-port hub contradiction and the life-budget contradiction — and
+a second run returned FAIL on one major — the three Pattern Mill demonstrations
+selected only by the ID-word preference. All four were repaired: the verdict and the
+three middle beats are keyword-addressed, the hub and escape line show two live ports,
+the life budget is one life at step 18 and 2 of 3 at §8 step 30, and the trace's
+counts and exit wording match the declarations. The four minors left by the passing
+run (the shadowed-flavour-special record, the ratified-ID notes, the §8.4 exit/item
+coverage wording and the spent-verdict default lines) were closed the same day.
+
+The ordered path from `room-arrival` to `game-won` at §8 step 30 is complete; all ten
+`covered` topics have a `complete-topic` source; 40 exits, 51 items, 97 NPC topics,
+14 quizzes, 23 puzzles, 8 hazards and 13 hint ladders are reachable; the score budget
+is 43 (24 + 19); and no soft-lock remains. Two pre-existing `quizzes.yaml` PCK minors
+(q-dr-28's untaught format lists and q-dr-02's effects clause) are accepted for a
+future quiz round and are not blockers.
+
+**Code prerequisites before W7.** `code-lead` must remove
+`TopicSelection.isIdMatchingPhrase` and add the keyword-priority step for
+`special`/`command` topics that npcs.md §3 implies; the remaining shadowed flavour
+specials are recorded in §6. The authored bundle must then be regenerated
+(`src/content/authored/*.ts` still carries the pre-repair conversation topics) before
+`browser-tester` walks this trace.
 
 ## 8. Zone A — The Pattern Mill (1.4.1 programming constructs): the trace extension
 
@@ -370,7 +419,9 @@ the canonical route (the puzzle completes in the demonstration's own visit, so n
 re-entry happens armed), and the slop worksheet is never used. **End state: 2 of 3
 lives.**
 
-- **19 — Return to the hub** (out of the Compression Press, per zone-1's step 17).
+- **19 — Return to the Network Hub.** `in` from the Compression Press to the Binary
+  Hall, then `west` to the hub (the press's return exit is `in`; the hall's west exit
+  is ungated).
 - **20 — North → `room-1-4-concourse`** (area change; lives reset to 3). The
   concourse reads: the Rule Machine's front hall, "Y Felin" woven on the wall — the
   mill's good morning. Two exits: south back to the hub, east to the mill.
@@ -411,13 +462,14 @@ lives.**
   re-lettering the slopped addresses back (interaction pin P2) →
   `addressing-plate-re-lettered`. `bell-mended` still waits on the wire.
 - **25 — In → `room-warp-walk`. South → `room-weft-counter` (first entry).**
-  **`hazard-dye-pad` fires**: `on-room-enter`, `when quiz has not set `pad-checked``,
+  **`hazard-dye-pad` fires**: `on-room-enter`, `when `pad-checked` is not set`,
   `once: true` — the dried pad miscounts the weft, **−1 life (3 → 2)**, teleport to
   `room-pattern-bureau`. This loss is scripted and unavoidable (the crackle-test topic
   is `in-room` to this room); the room text read on the same entry is the telegraph.
   Re-enter (bureau → warp walk → south). Talk to the Weft Tally:
   `topic-weft-tally-count` (learn-topic) → `topic-weft-tally-pad` (**the crackle-test:
-  sets `pad-checked`; the hazard is dead**) → `topic-weft-tally-prediction` (the
+  sets `pad-checked`; the hazard is dead**) → `topic-weft-tally-count-known` (the
+  ratchet guidance; sets `weft-ratchet-heard`) → `topic-weft-tally-prediction` (the
   prediction beat: `pass-count-predicted` set — predict before any run) →
   `topic-weft-tally-demonstration` → **`quiz-weft-tally`** (4 questions) → pass:
   `complete-topic programming-constructs`, `quiz-passed:quiz-weft-tally`,
@@ -499,16 +551,16 @@ shown.
 
 | Entity | Covered at |
 | --- | --- |
-| `room-pattern-bureau` (+8 items: the four pattern cards — granted on the quizzes, filed on the gives — carthen, paned mug, leaflet, Demonstration Book) | step 21 (startRoomId; items read at 21) |
+| `room-pattern-bureau` (+8 items: the four pattern cards — granted on the quizzes, filed on the gives — carthen, paned mug, leaflet, Demonstration Book) | step 21 (startRoomId; the leaflet, mug and book read at 21; the four pattern cards are granted at 23/25/27/28 and filed by their gives) |
 | `room-1-4-concourse` | step 20 |
 | `room-warp-walk` (+ mill clock, woven label, mill board) | step 22 |
 | `room-threading-order` (+ else plate, slop worksheet) | step 23 |
 | `room-bobbin-window` (+ shed plate, addressing plate, postmark album + pad) | step 24 |
-| `room-weft-counter` (+ counting ratchet, slip tooth, bell wire, dye pad, mill duck) | step 25 (first entry fires the dye pad); all items used at 25–26 |
+| `room-weft-counter` (+ counting ratchet, slip tooth, bell wire, dye pad, mill duck) | step 25 (first entry fires the dye pad); the ratchet and slip tooth are used at 25–26, the bell wire is taken at 25, and the dye pad and mill duck are examined at 25 |
 | `room-colour-court` (+ pick trolley, quality book) | step 27 |
 | `room-endless-selvedge` (+ condition plate, rogue thread, whist cards, weft kettle, counterfoil drawer, signing board, dye vat) | step 28 |
 | `room-finished-rail` (+ rota board) | steps 29–30 |
-| All 29 exits (both concourse/hub pairs cross-file, per §8.3) | steps 19–29 |
+| All 40 exits in the bundle (the zone-1/opening 23 are covered in §4 and steps 1–18; Zone A's 15 mill exits and the concourse's 2 at steps 19–29; both concourse/hub pairs cross-file, per §8.3) | steps 19–29 (Zone A) |
 | `npc-the-loomwright` (7 topics: welcome, pseudocode, shapes, demonstration→`quiz-pattern-bureau`, cousin, audit→`quiz-finished-rail`, default) | steps 21, 29–30 (audit at the rail) |
 | `npc-the-warp-dresser` (7 topics: order, order-known, demonstration→`quiz-threading-order`, mended, give→`item-pattern-card-sequence`, stray, default) | step 23 |
 | `npc-the-shed-opener` (8 topics: selection, selection-known, demonstration→`quiz-colour-court`, mended, urgent, give→`item-pattern-card-selection`, stray, default) | step 27 |
@@ -520,7 +572,7 @@ shown.
 | Six quizzes | steps 21, 23, 25, 27, 28, 30 |
 | Six puzzles | steps 23 (dress), 25 (ratchet), 26 (bell), 27 (shed), 28 (selvedge + rogue) |
 | Three hazard triggers | step 25 (dye pad, fires); 27 (avalanche, never armed-and-entered); 23 (worksheet, never used) |
-| Seven hint ladders (`hintSequences`) | every ladder's `targets` resolve to step-covered entities: bureau (21), threading (23), colour (27), tally (25), selvedge (28), rail (29–30), bobbin (24) |
+| Seven hint ladders (`hintSequences`) | every ladder's `targets` resolve to step-covered entities: bureau (21), threading (23), colour (27), tally (25), selvedge (28), rail (29–30), bobbin/bell (26) |
 
 ### 8.5 Per-topic evidence completion (Zone A)
 
@@ -572,14 +624,16 @@ No blocker, no major; nothing routed to writers. Three minors, all
 editor-dispositioned the same day: (1) V4 — the trace's rail-door prose said "five
 lights"; the room carries **four glass section lights across five flags** (the END
 light's second wick) — steps 22 and 29 corrected; (2) N6/H1 — `hint-bobbin-window`'s
-room shares a cousin vandal topic's room, but the keyword sets are disjoint (no C7
-capture risk) — recorded for the W6 record, no card change; (3) D3 — the §8.6 "W6
+room shares a cousin vandal topic's room; the bell and cousin keyword sets overlap
+on `bell`, `focus`, `llan` and `data`, but the topics bind to different actors, so
+there is no C7 capture risk — recorded for the W6 record, no card change; (3) D3 — the §8.6 "W6
 scenery" ids are code-side declarations per this contract, not unregistered content
 ids — recorded so W6's reviewer does not re-flag them. The five editor judgement
 items returned sound: the avalanche race (entry-time guard evaluation + the puzzle
-completing in the demonstration's own visit), all ten rows conform to the useNotes,
-the selvedge frame shorthand describes one before/after state, zone-1's steps 1–18
-are byte-identical, and the hints' escalation passes with no leak level.
+completing in the demonstration's own visit), all ten rows conform to the useNotes
+(P6's USE route is now authored in `item-pick-trolley`'s useNotes), the selvedge
+frame shorthand describes one before/after state, zone-1's steps 1–18 are
+byte-identical, and the hints' escalation passes with no leak level.
 
 The extension keeps zone-1's steps intact, orders Zone A from the hub through the
 concourse into the mill, satisfies every gate in order, accounts for every hazard

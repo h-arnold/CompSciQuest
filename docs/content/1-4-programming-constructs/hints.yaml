@@ -213,32 +213,43 @@ hintSequences:
     cooldownTurns: 2
 
   # ──────────────────────────────────────────────────────────────────────────
-  # 7. The Bobbin Window — the stray-card navigation beacon.
+  # 7. The Bobbin Window — mending the bell puzzle: the intake bell, the bell
+  #    wire, and the addressing plate's letter rack.
   # ──────────────────────────────────────────────────────────────────────────
   - id: hint-bobbin-window
-    targets: [programming-constructs, puzzle-dress-the-warp]
+    targets: [programming-constructs, puzzle-mend-the-bell]
     levels:
       - level: 1
         text: >-
-          The window trades both ways: bobbins in, cloth out — input and
-          output, as the mill puts it. A pattern card offered where the bobbin
-          should go is posted back untaught, and no card leaves this window a
-          pattern the mill has not seen demonstrated first.
-        unlock: { kind: counter-at-least, key: turns-since:puzzle-dress-the-warp, value: 3 }
+          The window's trade runs both ways, bobbins in and cloth out, and
+          just now neither way says the right thing. What comes in should be
+          announced by the intake bell, and the bell has hung silent since the
+          cousin wrote his note about focus. What goes out should be addressed
+          by the despatch plate, and its addresses have stopped reading as
+          places. Stand at each end of the window and ask what that instrument
+          is for, and what it would take to do its work again.
+        unlock: { kind: counter-at-least, key: turns-since:puzzle-mend-the-bell, value: 3 }
       - level: 2
         text: >-
-          The window tells you which; the room tells you how. A construct's
-          card is filed in the room that teaches it, and each mended room
-          re-opens its teaching — the Bureau's demonstration, the dresser's
-          hangers, the court's plates, the tally's bound, the Warden's
-          endings.
-        unlock: { kind: counter-at-least, key: hints-shown:hint-bobbin-window, value: 2 }
+          Two fixtures carry the window's two jobs, and each wants its own
+          action. The bell's hook is empty: the wire with the bell-shaped tag
+          lies behind the Weft Counter's pigeonholes, a walk away, and it fits
+          that hook exactly — a bell without its wire cannot announce what
+          arrives. The plate needs no new part, only its letter rack worked:
+          its strip was read through one find-and-replace, so each address now
+          carries a word it never earned, and every letter is still in the
+          rack, waiting to be put back. Neither fixture mends by being looked
+          at, and the Bobbin Lad mends neither for you.
+        unlock: { kind: counter-at-least, key: hints-shown:hint-bobbin-window, value: 1 }
       - level: 3
         text: >-
-          Route, then give: carry each card to the resident whose teaching it
-          demonstrates, and let them file it — the mill keeps records, and so
-          does the window. A card the mill has seen run is a pattern the loom
-          can weave; a card it has not is a bobbin of air.
+          Carry the wire to the window and seat it on the intake bell's hook,
+          so the instrument can speak again; then work the plate's rack one
+          address at a time. Where a word stands that no place answers to,
+          read the letters around it, decide which word the pass replaced, and
+          set that name back letter by letter until the line reads as a place
+          again. Work the rack through every address before you call the trade
+          open — the last name, like the rest, is yours to read.
         unlock: { kind: counter-at-least, key: hints-shown:hint-bobbin-window, value: 2 }
     autoOfferAfter: 1
     cooldownTurns: 2

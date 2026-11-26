@@ -31,9 +31,10 @@ authoring:
     - >-
       A `start-quiz` topic hands off to a quiz registered in the bible. The foreman hands
       off both of his quizzes: `topic-foreman-switches` → `quiz-switchyard` and
-      `topic-foreman-lift` → `quiz-data-types`. **Flagged assumption:** on `quiz-ended`
-      the actor returns to `actorstate-ready` as npcs.md §6 requires; no quiz in this card
-      sets another state. If the quiz card sets one in `onPass`/`onFail`, that state wins.
+      `topic-foreman-lift` → `quiz-data-types`. **Flagged assumption:** `quiz-ended`
+      returns each actor to its declared `initialStateId` as npcs.md §6 requires; no quiz
+      in this card sets another state. If the quiz card sets one in `onPass`/`onFail`, that
+      state wins.
     - >-
       Teaching lines give method or structure only, never a worked answer or a quiz key
       (N3, P2). No score is authored here, no HTML is used, and all prose is British
@@ -198,7 +199,7 @@ actorStates:
       Here and available to talk, with nowhere else to be.
     authoring:
       note: >-
-        Root-registry generic default: the initial state for actors with no specific state and the return state after every quiz in this card. No `onEnter` effects.
+        Root-registry generic default: the initial state for actors that declare it; `quiz-ended` returns each actor to its own declared `initialStateId`, not to this state. No `onEnter` effects.
 
   - id: actorstate-predecessor-glitch
     stateDesc: >-
@@ -219,7 +220,7 @@ actorStates:
       On a round of the upper floors; calls out before you get a word out.
     authoring:
       note: >-
-        Approved "foreman's round" from the topic file §3.1. This state is entered when `topic-foreman-lift` fires; since that topic now gates on `not quiz-passed quiz-data-types`, a retried lift beat re-enters the state until the type test passes. `quiz-ended` then returns the actor to `actorstate-ready` (npcs.md §6) because `quiz-data-types` sets no actor state. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
+        Approved "foreman's round" from the topic file §3.1. This state is entered when `topic-foreman-lift` fires; since that topic now gates on `not quiz-passed quiz-data-types`, a retried lift beat re-enters the state until the type test passes. `quiz-ended` then returns the actor to its declared `initialStateId`, `actorstate-foreman-busy` (npcs.md §6), because the state is presentational and no quiz effect restores it. It is a presentational state only: it changes this state's `stateDesc`/`specialDesc` and lets the foreman's teaching topics work unchanged, but it gates no flag, quiz, puzzle, topic or exit, so no V4 walkthrough requirement depends on it.
 
 conversationTopics:
   - id: topic-predecessor-comic-sans
@@ -301,7 +302,7 @@ conversationTopics:
       (You could ask what a switch decides, or give the foreman the switch figure.)
     authoring:
       note: >-
-        Awareness depth only, 1.1.1 "be aware of" (topic file §2); no transistor physics. Two discoverable clues for `switches-set`: the gauge stamp and the hall's painted route diagram (N6). This topic now issues `quiz-switchyard` in-world: the foreman wants the switch in writing before he signs the AI's paperwork (topic file §6). On `quiz-ended` he returns to `actorstate-ready`. It stays askable, and re-issues `quiz-switchyard`, until that quiz passes (P5); the pass is what opens the lift beat.
+        Awareness depth only, 1.1.1 "be aware of" (topic file §2); no transistor physics. Two discoverable clues for `switches-set`: the gauge stamp and the hall's painted route diagram (N6). This topic now issues `quiz-switchyard` in-world: the foreman wants the switch in writing before he signs the AI's paperwork (topic file §6). On `quiz-ended` he returns to his declared `initialStateId`, `actorstate-foreman-busy`. It stays askable, and re-issues `quiz-switchyard`, until that quiz passes (P5); the pass is what opens the lift beat.
 
   - id: topic-foreman-lift
     actorId: npc-the-foreman
@@ -320,7 +321,7 @@ conversationTopics:
       (You could ask what waits upstairs, or take the type test.)
     authoring:
       note: >-
-        Formal spec terms paired with plain glosses (PCK-TERM). This topic is the hub-side owner of `stacks-sealed` for `hazard-bit-rot`: it is available once `switches-set` opens the hall route and before you go in, so the disarm is reachable (H1). "the labels are flaking" is the keeper's telegraph relayed in the foreman's voice, with no hint to the player and no course fact in that clause. `set-actor-state` is confirmed in shared-rules.md §5; the quiz returns the actor to `actorstate-ready` on `quiz-ended` (npcs.md §6), though the flag persists. It stays askable, and re-issues `quiz-data-types`, until that quiz passes (P5); `quiz-switchyard`'s pass is what opens this beat.
+        Formal spec terms paired with plain glosses (PCK-TERM). This topic is the hub-side owner of `stacks-sealed` for `hazard-bit-rot`: it is available once `switches-set` opens the hall route and before you go in, so the disarm is reachable (H1). "the labels are flaking" is the keeper's telegraph relayed in the foreman's voice, with no hint to the player and no course fact in that clause. `set-actor-state` is confirmed in shared-rules.md §5; the quiz returns the actor to its declared `initialStateId`, `actorstate-foreman-busy`, on `quiz-ended` (npcs.md §6), though the flag persists. It stays askable, and re-issues `quiz-data-types`, until that quiz passes (P5); `quiz-switchyard`'s pass is what opens this beat.
 
   - id: topic-foreman-predecessor
     actorId: npc-the-foreman
@@ -355,7 +356,7 @@ conversationTopics:
       (You could ask the foreman to check the gauge.)
     authoring:
       note: >-
-        Owns `overflow-checked` for `puzzle-check-the-overflow-register` (topic file §5). Always active: `show` addresses the foreman by his global alias from any room, with no gate on `actorstate-foreman-helpful`, which is a one-off presentational state cleared on `quiz-ended`. No course fact is asserted here.
+        Owns `overflow-checked` for `puzzle-check-the-overflow-register` (topic file §5). Always active: `show` addresses the foreman by his global alias from any room, with no gate on `actorstate-foreman-helpful`, which is a one-off presentational state; `quiz-ended` returns him to `actorstate-foreman-busy`. No course fact is asserted here.
 
   - id: topic-foreman-show-lens
     actorId: npc-the-foreman

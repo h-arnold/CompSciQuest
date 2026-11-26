@@ -1,6 +1,6 @@
 kind: npc
 areaId: entry-interface
-status: draft
+status: approved
 topicIds: [ai-ethics-and-implications]
 
 actors:
@@ -43,7 +43,7 @@ actorStates:
 conversationTopics:
   - id: topic-ai-verdict
     actorId: npc-the-ai
-    match: { kind: askTell, objectIds: [ai-ethics-and-implications] }
+    match: { kind: special, keywords: [verdict, mastery] }
     isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-ai, topicId: ai-ethics-and-implications } }
     responses:
       - >-
@@ -54,6 +54,9 @@ conversationTopics:
       - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-verdict }
     prompt: >-
       (You could ask what the verdict means.)
+    authoring:
+      note: >-
+        The verdict is keyword-addressed by `special`, so it cannot shadow the three scoped topics, the taunt or the default (C7); the node trigger and all effects are unchanged.
 
   - id: topic-ai-unit-two-taunt
     actorId: npc-the-ai
@@ -65,7 +68,7 @@ conversationTopics:
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask what it never taught.)
+      (You could ask about programming.)
     authoring:
       note: >-
         Flavour only (bible §2). No spec topic covers programming in this area, so there is no `learn-topic` here; this topic never assesses programming and is not a gate.
@@ -80,7 +83,7 @@ conversationTopics:
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask why you are here.)
+      (You could ask about the attendance mark.)
     authoring:
       note: >-
         Scoped to `room-arrival` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's arrival flavour content, flags and mechanics are unchanged. No flag, gate, quiz or spec fact; mastery of Unit 1 is the premise's verdict, not course content. In the AI's third-person, clipped, bureaucratic register with its verbal tic.
@@ -106,15 +109,15 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        The pointer rests on the record. Attendance is all it holds. Ask about the verdict; that is where the marks are.
+        The pointer rests on the record. Attendance is all it holds. Ask about the attendance mark, what failure means, or programming.
       - >-
-        Another tap lands on the verdict line. The verdict concerns mastery. Put your question there and I will answer it.
+        Another tap lands on the record. Ask about the attendance mark, what failure means, or the route out.
       - >-
         Noted. The entry stands. Below this bay, a belt of switches is still clicking.
     strategy: { kind: rotating }
     effects: []
     prompt: >-
-      (You could ask about the verdict, what it never taught, why you are here, or what failure means.)
+      (You could ask about the attendance mark, what failure means, or the route out.)
     authoring:
       note: >-
         Free-text DefaultAskTellTopic: any unmatched input lands here in voice (C2).

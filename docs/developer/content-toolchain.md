@@ -25,12 +25,9 @@ unresolved `todo` placeholder. Field names come from the subsystem documents
 (D3); the schema follows them. Cross-artefact meaning belongs to the gates in
 §4, not the schema.
 
-An artefact goes in the card of the area that uses it, never in an unrelated
-area for convenience; a game-wide actor's artefacts may be split between area
-cards, and `actorId` may point at an actor declared in another card
-([content-rules.md §1](content-rules.md#1-purpose-and-authority);
-`docs/content/content-bible.md` §4.2). The validator and generator merge every
-card into the same catalogue, so this layout needs no special handling.
+Card allocation follows [content-rules.md §1](content-rules.md#1-purpose-and-authority);
+the validator and generator merge every card into the same catalogue, so this
+layout needs no special handling.
 
 A world is declared once, in the `worlds` collection of the area whose
 `startAreaId` it names; other areas in that world set only `definition.worldId`
@@ -134,22 +131,24 @@ parses YAML at build or runtime. `src/content/index.ts` exports `loadContent()`,
 which assembles the committed catalogues into one `ContentBundle`, and
 `GameState.createInitial()` defaults to it.
 
-`tools/content/adapt.ts` is the single mapping boundary between authoring YAML
-and the canonical world, area, room and item shapes. It derives
-`AreaDefinition.roomIds` from the order of `rooms`, renames exit `to` to
-`targetRoomId` and exit `conditions` to `preconditions`, and copies only fields
-the runtime types declare. The generator strips the `authoring:` block from
-every entry, resolves a node's `topicIds` into embedded `topics` in declared
-order, and drops the node's authoring-only `actorId` while keeping a topic's
-optional binding. Generation is a mechanical handoff, not a second authoring
-pass.
+The authoring-to-bundle mapping is split across two steps. `normalisedCards()`
+calls `normaliseExit()` in `tools/content/gates/common.ts` to rename an exit's
+`to` field to `targetRoomId` before validation and generation.
+`tools/content/adapt.ts` then maps the normalised cards onto the canonical world,
+area, room and item shapes: it derives `AreaDefinition.roomIds` from the order of
+`rooms`, renames exit `conditions` to `preconditions`, and copies only fields the
+runtime types declare. The generator strips the `authoring:` block from every
+entry, resolves a node's `topicIds` into embedded `topics` in declared order, and
+drops the node's authoring-only `actorId` while keeping a topic's optional
+binding. Generation is a mechanical handoff, not a second authoring pass.
 
 `GameState.createInitial()` boots from the first declared world
 (`worlds.all[0]`), then resolves the area by `world.startAreaId` and the room by
 `area.startRoomId`, by ID. The opening world is therefore first in declaration
 order, which the `world-graph` gate enforces
 ([content-rules.md §7](content-rules.md#7-structural-validation-gates)). Unit
-tests use a separate deterministic fixture, not the generated content.
+tests mix small injected fixtures with assertions over the generated
+`loadContent()` bundle.
 
 ## 6. Ownership
 

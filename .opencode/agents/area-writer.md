@@ -48,7 +48,7 @@ Before finishing, check every ID against the registry, every topic ID against th
 
 ## Definition of done
 
-- Only `rooms.yaml` changed; document metadata is valid and every artifact is an entry in `definition`, `rooms` or `items` (and `worlds` where the area owns the world).
+- Only `rooms.yaml` changed; document metadata is valid and every artefact is an entry in `definition`, `rooms` or `items` (and `worlds` where the area owns the world).
 - Each room has id, title, a second-person present-tense block-scalar description of at most 200 words (ceiling, not a target), registry aliases, `authoring.interesting`, ≥1 `topicIds` entry (or `navigation-only`), and exits whose directions and targets exist; optional fields are omitted.
 - Every gate names ≥2 discoverable clue placements; no maze and no guess-the-verb or guess-the-noun trap.
 - `definition.startRoomId` is declared once and names an existing room; there is no `levelStart` key.

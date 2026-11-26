@@ -135,8 +135,8 @@ canonical design documents. You never edit `tests/**`, `e2e/**` or design docs.
   types, `import type`, `override` on overrides, optional properties omitted,
   guarded lookups under `noUncheckedIndexedAccess`, no enums, parameter
   properties or namespaces. No `Math.random()` or wall-clock reads in `src/core`.
-- No content IDs hard-coded into the engine; the stub fixture is clearly marked.
-  The build stays static and respects the `/CompSciQuest/` Vite base path.
+- No content IDs hard-coded into the engine. The build stays static and respects
+  the `/CompSciQuest/` Vite base path.
 
 ## Graphify as the map
 

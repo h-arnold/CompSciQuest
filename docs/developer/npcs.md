@@ -129,10 +129,9 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
    starts a conversation implicitly: emit `conversation-started`, apply the
    actor's current state's `onEnter` effects and switch the actor to `talking`.
 2. In **phase 4 (React)**, `DialogueSystem` finds the best matching topic among
-   node topics, then actor topics (bound to this actor or global), then defaults
-   (the selection order in [§3](#3-commands-and-topic-resolution)). `isActive`
-   gates topics on world state, including `in-room`/`in-area` checks against the
-   player's current `Position` for room-scoped dialogue.
+   node topics, then actor topics (bound to this actor or global), then defaults.
+   `isActive` gates topics on world state, including `in-room`/`in-area` checks
+   against the player's current `Position` for room-scoped dialogue.
 3. The response is emitted as `npc-spoke`; the topic's effects are applied
    through the injected `EffectApplier` and the resulting events are returned
    for the turn's buffer

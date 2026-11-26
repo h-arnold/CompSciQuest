@@ -3,7 +3,7 @@
 # Rules in scope for this brief: N1, N3, N4, N5, N6, N8, P1, D2, D3, D4, D5, V1
 kind: area
 areaId: network-hub
-status: draft
+status: approved
 
 definition:
   id: area-network-hub
@@ -43,7 +43,8 @@ rooms:
     authoring:
       interesting: >-
         A bank of humming sockets under worn little labels; every route shows
-        at once, yet only the east one carries a signal.
+        at once, yet two ports carry a signal: the east socket labelled LIVE
+        and the north socket under a fresh paper label. The rest sit dark.
       note: Navigation-only zone-choice starting point; no teaching topic is scoped here (P1).
 
 # items: id, name, aliases, portable, description, initialRoom (D2, D3)

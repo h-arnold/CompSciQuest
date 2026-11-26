@@ -368,7 +368,7 @@ files explain what each ID is for; this table owns the spellings.
 | `item-` | `item-decimal-sample` | decimal sample, sample | 1.2.1; portable Binary Hall sample for the accepted real-bin action |
 | `item-` | `item-before-label` | before label, tube label | 1.2.1; decorative examinable |
 | `item-` | `item-oil-can` | oil can, oilcan | 1.2.1; decorative examinable |
-| `item-` | `item-route-diagram` | route diagram, painted diagram | 1.2.1; decorative examinable |
+| `item-` | `item-route-diagram` | route diagram, painted diagram | 1.2.1; reserved, not declared — the painted diagram is room prose, not an item (2026-11-25) |
 | `item-` | `item-rule-card` | rule card, sum card | 1.2.1; decorative examinable |
 | `item-` | `item-overflow-tray` | overflow tray, catch tray | 1.2.1; decorative examinable |
 | `item-` | `item-spare-drawer` | spare drawer, drawer | 1.2.1; decorative examinable |
@@ -423,9 +423,11 @@ are bare kebab-case names matching the `## Topic: <name>` headings planned for
 COVERAGE.md.
 
 **Decorative examinables and the area-writer's authority (approved
-2026-11-25).** The twelve decorative examinable `item-` entries above carry no
-flag, score, topic or puzzle dependency; they exist so a room has several things
-worth examining. Their
+2026-11-25).** The twelve decorative examinable `item-` registry entries above
+carry no flag, score, topic or puzzle dependency; they exist so a room has several
+things worth examining. Eleven are declared in the cards; `item-route-diagram` is
+reserved and undeclared because the painted route diagram is room prose
+(2026-11-25). Their
 `portable` value follows real-world plausibility: fixed scenery (a brass plate, a
 painted diagram, a rack label, a drawer, a tray, a port label) is `portable: false`;
 movable props (an oil can, a rule card, a ruler, a sheet, a lead) are `portable: true`.
@@ -493,7 +495,7 @@ must not reuse them bare).
 | `item-` | `item-paned-mug` | paned mug, tea mug | 1.4.1 Zone A; decorative examinable |
 | `item-` | `item-woven-door-label` | woven label, door label | 1.4.1 Zone A; decorative examinable |
 | `item-` | `item-pattern-leaflet` | pattern leaflet, training leaflet | 1.4.1 Zone A; decorative examinable |
-| `item-` | `item-pick-trolley` | pick trolley, sheet trolley | 1.4.1 Zone A; decorative examinable |
+| `item-` | `item-pick-trolley` | pick trolley, sheet trolley | 1.4.1 Zone A; USE sets `tray-routed-by-condition` (trace §8.6 P6); examinable prop |
 | `item-` | `item-quality-book` | quality book, incident book | 1.4.1 Zone A; decorative examinable; its "STACK: OVERFLOWED" fields are colour only (flavour bar in the topic file) |
 | `item-` | `item-weft-kettle` | weft kettle, mill kettle | 1.4.1 Zone A; decorative examinable |
 | `npc-` | `npc-the-loomwright` | loomwright, loom wright | 1.4.1 Zone A |

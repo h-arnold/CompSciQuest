@@ -22,9 +22,9 @@ puzzles:
         - >-
           `room-binary-hall` description: "Five type bins: "if Valid = True", letter "A", age 15, temperature 36.4, email "computer.science@wjec.co.uk"; a sixth unlabelled decimal sample has no bin name." The five labels are the specification's own examples of Boolean, character, integer, real and string (§1.2.1), and "temperature 36.4" is its `real` example.
         - >-
-          `room-binary-hall` type bins fixture (editor correction 2026-11-24, topic file §3.1; placement request): the sixth item is an unlabelled sample bearing a decimal value; it belongs to one of the five types, and its characteristic points to the `real` bin beside the temperature 36.4.
+          `room-binary-hall` type bins fixture (editor correction 2026-11-24, topic file §3.1; real source): the sixth item is an unlabelled sample bearing a decimal value; it belongs to one of the five types, and its characteristic points to the `real` bin beside the temperature 36.4.
         - >-
-          `npc-the-foreman` dialogue beside the bins in `room-binary-hall` (placement request): a Boolean holds a True/False condition, a character is a single number, letter or symbol, an integer is a whole number (positive or negative), a real has a decimal point, and a string is a sequence of characters (§1.2.1).
+          `hint-data-types` level 2 (real source): a Boolean holds a True/False condition, a character is a single number, letter or symbol, an integer is a whole number, a real is a number with a decimal point, and a string is a run of characters. The foreman's `topic-foreman-lift` response gives the same five labels in brief ("Boolean for a switch state, character for one letter, integer for a whole number, real for a decimal, string for a run of characters"), so the definitions are placed, not assumed.
 
   - id: puzzle-set-the-switches
     requirements: [{ kind: flag-set, flag: switches-set }]
@@ -42,11 +42,11 @@ puzzles:
         `USE the switch gauge on the belt of tiny black switches` sets `switches-set`; the action wording comes from `item-switch-gauge` useNotes, where the same action also sets `switch-cooled`. The editor's re-brief adds the denary 37 marking (topic file §3.1). Flag names stay as recorded.
       clues:
         - >-
-          `item-switch-gauge` description (editor re-brief recorded in topic file §3.1; placement request): its stamped line reads "SET EVERY SWITCH, THEN TAKE THE NORTH STAIR", a small dial marked COOL is stuck at red, and a stamped tab asks "denary 37 — what binary pattern?" The tab offers a denary value for you to convert into the switch pattern.
+          `item-switch-gauge` description (editor re-brief recorded in topic file §3.1; real source): its stamped line reads "SET EVERY SWITCH, THEN TAKE THE NORTH STAIR", a small dial marked COOL is stuck at red, and a stamped tab asks "denary 37 — what binary pattern?" The tab offers a denary value for you to convert into the switch pattern.
         - >-
           `room-switch-floor` description: "Each switch is a transistor — a tiny switch that decides whether a line carries a one or a zero." The belt stores binary digits, so the denary marking must be converted before the switches can be set.
         - >-
-          `npc-the-foreman` dialogue `topic-foreman-switches` / `node-foreman-switch-lesson` (placement request): the method — divide the denary value by 2, record the remainder (0 or 1), repeat until 0, then reverse the order of the remainders (§1.2.1 L596–598). Teach the method, never the result.
+          `hint-number-systems` level 2 (real source): "Write a place-value row under the digits: powers of two for binary ... work from the right and fill one group at a time." That place-value method builds the switch pattern, and no result is printed. The divide-by-2 / record-the-remainder / reverse-the-order wording attributed to `topic-foreman-switches` / `node-foreman-switch-lesson` is a candidate placement: neither card carries it, `node-foreman-switch-lesson` is reserved and never entered, and it is not counted toward the two-clue gate. The only card text with that divide-by-2 procedure is `quiz-number-systems` q-dr-08's explanation, which prints 100101 and opens after this gate, so it is not used here.
         - >-
           `room-binary-hall` description and painted route diagram: "A painted route diagram names each gate: north switches-set, east hex-read, south characters-matched, up picture-built, in sound-sampled, out stacks-sorted. The arches repeat: switches, nibbles, tiles, image, sound, stacks." The north pair is the one for this gate.
 
@@ -68,7 +68,7 @@ puzzles:
         - >-
           `room-hex-deck` description: "A carry track reads "1 + 1 = 0, carry 1"; a token waits at the rightmost column."
         - >-
-          `npc-nibble-clerk` dialogue `topic-clerk-carries` (placement request): a carry is passed to the next column, taught as method only; §1.2.1 gives the rule 1 + 1 = 10 (0 with a carry of 1).
+          `npc-nibble-clerk` dialogue `topic-clerk-carries` (real source): a carry is passed to the next column, taught as method only; §1.2.1 gives the rule 1 + 1 = 10 (0 with a carry of 1).
         - >-
           `item-hex-nibble-card` description: "A hollow at the top fits the carry token" — the token has a named resting place on the card.
 
@@ -90,7 +90,7 @@ puzzles:
         - >-
           `room-hex-deck` description: "Arrow notches and a lever line the shift gutter; its rule card reads: left shift multiplies by a multiple of 2, right shift divides by a multiple of 2; a bit past the end is overflow."
         - >-
-          `npc-nibble-clerk` dialogue `topic-clerk-shifts` (placement request): a left shift is an arithmetic shift whose result performs a multiplication by a multiple of 2; a right shift performs a division by a multiple of 2 (glossary L2620/L2725). Anything that falls past the end of the row is named overflow. Teach the effect and the name, not a worked result.
+          `npc-nibble-clerk` dialogue `topic-clerk-shifts` (real): "An arithmetic shift moves the row the way the notch points"; he asks you to decide what overflow and underflow do, and states no multiply/divide rule. The multiplication and division wording is on the room's shift-gutter rule card quoted in the first clue, so the clerk line is not its source and adds no worked result.
 
   - id: puzzle-read-nibbles
     requirements: [{ kind: flag-set, flag: hex-read }]
@@ -112,7 +112,7 @@ puzzles:
         - >-
           `room-hex-deck` description: "A carry track reads "1 + 1 = 0, carry 1"; a token waits at the rightmost column." The card's four-square groups are the reading frame here, and the east arch in `room-binary-hall` repeats "nibbles".
         - >-
-          `npc-nibble-clerk` dialogue `topic-clerk-bases` (placement request): the specification's worked grouping `10100101` → `1010` (A) and `0101` (5) → `A5` (§1.2.1), taught as method.
+          `npc-nibble-clerk` dialogue `topic-clerk-bases` (candidate placement, not in the card and not counted): the response teaches "Columns of four" and the three bases but prints no worked grouping. The worked `10100101` → `1010` (A) and `0101` (5) → `A5` example is in `quiz-number-systems` q-dr-09's explanation, which opens after this gate; the counted clues are the card's four-square groups and its stamped back.
         - >-
           `room-binary-hall` painted route diagram and east arch: "east hex-read"; "The arches repeat: switches, nibbles, tiles, image, sound, stacks."
 
@@ -136,7 +136,7 @@ puzzles:
         - >-
           `room-character-tiles` description: "A character case lies open, each tile holding a single mark."
         - >-
-          `npc-the-typesetter` dialogue `topic-setter-ascii` (placement request): one symbol versus a word — character versus string — the fully spec-backed distinction (§1.2.1).
+          `npc-the-typesetter` dialogue `topic-setter-ascii` (real source): one symbol versus a word — character versus string — the fully spec-backed distinction (§1.2.1).
 
   - id: puzzle-build-mosaic
     requirements: [{ kind: flag-set, flag: picture-built }]
@@ -158,7 +158,7 @@ puzzles:
         - >-
           `room-picture-mosaic` description: "A vector sheet in the drafting corner shows curves scaling cleanly; a pixel grid squares off, and a mosaic ruler marks width and height. A label states: bit depth is the number of bits used for the colour of each pixel; colour depth is measured in bits per channel, or bpc."
         - >-
-          `npc-mosaic-critic` dialogue `topic-critic-storage` (placement request): the specification's worked image — 1920 × 1080 at 8 bpc RGB = 24 bits per pixel = 49,766,400 bits = 6,220,800 bytes ≈ 6075 KB ≈ 5.93 MB (§1.2.1).
+          `quiz-graphics-representation` q-dr-19 explanation (real quiz key; it opens later than this gate): the worked image is 1920 × 1080 at 24 bits per pixel, giving 2,073,600 pixels and 49,766,400 bits, with 6,220,800 bytes after dividing by eight. `npc-mosaic-critic` dialogue `topic-critic-storage` is a candidate placement, not in the card and not counted: it gives the method ("price the grid by its depth, then account for the missing squares") but no worked figures. The counted gate clues are the lens description and the room's bit-depth label.
 
   - id: puzzle-tune-sampling
     requirements: [{ kind: flag-set, flag: sound-sampled }]
@@ -180,7 +180,7 @@ puzzles:
         - >-
           `room-sound-choir` description: "A choir of glass pipes sings in flat, evenly spaced bursts. At the bit-rate desk, one dial is marked "samples per second", another "bits per sample"; a third dial is blank, waiting for a patch lead. A card defines a sample as one measurement at a point in time, and lists channels, sample rate, bit depth and bit rate."
         - >-
-          `npc-choirmaster` dialogue `topic-conductor-storage` (placement request): the specification's worked recording — stereo (2 channels), 44.1 kHz (44,100 samples per second), 16 bits, 180 seconds → 254,016,000 bits → 31,752,000 bytes ≈ 31,008 KB ≈ 30.2 MB (§1.2.1).
+          `quiz-sound-representation` q-dr-23 explanation (real quiz key; it opens later than this gate): storage is sample rate × bit depth × channels × duration, here 44,100 samples per second × 16 bits × 2 channels × 180 seconds, and the key prints no final bit total. `npc-choirmaster` dialogue `topic-conductor-storage` is a candidate placement, not in the card and not counted: it states the method but carries no worked figures. The counted gate clues are the fork's tag and the desk card in the room description.
 
   - id: puzzle-stack-the-bytes
     requirements: [{ kind: flag-set, flag: stacks-sorted }]
@@ -202,7 +202,7 @@ puzzles:
         - >-
           `room-storage-stacks` description: "The labels flake at the corners, and the air is dry and dusty. A brass plate states that one kilobyte holds 1,024 bytes." The plate gives the exact figure among the flaking labels.
         - >-
-          `npc-stack-keeper` dialogue `topic-keeper-units` (placement request): "Count twice, stack once" — a nibble is 4 bits, a byte is 8 bits and 1 KB is 1024 bytes (base 2, §1.2.1).
+          `npc-stack-keeper` dialogue `topic-keeper-units` (real source): "Count twice, stack once" and the rung chain "bit, nibble, byte, then KB, MB, GB, TB, PB"; from byte upward every joint is ×1024, and the brass plate says one kilobyte holds 1,024 bytes. The 4-bits/8-bits wording is not his: it is in `hint-storage-capacity` level 2 ("A nibble is four bits and a byte is eight bits").
 
   - id: puzzle-pack-the-archive
     requirements: [{ kind: flag-set, flag: archive-packed }]
@@ -224,7 +224,7 @@ puzzles:
         - >-
           `room-compression-press` description: "Two trays feed a press with a glass ratio window: one column reads "original", the other "compressed". A sample tray slides out with the file exactly as it went in; a second returns smaller and a little blurred. A lever is labelled lossless at one end and lossy at the other."
         - >-
-          `npc-press-operator` dialogue `topic-operator-ratio` (placement request): the specification's worked ratio 1000 ÷ 200 = 10:2 and 2000 KB at 10:2 → 400 KB (§1.2.1).
+          `quiz-data-compression` q-dr-31 and q-dr-32 explanations (real quiz keys; they open after this gate): the worked ratio is 1000 ÷ 200 = 10:2, and 2000 KB at 10:2 gives 400 KB. The press operator's `topic-operator-ratio` line is a candidate placement, not in the card and not counted: it gives the rule but no worked numbers. The counted gate clues are the die's rim and the two sample trays in the room description.
 
   - id: puzzle-check-the-overflow-register
     requirements: [{ kind: flag-set, flag: overflow-checked }]
@@ -244,9 +244,11 @@ puzzles:
         - >-
           `room-hex-deck` description: "A stuck carry lamp drips 1s into an OVERFLOW tray."
         - >-
-          `npc-the-foreman`'s response to SHOWing the gauge (`topic-foreman-show-gauge`, always active): he asks to see the gauge when a carry runs off the end, and explains overflow without a numeric result.
+          `item-overflow-tray` description (real): "A shallow tin overflow tray beneath the carry lamp, scratched OVERFLOW along its rim. A few bright 1s have collected in its bottom." The foreman's response to SHOWing the gauge (`topic-foreman-show-gauge`, always active) is a real producer but only logs the gauge ("I'll log it against the register, needle and all"); it does not ask about a carry running off the end and does not explain overflow, so it is not counted as an explanation clue.
         - >-
-          `item-switch-gauge` useNotes: "SHOW the switch gauge to the foreman after a carry runs off the register sets `overflow-checked`" — the condition and the target are both named (§1.2.1 asks only for the concept of overflow and underflow; no worked number is asserted).
+          `hint-number-systems` level 4 (real source): "A bit pushed past the last column drops into the tray scratched OVERFLOW under the carry lamp instead of vanishing." That names the tray and the spare bit, with no numeric result.
+        - >-
+          `item-switch-gauge` useNotes (authoring producer record, not a player-discoverable clue): "SHOW the switch gauge to the foreman after a carry runs off the register sets `overflow-checked`" — the condition and the target are both named (§1.2.1 asks only for the concept of overflow and underflow; no worked number is asserted).
 
   - id: puzzle-weigh-the-pixels
     requirements: [{ kind: flag-set, flag: pixels-weighed }]
@@ -292,7 +294,7 @@ puzzles:
         - >-
           `room-picture-mosaic` description: "A vector sheet in the drafting corner shows curves scaling cleanly; a pixel grid squares off, and a mosaic ruler marks width and height."
         - >-
-          `npc-mosaic-critic` dialogue `topic-critic-vectors` (placement request): vectors use mathematics (lines and curves), scale up without loss of apparent quality and suit logos and icons; an enlarged raster grid shows its squares (§1.2.1).
+          `npc-mosaic-critic` dialogue `topic-critic-vectors` (real): "A vector image comes from maths and scales cleanly; a raster image is a grid of stored pixels that squares off when stretched." The response does not name logos or icons, so that clause is dropped rather than attributed to him.
         - >-
           `npc-the-foreman`'s response to SHOWing the lens (`topic-foreman-show-lens`, always active): he wants to see the lens before signing off a scaled badge.
 
@@ -316,7 +318,7 @@ puzzles:
         - >-
           `room-character-tiles` description: "A spare drawer holds a tile bearing ŵ, labelled "a different character"."
         - >-
-          `npc-the-typesetter` dialogue `topic-setter-unicode` (placement request): "Every mark has its place" and no character is refused a tile; Unicode is named as a standardised character set (§1.2.1).
+          `npc-the-typesetter` dialogue `topic-setter-unicode` (real source): "Every mark has its place" and no character is refused a tile; Unicode is named as a standardised character set (§1.2.1).
 
   - id: puzzle-count-the-bit-rate
     requirements: [{ kind: flag-set, flag: bit-rate-counted }]
@@ -338,7 +340,7 @@ puzzles:
         - >-
           `item-sample-fork` description: "Its handle lists "samples per second, bits per sample, channels" in faded ink."
         - >-
-          `npc-choirmaster` dialogue `topic-conductor-samples` (placement request): bit rate is the amount of data processed per second of sound, calculated by multiplying sample rate by bit depth (§1.2.1).
+          `hint-representation` level 2 (real source): "bit rate multiplies sample rate by bit depth." The choirmaster's `topic-conductor-samples` response defines a sample and channels only and does not state that rule, so it is not cited as the source.
 
   - id: puzzle-label-the-capacity
     requirements: [{ kind: flag-set, flag: capacity-labelled }]
@@ -351,7 +353,7 @@ puzzles:
       pillar: >-
         P-b, P-c — the ladder is a base-2 chain, and relabelling it accurately is the gate.
       task: >-
-        You show the foreman the nibble card and relabel the unit ladder accurately. The ×1024 joints and the brass plate give the base-2 chain; the flaking labels have slipped toward round thousands.
+        You show the foreman the nibble card and relabel the unit ladder accurately. The ×1024 joints and the brass plate give the base-2 chain; the flaking labels have slipped towards round thousands.
       producedBy: >-
         `SHOW the nibble card to npc-the-foreman` sets `capacity-labelled`; owner: `item-hex-nibble-card` useNotes (verbatim).
       specCheck: >-
@@ -362,7 +364,7 @@ puzzles:
         - >-
           `item-hex-nibble-card` description: "A card divided into nibble groups of four squares, one group per line" — the nibble as four bits, the first reliable rung above a bit.
         - >-
-          `npc-stack-keeper` dialogue `topic-keeper-capacity` (placement request): "Count twice, stack once" and 1 KB = 1024 bytes, 1 MB = 1024 KB (base 2, §1.2.1).
+          `hint-storage-capacity` level 2 (real source): a nibble is four bits and a byte is eight bits; from the byte upward each joint is ×1024, and the plate states one kilobyte holds 1,024 bytes. The keeper's `topic-keeper-capacity` line is a candidate placement, not in the card and not counted: it gives the method ("read the rung you are on, then climb one joint at a time") but no figures.
 
   - id: puzzle-choose-the-compression
     requirements: [{ kind: flag-set, flag: compression-chosen }]
@@ -384,6 +386,6 @@ puzzles:
         - >-
           `room-compression-press` description: "Two trays feed a press with a glass ratio window: one column reads "original", the other "compressed". A sample tray slides out with the file exactly as it went in; a second returns smaller and a little blurred."
         - >-
-          `npc-press-operator` dialogue `topic-operator-lossy` (placement request): lossy generally reduces size more but also reduces quality; lossless maintains quality and can be uncompressed to its original form (§1.2.1).
+          `npc-press-operator` dialogue `topic-operator-lossy` (real): "Lossless gives the file back exactly; lossy keeps less and looks a little softer." The response stops there and does not state the relative size saving or the original-form wording.
         - >-
-          `npc-press-operator` dialogue `topic-operator-ratio` (placement request): 1000 ÷ 200 = 10:2 and 2000 KB at 10:2 → 400 KB, so the ratio window can be read, not guessed (§1.2.1).
+          `quiz-data-compression` q-dr-31 and q-dr-32 explanations (real quiz keys; they open after this gate): the worked ratio is 1000 ÷ 200 = 10:2, and 2000 KB at 10:2 gives 400 KB. The press operator's `topic-operator-ratio` line is a candidate placement, not in the card and not counted: it gives the rule ("the ratio is the original divided by the compressed") but no worked numbers. The counted gate clues are the die's rim and the two sample trays in the room description.

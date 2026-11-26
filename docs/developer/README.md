@@ -43,8 +43,7 @@ and writing rules.
   the `content-editor` agent and governed by
   [content-rules.md](content-rules.md) and the content bible.
 - `docs/coverage/COVERAGE.md` — the spec → topic → room → code mapping;
-  split-governed (the content-editor owns topic status, evidence, room IDs and
-  score budgets; the docs agent owns form — see
+  split-governed (see
   [documentation-style-guide.md](documentation-style-guide.md#coveragemd-is-split-governed)).
 - `docs/exam-specs/` — read-only authority for course facts.
 - Root `README.md` — environment, toolchain and setup.

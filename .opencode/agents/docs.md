@@ -166,10 +166,8 @@ before editing. Do not skip or shortcut this step.
    doc, create one focused doc with a clear subject in its name and opening —
    but first check the index and the style guide's "Choose where a doc lives";
    extending an owning doc beats starting a rival.
-3. **Root README**: keep the environment and toolchain prose accurate — every
-   command must match a `package.json` script (or a documented container
-   step), and version claims must cite the source of the pin rather than
-   restating version numbers.
+3. **Root README**: keep it accurate under the style guide's "Root README"
+   section.
 4. **COVERAGE.md form**: keep its structure and references consistent; never
    change a coverage state, evidence claim, room ID or score budget. Such a
    change is a finding for `content-editor`.
@@ -259,7 +257,7 @@ Provide a concise handoff summary including:
 - Do not rewrite unrelated docs for style-only changes.
 - Keep documentation changes scoped to the implemented change set.
 - Apply the style guide's audience and style rules; do not restate them here.
-- **Design decisions are user-owned** (`content-toolchain.md` §7): write what
+- **Design decisions are user-owned** (`content-toolchain.md` §6): write what
   the code now does, and never alter a settled design decision or invent new
   policy uninvited. If a document should record a different decision, propose
   the change to the user — or to `code-lead` when it follows from their work —
@@ -279,11 +277,11 @@ Provide a concise handoff summary including:
 │   ├── developer/
 │   │   ├── README.md                                    # Index: one line per developer doc, naming its owned subject
 │   │   ├── documentation-style-guide.md                 # Canonical writing authority: writing rules, ownership, audit scope
-│   │   ├── architecture.md                              # Original architecture: scaffold, module map, class responsibilities, §12 doc map and build order
-│   │   ├── shared-rules.md                              # Conditions, triggers, effects, scheduler, seeded Random, event buffer, observer order (owns the turn pipeline)
+│   │   ├── architecture.md                              # Layer boundaries and dependency direction, module layout, module responsibilities and code conventions.
+│   │   ├── shared-rules.md                              # Conditions, triggers, effects, scheduler, seeded `Random`; owns the turn-pipeline contract
 │   │   ├── content-rules.md                             # Content authoring rulebook: W1–W7 workflow, N/P/C/H/D/V rules, shared agent contract
-│   │   ├── content-toolchain.md                         # YAML scaffolds, Zod shapes, validator, generator, generated bundle, W6 ownership
-│   │   ├── application-and-ui.md                        # Application shell: boot, Game facade, Command/GameEvent unions, UI, view model, win check
+│   │   ├── content-toolchain.md                         # YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff
+│   │   ├── application-and-ui.md                        # Application shell: boot, Game facade, Command/GameEvent unions, canonical content bundle, behavioural signatures, UI, view model, win check
 │   │   ├── storage-schema.md                            # Save DTOs, validation, quarantine, restore-time derivation
 │   │   ├── combat.md                                    # Adversarial quiz combat: questions, grading, pass/fail effects, retries
 │   │   ├── hazards.md                                   # Declarative scheduled life-loss rules
@@ -292,8 +290,9 @@ Provide a concise handoff summary including:
 │   │   └── puzzles.md                                   # Action-flag puzzle completion, rewards, PDG validation
 │   ├── content/                                         # Owned by content-editor: content-bible.md, narrative-principles.md,
 │   │                                                    #   walkthrough.md, topics/<section>.md, <area-id>/<kind>.yaml, spec-topics.yaml;
-│   │                                                    #   status.md grandfathered — pending user deletion, do not edit
+│   │                                                    #   status.md (W5 short index)
 │   └── exam-specs/
+│       ├── gcse-unit-1-computer-science.pdf             # Source PDF (read-only)
 │       └── wjec-unit1.md                                # Read-only authority for course facts
 └── .opencode/
     ├── agents/                                          # Agent instruction files; code-reviewer.md carries Key documentation references

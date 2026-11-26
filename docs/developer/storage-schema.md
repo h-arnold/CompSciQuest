@@ -301,8 +301,10 @@ it testable with in-memory fakes and a fake clock.
 
 ```
 save:     GameState.toDto() → buildDto() → JSON.stringify
-          ├→ StorageAdapter.write('compsciquest:save:v1', json)
-          └→ downloadFile(filename, json)  (dated filename, injected from src/main.ts)
+          → StorageAdapter.write('compsciquest:save:v1', json)
+
+download: GameState.toDto() → buildDto() → JSON.stringify
+          → downloadFile(filename, json)  (dated filename, injected via src/main.ts; no storage write)
 
 boot:     StorageAdapter.read(...) → validate()
           ├─ ok    → title screen with Continue enabled → restore(dto) → GameState
