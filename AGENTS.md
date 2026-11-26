@@ -58,14 +58,20 @@ build/test commands.
 
 ## Delegation protocol (code work)
 
-There are two separate workflows. `content-editor` owns narrative, content cards
-and `docs/coverage/COVERAGE.md`; `code-lead` owns code, tests and browser QA. Do
-not cross the boundary: content agents never write TypeScript, and code agents
-never write design cards or invent course facts. The default agent remains
-`content-editor`; select `code-lead` for code work. The workers are subagents,
-not primaries: `code-lead` dispatches them for code slices, except that
-`content-editor` dispatches `play-tester` directly for W7, and both dispatch
-the `docs` agent when a slice changes documented behaviour.
+There are two ownership areas with separate workflows. `content-editor` owns
+narrative, content cards and `docs/coverage/COVERAGE.md`; `code-lead` owns code,
+tests and browser QA. Do not cross the boundary: content agents never write
+TypeScript, and code agents never write design cards or invent course facts.
+The default agent remains `content-editor`; select `code-lead` for code work.
+The workers are subagents, not primaries: `code-lead` dispatches them for code
+slices, except that `content-editor` dispatches `play-tester` directly for W7,
+and both dispatch the `docs` agent when a slice changes documented behaviour.
+For problems where code and content overlap, the leads may dispatch each other
+as subagents: `code-lead` dispatches `content-editor`, and `content-editor`
+dispatches `code-lead` in return, within the `subagent_depth: 2` limit. The
+boundary above still binds either child, and a child `content-editor` reports
+its creative decisions to the parent for user approval rather than treating the
+brief as approval.
 
 For an accepted content area, `content-editor` hands the V4 trace in
 `docs/content/walkthrough.md` to `play-tester`
