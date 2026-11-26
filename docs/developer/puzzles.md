@@ -52,8 +52,11 @@ For each puzzle in declaration order:
    applier. A puzzle that first becomes active on a solving turn is set `active`
    before it is set `solved`. The phase is set to `solved` **before**
    `puzzle-solved` is emitted, which prevents double-firing.
-3. It applies `onSolve` effects in order, then `complete-topic` for `topicId`
-   when one is set. `topic-completed` records completion for the win check.
+3. It applies `onSolve` effects in order. A derived `complete-topic` for
+   `topicId` is added only when `onSolve` did not already complete that same
+   topic, so one solve emits exactly one `topic-completed` event for its topic.
+   Distinct topics in `onSolve` are still completed as authored.
+   `topic-completed` records completion for the win check.
    Points come from the puzzle's own `score` on the `puzzle-solved` event under
    the per-puzzle rule in
    [application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic):

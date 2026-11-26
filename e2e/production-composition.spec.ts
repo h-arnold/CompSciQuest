@@ -150,13 +150,18 @@ test.describe('production composition through the real browser', () => {
 
     const lines = await transcript(page);
     expect(occurrences(lines, `> use ${noun}`)).toBe(1);
+    // ENG8-LOGID-01: `hazard-triggered` is internal-state and emits no
+    // transcript line. This production spec injects no dispatch/observe seam,
+    // so the single announcement and single Lives line below are the available
+    // event-count evidence that both reaction passes still ran once.
     expect(
-      occurrences(
-        lines,
-        `Hazard ${repeatableHazard.id}: ${repeatableHazard.id}.`,
+      lines.some(
+        (line) =>
+          line.startsWith('Hazard ') ||
+          line === `Hazard ${repeatableHazard.id}: ${repeatableHazard.id}.`,
       ),
-      'one hazard-triggered event even though the first pass emits a non-message event',
-    ).toBe(1);
+      'no internal hazard debug line is rendered',
+    ).toBe(false);
     const announcement = repeatableHazard.effects.find(
       (effect) => effect.kind === 'message',
     );

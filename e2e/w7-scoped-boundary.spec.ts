@@ -135,13 +135,26 @@ test('W7 scoped — Bureau beats render and the east door stays bolted before th
     page,
     'ask loomwright about algorithms and pseudocode',
   );
-  expect(pseudocode).toContain('You learned about Algorithms and pseudo-code.');
-  expect(pseudocode).toContain(
+  expect(pseudocode.join('\n')).toContain(
+    'A pattern is set down twice, so that either copy can be read aloud to the mill.',
+  );
+  expect(pseudocode.join('\n')).not.toContain(
+    'You learned about Algorithms and pseudo-code.',
+  );
+  expect(pseudocode.join('\n')).not.toContain(
     'Entered conversation node node-loomwright-demonstration.',
   );
   const shapes = await command(page, 'ask loomwright about shapes');
   expect(shapes.join('\n')).toContain('The five working shapes are stencilled');
-  expect(shapes).toContain('Left the conversation node.');
+  expect(shapes.join('\n')).not.toContain('Left the conversation node.');
+  // ENG8-LOGID-01: conversation-started/conversation-ended are internal-state
+  // events; the NPC speech above must render without their debug framing.
+  for (const line of [...welcome, ...pseudocode, ...shapes]) {
+    expect(line).not.toMatch(
+      /^(?:Conversation started with|Conversation ended)\b/u,
+    );
+    expect(line).not.toMatch(/\bactorstate-[a-z-]+/u);
+  }
 
   // The ten §8.6 Zone A interaction rows all live behind this door; the scoped
   // walk stops here rather than handing off quiz-pattern-bureau.

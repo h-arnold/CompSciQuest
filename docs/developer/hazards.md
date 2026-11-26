@@ -92,5 +92,8 @@ effect
 ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping))
 and belongs to the canonical union in
 [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering).
-The `message` event carries the player-facing text. `OutputLog` renders both as
-text with `textContent`; there is no hazard-specific panel.
+`formatEvent` suppresses it from the transcript because it carries an internal
+hazard ID ([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping));
+the accompanying `message` event carries the player-facing text that `OutputLog`
+renders with `textContent`. Life loss reaches `ScorePanel` through
+`lives-changed` and `GameViewData`. There is no hazard-specific panel.

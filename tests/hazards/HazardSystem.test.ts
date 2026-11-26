@@ -283,7 +283,7 @@ describe('hazard execution (hazards.md §3)', () => {
     ).toEqual([HAZARD_ID]);
   });
 
-  it('H-EVT-01: a firing hazard emits hazard-triggered and a message that both render as text', async () => {
+  it('H-EVT-01: a firing hazard emits a silent hazard-triggered event plus message and lives-changed lines', async () => {
     const definition = hazard({
       effects: [
         { kind: 'message', text: 'The switches hiss.' },
@@ -299,16 +299,41 @@ describe('hazard execution (hazards.md §3)', () => {
     const formatEvent = await loadFormatEvent();
 
     expect(eventTypes(events)).toContain('hazard-triggered');
+    expect(eventTypes(events)).toContain('lives-changed');
     const messages = events.filter(
       (event): event is Extract<GameEvent, { type: 'message' }> =>
         event.type === 'message',
     );
     expect(messages.map((event) => event.text)).toContain('The switches hiss.');
+
+    // ENG8-LOGID-01: hazard-triggered is internal state, so its ID and reason
+    // must not reach the log; the accompanying player-facing events still do.
     for (const event of events) {
-      expect(formatEvent(event, bundle).join('').trim().length).toBeGreaterThan(
-        0,
-      );
+      if (event.type === 'hazard-triggered') {
+        expect(
+          formatEvent(event, bundle),
+          'hazard-triggered must render no transcript line',
+        ).toEqual([]);
+      }
     }
+    const playerFacing = events.filter(
+      (
+        event,
+      ): event is Extract<GameEvent, { type: 'message' | 'lives-changed' }> =>
+        event.type === 'message' || event.type === 'lives-changed',
+    );
+    expect(playerFacing.length).toBeGreaterThan(0);
+    const renderedText = playerFacing
+      .flatMap((event) => formatEvent(event, bundle))
+      .join('\n');
+    for (const event of playerFacing) {
+      expect(
+        formatEvent(event, bundle).join('').trim().length,
+        `${event.type} must still render player-facing text`,
+      ).toBeGreaterThan(0);
+    }
+    expect(renderedText).not.toMatch(HAZARD_ID);
+    expect(renderedText).toContain('The switches hiss.');
 
     const calls: string[] = [];
     const game = await loadGameWithPhases(makeTurnDependencies(calls, {}));

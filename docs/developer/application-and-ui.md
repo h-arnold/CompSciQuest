@@ -539,24 +539,27 @@ export function formatEvent(
 ): readonly string[];
 ```
 
-| Event(s)                                                                    | Transcript                                                                            | Panel update                 |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
-| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated` | text as given                                                                         | —                            |
-| `room-entered`                                                              | title, blank line, description, `Exits: north, west`                                  | ScorePanel via view data     |
-| `question-asked`                                                            | prompt, then `1. …` / `2. …` lines                                                    | QuizPanel                    |
-| `score-changed`                                                             | short line using `reason`                                                             | ScorePanel via view data     |
-| `topic-completed`                                                           | completion line derived from `topicId` via the bundle                                 | ScorePanel via view data     |
-| `lives-changed`, `hazard-triggered`                                         | terse in-voice line                                                                   | ScorePanel (lives)           |
-| `conversation-started`, `conversation-ended`                                | short status line                                                                     | ConversationPanel            |
-| `quiz-started`, `quiz-ended`                                                | short status line                                                                     | QuizPanel                    |
-| `puzzle-activated`, `puzzle-solved`                                         | short status line                                                                     | ScorePanel via view data     |
-| `game-over`, `game-won`                                                     | final message with score                                                              | TitleScreen offer to restart |
-| bookkeeping events                                                          | terse line; item, actor and topic IDs resolve through the bundle, other IDs print raw | —                            |
+| Event(s)                                                                                                                                 | Transcript                                                                                                                                | Panel update                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated`                                                              | text as given                                                                                                                             | —                            |
+| `room-entered`                                                                                                                           | title, blank line, description, `Exits: north, west`                                                                                      | ScorePanel via view data     |
+| `question-asked`                                                                                                                         | prompt, then `1. …` / `2. …` lines                                                                                                        | QuizPanel                    |
+| `score-changed`                                                                                                                          | no line without a real gain; on a real gain, one friendly line stating the gained amount, with no internal `reason` string and no room ID | ScorePanel via view data     |
+| `topic-completed`                                                                                                                        | completion line derived from `topicId` via the bundle                                                                                     | ScorePanel via view data     |
+| `lives-changed`                                                                                                                          | terse in-voice line                                                                                                                       | ScorePanel (lives)           |
+| `hazard-triggered`, `conversation-started`, `conversation-ended`, `quiz-started`, `quiz-ended`, `hint-penalty-applied`                   | suppressed — no transcript line, no internal ID or debug string                                                                           | —                            |
+| `puzzle-activated`                                                                                                                       | suppressed — no transcript line, no internal puzzle ID or repeated activation notice                                                      | ScorePanel via view data     |
+| `puzzle-solved`                                                                                                                          | suppressed — no transcript line, no internal ID or implementation string; the single `topic-completed` line shows the completion outcome  | ScorePanel via view data     |
+| `game-over`, `game-won`                                                                                                                  | final message with score                                                                                                                  | TitleScreen offer to restart |
+| bookkeeping events (`flag-changed`, `item-moved`, `actor-state-changed`, `knowledge-gained`, `node-entered`, `node-exited`, `scheduled`) | suppressed — no transcript line                                                                                                           | —                            |
 
-Every event yields at least one line, so the shared-rule promise that "every
-effect produces at least one buffered event, so every state change is
-explainable in the output log" holds. Submitted commands **are** echoed to the
-transcript as `> <raw input>` before their resulting batch is rendered.
+A **real gain** means a positive `delta` on `score-changed`; zero and negative
+deltas yield no line. The transcript is a player-facing view, not a complete
+event trace: internal-state events are omitted, and panels carry current state
+through `GameViewData` (§7.2) rather than replaying the batch. The effect →
+event mapping in §9 still holds for the event pipeline; suppression happens
+only at render time. Submitted commands **are** echoed to the transcript as
+`> <raw input>` before their resulting batch is rendered.
 
 ## 7. UI structure and view-model
 
@@ -993,8 +996,10 @@ state cannot announce victory twice.
   advance it for meta actions.
 - Door and container verbs set the documented flags; failed preconditions leave
   state unchanged.
-- `formatEvent` returns at least one line for every event; room and question
-  formatting include exits and numbered options.
+- `formatEvent` emits no line for suppressed internal-state events and for
+  `score-changed` without a positive `delta`; a real gain yields one friendly
+  line with no room ID. Room and question formatting still include exits and
+  numbered options.
 - `ScoreTracker` accumulates per-puzzle awards on one topic, scores each
   achievement once, scores nothing for uncovered topics and keeps `total` equal
   to the area sum.

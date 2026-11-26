@@ -251,9 +251,11 @@ Conventions:
   ([storage-schema.md §3.3](storage-schema.md#33-invariants)).
 - `enter-node` requires a `nodeId`; `exit-node` has none. Optional properties are
   omitted, never assigned `undefined` (`exactOptionalPropertyTypes`).
-- Every effect produces at least one buffered event, so every state change is
-  explainable in the output log. The complete effect → event mapping is
-  canonical in [application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping).
+- Every effect produces at least one buffered event; the complete effect →
+  event mapping is canonical in [application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping).
+  `formatEvent` suppresses internal-state events from the player-facing
+  transcript, with a real score gain as the sole exception; panels carry
+  current state via view data ([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping)).
 - `set-flag` emits exactly one `flag-changed` on every application, including a
   re-set to the value already held. Quiz retry scoring compares the flag with
   the value observed before the batch rather than treating the event as a score
