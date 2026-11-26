@@ -243,8 +243,6 @@ move. Every name below is `proposed — needs editor approval (D2)`.
   Field 10, CAUSE: URGENT (ALL) — the flavour bar is unchanged: colour only,
   never taught.
 
-
-
 ### Curation outcome (post-ideation sub-stage, 2026-11-25) — RATIFIED by the user the same day: two coverage topics; arrays taught here; avalanche arms after the demonstration; setting = Pattern Shop (see above)
 
 Six ideation returns (area, npc, puzzle, quiz, hazard, hint) read together and

@@ -28,8 +28,8 @@ story develops; only `confirmed` entries influence writing.
   rooms should be shorter; longer passages are for key nodes and NPC teaching
   beats only.
 - Avoid repetition of sentence structures or writing effects. Especially cliches such as:
- - It's not x it y.
- - Repetitions of what something is not. This is appropriate when used sparingly.
+  - It's not x it y.
+  - Repetitions of what something is not. This is appropriate when used sparingly.
 - Technical language and plain language are not in competition: the term carries
   the marks, the gloss carries the meaning, and neither is padded out.
 - **A world term rides with the formal term (added by user instruction, 2026-11-25).**

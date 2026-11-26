@@ -95,7 +95,7 @@ reconvergence.
    demonstration"), his spoken rule. Quiz onPass sets `demo-on-record`.
 2. **`room-bobbin-window` — the Bobbin Window.** Input and output as trade:
    intake bobbins signed in, finished cloth posted out. The cousin silenced
-   the intake bell ("for focus") and the despatch printer prints `Average: `
+   the intake bell ("for focus") and the despatch printer prints `Average:`
    with nothing after it — output before anything is input (L1251, spec's
    own example turned in-world). Puzzle: mend the bell (item-bell-wire);
    the Bobbin Lad then posts a cloth whose output the player predicts.

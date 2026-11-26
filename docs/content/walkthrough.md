@@ -462,7 +462,7 @@ lives.**
   re-lettering the slopped addresses back (interaction pin P2) →
   `addressing-plate-re-lettered`. `bell-mended` still waits on the wire.
 - **25 — In → `room-warp-walk`. South → `room-weft-counter` (first entry).**
-  **`hazard-dye-pad` fires**: `on-room-enter`, `when `pad-checked` is not set`,
+  **`hazard-dye-pad` fires**: `on-room-enter`, when `pad-checked` is not set,
   `once: true` — the dried pad miscounts the weft, **−1 life (3 → 2)**, teleport to
   `room-pattern-bureau`. This loss is scripted and unavoidable (the crackle-test topic
   is `in-room` to this room); the room text read on the same entry is the telegraph.
