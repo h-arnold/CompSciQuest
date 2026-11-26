@@ -17,7 +17,7 @@ import { QuizPanel } from './QuizPanel';
 import { SaveControls, type SaveActions } from './SaveControls';
 import { ScorePanel } from './ScorePanel';
 import { Terminal } from './Terminal';
-import { TitleScreen } from './TitleScreen';
+import { DEFAULT_TITLE_COPY, TitleScreen } from './TitleScreen';
 
 // Storage key from storage-schema.md §9; SaveManager holds the same literal
 // privately. This UI copy only reads the slot for the recovery download.
@@ -61,6 +61,13 @@ export class GameWindow {
     this.clock = dependencies.clock;
     this.downloadFile = dependencies.downloadFile;
     this.loadResult = dependencies.loadResult;
+
+    // Batch E1: objective and controls open the transcript before any published
+    // batch, so the player never sees an empty log (application-and-ui.md §2).
+    this.outputLog.append([
+      DEFAULT_TITLE_COPY.objective,
+      DEFAULT_TITLE_COPY.controls,
+    ]);
 
     this.element = document.createElement('div');
     this.element.className = 'window';

@@ -4,6 +4,7 @@ import type { TurnContext } from '../../TurnContext';
 import type { Effect } from '../../effects/Effect';
 import type { Command } from '../Command';
 import type { CommandHandler } from '../CommandHandler';
+import { helpText } from '../CommandTable';
 import { npcHandler } from './npcHandlers';
 import {
   describeScenery,
@@ -281,9 +282,7 @@ const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
   look: lookHandler,
   inventory: inventoryHandler,
   score: scoreHandler,
-  help: fixedMessage(
-    'Try a direction, take, drop, examine, open, close, unlock, put, look, inventory, score or help.',
-  ),
+  help: () => [message(helpText())],
   unknown: fixedMessage("I don't understand that."),
   'talk-to': npcHandler,
   ask: npcHandler,

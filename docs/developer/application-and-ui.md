@@ -337,6 +337,15 @@ v1 recognises the canonical verbs with these aliases:
 | `answer`        | —                                                                                  |
 | `hint`          | —                                                                                  |
 
+`ask about <topic>` omits the actor. An actor qualifies when a conversation topic
+bound to it by `actorId` has an `isActive` location scope matching the player's
+`Position` ([npcs.md §2](npcs.md#2-model), [shared-rules.md §3](shared-rules.md#3-condition)).
+Inference applies only when exactly one actor qualifies; `ask <npc> about <topic>`
+names the actor, and zero or several candidates take the `unknown` path.
+
+A bare `N` during a quiz is accepted in place of `answer N` with the same
+1-based option ([combat.md §4](combat.md#4-commands-and-events)).
+
 ```ts
 // src/core/commands/CommandHandler.ts
 export type CommandHandler = (

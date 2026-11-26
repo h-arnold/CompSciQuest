@@ -63,9 +63,9 @@ the marks and options) reject a quiz with `passMark < 1`, a `passMark` above
    [shared-rules.md §7](shared-rules.md#7-random-port) owns the seed contract.
 3. Emit `question-asked` with the prompt and numbered options. The UI's
    `QuizPanel` renders them as text.
-4. The player enters `answer 2`. The command carries the **1-based** option;
-   `QuizSystem` converts it to the 0-based choice index before evaluating.
-   Option text is accepted as an alias in place of the number. `EffectApplier` records the choice and
+4. The player answers using an accepted form (§4), for example `answer 2`. The
+   command carries the **1-based** option; `QuizSystem` converts it to the 0-based
+   choice index before evaluating. `EffectApplier` records the choice and
    emits `answer-evaluated` with `correct` and `explanation`; the handler also
    returns `ask-question` while questions remain or `end-quiz` to finish
    ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping)).
@@ -91,6 +91,11 @@ the marks and options) reject a quiz with `passMark < 1`, a `passMark` above
 
 The `answer` variant is defined in the canonical `Command` union in
 [application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs).
+The accepted forms are `answer N`, a bare `N`, and exact option text, where `N`
+is the 1-based number shown beside each option (the answer step in [§3](#3-flow)).
+Only these forms are accepted: there are no letter shortcuts. A bare number
+outside a quiz takes the `unknown` path.
+
 `answer` outside a quiz is allowed and emits a friendly "nobody asked you
 anything" message. Quizzes have no time limit: the game is turn-based, and no
 clock exists in core.
@@ -100,7 +105,9 @@ The quiz events (`quiz-started`, `question-asked`, `answer-evaluated`,
 [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
 their rendering is specified in
 [§6.1](application-and-ui.md#61-event-to-view-mapping). All text is rendered
-with `textContent`; option lists are built from data, never HTML strings.
+with `textContent`; option lists are built from data, never HTML strings, and
+`QuizPanel` offers no clickable buttons
+([application-and-ui.md §7.2](application-and-ui.md#72-view-data)).
 
 ## 5. Hints
 
