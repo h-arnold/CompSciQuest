@@ -29,7 +29,9 @@
         "command": [
           "playwright-mcp",
           "--no-sandbox",
-          "--headless"
+          "--headless",
+          "--browser",
+          "chromium"
         ]
       }
     }
