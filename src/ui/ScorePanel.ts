@@ -9,10 +9,7 @@ import type {
 import { appendLine } from './appendLine';
 
 function renderTopic(parent: HTMLElement, topic: SpecTopicView): void {
-  appendLine(
-    parent,
-    `${topic.title} (${topic.specReference}) — ${topic.status}`,
-  );
+  appendLine(parent, `${topic.title} — ${topic.status}`);
 }
 
 function renderArea(parent: HTMLElement, area: AreaProgressView): void {
