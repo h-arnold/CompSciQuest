@@ -262,6 +262,9 @@ Conventions:
   trigger
   ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)).
 - `Session` owns game-over. There is no score-carrying effect variant.
+- `change-lives` also drives the gated area-entry reset; its gate and content
+  mapping are owned by
+  [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions).
 
 ## 6. Scheduler (TADS fuse / daemon)
 
