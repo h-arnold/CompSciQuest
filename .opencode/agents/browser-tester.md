@@ -72,11 +72,8 @@ edit `src/**` or design docs.
 ## Inputs and outputs
 
 - Behavioural authority: `docs/developer/application-and-ui.md` §§2, 6, 7 and
-  12, and the `E2E-` rows in `.opencode/scratchpad/branch-matrix.md`. For a W7
-  area walkthrough, the authority is the accepted ordered path, gate table and
-  reachability table in `docs/content/walkthrough.md`, plus V5 in
-  `docs/developer/content-rules.md`; the app runs the generated authored bundle,
-  not a stub fixture.
+  12, and the `E2E-` rows in `.opencode/scratchpad/branch-matrix.md`. The final
+  content playtest belongs to `play-tester`, not to this agent.
 - Use `npm run dev` for MCP exploration; `npm run build` and `npm run preview`
   are available when a production build needs checking. `playwright.config.ts`
   owns test-time startup through its `webServer`, so do not start a second
@@ -116,9 +113,7 @@ End with one verdict: `PASS`, `PASS WITH MINORS` or `FAIL`.
   leaves the live save and quarantine intact; a quarantined save is
   downloadable.
 - Engine-level end-state tests are reached deterministically by importing
-  crafted valid v1 saves; the W7 area walkthrough instead reaches `game-won`
-  through the authored area's own ordered path. A reloaded end state does not
-  re-announce victory.
+  crafted valid v1 saves. A reloaded end state does not re-announce victory.
 - No console errors during any of these flows.
 
 Accessibility checks must actually be performed: keyboard-only navigation and
@@ -130,31 +125,9 @@ consistency and absence of overflow at the chosen viewports. Do not claim a
 PASS for anything you did not observe.
 
 E2E tests use fresh storage per test. Content IDs come from the generated
-authored bundle — the stub fixture has been retired — so the W7 walkthrough
-uses the area's real IDs from `docs/content/walkthrough.md`; do not invent IDs.
-Crafted valid saves remain appropriate for deterministic engine-level tests.
-`npm run test:e2e` must pass.
-
-## Area browser walkthrough (W7)
-
-When `content-editor` briefs an accepted area directly for W7, drive the app
-through the ordered path in `docs/content/walkthrough.md` step by step with the
-real authored content
-IDs. For each step, confirm in the UI what the trace claims: room entry and
-text, each gated exit and the flag that opens it, item USE and SHOW actions, NPC
-topics and quiz doors, puzzle solves, hazard firings and safe re-entries, and
-finally the `game-won` transition and score panel. Capture a screenshot at each
-gated exit, hazard, completion and win, and reference it in the QA report. Use
-the normal finding format and cite the trace step number in the evidence field:
-
-```
-[blocker|major|minor] E2E-<n> — observation — expected from trace step <n> — evidence (screenshot/step)
-```
-
-Do not change a card, a generated file or the trace itself. Report a mismatch as
-a finding with the observed behaviour and the expected behaviour from the trace;
-report content findings to `content-editor`, which dispatched you; send code
-findings to `code-lead`.
+authored bundle — the stub fixture has been retired — so UI tests use the
+real IDs; do not invent them. Crafted valid saves remain appropriate for
+deterministic engine-level tests. `npm run test:e2e` must pass.
 
 ## Graphify as the map
 
@@ -189,16 +162,12 @@ findings to `code-lead`.
   performed and judged by observation.
 - Stable e2e tests exist in `e2e/**`, `playwright.config.ts` uses the correct
   `baseURL`, and `npm run test:e2e` passes.
-- For a W7 slice, the full ordered trace was walked in the browser with authored
-  IDs, each gated exit and the win transition has screenshot evidence, and each
-  content finding names the trace step and the expected behaviour.
 - Only `e2e/**`, `playwright.config.ts` and the scratchpad were changed.
 
 ## Constraints and escalation
 
 Hard limits: no edits to `src/**` or docs; never change an expectation to make a
-test pass; no invented content; no stub IDs in a W7 walkthrough; no web or
-subagents; no visual or accessibility PASS without evidence. If the app cannot
-be started or the browser is unavailable, return
-`BLOCKED: <reason> — needs <owner>` rather than inferring behaviour from the
-code.
+test pass; no invented content; no stub IDs; no web or subagents; no visual or
+accessibility PASS without evidence. If the app cannot be started or the
+browser is unavailable, return `BLOCKED: <reason> — needs <owner>` rather than
+inferring behaviour from the code.

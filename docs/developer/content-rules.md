@@ -40,7 +40,7 @@ Definitions used throughout:
   When the last area is integrated, the editor extends the trace across all areas and records a final whole-game verdict before sign-off. Scratchpad entries are working notes only: a state, verdict, ID, flag, topic or coverage fact also goes into its canonical doc (`docs/content/status.md`, `docs/coverage/COVERAGE.md`, `docs/content/walkthrough.md` or `docs/content/content-bible.md`), because a scratchpad file alone is not the record.
 
 - **W6 — Generate.** `code-lead` runs `npm run content:validate`, `npm run content:generate`, `npm test`, `npm run typecheck`, `npm run lint` and `npx prettier --check` on the changed files, and commits the generated TypeScript. Generation is a mechanical handoff, not a second authoring pass; [content-toolchain.md §4](content-toolchain.md#4-validation) and [§5](content-toolchain.md#5-generation) own the commands' mechanics.
-- **W7 — Browser walkthrough.** After W6, `content-editor` dispatches `browser-tester` directly to walk the accepted area's ordered path in `docs/content/walkthrough.md` through the running app with the generated authored content (V5). The tester records screenshot evidence for each gated exit, item action, quiz, puzzle, hazard and `game-won` transition, then compares what happened with what the trace claims. Findings about cards, IDs, flags or prose route back to `content-editor` for the owning writer or the bible; code findings route back to the owning `code-lead` slice. This is runtime verification, not a second content review: `content-critic` remains the authority on the trace's read-only audit (V4).
+- **W7 — Content playtest.** After W6, `content-editor` dispatches `play-tester` directly with the accepted area's ordered path, gate table and reachability table from `docs/content/walkthrough.md` as expected outcomes (V5). The tester plays the running app with ordinary player commands, using the generated authored content, and records screenshot evidence for each gated exit, item action, quiz, puzzle, hazard and `game-won` transition. It compares what happened with what the trace claims. Findings about cards, IDs, flags or prose route back to `content-editor` for the owning writer or the bible; code findings route back to the owning `code-lead` slice. This is runtime verification, not a second content review or a scripted walkthrough: `content-critic` remains the authority on the trace's read-only audit (V4).
 
 ## 3. Rule catalogue
 
@@ -104,7 +104,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **V2 — Independent review.** `content-critic` reviews every card set against the N/P/C/H/D rules using the rubric in §6.1. `pck-reviewer` checks accuracy against `wjec-unit1.md`, GCSE-level scope, terminology and cognitive load using §6.2. Every blocker and major finding from either reviewer is resolved before integration.
 - **V3 — Editor sign-off.** The editor checks cross-artefact consistency, updates `docs/coverage/COVERAGE.md` with spec references and evidence, and records status in `docs/content/status.md`. A topic is marked `covered` only when a card supplies real teaching and assessment evidence.
 - **V4 — Walkthrough audit.** Before an area (and finally the whole game) is signed off, the editor traces at least one complete, ordered path from each area's `startRoomId` to `game-won` and records it in `docs/content/walkthrough.md`. The trace proves that every gate condition can be satisfied in-world; that every declared room, exit, item, NPC topic, quiz, puzzle, hazard trigger and hint target is reachable or triggerable; and that no dependency creates a soft-lock or an unreachable option. `content-critic` verifies the trace read-only on the final pass described in W4. An area whose contribution to the win set cannot be demonstrated is not integrated.
-- **V5 — Runtime walkthrough.** Once an accepted area is generated in W6, `browser-tester` (dispatched directly by `content-editor`) exercises the V4 trace through the running app with the real authored content bundle and confirms that each gate, completion source and `game-won` transition behaves as recorded. The W7 QA report and its screenshots are the evidence; a mismatch is a finding routed to the content owner or the code owner as appropriate. V5 checks the implementation against V4; it does not replace the critic's read-only trace audit.
+- **V5 — Runtime playtest.** Once an accepted area is generated in W6, `play-tester` (dispatched directly by `content-editor`) plays the running app with the real authored content bundle and confirms that each gate, completion source and `game-won` transition behaves as the V4 trace expects. The W7 playtest report and its screenshots are the evidence; a mismatch is a finding routed to the content owner or the code owner as appropriate. V5 checks the implementation against V4; it does not replace the critic's read-only trace audit.
 
 ## 4. Design card format
 
@@ -457,8 +457,8 @@ Aliases are lowercase words or short phrases, unique across all items and actors
 Both reviewers read YAML cards. A passing `content:validate` run is a
 precondition (D5), not a substitute: structural correctness says nothing about
 voice, fairness or subject accuracy, and reviewer findings still route back to
-the writer. V5 is not a card-review rubric: `browser-tester` runs the runtime
-walkthrough under W7, dispatched directly by `content-editor`; neither reviewer
+the writer. V5 is not a card-review rubric: `play-tester` runs the runtime
+playtest under W7, dispatched directly by `content-editor`; neither reviewer
 performs it.
 
 ### 6.1 Content critic

@@ -152,20 +152,22 @@ tests mix small injected fixtures with assertions over the generated
 
 ## 6. Ownership
 
-| Artefact                                                  | Owner                                       |
-| --------------------------------------------------------- | ------------------------------------------- |
-| `docs/content/**/*.yaml` and `spec-topics.yaml`           | `content-editor` via writers                |
-| `tools/content/**` — schema, validator, gates, generator  | `code-implementer`                          |
-| `src/**`, including generated `src/content/authored/*.ts` | `code-implementer`                          |
-| `package.json` dependencies (`zod`, `yaml`) and scripts   | `code-implementer`                          |
-| `e2e/**` and `playwright.config.ts`                       | `browser-tester`                            |
-| `.opencode/scratchpad/slices/<id>/qa-report.md`           | `browser-tester`, dispatched for W7         |
-| `docs/developer/**` — design decisions                    | user-owned design authority                 |
-| `docs/developer/**` — style, drift, duplication           | `docs` agent (documentation-style-guide.md) |
-| root `README.md`                                          | `docs` agent                                |
-| `docs/coverage/COVERAGE.md` — form                        | `docs` agent                                |
-| `docs/coverage/COVERAGE.md` — coverage content            | `content-editor`                            |
-| `AGENTS.md`, `opencode.json`                              | user-owned design authority                 |
+| Artefact                                                  | Owner                                         |
+| --------------------------------------------------------- | --------------------------------------------- |
+| `docs/content/**/*.yaml` and `spec-topics.yaml`           | `content-editor` via writers                  |
+| `tools/content/**` — schema, validator, gates, generator  | `code-implementer`                            |
+| `src/**`, including generated `src/content/authored/*.ts` | `code-implementer`                            |
+| `package.json` dependencies (`zod`, `yaml`) and scripts   | `code-implementer`                            |
+| `e2e/**` and `playwright.config.ts`                       | `browser-tester`                              |
+| `.opencode/scratchpad/slices/<id>/qa-report.md`           | `browser-tester` for UI slices                |
+| W7 playtest report and screenshots named in the brief     | `play-tester`, dispatched by `content-editor` |
+| `docs/developer/**` — design decisions                    | user-owned design authority                   |
+| `docs/developer/**` — style, drift, duplication           | `docs` agent (documentation-style-guide.md)   |
+| root `README.md`                                          | `docs` agent                                  |
+| `docs/coverage/COVERAGE.md` — form                        | `docs` agent                                  |
+| `docs/coverage/COVERAGE.md` — coverage content            | `content-editor`                              |
+| `AGENTS.md` (delegation and routing)                      | `docs` agent                                  |
+| `opencode.json`, recorded design decisions                | user-owned                                    |
 
 Code agents never write cards or invent course facts; content agents never write
 TypeScript, schema or tooling.

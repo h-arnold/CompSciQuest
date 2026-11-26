@@ -41,9 +41,9 @@ time, and you may proceed only after they explicitly approve that edit.
 - UI and browser work is verification-led. Behavioural expectations come from
   `docs/developer/application-and-ui.md` §12; accessibility and aesthetics are
   judged by the `browser-tester` once something renders. For an accepted content
-  area, the ordered path in `docs/content/walkthrough.md` is the behavioural
-  contract for the W7 browser walkthrough (`docs/developer/content-rules.md`
-  V5).
+  area, the ordered path in `docs/content/walkthrough.md` is the expected
+  outcome for the W7 content playtest run by `play-tester`
+  (`docs/developer/content-rules.md` V5).
 
 ## Gate 1 — plan the branches
 
@@ -76,19 +76,18 @@ For an accepted content area handed over by `content-editor` in W6, run
 files, and commit the generated TypeScript. This is a mechanical handoff, not a
 second authoring pass: do not rewrite YAML cards or invent course facts.
 
-For that area's W7 browser walkthrough, `content-editor` dispatches
-`browser-tester` directly with the accepted area's ordered path, gate table and
-reachability table from `docs/content/walkthrough.md`. The walkthrough uses the
-generated authored content and its real IDs. Its QA report and screenshots go
-to `.opencode/scratchpad/slices/<slice-id>/qa-report.md` and
-`.opencode/scratchpad/slices/<slice-id>/screenshots/`. Route findings about
-cards, IDs, flags or prose to `content-editor`, and code findings to the owning
-code slice.
+For that area's W7 content playtest, `content-editor` dispatches `play-tester`
+directly with the accepted area's ordered path, gate table and reachability
+table from `docs/content/walkthrough.md` as expected outcomes. The playtest
+uses the generated authored content and its real IDs. Its report and
+screenshots go to the paths named in the brief. Route findings about cards,
+IDs, flags or prose to `content-editor`, and code findings to the owning code
+slice.
 
 Recommended scheduling (my own orchestration): lint bootstrap and matrix →
 persistence → content toolchain → content bundle, validation and boot shell →
 parser and turn pipeline → hazards and puzzles → NPCs → quizzes and hints →
-browser QA. The final browser QA pass is the W7 walkthrough required for each
+browser QA. The final content verification is the W7 playtest required for each
 accepted area by `docs/developer/content-rules.md` V5.
 
 ## Gate 3 — route findings
@@ -102,7 +101,7 @@ accepted area by `docs/developer/content-rules.md` V5.
   this check.
 - For W7, a V5 finding about cards, IDs, flags or prose goes to `content-editor`
   for the owning writer or the bible; a code finding goes back to the owning
-  code slice. Never rewrite a card to make a walkthrough step pass.
+  code slice. Never rewrite a card to make a playtest expectation pass.
 - Cross-artefact contradictions that the documents do not settle go to the user
   with the affected documents named; do not send them to `test-planner`, whose
   brief forbids choosing between interpretations.
@@ -135,9 +134,9 @@ accepted area by `docs/developer/content-rules.md` V5.
 - Each non-scaffolding slice has a red report; scaffolding slices are labelled
   as such in the report instead. Every slice has a verification run, a review
   verdict and, where relevant, a QA report with screenshot evidence.
-- Each accepted content area has a W6 verification run and a W7 browser-walkthrough
-  QA report with screenshot evidence, or an explicit `BLOCKED` escalation naming
-  the owner.
+- Each accepted content area has a W6 verification run and a W7 playtest report
+  with screenshot evidence, or an explicit `BLOCKED` escalation naming the
+  owner.
 - No blocker or major finding remains open; all `BLOCKED` items are surfaced to
   the user with the owning agent named.
 - The final report lists the changed files, the matrix IDs covered and the open

@@ -53,6 +53,9 @@ permissions:
   - action: edit
     resource: ".opencode/plugins/**"
     effect: deny
+  - action: edit
+    resource: "AGENTS.md"
+    effect: allow
   - action: shell
     resource: "git commit*"
     effect: deny
@@ -196,9 +199,11 @@ Only update an agent instruction file when one of these is true:
 
 When updating agent files:
 
-- Keep top-level `AGENTS.md` cross-cutting and concise — but it is
-  **user-owned**: report proposed changes to the user; never apply them.
-  `opencode.json` is likewise user-owned.
+- Keep top-level `AGENTS.md` cross-cutting and concise. You may apply edits to
+  it when they follow from a documented workflow or delegation change, or when
+  the user asks for them; keep its routing accurate and avoid duplicating
+  subsystem policy. `opencode.json` is user-owned: report proposed changes to
+  the user and never apply them.
 - Put subsystem-specific guidance in the owning subsystem doc, not in agent
   files.
 - Preserve routing clarity so an orchestrator can quickly work out which
@@ -262,14 +267,14 @@ Provide a concise handoff summary including:
   policy uninvited. If a document should record a different decision, propose
   the change to the user — or to `code-lead` when it follows from their work —
   instead of applying it.
-- Root `AGENTS.md`, `opencode.json` and user-owned configuration: propose
-  changes, never apply them.
+- `opencode.json` and user-owned configuration: propose changes, never apply
+  them. Root `AGENTS.md` is in scope under §3; keep it cross-cutting and concise.
 
 ## 7. Documentation Landscape
 
 ```
 .
-├── AGENTS.md                                            # Root contract: delegation protocol, routing, tone (user-owned)
+├── AGENTS.md                                            # Root contract: delegation protocol, routing, tone (docs agent may update)
 ├── README.md                                            # Environment, toolchain and setup prose (in scope)
 ├── docs/
 │   ├── coverage/

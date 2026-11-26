@@ -110,7 +110,7 @@ Run these yourself as the batches dispatch; do not delegate them:
 - Duplication and contradictions across slices: the same rule stated in two
   canonical docs; an "amends" delta that disagrees with its owner; agent
   instructions that disagree with a doc; the docs agent's deny list against
-  the ownership table in `content-toolchain.md` §7.
+  the ownership table in `content-toolchain.md` §6.
 - Decision-log treatment: any "Decision log", "Decided", "Decisions not
   revisited" section, approval record or dated addendum in an in-scope doc is
   a finding; the rule belongs folded into the section it governs.
@@ -149,11 +149,12 @@ Read every returned findings file in full. Write one comprehensive document to
   `content-editor` and record it as such.
 - An issue may be marked **Accepted** with a recorded rationale. Accepted
   issues are not fix work and are not re-raised by reviewers.
-- A fix that must edit a user-owned file — root `AGENTS.md`, `opencode.json`,
-  or a recorded design decision in `docs/developer/**` (see
-  `content-toolchain.md` §7) — is not fix work either: record the proposed
-  change in the issue, mark it **Proposed**, and leave it out of every batch;
-  §8 presents proposals to the user.
+- A fix that must edit a user-owned file — `opencode.json`, or a recorded
+  design decision in `docs/developer/**` (see `content-toolchain.md` §6) — is
+  not fix work either: record the proposed change in the issue, mark it
+  **Proposed**, and leave it out of every batch; §8 presents proposals to the
+  user. Root `AGENTS.md` is in scope for the `docs` agent under
+  `.opencode/agents/docs.md` §3.
 - Do not fix anything in this phase. The issues document is the complete plan.
 
 ## 6. Delegate fixes
@@ -171,10 +172,12 @@ Each fix brief must state:
    unrelated sections or invent new rules. If a decision cannot be applied,
    report that instead of improvising.
 5. Do not commit, and do not change code, tests or JSDoc. Never edit
-   user-owned files: root `AGENTS.md`, `opencode.json`, or recorded design
-   decisions in `docs/developer/**` — issues marked **Proposed** stay with
-   the user. Agent instruction files may be edited only when named by the
-   issue decision or the Documentation Landscape obligation.
+   user-owned files: `opencode.json`, or recorded design decisions in
+   `docs/developer/**` — issues marked **Proposed** stay with the user.
+   Root `AGENTS.md` may be edited when the batch brief names it and the change
+   follows `.opencode/agents/docs.md` §3. Agent instruction files may be
+   edited only when named by the issue decision or the Documentation Landscape
+   obligation.
 6. Write a fix log incrementally to
    `.opencode/scratchpad/docs-audit/fixes/<slice>-cycle<N>.md`, starting at
    cycle 1, listing each issue ID, the change made and the files touched.
