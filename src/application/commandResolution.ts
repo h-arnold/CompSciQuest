@@ -2,29 +2,35 @@
 // The parser exposes tokens; this module groups them into content names and
 // skips only grammatical prepositions before resolving canonical IDs.
 import type { ContentBundle } from '../content/ContentBundle';
+import { DIRECTIONS } from '../core/commands/CommandTable';
 import type { Command } from '../core/commands/Command';
 import { createNameResolver } from '../core/commands/NameResolver';
 import { parse } from '../core/commands/Parser';
 import type { GameState } from '../core/GameState';
 import type { Direction } from '../types/domain';
 
-const DIRECTION_NAMES: ReadonlySet<string> = new Set([
-  'north',
-  'south',
-  'east',
-  'west',
-  'up',
-  'down',
-  'in',
-  'out',
-]);
+// Both the full name and the shortcut are aliases of `go` (§5.2), so both map
+// to the canonical Direction name held in the table.
+const DIRECTION_BY_TOKEN: ReadonlyMap<string, string> = new Map(
+  DIRECTIONS.flatMap(
+    (direction) =>
+      [
+        [direction.name, direction.name],
+        [direction.shortcut, direction.name],
+      ] as const,
+  ),
+);
 
 const USE_PREPOSITIONS: ReadonlySet<string> = new Set(['on', 'with', 'using']);
 const PUT_PREPOSITIONS: ReadonlySet<string> = new Set(['in', 'into', 'on']);
 const UNLOCK_PREPOSITIONS: ReadonlySet<string> = new Set(['with', 'using']);
 
-function isDirection(value: string | undefined): value is Direction {
-  return value !== undefined && DIRECTION_NAMES.has(value);
+function directionCommand(token: string | undefined): Command | undefined {
+  const name = token === undefined ? undefined : DIRECTION_BY_TOKEN.get(token);
+  return name === undefined
+    ? undefined
+    : // DIRECTIONS is the canonical eight-value table, so its names are Directions.
+      { kind: 'go', direction: name as Direction };
 }
 
 function noArgumentCommand(kind: string): Command | undefined {
@@ -253,9 +259,7 @@ export function resolveGameCommand(
   const simple = noArgumentCommand(parsed.verb);
   if (simple !== undefined) return simple;
   if (parsed.verb === 'go') {
-    return isDirection(tokens[0])
-      ? { kind: 'go', direction: tokens[0] }
-      : unknown();
+    return directionCommand(tokens[0]) ?? unknown();
   }
   if (parsed.verb === 'answer') return answerCommand(tokens, state, bundle);
   if (parsed.verb === 'hint') {
