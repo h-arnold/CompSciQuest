@@ -74,12 +74,17 @@ its creative decisions to the parent for user approval rather than treating the
 brief as approval.
 
 For an accepted content area, `content-editor` hands the V4 trace in
-`docs/content/walkthrough.md` to `play-tester`
-as the expected outcome for a W7 playtest against the generated authored content
-(`content-rules.md` V5). The playtest is blind and player-facing: it plays the
-running app with ordinary commands rather than following a scripted walkthrough.
-Findings about content return to `content-editor`; code findings go to
-`code-lead`. `content-editor` never operates the browser itself.
+`docs/content/walkthrough.md` to `play-tester` as the expected outcome for a W7
+playtest against the generated authored content (`content-rules.md` V5). The
+brief begins `Purpose: content playability and effectiveness review`, and the
+tester reads `docs/content/difficulty-and-fairness.md` to assess clue access,
+puzzle fairness, hints, combat readability, failure and challenge. The playtest
+is blind and player-facing: it plays the running app with ordinary commands
+rather than following a scripted walkthrough. Findings about content return to
+`content-editor`; code findings go to `code-lead`. `content-editor` never
+operates the browser itself. A `code-lead` dispatch for functional verification
+begins `Purpose: functional verification only` and skips the difficulty
+assessment.
 
 ### Agents and ownership
 
@@ -113,10 +118,13 @@ its exact output path; no agent invents one.
    `browser-tester` for UI-affecting slices (MCP exploration, screenshots,
    accessibility/aesthetics and e2e tests).
 3. For an accepted content area, `content-editor` dispatches `play-tester`
-   directly for W7: it plays the running app with ordinary commands, checks the
-   trace's expected outcomes against what happens, captures screenshots, and
-   writes the report and screenshots to the paths named in the brief. Content
-   findings go to `content-editor`, not to a writer directly.
+   directly for W7 with `Purpose: content playability and effectiveness review`:
+   it plays the running app with ordinary commands, checks the trace's expected
+   outcomes against what happens, assesses the difficulty and fairness guidance,
+   captures screenshots, and writes the report and screenshots to the paths named
+   in the brief. Content findings go to `content-editor`, not to a writer
+   directly. A `code-lead` dispatch for functional verification uses
+   `Purpose: functional verification only` and skips that assessment.
 4. Briefs must be self-contained: child agents have fresh context. Include the
    slice ID, exact matrix IDs, document sections, permitted file paths, output
    path and definition of done.

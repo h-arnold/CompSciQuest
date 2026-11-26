@@ -74,6 +74,7 @@ an update here.
 | Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
 | Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                |
 | Content authoring and toolchain               | `content-rules.md`, `content-toolchain.md`                                    |
+| Content difficulty and playability             | `docs/content/difficulty-and-fairness.md` (content-owned guidance)           |
 | Spec topics and coverage                      | `docs/coverage/COVERAGE.md` (coverage decisions owned by `content-editor`)    |
 | Documentation writing rules                   | `docs/developer/documentation-style-guide.md`                                 |
 | Developer documentation index                 | `docs/developer/README.md`                                                    |

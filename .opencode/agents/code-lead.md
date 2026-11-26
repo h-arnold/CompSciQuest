@@ -115,6 +115,15 @@ screenshots go to the paths named in the brief. Route findings about cards,
 IDs, flags or prose to `content-editor`, and code findings to the owning code
 slice.
 
+When you dispatch `play-tester` for code or browser verification, begin the
+brief with `Purpose: functional verification only`. State that it must verify
+the named behaviour, command handling, persistence, state transitions and
+retry mechanics, and must not read
+`docs/content/difficulty-and-fairness.md` or assess enjoyment, fairness, clue
+sufficiency or difficulty. A content-quality review requires a separate
+`content-editor` dispatch with `Purpose: content playability and effectiveness
+review`.
+
 Recommended scheduling (my own orchestration): lint bootstrap and matrix →
 persistence → content toolchain → content bundle, validation and boot shell →
 parser and turn pipeline → hazards and puzzles → NPCs → quizzes and hints →

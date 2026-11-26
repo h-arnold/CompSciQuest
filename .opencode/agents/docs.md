@@ -294,6 +294,7 @@ Provide a concise handoff summary including:
 │   │   ├── npcs.md                                      # Actors, actor states, topics, ConvNode, knowledge gating, TopicResolver
 │   │   └── puzzles.md                                   # Action-flag puzzle completion, rewards, PDG validation
 │   ├── content/                                         # Owned by content-editor: content-bible.md, narrative-principles.md,
+│   │                                                    #   difficulty-and-fairness.md (cross-content difficulty, fairness and playtest guidance),
 │   │                                                    #   walkthrough.md, topics/<section>.md, <area-id>/<kind>.yaml, spec-topics.yaml;
 │   │                                                    #   status.md (W5 short index)
 │   └── exam-specs/

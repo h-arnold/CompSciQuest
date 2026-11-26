@@ -42,6 +42,9 @@ and writing rules.
 - `docs/content/` — authored game content and its canonical records; owned by
   the `content-editor` agent and governed by
   [content-rules.md](content-rules.md) and the content bible.
+  [Difficulty and fairness](../content/difficulty-and-fairness.md) owns
+  cross-content guidance on puzzle fairness, clue access, hints, combat
+  readability, failure and playtest difficulty.
 - `docs/coverage/COVERAGE.md` — the spec → topic → room → code mapping;
   split-governed (see
   [documentation-style-guide.md](documentation-style-guide.md#coveragemd-is-split-governed)).
