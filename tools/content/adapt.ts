@@ -9,7 +9,10 @@ import type { ItemDefinition } from '../../src/content/ItemDefinition.ts';
 import type { RoomDefinition } from '../../src/content/RoomDefinition.ts';
 import type { WorldDefinition } from '../../src/content/WorldDefinition.ts';
 import type { SpecTopic } from '../../src/core/scoring/SpecTopic.ts';
-import { validateContent } from '../../src/content/validateContent.ts';
+import {
+  interactionShapeProblems,
+  validateContent,
+} from '../../src/content/validateContent.ts';
 import type { Finding, ParsedCardSet, ValidationOptions } from './contracts.ts';
 import { auditedAreaLikes, asText, coverageIds } from './gates/common.ts';
 
@@ -229,16 +232,34 @@ export function sharedFindings(
   const audited = new Set(
     auditedAreaLikes(cards).map((area) => asText(area.data['id'])),
   );
-  return problems
-    .filter((problem) => !problem.includes('declares no rooms'))
-    .filter((problem) => {
-      const id = /^Area '([^']+)' has a missing startRoomId/u.exec(
-        problem,
-      )?.[1];
-      return id === undefined || audited.has(id);
-    })
-    .map((problem) => {
-      const id = /'([^']+)'/u.exec(problem)?.[1] ?? 'bundle';
-      return { path, entry: id, message: problem, gate: gateOf(problem) };
-    });
+  const shapeProblems = interactionShapeProblems(
+    cards.cards.flatMap((card) => unpack(card.data['rooms'])),
+  );
+  const pathOfRoom = (roomId: string): string =>
+    cards.cards.find((card) =>
+      unpack(card.data['rooms']).some((room) => asText(room['id']) === roomId),
+    )?.path ?? path;
+  return [
+    ...problems
+      .filter((problem) => !problem.includes('declares no rooms'))
+      .filter((problem) => {
+        const id = /^Area '([^']+)' has a missing startRoomId/u.exec(
+          problem,
+        )?.[1];
+        return id === undefined || audited.has(id);
+      })
+      .map((problem) => {
+        const id = /'([^']+)'/u.exec(problem)?.[1] ?? 'bundle';
+        return { path, entry: id, message: problem, gate: gateOf(problem) };
+      }),
+    ...shapeProblems.map((problem) => {
+      const id = /^Room '([^']+)'/u.exec(problem)?.[1] ?? 'bundle';
+      return {
+        path: pathOfRoom(id),
+        entry: id,
+        message: problem,
+        gate: 'shape',
+      };
+    }),
+  ];
 }

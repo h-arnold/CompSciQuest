@@ -161,10 +161,10 @@ export function validateContent(bundle: ContentBundle): readonly string[];
 `loadContent()` returns the `ContentBundle` assembled from the committed generated
 files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
-means valid. At boot it re-runs the runtime mirrors of `content-ids`,
-`puzzle-graph`, `hazard-content` and `score-content`
-([content-rules.md §7](content-rules.md#7-structural-validation-gates)) against
-the bundle:
+means valid. At boot it re-runs these checks against the bundle: the runtime
+mirrors of `content-ids`, `puzzle-graph`, `hazard-content` and `score-content`
+([content-rules.md §7](content-rules.md#7-structural-validation-gates)), plus
+the interaction and scenery shape checks shared with authoring:
 
 - unique artefact IDs and globally unique object/NPC aliases;
 - every exit target, item `initialRoom`, `area.startRoomId` and `move-player`
@@ -172,15 +172,18 @@ the bundle:
 - puzzle dependencies resolve and the graph is acyclic;
 - hazard authoring rules hold (telegraph present, no `set-puzzle-*`, positive
   schedule);
-- per-topic score budgets hold (§10 of this document).
+- per-topic score budgets hold (§10 of this document);
+- room interaction and scenery shape holds, through the owner shared with the
+  authoring gate ([content-rules.md §7](content-rules.md#7-structural-validation-gates)).
+  Target-reference checks stay with `content-ids`.
 
 NPC actor binding is checked at authoring time: every authored topic and node
 carries an `actorId` that resolves to one actor, and the `npc-content` gate
 enforces it ([content-rules.md §4.3 "Actor binding"](content-rules.md#43-npc-card),
 [§8](content-rules.md#8-fixed-contracts-content-must-use)). That gate is
-authoring-only, so boot does not re-check it. Authoring-only shape checks (stray
+authoring-only, so boot does not re-check it. The remaining shape checks (stray
 keys outside `authoring:`, document `status`, unresolved `todo` placeholders)
-also run only in `npm run content:validate` on the YAML. The four
+run only in `npm run content:validate` on the YAML. The four
 runtime-mirrored gates share one check function across authoring, test and boot;
 `world-graph`, `quiz-content`, `hint-content` and `npc-content` run at authoring
 time only.
@@ -629,7 +632,9 @@ export interface GameViewData {
 The rule is: **transcript and transient panels read events; ScorePanel reads
 `GameViewData`.** No panel computes scores, resolves aliases or decides game
 rules. `ScorePanel` presents `earnedScore`/`maxScore`, visited counts and the
-linked spec topics using `SpecTopicCatalogue` labels.
+linked spec topics using `SpecTopicCatalogue` labels. `Game.getViewData()` caps
+`visitedRoomCount` at the area's declared `roomIds.length`, so the panel never
+shows more visits than the area has rooms.
 
 `Terminal` owns a bounded in-memory command history with no persistence and no
 duplicate suppression, navigated with the up/down arrows. It calls
@@ -695,6 +700,7 @@ export interface TopicResolver {
     phrase: string,
     state: GameState,
     node?: ConversationNode,
+    actorId?: string,
   ): ResolvedTopic;
 }
 
@@ -922,6 +928,11 @@ declared points, so one spec topic can be scored several times, up to a budget.
   trigger on a later pass. A pass with no `set-flag` and the flag still false
   follows the direct-achievement path and scores once on that batch; content
   that can be retried must set the flag.
+
+A `complete-topic` effect can create its `(worldId, areaId)` progress row when
+none exists, through the shared `AreaProgress` lookup. The new row takes
+`maxScore` from the live catalogue and `earnedScore` at zero; completion is
+never lost to empty progress, and no unrelated row or duplicate pair changes.
 
 `ScoreTracker` is still the sole writer of `AreaProgress.earnedScore`, and the
 runtime total remains derived from those area totals.

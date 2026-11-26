@@ -91,7 +91,9 @@ do not redeclare them here.
 
 `NameResolver` resolves object IDs; it cannot resolve free-text topics.
 `TopicResolver` sits beside it and takes the raw noun phrase from
-`ParsedCommand`:
+`ParsedCommand` plus the speaking actor's ID, so actor-bound topics stay bound
+during resolution. Its canonical signature is in
+[application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures).
 
 ```ts
 export type ResolvedTopic =
@@ -102,23 +104,35 @@ export type ResolvedTopic =
 
 Resolution order:
 
-1. keyword from the active node's special topics → `keyword`;
-2. object alias from room/inventory/known objects → `object`;
-3. otherwise → `free-text`, which always finds a `DefaultAskTellTopic` and gets
-   a vague in-character reply. **Unknown topics never crash or say "parser
-   error".**
+1. a keyword from the active node's own `special` topics → `keyword`;
+2. a keyword from a `special` topic bound to the speaking actor → `keyword`
+   (a node's own specials are excluded here so they cannot steal its turn);
+3. a visible object alias from room, inventory or known objects → `object`;
+4. a phrase naming exactly one declared `ask`/`tell` object ID → `object`;
+5. otherwise → `free-text`, which uses the authored default reply. **Unknown
+   topics never crash or say "parser error".**
 
-Free text reaches the **first** active non-default `ask`/`tell` topic in
-declaration order — node topics before actor topics
-([§4](#4-conversation-flow)). Both verbs are one class: a free-text phrase
-reaches an `ask` topic even when the player typed `tell`, and the reverse. The
-verb distinction applies only once a phrase resolves to an object.
+The resolver reads state only; selection owns every gate. On an object match,
+several authored topics may declare the same phrase; the one bound to the
+speaking actor is the exact topic and wins even while `isActive` is false.
+Actor binding, not a topic-ID word, is the tie-break. A command-incompatible
+exact topic (`ask` versus `tell`) lets no other concrete topic answer: the
+default catch-all replies through `speakIdleTopic()` without counting a topic
+use. Object resolution requires exactly one declared object ID, so ambiguous
+phrases never become object matches. A conversation topic ID is never player
+vocabulary.
 
-Content must not rely on a keyword or an ID word as a tie-break inside that
-class; two such topics on one actor must be mutually exclusive in `isActive`
-([content-rules.md](content-rules.md#c--conversation-and-npcs) C7).
-`command`/`special` keywords are the only authored way to address one topic
-among several active ask/tell topics.
+With no resolved target, the **first** active, command-compatible non-default
+`ask`/`tell` topic wins in declaration order — node topics before actor topics
+([§4](#4-conversation-flow)). Ask and tell are one authoring class for the
+overlap proof ([content-rules.md](content-rules.md#c--conversation-and-npcs) C7),
+but the command check applies on the keyword, object and free-text paths: an
+`ask`-only topic cannot answer `tell`, a `tell`-only topic cannot answer `ask`,
+and `askTell` accepts both. Content must not rely on a keyword or an ID word as
+a tie-break inside that class; two such topics on one actor must be mutually
+exclusive in `isActive` (C7). A `command`/`special` keyword, or a phrase naming
+one declared object ID, addresses one topic among several active ask/tell
+topics.
 
 Object and NPC aliases must be **globally unique**, validated when content is
 loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
@@ -131,7 +145,10 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
 2. In **phase 4 (React)**, `DialogueSystem` finds the best matching topic among
    node topics, then actor topics (bound to this actor or global), then defaults.
    `isActive` gates topics on world state, including `in-room`/`in-area` checks
-   against the player's current `Position` for room-scoped dialogue.
+   against the player's current `Position` for room-scoped dialogue. A `once`
+   topic already used by this actor is not selected again; an exhausted `once`
+   default is excluded from the fallback, so a second pass produces no reply,
+   no use-count increment and no effects.
 3. The response is emitted as `npc-spoke`; the topic's effects are applied
    through the injected `EffectApplier` and the resulting events are returned
    for the turn's buffer

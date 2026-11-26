@@ -519,10 +519,21 @@ The gates split into two sets:
   `npc-content` run at authoring time in `content:validate` and again before
   generation, never against the runtime bundle.
 
-Shape checks (stray authoring keys, document `status`, unresolved `todo`
-placeholders) run only on YAML and cannot run against the runtime bundle. When
+Shape checks for stray authoring keys, document `status` and unresolved `todo`
+placeholders run only on YAML and cannot run against the runtime bundle. When
 the coverage headings are unavailable, the CLI reports that clause as an
 unverified gap rather than passing it.
+
+Room interaction and scenery shape is shared rather than authoring-only.
+`interactionShapeProblems()` in `src/content/validateContent.ts` is the single
+owner: `validateContent()` runs it against the generated bundle at boot and in
+tests, and the authoring adapter runs it against raw card rooms. It reports a
+present non-array `interactions` container, a present `itemId` that is not a
+non-empty string (including on EXAMINE), any acting item on EXAMINE, and
+malformed scenery names, descriptions and aliases. Authoring findings carry
+gate `shape` and the path of the room card that owns the problem. Target
+existence stays with `content-ids`, so a shape finding never substitutes for a
+missing target.
 
 | Gate             | Checks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

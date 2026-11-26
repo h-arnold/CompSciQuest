@@ -71,6 +71,30 @@ function incrementUses(npc: MutableNpcState, topicId: string): number {
   return next;
 }
 
+// One owner for a topic reply that does not count as a question: the idle
+// `talk-to` turn and the default catch-all after no concrete topic matched
+// (npcs.md §4 step 3, §5). Effects still go through the injected applier.
+function speakIdleTopic(
+  npc: MutableNpcState,
+  topic: ConversationTopic,
+  actorId: string,
+  dependencies: NpcDependencies,
+  events: GameEvent[],
+): void {
+  const response = responseFor(topic, usesOf(npc, topic.id));
+  if (response !== undefined) {
+    events.push({ type: 'npc-spoke', actorId, text: response });
+  }
+  if (topic.prompt !== undefined) {
+    events.push({
+      type: 'topic-suggested',
+      actorId,
+      text: topic.prompt,
+    });
+  }
+  applyTopicEffects(topic, npc, dependencies, events);
+}
+
 function responseFor(
   topic: ConversationTopic,
   uses: number,
@@ -225,6 +249,7 @@ function fallBackAfterOnce(
     dependencies.evaluator,
     actorId,
     node,
+    [selected.topic.id],
   );
   return fallback === undefined
     ? undefined
@@ -243,7 +268,7 @@ export function handleConversationTopic(
   const npc = mutableNpc(context.state, actorId);
   if (npc === undefined) return;
   const node = activeNode(context, actorId);
-  const resolved = resolver.resolve(phrase, context.state, node);
+  const resolved = resolver.resolve(phrase, context.state, node, actorId);
   const selected = fallBackAfterOnce(
     context,
     dependencies,
@@ -258,7 +283,21 @@ export function handleConversationTopic(
       phrase.trim().toLowerCase(),
     ),
   );
-  if (selected === undefined) return;
+  if (selected === undefined) {
+    // No concrete topic matched. The default catch-all keeps the conversation
+    // open and replies through the idle path, which does not count a topic use
+    // (npcs.md §5, W7-HANDOFF.md §103 fix 2).
+    const fallback = findDefaultTopic(
+      context,
+      dependencies.evaluator,
+      actorId,
+      node,
+    );
+    if (fallback !== undefined) {
+      speakIdleTopic(npc, fallback, actorId, dependencies, events);
+    }
+    return;
+  }
   const { topic } = selected;
   const uses = incrementUses(npc, topic.id);
   const response = responseFor(topic, uses - 1);
@@ -353,19 +392,7 @@ export function handleIdleTopic(
   if (selected === undefined) return;
   const npc = mutableNpc(context.state, actorId);
   if (npc === undefined) return;
-  const uses = usesOf(npc, selected.topic.id);
-  const response = responseFor(selected.topic, uses);
-  if (response !== undefined) {
-    events.push({ type: 'npc-spoke', actorId, text: response });
-  }
-  if (selected.topic.prompt !== undefined) {
-    events.push({
-      type: 'topic-suggested',
-      actorId,
-      text: selected.topic.prompt,
-    });
-  }
-  applyTopicEffects(selected.topic, npc, dependencies, events);
+  speakIdleTopic(npc, selected.topic, actorId, dependencies, events);
 }
 
 export function speakingActorIds(state: GameState): readonly string[] {

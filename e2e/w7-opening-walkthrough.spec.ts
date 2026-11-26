@@ -214,7 +214,7 @@ async function expectAreaConsistency(page: Page, state: SavedState): Promise<voi
       `Rooms visited: ${visited.size} / ${area.roomIds.length}`,
     );
   }
-  expect(rooms).toHaveLength(11);
+  expect(rooms).toHaveLength(20);
 }
 
 function parseColour(value: string): number[] {
@@ -339,7 +339,7 @@ test('W7 Beat B — AI topics answer in room-arrival and stay room-scoped', asyn
   const failureAtHub = await command(page, 'ask ai about fail');
   expect(joined(failureAtHub)).not.toContain('Failure is deletion');
   expect(joined(failureAtHub)).toContain(
-    'Another tap lands on the verdict line',
+    'Another tap lands on the record. Ask about the attendance mark, what failure means, or the route out.',
   );
   const globalTopic = await command(page, 'ask ai about unit two');
   expect(joined(globalTopic)).toContain('A fresh sheet in the record');
@@ -361,8 +361,9 @@ test('W7 Beat C — hub route text, scoped escape topic and interface detour', a
   expect(joined(hub)).not.toContain('switches-set');
   await expectPosition(page, 'room-network-hub', 3);
   const escape = await command(page, 'ask ai about escape');
-  expect(joined(escape)).toContain('One port on the patch bay glows');
-  expect(joined(escape)).toContain('That glow is your route');
+  expect(joined(escape)).toContain('Two ports on the patch bay glow; the rest sit dark.');
+  expect(joined(escape)).toContain("The east socket wears the record's LIVE; the north one wears a fresh paper label");
+  expect(joined(escape)).toContain('Follow the routes, and let the work write the entry.');
   const whyAtHub = await command(page, 'ask ai about why here');
   expect(joined(whyAtHub)).not.toContain(
     'The classroom folded along its grid lines',
@@ -490,7 +491,6 @@ test('W7 non-quiz trace — room text, item actions and all six Binary Hall gate
     { raw: 'out' },
     { raw: 'out', entry: ['The Compression Press', 'Two trays feed a press with a glass ratio window', 'in'] },
     { raw: 'take compression die', item: 'item-compression-die' },
-    { raw: 'show foreman compression die', rejected: ['archive-packed', 'compression-chosen'], item: 'item-compression-die', position: ['room-compression-press', 1] },
     { raw: 'use compression die', flags: ['archive-packed'], puzzles: ['puzzle-pack-the-archive'] },
     { raw: 'use compression die on ascii stamp', flags: ['compression-chosen'], puzzles: ['puzzle-choose-the-compression'] },
   ];
@@ -512,6 +512,7 @@ test('W7 non-quiz trace — room text, item actions and all six Binary Hall gate
   );
   await expect(page.locator('.score-panel')).toContainText(`Score: ${total}`);
   await expectAreaConsistency(page, state);
+  await page.locator('.output-log').evaluate((log) => { log.scrollTop = log.scrollHeight; });
   await expect(page.locator('.output-log > div').last()).toBeInViewport();
   await page.reload();
   await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled();

@@ -69,7 +69,7 @@ an update here.
 | Domain                                        | Canonical docs                                                                |
 | --------------------------------------------- | ----------------------------------------------------------------------------- |
 | Architecture and module map                   | `architecture.md` (§§3–5, §6 flows, §8 conventions)                           |
-| Application shell, UI, view model, win check  | `application-and-ui.md` (§§4–9, §11)                                          |
+| Application shell, UI, view model, win check  | `application-and-ui.md` (§§3, 7–11)                                           |
 | Persistence                                   | `storage-schema.md` (§§3, 7–9)                                                |
 | Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
 | Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                |

@@ -129,7 +129,7 @@ describe('W7R-NPC-01 integrated resolution regressions', () => {
     expect(JSON.stringify(state)).toBe(before);
   });
 
-  it('W7R-NPC-01: verdict resolves to its declared AI object ID without mutation', () => {
+  it('W7R-NPC-01: verdict resolves to its authored keyword topic without mutation', () => {
     const state = authoredState({ roomId: 'room-arrival' });
     const before = JSON.stringify(state);
 
@@ -141,8 +141,8 @@ describe('W7R-NPC-01 integrated resolution regressions', () => {
     );
 
     expect(resolved).toEqual({
-      kind: 'object',
-      objectId: 'ai-ethics-and-implications',
+      kind: 'keyword',
+      topicId: 'topic-ai-verdict',
     });
     expect(JSON.stringify(state)).toBe(before);
   });

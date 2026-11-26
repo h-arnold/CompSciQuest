@@ -129,12 +129,18 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
   ) {
     return [message('You cannot see that here.')];
   }
+  // storage-schema.md §3.3: transfer-item owner keys are 'player', actor IDs
+  // or room IDs. Scenery is an interaction target, not a room catalogue entry,
+  // so an item put on visible scenery belongs to the room it stands in.
+  const toOwnerId = isSceneryVisible(context, command.targetId)
+    ? context.state.player.position.roomId
+    : command.targetId;
   return [
     {
       kind: 'transfer-item',
       itemId: command.itemId,
       fromOwnerId: 'player',
-      toOwnerId: command.targetId,
+      toOwnerId,
     },
     ...putInteraction(command, context),
     message('You put it down.'),

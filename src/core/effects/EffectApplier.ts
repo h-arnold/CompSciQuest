@@ -2,6 +2,11 @@
 // implements the effects the persistence contracts exercise and gives every
 // other documented effect its canonical event without inventing mechanics.
 import type { ContentBundle } from '../../content/ContentBundle';
+import {
+  areaPairForRoom,
+  areaPairForTopic,
+  ensureProgressRow,
+} from '../AreaProgress';
 import type { GameState, RoomStateDto } from '../GameState';
 import type { QuizQuestion } from '../combat/QuizQuestion';
 import type { PuzzleStateDto } from '../PuzzleStateDto';
@@ -89,6 +94,7 @@ function applyItemEffect(
 function applyStateEffect(
   state: GameState,
   effect: Effect,
+  bundle: ContentBundle | undefined,
 ): readonly GameEvent[] | undefined {
   if (effect.kind === 'change-lives') {
     const player = state.player as { lives: number };
@@ -102,9 +108,12 @@ function applyStateEffect(
   if (effect.kind === 'message')
     return [{ type: 'message', text: effect.text }];
   if (effect.kind === 'complete-topic') {
-    const current = state.progress[0] as
-      { completedTopics: string[] } | undefined;
-    if (current && !current.completedTopics.includes(effect.topicId)) {
+    const pair = areaPairForTopic(bundle, effect.topicId) ?? {
+      worldId: state.player.position.worldId,
+      areaId: state.player.position.areaId,
+    };
+    const current = ensureProgressRow(state, bundle, pair.worldId, pair.areaId);
+    if (!current.completedTopics.includes(effect.topicId)) {
       current.completedTopics.push(effect.topicId);
     }
     return [{ type: 'topic-completed', topicId: effect.topicId }];
@@ -144,8 +153,15 @@ function applyEntityEffect(
   bundle: ContentBundle | undefined,
 ): readonly GameEvent[] | undefined {
   if (effect.kind === 'move-player') {
-    (state.player as { position: { roomId: string } }).position.roomId =
-      effect.roomId;
+    const pair = areaPairForRoom(bundle, effect.roomId) ?? {
+      worldId: state.player.position.worldId,
+      areaId: state.player.position.areaId,
+    };
+    (
+      state.player as {
+        position: { worldId: string; areaId: string; roomId: string };
+      }
+    ).position = { ...pair, roomId: effect.roomId };
     return [
       {
         type: 'room-entered',
@@ -429,7 +445,8 @@ function applyEffect(
 ): readonly GameEvent[] {
   const handlers = [
     applyItemEffect,
-    applyStateEffect,
+    (current: GameState, candidate: Effect) =>
+      applyStateEffect(current, candidate, bundle),
     (current: GameState, candidate: Effect) =>
       applyEntityEffect(current, candidate, bundle),
     (current: GameState, candidate: Effect) =>

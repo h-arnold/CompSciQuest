@@ -114,7 +114,10 @@ function areaViews(
 ): readonly AreaProgressView[] {
   return state.progress.map((entry) => {
     const world = bundle.worlds.getById(entry.worldId);
-    const area = bundle.areas.getById(entry.areaId);
+    const area = bundle.areas.all.find(
+      (candidate) =>
+        candidate.worldId === entry.worldId && candidate.id === entry.areaId,
+    );
     const topics: SpecTopicView[] = [];
     for (const topicId of entry.completedTopics) {
       const topic = bundle.specTopics.getById(topicId);
@@ -134,7 +137,10 @@ function areaViews(
       areaName: area?.name ?? entry.areaId,
       earnedScore: entry.earnedScore,
       maxScore: entry.maxScore,
-      visitedRoomCount: entry.visitedRooms.length,
+      visitedRoomCount: Math.min(
+        entry.visitedRooms.length,
+        area?.roomIds.length ?? 0,
+      ),
       roomCount: area?.roomIds.length ?? 0,
       topics,
     };

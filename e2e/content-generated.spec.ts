@@ -96,20 +96,22 @@ test.describe('generated zone-1 content', () => {
   });
 
   test('E2E-CONTENT-01 — committed generated catalogues have the zone-1 counts and start room', async () => {
+    // Counts come from the committed generated authored bundle after Zone A;
+    // every value below was checked against the exported array length.
     expect(worlds).toHaveLength(1);
-    expect(areas).toHaveLength(3);
-    expect(rooms).toHaveLength(11);
-    expect(items).toHaveLength(7);
-    expect(actors).toHaveLength(9);
-    expect(actorStates).toHaveLength(6);
-    expect(conversationTopics).toHaveLength(41);
-    expect(nodes).toHaveLength(4);
-    expect(quizzes).toHaveLength(8);
-    expect(questions).toHaveLength(32);
-    expect(puzzles).toHaveLength(17);
-    expect(hazards).toHaveLength(5);
-    expect(hints).toHaveLength(6);
-    expect(specTopics).toHaveLength(8);
+    expect(areas).toHaveLength(5);
+    expect(rooms).toHaveLength(20);
+    expect(items).toHaveLength(51);
+    expect(actors).toHaveLength(16);
+    expect(actorStates).toHaveLength(17);
+    expect(conversationTopics).toHaveLength(97);
+    expect(nodes).toHaveLength(6);
+    expect(quizzes).toHaveLength(14);
+    expect(questions).toHaveLength(56);
+    expect(puzzles).toHaveLength(23);
+    expect(hazards).toHaveLength(8);
+    expect(hints).toHaveLength(13);
+    expect(specTopics).toHaveLength(10);
 
     expect(world?.id).toBe('world-wjec-gcse-computer-science-2025-spec');
     expect(world?.startAreaId).toBe('area-entry-interface');

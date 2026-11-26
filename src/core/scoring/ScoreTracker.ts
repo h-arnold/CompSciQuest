@@ -1,8 +1,13 @@
 // Canonical signature from application-and-ui.md §8.
 // ScoreTracker is the sole writer of AreaProgress.earnedScore.
 import type { ContentBundle } from '../../content/ContentBundle';
-import type { AreaProgress, GameState } from '../GameState';
+import type { GameState } from '../GameState';
 import type { GameEvent } from '../events/GameEvent';
+import {
+  areaPairForRoom,
+  areaPairForTopic,
+  ensureProgressRow,
+} from '../AreaProgress';
 
 export interface ScoreTracker {
   observe(events: readonly GameEvent[]): readonly GameEvent[];
@@ -14,16 +19,46 @@ export interface ScoreTrackerDependencies {
 }
 
 type Announce = (delta: number, reason: string) => void;
+type AreaPair = { readonly worldId: string; readonly areaId: string };
 
-function progressEntry(state: GameState): AreaProgress | undefined {
-  return state.progress[0];
+function positionPair(state: GameState): AreaPair {
+  return {
+    worldId: state.player.position.worldId,
+    areaId: state.player.position.areaId,
+  };
 }
 
-function award(state: GameState, delta: number): void {
+function pairForReason(
+  state: GameState,
+  bundle: ContentBundle | undefined,
+  reason: string,
+): AreaPair {
+  if (reason.startsWith('room:'))
+    return (
+      areaPairForRoom(bundle, reason.slice('room:'.length)) ??
+      positionPair(state)
+    );
+  if (reason.startsWith('puzzle:')) {
+    const puzzle = bundle?.puzzles.getById(reason.slice('puzzle:'.length));
+    return areaPairForTopic(bundle, puzzle?.topicId) ?? positionPair(state);
+  }
+  if (reason.startsWith('quiz:')) {
+    const quiz = bundle?.quizzes.getById(reason.slice('quiz:'.length));
+    return areaPairForTopic(bundle, quiz?.topicId) ?? positionPair(state);
+  }
+  return positionPair(state);
+}
+
+function award(
+  state: GameState,
+  bundle: ContentBundle | undefined,
+  delta: number,
+  reason: string,
+): void {
   if (delta === 0) return;
-  const entry = progressEntry(state);
-  if (entry === undefined) return;
-  (entry as { earnedScore: number }).earnedScore += delta;
+  const pair = pairForReason(state, bundle, reason);
+  ensureProgressRow(state, bundle, pair.worldId, pair.areaId).earnedScore +=
+    delta;
 }
 
 function totalOf(state: GameState): number {
@@ -51,11 +86,10 @@ function roomEntered(
   event: Extract<GameEvent, { type: 'room-entered' }>,
   announce: Announce,
 ): void {
-  const entry = progressEntry(state);
-  if (entry === undefined || entry.visitedRooms.includes(event.room.id)) return;
-  (entry as unknown as { visitedRooms: string[] }).visitedRooms.push(
-    event.room.id,
-  );
+  const pair = areaPairForRoom(bundle, event.room.id) ?? positionPair(state);
+  const entry = ensureProgressRow(state, bundle, pair.worldId, pair.areaId);
+  if (entry.visitedRooms.includes(event.room.id)) return;
+  entry.visitedRooms.push(event.room.id);
   announce(
     bundle?.rooms.getById(event.room.id)?.score ?? 0,
     `room:${event.room.id}`,
@@ -131,7 +165,7 @@ function processEvent(
   announce: Announce,
 ): void {
   if (event.type === 'score-changed') {
-    award(state, event.delta);
+    award(state, bundle, event.delta, event.reason);
     return;
   }
   if (event.type === 'room-entered') {
@@ -146,7 +180,9 @@ function processEvent(
     quizEnded(state, bundle, event, emitted, lastObserved, announce);
     return;
   }
-  if (event.type === 'hint-penalty-applied') award(state, event.delta);
+  if (event.type === 'hint-penalty-applied') {
+    award(state, bundle, event.delta, `hint:${event.hintId}`);
+  }
 }
 
 export function createScoreTracker(
@@ -160,7 +196,7 @@ export function createScoreTracker(
   // bookkeeping only: application-and-ui.md §10 adds no persisted field.
   let lastObserved: Map<string, boolean> = new Map(Object.entries(state.flags));
   const announce: Announce = (delta, reason): void => {
-    award(state, delta);
+    award(state, bundle, delta, reason);
     const event: GameEvent = {
       type: 'score-changed',
       delta,

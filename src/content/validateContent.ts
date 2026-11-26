@@ -34,6 +34,99 @@ interface Identified {
   readonly id: string;
 }
 
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined;
+}
+
+function isNonBlank(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function aliasProblemsOf(label: string, aliases: unknown): readonly string[] {
+  if (!Array.isArray(aliases))
+    return [`${label} scenery aliases must be an array`];
+  return aliases.every(isNonBlank)
+    ? []
+    : [`${label} scenery aliases must be non-empty strings`];
+}
+
+function sceneryEntryProblems(
+  label: string,
+  value: unknown,
+): readonly string[] {
+  const entry = asRecord(value);
+  if (entry === undefined) return [`${label} scenery entry must be an object`];
+  const problems: string[] = [];
+  if (!isNonBlank(entry['name'])) {
+    problems.push(`${label} scenery name must be a non-blank string`);
+  }
+  if (!isNonBlank(entry['description'])) {
+    problems.push(`${label} scenery description must be a non-blank string`);
+  }
+  problems.push(
+    ...(entry['aliases'] === undefined
+      ? []
+      : aliasProblemsOf(label, entry['aliases'])),
+  );
+  return problems;
+}
+
+function sceneryProblems(label: string, scenery: unknown): readonly string[] {
+  return Array.isArray(scenery)
+    ? scenery.flatMap((entry) => sceneryEntryProblems(label, entry))
+    : [`${label} scenery must be an array`];
+}
+
+function interactionProblems(label: string, value: unknown): readonly string[] {
+  const interaction = asRecord(value);
+  if (interaction === undefined)
+    return [`${label} interaction must be an object`];
+  const problems: string[] = [];
+  if ('itemId' in interaction && !isNonBlank(interaction['itemId'])) {
+    problems.push(`${label} interaction itemId must be a non-empty string`);
+  }
+  if (
+    interaction['kind'] === 'examine' &&
+    ('itemId' in interaction || 'item' in interaction)
+  ) {
+    problems.push(
+      `${label} EXAMINE interaction must omit its acting item: an EXAMINE interaction must omit its item field`,
+    );
+  }
+  return problems;
+}
+
+// One shared interaction/scenery shape owner for the runtime bundle gate and
+// the authoring adapter (content-rules.md §4.2, D3). Target-reference existence
+// stays with `referenceProblems()`; this function only inspects local shape and
+// never mutates its input.
+export function interactionShapeProblems(
+  rooms: readonly unknown[],
+): readonly string[] {
+  return rooms.flatMap((value) => {
+    const room = asRecord(value);
+    if (room === undefined) return [];
+    const roomId = typeof room['id'] === 'string' ? room['id'] : 'unknown-room';
+    const label = `Room '${roomId}'`;
+    const problems = [
+      ...(room['scenery'] === undefined
+        ? []
+        : sceneryProblems(label, room['scenery'])),
+    ];
+    const interactions = room['interactions'];
+    if (interactions === undefined) return problems;
+    if (!Array.isArray(interactions)) {
+      return [...problems, `${label} interactions must be an array`];
+    }
+    return [
+      ...problems,
+      ...interactions.flatMap((entry) => interactionProblems(label, entry)),
+    ];
+  });
+}
+
 function repeated(values: readonly string[]): readonly string[] {
   const seen = new Set<string>();
   const repeats = new Set<string>();
@@ -260,5 +353,6 @@ export function validateContent(
     ...coverageProblems(topics, coverageIds),
     ...hazardContentFindings(bundle),
     ...puzzleGraphFindings(bundle),
+    ...interactionShapeProblems(bundle.rooms.all),
   ];
 }

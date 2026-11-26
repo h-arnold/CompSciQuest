@@ -168,10 +168,19 @@ export function makeEnvelope(
 export function makeRuntimeState(
   dto: GameStateDto = makeStateDto(),
 ): GameState {
-  return {
+  const runtime: GameState = {
     ...dto,
-    score: dto.progress.reduce((total, entry) => total + entry.earnedScore, 0),
+    // `score` is a live derivation, never a snapshot: ScoreTracker rewrites
+    // AreaProgress.earnedScore, and Session must see the final total in the
+    // same turn (application-and-ui.md §11; storage-schema.md §7).
+    get score(): number {
+      return runtime.progress.reduce(
+        (total, entry) => total + entry.earnedScore,
+        0,
+      );
+    },
   };
+  return runtime;
 }
 
 export function envelopeText(state: object): string {
