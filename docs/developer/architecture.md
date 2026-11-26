@@ -234,6 +234,6 @@ the app's behavioural guarantees are in
 
 ## 10. Out of scope
 
-Content of any kind; light/dark and time-of-day mechanics; multiple save slots,
-autosave and undo; localisation; audio; mobile-specific layouts; leaderboards and
+Content of any kind; light/dark and time-of-day mechanics; multiple save slots
+and undo; localisation; audio; mobile-specific layouts; leaderboards and
 multiplayer.

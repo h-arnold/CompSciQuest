@@ -481,7 +481,10 @@ export function createGame(dependencies: GameDependencies): Game {
       };
       const events = runTurn(command, context);
       recordSeed(dependencies.random, state);
-      return publish(session.observe(score.observe(events)));
+      const observed = session.observe(score.observe(events));
+      // Autosave the final, post-observer state through the single save seam.
+      saveGame();
+      return publish(observed);
     },
     newGame(): void {
       publish(replaceState(createInitial(dependencies.bundle), true));

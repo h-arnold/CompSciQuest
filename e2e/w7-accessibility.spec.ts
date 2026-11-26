@@ -4,7 +4,7 @@
 import { expect, test } from 'playwright/test';
 
 // prettier-ignore
-const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart', 'Download quarantined save'];
+const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart'];
 
 function parseColour(value: string): number[] {
   return (value.match(/[\d.]+/gu) ?? []).map(Number);

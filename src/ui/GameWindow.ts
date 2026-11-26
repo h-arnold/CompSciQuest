@@ -3,7 +3,6 @@
 import type { Clock } from '../application/Clock';
 import type { Game } from '../application/Game';
 import type { LoadResult } from '../application/SaveDto';
-import type { QuarantineDto } from '../application/QuarantineDto';
 import type { ContentBundle } from '../content/ContentBundle';
 import type { EventBus } from '../core/events/EventBus';
 import type { GameEvent } from '../core/events/GameEvent';
@@ -19,10 +18,6 @@ import { ScorePanel } from './ScorePanel';
 import { Terminal } from './Terminal';
 import { DEFAULT_TITLE_COPY, TitleScreen } from './TitleScreen';
 
-// Storage key from storage-schema.md §9; SaveManager holds the same literal
-// privately. This UI copy only reads the slot for the recovery download.
-const QUARANTINE_KEY = 'compsciquest:save:v1:corrupt';
-
 export interface GameWindowDependencies {
   readonly game: Game;
   readonly bundle: ContentBundle;
@@ -37,9 +32,6 @@ export interface GameWindowDependencies {
 export class GameWindow {
   private readonly game: Game;
   private readonly bundle: ContentBundle;
-  private readonly storage: StorageAdapter;
-  private readonly clock: Clock;
-  private readonly downloadFile: (filename: string, text: string) => void;
   private readonly loadResult: LoadResult;
   private readonly actions: SaveActions;
   private readonly outputLog = new OutputLog();
@@ -57,9 +49,6 @@ export class GameWindow {
   constructor(dependencies: GameWindowDependencies) {
     this.game = dependencies.game;
     this.bundle = dependencies.bundle;
-    this.storage = dependencies.storage;
-    this.clock = dependencies.clock;
-    this.downloadFile = dependencies.downloadFile;
     this.loadResult = dependencies.loadResult;
 
     // Batch E1: objective and controls open the transcript before any published
@@ -156,32 +145,12 @@ export class GameWindow {
       restart: () => {
         this.game.restart();
       },
-      downloadQuarantine: () => {
-        this.downloadQuarantine();
-      },
     };
   }
 
   private continueGame(): void {
     if (this.loadResult.ok) {
       this.game.continueGame(this.loadResult.dto);
-    }
-  }
-
-  private downloadQuarantine(): void {
-    const text = this.storage.read(QUARANTINE_KEY);
-    if (text === null) {
-      this.actions.setStatus('There is no quarantined save to download.');
-      return;
-    }
-    try {
-      const record = JSON.parse(text) as Partial<QuarantineDto>;
-      const raw = typeof record['raw'] === 'string' ? record['raw'] : text;
-      const stamp = this.clock.now().replaceAll(/[:.]/gu, '-');
-      this.downloadFile(`compsciquest-quarantine-${stamp}.json`, raw);
-      this.actions.setStatus('Quarantined save downloaded.');
-    } catch {
-      this.actions.setStatus(loadFailureMessage('invalid-json'));
     }
   }
 
