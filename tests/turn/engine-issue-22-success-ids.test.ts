@@ -212,12 +212,15 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
     ]);
   });
 
-  it('ENG22-SUCCESSIDS-01: puzzle-activated stays exactly as inherited', async () => {
+  // Re-anchored to ENG28-ACTIVATION-01: ENGINE_ISSUES.md issue #28 (line 87)
+  // and the Batch E2 decision (line 50) suppress the activation notice entirely.
+  // The owning contract is tests/turn/engine-issue-28-activation.test.ts.
+  it('ENG28-ACTIVATION-01: puzzle-activated is suppressed, not kept as inherited', async () => {
     const formatEvent = await loadFormatEvent();
 
     expect(
       formatEvent({ type: 'puzzle-activated', puzzleId: PUZZLE_ID }, BUNDLE),
-    ).toEqual([`Puzzle ${PUZZLE_ID} is now active.`]);
+    ).toEqual([]);
   });
 
   it('ENG22-SUCCESSIDS-01: internal-state and bookkeeping arms remain suppressed', async () => {

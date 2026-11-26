@@ -52,7 +52,7 @@ export function formatEvent(
       return [`You have won! Final score: ${event.finalScore}.`];
     }
     case 'puzzle-activated': {
-      return [`Puzzle ${event.puzzleId} is now active.`];
+      return [];
     }
     // Render-time suppression: topic-completed carries the friendly outcome.
     case 'puzzle-solved': {
