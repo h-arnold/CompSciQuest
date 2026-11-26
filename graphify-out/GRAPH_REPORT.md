@@ -1,17 +1,17 @@
 # Graph Report - CompSciQuest-issue-9  (2026-11-26)
 
 ## Corpus Check
-- 357 files · ~182,818 words
+- 363 files · ~185,146 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 6, .jsonc 1, .css 1)
 
 ## Summary
-- 2608 nodes · 7348 edges · 164 communities (158 shown, 6 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 445 edges (avg confidence: 0.93)
+- 2643 nodes · 7401 edges · 185 communities (176 shown, 9 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 448 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `81ca48fc`
+- Built from commit: `65e392bd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,15 +20,15 @@
 - npcTopicOverlap.ts
 - GameWindow.ts
 - commandResolution.ts
-- helpers.ts
-- ContentBundle.ts
+- w7-opening-walkthrough.spec.ts
+- content/index.ts
 - SeededRandom
-- asText
+- common.ts
 - ui.ts
 - SaveManager.ts
 - verbs/index.ts
 - Effect
-- InteractionRules.ts
+- GameState
 - parser.ts
 - persistence.ts
 - content.ts
@@ -36,31 +36,31 @@
 - cli.ts
 - topicOverlap.ts
 - collection
-- mechanics.ts
+- PuzzleSystem.test.ts
 - compilerOptions
 - ScoreTracker.ts
 - ConversationFlow.ts
-- AuthoredWinPath.test.ts
+- GameEvent
 - GameState.ts
-- vitest
-- generate.ts
-- npcTopicOverlapHandoffCases.ts
+- mechanics.ts
+- zone1.ts
+- FakeElement
 - contentToolchain.ts
 - Content authoring rules
-- npcTopicOverlapPairCases.ts
 - ContentBundle
+- HazardSystem.ts
 - Documentation style guide
 - Parser.ts
 - Game
 - domain.ts
 - scripts
 - adapt.ts
-- SpecTopic
+- area-progress.test.ts
 - opencode.json
 - HintSystem
 - content/schema.ts
 - validateContent.ts
-- finding
+- validate.ts
 - NpcTypes.test.ts
 - authored.ts
 - Q: Where are the area-change life reset and the ten Zone A InteractionRules rows owned?
@@ -78,7 +78,7 @@
 - CommandTable.test.ts
 - Game.ts
 - Q: ENG2-HELP-01: which nodes are canonical for the command table, parser aliases and help reply?
-- 4. Design card format
+- helpers.ts
 - Q: Revision 2: which node owns go <shortcut> resolution and how to bind shortcuts to canonical Directions without a second direction list?
 - Q: Where are the ESLint flat config, NPM scripts, strict compilerOptions and Vite base configured?
 - Q: Did adding typescript-eslint introduce duplicate canonical configs or cross-layer edges?
@@ -161,23 +161,44 @@
 - W7 non-quiz runtime handoff
 - TopicSelection.ts
 - ScoreTracker
-- Hazards
+- scenery-validation.test.ts
 - tsconfig.json
 - LoadResult
 - vite@^8.3.8
 - 3. Rule catalogue
+- meta-and-endstates.spec.ts
 - Q: Where are canonical card sets, coverage topic IDs and quiz/hint wiring defined and consumed by tests?
 - Q: How does the generator aggregate card collections and validate coverage headings, and which fixture helpers mirror that order?
 - Q: Where is the canonical authored win path command sequence and whole-game V4 trace that owns quiz handoffs, hazard lives, teaching ladders and game-won?
+- HANDOFF — CompSciQuest content + W6/W7 state
 - Q: Which canonical nodes own the TitleScreen copy slots and the boot transcript seed, and is there a duplicate owner or bypass?
 - Q: Can the Playwright MCP browser tools be called directly from a browser-tester subagent session?
 - Q: Which canonical nodes own the title-screen copy slots and the first transcript lines?
 - Q: ENG2-HELP-01: which nodes are canonical for the command table, help output and parser alias resolution?
+- FakeRandom
 - Q: Revision 1: how to make the documented talk-to syntax resolvable and remove the literal ? alias from Parser.ts without inventing aliases?
 - Q: Why does generated help text with newlines display as one dense paragraph in the transcript?
 - Q: Can the session's configured Playwright MCP browser tools be used for browser exploration in this subagent?
 - Q: ENG2-HELP-01 — which nodes are canonical for the command table, help text, parser aliases and transcript log?
 - Q: ENG2-HELP-01 revision 2: which node owns go <direction> alias resolution when help advertises direction shortcuts?
+- hint.ts
+- playwright
+- HintSystem.ts
+- Shared rule spine
+- engine-issue-9-quick-answers.spec.ts
+- 6. Key flows
+- vitest
+- CommandTable.ts
+- MemoryContentIo
+- PuzzleGraph.ts
+- MemoryStorage
+- Puzzles
+- Q: ENG9: which canonical nodes own bare-number quiz answers and ask-about actor inference, and is there an existing presence owner to reuse?
+- Q: Does the exact option text alias work as a bare phrase during a quiz, or only as answer <option text>?
+- Q: ENG9 browser QA: where are the bare quiz answer and inferred ask command seams, and which view/event names should e2e assert?
+- Q: Can the session's configured Playwright MCP browser tools be used for browser exploration in this subagent when Chrome channel is missing?
+- Q: Where is help text generated and which canonical node owns COMMAND_TABLE / helpText() for the ask and answer syntax?
+- ValidationModule
 
 ## God Nodes (most connected - your core abstractions)
 1. `ContentBundle` - 114 edges
@@ -186,107 +207,107 @@
 4. `GameState` - 80 edges
 5. `asText()` - 62 edges
 6. `finding()` - 58 edges
-7. `Command` - 52 edges
-8. `Effect` - 52 edges
+7. `Effect` - 52 edges
+8. `Command` - 52 edges
 9. `Random` - 47 edges
 10. `FakeRandom` - 42 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `11. Flow` --references--> `Game`  [INFERRED]
-  docs/developer/storage-schema.md → src/application/Game.ts
-- `4. Failure consequences` --references--> `AreaDefinition`  [INFERRED]
-  docs/developer/hazards.md → src/content/AreaDefinition.ts
-- `1. Purpose` --references--> `ContentBundle`  [INFERRED]
-  docs/developer/content-toolchain.md → src/content/ContentBundle.ts
-- `D — Data and cards` --references--> `RoomDefinition`  [INFERRED]
-  docs/developer/content-rules.md → src/content/RoomDefinition.ts
-- `7. Random port` --references--> `Random`  [INFERRED]
-  docs/developer/shared-rules.md → src/core/Random.ts
+- `1. Scope` --references--> `ConversationNode`  [INFERRED]
+  docs/developer/combat.md → src/core/npcs/ConversationNode.ts
+- `Batch E1 — onboarding and intuitive commands` --references--> `TitleScreen`  [INFERRED]
+  ENGINE_ISSUES.md → src/ui/TitleScreen.ts
+- `6. Integration points` --references--> `Command`  [INFERRED]
+  docs/developer/puzzles.md → src/core/commands/Command.ts
+- `4. Trigger` --references--> `Command`  [INFERRED]
+  docs/developer/shared-rules.md → src/core/commands/Command.ts
+- `6.5 Losing a life and winning` --references--> `Session`  [INFERRED]
+  docs/developer/architecture.md → src/core/lifecycle/Session.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (164 total, 6 thin omitted)
+## Communities (185 total, 9 thin omitted)
 
 ### Community 0 - "Issues"
 Cohesion: 0.04
-Nodes (43): Batch E1 — Onboarding and intuitive commands (planning-led), Batch E2 — Engine fixes and removals (single implementation batch), Batches, Definition of done, Engine issues — batched hand-off, Issues in scope, Out of scope — deferred to the content session, Refinements applied (+35 more)
+Nodes (46): Batch E1 — onboarding and intuitive commands, Batch E1 — Onboarding and intuitive commands (planning-led), Batch E2 — engine fixes and removals, Batch E2 — Engine fixes and removals (single implementation batch), Batches, Decisions settled with the user, Definition of done, Engine issues — batched hand-off (+38 more)
 
 ### Community 1 - "npcTopicOverlap.ts"
-Cohesion: 0.19
-Nodes (29): gNpc06(), gNpc07(), gNpc08(), gNpc09(), gNpc10(), gNpc11(), gNpc13(), gNpc14() (+21 more)
+Cohesion: 0.11
+Nodes (67): gNpc06(), gNpc07(), gNpc08(), gNpc09(), gNpc10(), gNpc11(), gNpc12(), gNpc13() (+59 more)
 
 ### Community 2 - "GameWindow.ts"
-Cohesion: 0.07
-Nodes (33): 2. Boot, title screen and session start, 7.1 DOM layout, 7.2 View data, 7. UI structure and view-model, Persistence and UI, 7. State, events and UI, Batch E1 — onboarding and intuitive commands, Batch E2 — engine fixes and removals (+25 more)
+Cohesion: 0.09
+Nodes (20): 7.1 DOM layout, 7.2 View data, 7. UI structure and view-model, Persistence and UI, 6. Events and UI, 7. State, events and UI, GameViewData, appendLine() (+12 more)
 
 ### Community 3 - "commandResolution.ts"
 Cohesion: 0.15
 Nodes (24): actorAndRemainder(), answerCommand(), bareAnswerCommand(), conversationCommand(), DIRECTION_BY_TOKEN, directionCommand(), fallbackPair(), inferAskActor() (+16 more)
 
-### Community 4 - "helpers.ts"
-Cohesion: 0.05
-Nodes (62): boot(), openSession(), PROMISED, authoredArea, authoredStartRoom, authoredWorld, DOWNLOAD_NAME, expectWorkspace() (+54 more)
+### Community 4 - "w7-opening-walkthrough.spec.ts"
+Cohesion: 0.14
+Nodes (23): command(), contrastRatio(), CONTROL_ORDER, enter(), expectEntry(), expectFlag(), expectOwners(), expectPosition() (+15 more)
 
-### Community 5 - "ContentBundle.ts"
-Cohesion: 0.07
-Nodes (35): 3.1 Catalogue shape, area, START_POSITION, startRoom, ActorDefinition, AreaDefinition, actorStates, actors (+27 more)
+### Community 5 - "content/index.ts"
+Cohesion: 0.11
+Nodes (17): area, START_POSITION, startRoom, repeatableHazard, AreaDefinition, actors, areas, conversationTopics (+9 more)
 
-### Community 7 - "asText"
-Cohesion: 0.23
-Nodes (22): allEffects(), areaLikes(), asText(), auditedAreaLikes(), authoringOf(), idsOf(), checkNpc(), defaultTopicFindings() (+14 more)
+### Community 7 - "common.ts"
+Cohesion: 0.22
+Nodes (16): 5. Generation, allEffects(), asArray(), asObjectArray(), authoringOf(), DIRECTIONS, effectList(), entriesWith() (+8 more)
 
 ### Community 8 - "ui.ts"
-Cohesion: 0.07
-Nodes (38): makeEnvelope(), absentElement(), allText(), Bootstrap, BootstrapDependencies, descendants(), documentState, FakeBus (+30 more)
+Cohesion: 0.14
+Nodes (27): allText(), Bootstrap, BootstrapDependencies, descendants(), documentState, FakeBus, FakeEvent, FakeKeyboardEvent (+19 more)
 
 ### Community 9 - "SaveManager.ts"
-Cohesion: 0.07
-Nodes (48): 10. Commit / push note, 1. One-paragraph summary, 2. Read these first (in order), 3. What is accepted (content, do not re-litigate), 4.1 Failure inventory, 4.2 The generated bundle is stale — verify this first, 4. Current verification state (measured 2026-11-26), 5. Ordered next steps (+40 more)
+Cohesion: 0.15
+Nodes (30): createSaveManager(), ENTITY_RECORD_KEYS, hasOptionalNumber(), hasUniqueItemOwnership(), hasUniqueProgress(), hasValidFlagReferences(), hasValidHazards(), hasValidHints() (+22 more)
 
 ### Community 10 - "verbs/index.ts"
-Cohesion: 0.21
-Nodes (19): isSceneryVisible(), describeRoom(), fixedMessage(), flagPrefix(), goHandler(), HANDLERS, hasItem(), inventoryHandler() (+11 more)
+Cohesion: 0.11
+Nodes (35): describeScenery(), examineInteraction(), flagEffects(), FlagInteraction, hasMatchingName(), isSceneryVisible(), matchingInteraction(), normalise() (+27 more)
 
 ### Community 11 - "Effect"
-Cohesion: 0.20
-Nodes (12): 1. Purpose and authority, 1. Scope, 1. Purpose, 3.2 Entity and system state, QuizSystemDependencies, Effect, Hazard, HazardCatalogue (+4 more)
+Cohesion: 0.16
+Nodes (16): 1. Purpose and authority, 7. Core contracts, 1. Scope, 1. Purpose, 3.2 Entity and system state, hints, puzzles, Effect (+8 more)
 
-### Community 12 - "InteractionRules.ts"
-Cohesion: 0.12
-Nodes (21): describeScenery(), examineInteraction(), flagEffects(), FlagInteraction, hasMatchingName(), matchingInteraction(), normalise(), PUT_INTERACTIONS (+13 more)
+### Community 12 - "GameState"
+Cohesion: 0.11
+Nodes (26): 4.1 Meta actions, 4. Game façade and meta actions, 5.1 Door and container verbs, 5.2 Verb table and handler signature, 5. Canonical command union and verbs, Command, CommandHandler, hasItem() (+18 more)
 
 ### Community 13 - "parser.ts"
-Cohesion: 0.06
-Nodes (52): 5. Conversation nodes, Command, CommandHandler, ParsedCommand, hasItem(), isTalking(), message(), npcHandler() (+44 more)
+Cohesion: 0.07
+Nodes (42): loadDialogueSystemFactory(), loadTopicResolverFactory(), CHEST_ID, DOOR_ID, KEY_A, KEY_B, loadNameResolver(), loadParser() (+34 more)
 
 ### Community 14 - "persistence.ts"
-Cohesion: 0.11
-Nodes (30): asRuntime(), EffectApplierLike, envelopeText(), FIXED_ISO, FixedClock, IMPORTED_ISO, loadEffectApplier(), loadInitialState() (+22 more)
+Cohesion: 0.10
+Nodes (30): asRuntime(), EffectApplierDependencies, EffectApplierLike, envelopeText(), FIXED_ISO, FixedClock, IMPORTED_ISO, loadEffectApplier() (+22 more)
 
 ### Community 15 - "content.ts"
-Cohesion: 0.06
-Nodes (65): acceptedCards(), generatedRoomIds(), zone1Cards(), CreateInitial, zone1Cards(), zone1Generation(), CONTENT_SOURCES, RETIRED_STUB_PATH (+57 more)
+Cohesion: 0.14
+Nodes (31): CreateInitial, BASE_AREA, BASE_ITEM, BASE_ROOM, BASE_WORLD, bundleWithTopic(), COVERAGE_TOPIC_IDS, CoverageTopicIds (+23 more)
 
 ### Community 16 - "NpcGates.test.ts"
-Cohesion: 0.10
-Nodes (24): gateFindings(), CardData, cleanParsedSet(), definition(), roomData(), actor(), Data, EmittedNode (+16 more)
+Cohesion: 0.19
+Nodes (11): gateFindings(), actor(), Data, EmittedNode, EmittedTopic, node(), NOT_KNOWN, npcData() (+3 more)
 
 ### Community 17 - "cli.ts"
-Cohesion: 0.08
-Nodes (30): 1. Purpose, 3. Scaffolds, 4. Validation, 6. Ownership, 7. Coverage-graph extraction, Content toolchain, CONTENT_ROOT, COVERAGE_PATH (+22 more)
+Cohesion: 0.06
+Nodes (50): 1. Purpose, 3. Scaffolds, 4. Validation, 6. Ownership, 7. Coverage-graph extraction, Content toolchain, CONTENT_ROOT, COVERAGE_PATH (+42 more)
 
 ### Community 18 - "topicOverlap.ts"
 Cohesion: 0.14
-Nodes (35): asRecord(), ALWAYS_TRUE, areKeywordsOverlapping(), areLiteralsExclusive(), ASK_TELL_KINDS, checkTopicOverlap(), childrenOf(), conditionOf() (+27 more)
+Nodes (33): ALWAYS_TRUE, areKeywordsOverlapping(), areLiteralsExclusive(), ASK_TELL_KINDS, checkTopicOverlap(), childrenOf(), conditionOf(), DataRecord (+25 more)
 
 ### Community 19 - "collection"
-Cohesion: 0.17
-Nodes (28): asArray(), asObjectArray(), collection(), coverageIds(), DIRECTIONS, EFFECT_KINDS, effectList(), entriesWith() (+20 more)
+Cohesion: 0.15
+Nodes (43): areaLikes(), asText(), auditedAreaLikes(), collection(), coverageIds(), EFFECT_KINDS, finding(), idsOf() (+35 more)
 
-### Community 20 - "mechanics.ts"
-Cohesion: 0.10
-Nodes (46): createEffectApplier(), puzzleDefinition(), applierFor(), ComposedReaction, ComposedReactionDependencies, ComposedReactionFactory, ConditionEvaluatorFactory, DOOR_FLAG (+38 more)
+### Community 20 - "PuzzleSystem.test.ts"
+Cohesion: 0.17
+Nodes (18): puzzleDefinition(), DOOR_FLAG, eventTypes(), hazard(), mechanicsBundle(), mechanicsState(), NORTH_ROOM, puzzle() (+10 more)
 
 ### Community 21 - "compilerOptions"
 Cohesion: 0.08
@@ -294,55 +315,55 @@ Nodes (26): compilerOptions, allowImportingTsExtensions, allowUnreachableCode, a
 
 ### Community 22 - "ScoreTracker.ts"
 Cohesion: 0.15
-Nodes (18): ensureProgressRow(), maxScoreOf(), MutableAreaProgress, Announce, AreaPair, award(), createScoreTracker(), hasScoreFor() (+10 more)
+Nodes (21): areaPairForRoom(), areaPairForTopic(), ensureProgressRow(), maxScoreOf(), MutableAreaProgress, Announce, AreaPair, award() (+13 more)
 
 ### Community 23 - "ConversationFlow.ts"
-Cohesion: 0.18
-Nodes (26): activeNode(), applyAll(), applyTopicEffects(), conversationTransfer(), createNpcTopicResolver(), endConversation(), expireNode(), fallBackAfterOnce() (+18 more)
-
-### Community 24 - "AuthoredWinPath.test.ts"
 Cohesion: 0.16
-Nodes (7): createSession(), AuthoredRun, gateFlag(), lastQuestion(), lastWinningBatch(), MILL_FLAGS, TRACE_FLAGS
+Nodes (26): MultiwordAlias, activeNode(), applyAll(), applyTopicEffects(), conversationTransfer(), createNpcTopicResolver(), endConversation(), expireNode() (+18 more)
+
+### Community 24 - "GameEvent"
+Cohesion: 0.09
+Nodes (11): 6.1 Event to view mapping, 6. Canonical event union and rendering, 7. Restore-time derivation, GameEvent, AuthoredGameFixture, RecordingBus, MemoryBus, AuthoredRun (+3 more)
 
 ### Community 25 - "GameState.ts"
 Cohesion: 0.11
-Nodes (23): 2. Model, 2. Model, 2. Model, 4. Conversation flow, 6. Link to quiz combat, NPCs and conversation, 2. Model, 11. Invariants the implementation must keep (+15 more)
+Nodes (16): 2. Model, 1. Scope, 2. Model, 3. Commands and topic resolution, 4. Conversation flow, 5. Conversation nodes, 6. Link to quiz combat, NPCs and conversation (+8 more)
 
-### Community 26 - "vitest"
-Cohesion: 0.09
-Nodes (19): 6.1 Event to view mapping, 6. Canonical event union and rendering, vitest, GameEvent, SchedulerContract, TurnContract, loadNameResolver(), loadTokenizer() (+11 more)
+### Community 26 - "mechanics.ts"
+Cohesion: 0.11
+Nodes (23): ComposedReaction, ComposedReactionDependencies, ComposedReactionFactory, ConditionEvaluatorFactory, FIXED_TURN, HAZARD_ID, HazardSystemFactory, loadComposedReactionFactory() (+15 more)
 
-### Community 27 - "generate.ts"
-Cohesion: 0.14
-Nodes (24): 5. Generation, CardFile, GeneratedFile, GenerationResult, ParsedCard, ValidateResult, ValidationOptions, CatalogueEmit (+16 more)
+### Community 27 - "zone1.ts"
+Cohesion: 0.13
+Nodes (26): acceptedCards(), generatedRoomIds(), zone1Cards(), zone1Cards(), zone1Generation(), ParsedCardSet, ValidationOptions, acceptedEmittedDates() (+18 more)
 
-### Community 28 - "npcTopicOverlapHandoffCases.ts"
-Cohesion: 0.20
-Nodes (20): gNpc12(), gNpc15(), gNpc16(), gNpc17(), gNpc18(), runtimeBundle(), gNpc22(), loadValidation() (+12 more)
+### Community 28 - "FakeElement"
+Cohesion: 0.08
+Nodes (10): absentElement(), FakeDocument, FakeElement, findButton(), hasMatchingAncestors(), isTokenMatch(), makeFakeDocument(), press() (+2 more)
 
 ### Community 29 - "contentToolchain.ts"
-Cohesion: 0.05
-Nodes (41): Data, PER_AREA_PATHS, cardsWithRefusalText(), expectOneShapeFinding(), ParsedRoom, refusalFindings(), AREA_ID, CardFile (+33 more)
+Cohesion: 0.07
+Nodes (38): Data, CardData, cleanParsedSet(), definition(), roomData(), PER_AREA_PATHS, npcCards(), topicsCard() (+30 more)
 
 ### Community 30 - "Content authoring rules"
-Cohesion: 0.17
-Nodes (12): 1. Purpose and authority, 2. Workflow gates, 5. ID and alias registry, 6.1 Content critic, 6.2 PCK reviewer, 6. Reviewer rubrics, 8. Fixed contracts content must use, 9.1 Shared definition of done (+4 more)
+Cohesion: 0.11
+Nodes (18): 1. Purpose and authority, 2. Workflow gates, 4.1 Common conventions, 4.2 Area and rooms card, 4.4 Quiz card, 4.5 Puzzle card, 4.6 Hazard card, 4.7 Hint card (+10 more)
 
-### Community 31 - "npcTopicOverlapPairCases.ts"
-Cohesion: 0.27
-Nodes (18): command(), gNpc01(), gNpc02(), gNpc03(), gNpc04(), gNpc05(), gNpc19(), gNpc20() (+10 more)
+### Community 31 - "ContentBundle"
+Cohesion: 0.13
+Nodes (15): ActorDefinition, actorStates, questions, quizzes, Catalogue, ContentBundle, Quiz, QuizQuestion (+7 more)
 
-### Community 32 - "ContentBundle"
-Cohesion: 0.07
-Nodes (59): 5.2 Verb table and handler signature, 8. Behavioural signatures, 6.1 Bootstrap (`src/main.ts`), 3. Execution, 1. Scope, 3. Completion detection, ComposedReactionDependencies, GameDependencies (+51 more)
+### Community 32 - "HazardSystem.ts"
+Cohesion: 0.09
+Nodes (27): 8. Behavioural signatures, 3. Execution, 4. Failure consequences, 5. Content, Hazards, 3. Completion detection, 4. Counters and stuckness, ComposedReaction (+19 more)
 
 ### Community 33 - "Documentation style guide"
 Cohesion: 0.11
 Nodes (18): Audience and writing style, Choose where a doc lives, COVERAGE.md is split-governed, Decisions, Documentation style guide, Don't duplicate the code, Formatting, Keep changes proportional (+10 more)
 
 ### Community 34 - "Parser.ts"
-Cohesion: 0.13
-Nodes (18): aliasSuffix(), COMMAND_TABLE, CommandSpec, DIRECTIONS, DirectionSpec, helpText(), DIRECTION_NAMES, DIRECTION_SHORTCUTS (+10 more)
+Cohesion: 0.20
+Nodes (12): DIRECTION_NAMES, DIRECTION_SHORTCUTS, DIRECTION_TOKENS, HYPHENATED_VERBS, hyphenatedVerb(), isDirection(), isPunctuationAlias(), MULTIWORD_ALIASES (+4 more)
 
 ### Community 35 - "Game"
 Cohesion: 0.19
@@ -350,47 +371,47 @@ Nodes (3): Game, loadFailureMessage(), MESSAGES
 
 ### Community 36 - "domain.ts"
 Cohesion: 0.19
-Nodes (8): ExitDefinition, Exit, Room, Precondition, World, Direction, GameObject, Serialisable
+Nodes (13): 6.3 Room entry, score and spec-topic mapping, Core, 11. Invariants the implementation must keep, 3. Condition, AreaProgress, Exit, Room, Precondition (+5 more)
 
 ### Community 37 - "scripts"
 Cohesion: 0.12
 Nodes (17): scripts, build, content:generate, content:scaffold, content:validate, dev, format, format:check (+9 more)
 
 ### Community 38 - "adapt.ts"
-Cohesion: 0.36
-Nodes (9): catalogueOf(), bundleOf(), gateOf(), isTrue(), number(), numbers(), strings(), text() (+1 more)
+Cohesion: 0.27
+Nodes (8): catalogueOf(), bundleOf(), isTrue(), number(), numbers(), strings(), text(), unpack()
 
-### Community 39 - "SpecTopic"
-Cohesion: 0.16
-Nodes (11): 6.2 One command turn, 6.3 Room entry, score and spec-topic mapping, 6.4 Save, load, download and import, 6.5 Losing a life and winning, 6. Key flows, 7. Core contracts, 2. Authoring format, 2. Envelope, keys and file format (+3 more)
+### Community 39 - "area-progress.test.ts"
+Cohesion: 0.28
+Nodes (6): 3.1 Catalogue shape, 2. Authoring format, SpecTopic, SpecTopicCatalogue, areaBundle(), room()
 
 ### Community 41 - "opencode.json"
 Cohesion: 0.12
 Nodes (16): command, type, default_agent, experimental, subagent_depth, command, type, mcp (+8 more)
 
 ### Community 42 - "HintSystem"
-Cohesion: 0.21
-Nodes (12): 1. Scope, 2. Model, 3. Commands and delivery, 4. Adaptive behaviour, 5. Score interaction, Hints, 1. Scope, 4. Puzzle Dependency Graph (+4 more)
+Cohesion: 0.39
+Nodes (7): 1. Scope, 2. Model, 3. Commands and delivery, 4. Adaptive behaviour, 5. Score interaction, Hints, HintSystem
 
 ### Community 43 - "content/schema.ts"
-Cohesion: 0.22
-Nodes (14): CardSet, ParseResult, AUTHORING_KEYS, cardShape, COLLECTION_KEYS, entriesShape, entryShape, KINDS (+6 more)
+Cohesion: 0.24
+Nodes (15): CardSet, ParseResult, asRecord(), AUTHORING_KEYS, cardShape, COLLECTION_KEYS, entriesShape, entryShape (+7 more)
 
 ### Community 44 - "validateContent.ts"
-Cohesion: 0.10
-Nodes (32): 7.1 Free-text topic-overlap proof, 7. Structural validation gates, aliasProblems(), aliasProblemsOf(), asRecord(), budgetProblems(), catalogueIds(), coverageProblems() (+24 more)
+Cohesion: 0.11
+Nodes (28): 7. Structural validation gates, aliasProblems(), aliasProblemsOf(), asRecord(), budgetProblems(), catalogueIds(), coverageProblems(), DEFERRED_GATES (+20 more)
 
-### Community 45 - "finding"
-Cohesion: 0.14
-Nodes (37): sharedFindings(), Finding, ParsedCardSet, asNumber(), CardEntry, finding(), stringList(), checkHazard() (+29 more)
+### Community 45 - "validate.ts"
+Cohesion: 0.19
+Nodes (20): gateOf(), sharedFindings(), Finding, ParsedCardSet, stringList(), checkPuzzle(), clueFindings(), cycleFindings() (+12 more)
 
 ### Community 46 - "NpcTypes.test.ts"
 Cohesion: 0.14
-Nodes (21): 4.3 NPC card, actorKeywordTopic(), createTopicResolver(), hasKeyword(), isBoundToActor(), TopicResolver, ConversationNode, ConversationTopic (+13 more)
+Nodes (22): 4.3 NPC card, actorKeywordTopic(), createTopicResolver(), hasKeyword(), isBoundToActor(), TopicResolver, ConversationNode, ConversationTopic (+14 more)
 
 ### Community 47 - "authored.ts"
 Cohesion: 0.07
-Nodes (45): createQuizSystem(), RuntimeGameState, HintLevel, finishWithWrongAnswers(), questionFor(), wrongAnswer(), activeQuiz(), answerCorrectly() (+37 more)
+Nodes (51): createQuizSystem(), RoomSummary, formatEvent(), label(), topicLabel(), finishWithWrongAnswers(), questionFor(), wrongAnswer() (+43 more)
 
 ### Community 48 - "Q: Where are the area-change life reset and the ten Zone A InteractionRules rows owned?"
 Cohesion: 0.40
@@ -398,7 +419,7 @@ Nodes (4): Answer, Outcome, Q: Where are the area-change life reset and the ten 
 
 ### Community 49 - "main.ts"
 Cohesion: 0.09
-Nodes (30): 3.3 Loading and validation, 10. Out of scope, 1. Scope and goals, 3. Layers and dependency direction, 4. Source layout, 5. Module responsibilities, 8. Conventions, 9. Testability (+22 more)
+Nodes (40): 2. Boot, title screen and session start, 10. Out of scope, 1. Scope and goals, 2. Design principles, 3. Layers and dependency direction, 4. Source layout, 5. Module responsibilities, 8. Conventions (+32 more)
 
 ### Community 50 - "package.json"
 Cohesion: 0.17
@@ -410,23 +431,23 @@ Nodes (12): devDependencies, eslint@^10.15.0, markdownlint-cli2@^0.24.2, @types/
 
 ### Community 52 - "npcs.ts"
 Cohesion: 0.07
-Nodes (61): createFromDto(), ACTOR_ALIAS, ACTOR_ID, actorState(), always, askRing, byeCommand, ConditionEvaluatorCondition (+53 more)
+Nodes (58): ACTOR_ALIAS, ACTOR_ID, actorState(), always, askRing, byeCommand, ConditionEvaluatorCondition, CountingRandom (+50 more)
 
 ### Community 53 - "Q: Where are the W7 walkthrough harness, authored win path, area progress and life reset defined?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where are the W7 walkthrough harness, authored win path, area progress and life reset defined?, Source Nodes
 
 ### Community 54 - "Storage schema"
-Cohesion: 0.11
-Nodes (15): 10. API contracts, 11. Flow, 12. Invariants the implementation must keep, 13. Out of scope, 1. Scope and authority, 4. Counters and stuckness, 6. Content dependencies, 7. Restore-time derivation (+7 more)
+Cohesion: 0.14
+Nodes (12): 11. Flow, 12. Invariants the implementation must keep, 13. Out of scope, 1. Scope and authority, 6. Content dependencies, 8.1 Strictness, 8.2 Result type, 8. Validation contract (+4 more)
 
 ### Community 55 - "deploy.yml"
 Cohesion: 0.07
 Nodes (31): runs-on, steps, concurrency, cancel-in-progress, group, environment, needs, runs-on (+23 more)
 
 ### Community 56 - "EffectApplier.ts"
-Cohesion: 0.13
-Nodes (25): Parallel execution, quizView(), areaPairForRoom(), areaPairForTopic(), applyBookkeepingEffect(), applyEffect(), applyEntityEffect(), applyItemEffect() (+17 more)
+Cohesion: 0.10
+Nodes (29): 2. Model, 2. Model, 5. Quiz attempts, Parallel execution, quizView(), applyBookkeepingEffect(), applyEffect(), applyEntityEffect() (+21 more)
 
 ### Community 57 - "eslint.config.js"
 Cohesion: 0.18
@@ -441,20 +462,20 @@ Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Which canonical nodes own TitleScreen copy slots, GameWindow first-batch transcript seeding and overlay dismissal for onboarding?, Source Nodes
 
 ### Community 60 - "CommandTable.test.ts"
-Cohesion: 0.25
-Nodes (9): CommandSpec, CommandTableModule, DirectionSpec, hasCommandToken(), loadCommandTable(), CANONICAL_COMMANDS, CANONICAL_DIRECTIONS, normalise() (+1 more)
+Cohesion: 0.19
+Nodes (14): CommandSpec, CommandTableModule, DirectionSpec, hasCommandToken(), loadCommandTable(), loadVerbTable(), makeTurnContext(), CANONICAL_COMMANDS (+6 more)
 
 ### Community 61 - "Game.ts"
-Cohesion: 0.14
-Nodes (16): ComposedReaction, createComposedReaction(), adoptSeed(), createGame(), END_STATE_COMMANDS, initialBatch(), recordSeed(), MetaAction (+8 more)
+Cohesion: 0.10
+Nodes (24): adoptSeed(), createGame(), END_STATE_COMMANDS, initialBatch(), recordSeed(), AreaProgressView, ConversationView, HintView (+16 more)
 
 ### Community 62 - "Q: ENG2-HELP-01: which nodes are canonical for the command table, parser aliases and help reply?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: ENG2-HELP-01: which nodes are canonical for the command table, parser aliases and help reply?, Source Nodes
 
-### Community 63 - "4. Design card format"
-Cohesion: 0.29
-Nodes (7): 4.1 Common conventions, 4.2 Area and rooms card, 4.4 Quiz card, 4.5 Puzzle card, 4.6 Hazard card, 4.7 Hint card, 4. Design card format
+### Community 63 - "helpers.ts"
+Cohesion: 0.12
+Nodes (15): authoredArea, authoredStartRoom, authoredWorld, DOWNLOAD_NAME, makeQuarantine(), makeSave(), makeState(), QUARANTINE_DOWNLOAD_NAME (+7 more)
 
 ### Community 64 - "Q: Revision 2: which node owns go <shortcut> resolution and how to bind shortcuts to canonical Directions without a second direction list?"
 Cohesion: 0.40
@@ -773,24 +794,28 @@ Cohesion: 0.17
 Nodes (11): Constraints and pitfalls, Critical rebase requirement, Definition of done, Final red contracts already in main, Integration workspace, Interrupted agents, Main workspace, Objective (+3 more)
 
 ### Community 144 - "TopicSelection.ts"
-Cohesion: 0.16
-Nodes (22): AskTellMatch, chooseCandidate(), exactDeclaredTopic(), GiveShowMatch, hasKeyword(), hasObjectMatch(), hasResolvedMatch(), isActive() (+14 more)
+Cohesion: 0.15
+Nodes (24): 7.1 Free-text topic-overlap proof, resolveScenery(), createNameResolver(), AskTellMatch, chooseCandidate(), exactDeclaredTopic(), findDefaultTopic(), GiveShowMatch (+16 more)
 
 ### Community 146 - "ScoreTracker"
-Cohesion: 0.07
-Nodes (36): 10. Scoring with many puzzles per topic, 11. Win check owner, 12. Behavioural guarantees, 3.2 World, area, room and item definitions, 3. Content bundle and registration, 4.1 Meta actions, 4. Game façade and meta actions, 5.1 Door and container verbs (+28 more)
+Cohesion: 0.12
+Nodes (20): 10. Scoring with many puzzles per topic, 11. Win check owner, 12. Behavioural guarantees, 3.2 World, area, room and item definitions, 3.3 Loading and validation, 3. Content bundle and registration, 9. Effect to event mapping, Application and UI contracts (+12 more)
 
-### Community 147 - "Hazards"
-Cohesion: 0.50
-Nodes (4): 4. Failure consequences, 5. Content, 6. Events and UI, Hazards
+### Community 147 - "scenery-validation.test.ts"
+Cohesion: 0.13
+Nodes (17): cardsWithRefusalText(), expectOneShapeFinding(), ParsedRoom, refusalFindings(), CardSet, cardText(), conformingCardSet(), ParseResult (+9 more)
 
 ### Community 149 - "LoadResult"
-Cohesion: 0.10
-Nodes (9): QuarantineDto, LoadFailureReason, LoadResult, SaveDto, GameWindowDependencies, RecordingGame, RecordingGameOptions, BootSetupOptions (+1 more)
+Cohesion: 0.09
+Nodes (10): QuarantineDto, LoadFailureReason, LoadResult, SaveDto, GameStateDto, RuntimeGameState, RecordingGame, RecordingGameOptions (+2 more)
 
 ### Community 151 - "3. Rule catalogue"
-Cohesion: 0.29
-Nodes (7): 3. Rule catalogue, C — Conversation and NPCs, D — Data and cards, H — Hazards and hints, N — Narrative, P — Pedagogy and course mapping, V — Validation
+Cohesion: 0.21
+Nodes (10): 3. Rule catalogue, C — Conversation and NPCs, D — Data and cards, H — Hazards and hints, N — Narrative, P — Pedagogy and course mapping, V — Validation, rooms (+2 more)
+
+### Community 152 - "meta-and-endstates.spec.ts"
+Cohesion: 0.18
+Nodes (14): savedQuiz(), expectWorkspace(), readStorage(), SAVE_KEY, scorePanel(), startNewGame(), submit(), transcript() (+6 more)
 
 ### Community 153 - "Q: Where are canonical card sets, coverage topic IDs and quiz/hint wiring defined and consumed by tests?"
 Cohesion: 0.40
@@ -803,6 +828,10 @@ Nodes (4): Answer, Outcome, Q: How does the generator aggregate card collections
 ### Community 155 - "Q: Where is the canonical authored win path command sequence and whole-game V4 trace that owns quiz handoffs, hazard lives, teaching ladders and game-won?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where is the canonical authored win path command sequence and whole-game V4 trace that owns quiz handoffs, hazard lives, teaching ladders and game-won?, Source Nodes
+
+### Community 156 - "HANDOFF — CompSciQuest content + W6/W7 state"
+Cohesion: 0.11
+Nodes (18): 10. Commit / push note, 1. One-paragraph summary, 2. Read these first (in order), 3. What is accepted (content, do not re-litigate), 4.1 Failure inventory, 4.2 The generated bundle is stale — verify this first, 4. Current verification state (measured 2026-11-26), 5. Ordered next steps (+10 more)
 
 ### Community 157 - "Q: Which canonical nodes own the TitleScreen copy slots and the boot transcript seed, and is there a duplicate owner or bypass?"
 Cohesion: 0.40
@@ -819,6 +848,10 @@ Nodes (4): Answer, Outcome, Q: Which canonical nodes own the title-screen copy s
 ### Community 160 - "Q: ENG2-HELP-01: which nodes are canonical for the command table, help output and parser alias resolution?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: ENG2-HELP-01: which nodes are canonical for the command table, help output and parser alias resolution?, Source Nodes
+
+### Community 161 - "FakeRandom"
+Cohesion: 0.23
+Nodes (14): createEffectApplier(), applierFor(), loadConditionEvaluatorFactory(), loadHazardSystemFactory(), dialogueSystemFor(), resolverFor(), FakeRandom, hazardsFor() (+6 more)
 
 ### Community 162 - "Q: Revision 1: how to make the documented talk-to syntax resolvable and remove the literal ? alias from Parser.ts without inventing aliases?"
 Cohesion: 0.40
@@ -840,22 +873,82 @@ Nodes (4): Answer, Outcome, Q: ENG2-HELP-01 — which nodes are canonical for th
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: ENG2-HELP-01 revision 2: which node owns go <direction> alias resolution when help advertises direction shortcuts?, Source Nodes
 
+### Community 167 - "hint.ts"
+Cohesion: 0.23
+Nodes (14): asNumber(), CardEntry, checkHint(), ladderFindings(), levelFindings(), penaltyFindings(), targetFindings(), UNLOCK_PREFIXES (+6 more)
+
+### Community 168 - "playwright"
+Cohesion: 0.18
+Nodes (8): boot(), openSession(), PROMISED, seedStorage(), START_ROOM_TITLE, continueFrom(), playwright@1.65.1, playwright
+
+### Community 169 - "HintSystem.ts"
+Cohesion: 0.34
+Nodes (12): applyLevel(), applyMessage(), autoCandidates(), automaticHints(), explicitHint(), nextLevel(), resolveContext(), sequenceForPuzzle() (+4 more)
+
+### Community 170 - "Shared rule spine"
+Cohesion: 0.20
+Nodes (9): 5. ID and alias registry, 4. Trigger, 5. Effect and EffectApplier, 6. Scheduler (TADS fuse / daemon), 7. Random port, 8. Persisted-shape constraints for rule-spine state, 9. Content registration, Shared rule spine (+1 more)
+
+### Community 171 - "engine-issue-9-quick-answers.spec.ts"
+Cohesion: 0.24
+Nodes (6): ConsoleWatch, enterSwitchFloorQuiz(), QuizState, watchAppConsole(), waitForLine(), watchConsole()
+
+### Community 172 - "6. Key flows"
+Cohesion: 0.29
+Nodes (6): 6.1 Bootstrap (`src/main.ts`), 6.2 One command turn, 6.4 Save, load, download and import, 6.5 Losing a life and winning, 6. Key flows, 2. Envelope, keys and file format
+
+### Community 173 - "vitest"
+Cohesion: 0.25
+Nodes (5): vitest, CONTENT_SOURCES, RETIRED_STUB_PATH, SRC_SOURCES, TEST_SOURCES
+
+### Community 174 - "CommandTable.ts"
+Cohesion: 0.32
+Nodes (7): aliasSuffix(), COMMAND_TABLE, CommandSpec, detailSuffix(), DIRECTIONS, DirectionSpec, helpText()
+
+### Community 176 - "PuzzleGraph.ts"
+Cohesion: 0.48
+Nodes (6): cycleIds(), firstReady(), puzzleGraphFindings(), repeatedIds(), solveOrder(), unreachableIds()
+
+### Community 178 - "Puzzles"
+Cohesion: 0.40
+Nodes (5): 1. Scope, 4. Puzzle Dependency Graph, 5. Hints, 6. Integration points, Puzzles
+
+### Community 179 - "Q: ENG9: which canonical nodes own bare-number quiz answers and ask-about actor inference, and is there an existing presence owner to reuse?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: ENG9: which canonical nodes own bare-number quiz answers and ask-about actor inference, and is there an existing presence owner to reuse?, Source Nodes
+
+### Community 180 - "Q: Does the exact option text alias work as a bare phrase during a quiz, or only as answer <option text>?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Does the exact option text alias work as a bare phrase during a quiz, or only as answer <option text>?, Source Nodes
+
+### Community 181 - "Q: ENG9 browser QA: where are the bare quiz answer and inferred ask command seams, and which view/event names should e2e assert?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: ENG9 browser QA: where are the bare quiz answer and inferred ask command seams, and which view/event names should e2e assert?, Source Nodes
+
+### Community 182 - "Q: Can the session's configured Playwright MCP browser tools be used for browser exploration in this subagent when Chrome channel is missing?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Can the session's configured Playwright MCP browser tools be used for browser exploration in this subagent when Chrome channel is missing?, Source Nodes
+
+### Community 183 - "Q: Where is help text generated and which canonical node owns COMMAND_TABLE / helpText() for the ask and answer syntax?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Where is help text generated and which canonical node owns COMMAND_TABLE / helpText() for the ask and answer syntax?, Source Nodes
+
 ## Knowledge Gaps
-- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `OutputLog` (5× useful, score=4.937723908)
-- `ContentBundle` (5× useful, score=4.843885696)
-- `GameWindow` (4× useful, score=3.967018429)
-- `resolveGameCommand()` (4× useful, score=3.941980358) _(code changed — re-verify)_
-- `TopicResolver` (4× useful, score=3.941979533)
-- `EffectApplier` (4× useful, score=3.900316241)
-- `validateContent()` (4× useful, score=3.862029526)
-- `parseRaw()` (3× useful, score=2.966431103)
-- `QuizSystem` (3× useful, score=2.966411695)
-- `GameViewData` (3× useful, score=2.940240186)
+- `resolveGameCommand()` (5× useful, score=4.939223948)
+- `TopicResolver` (5× useful, score=4.938915206)
+- `OutputLog` (5× useful, score=4.934589902)
+- `ContentBundle` (5× useful, score=4.840811249)
+- `GameWindow` (4× useful, score=3.964500536)
+- `GameViewData` (4× useful, score=3.938119587)
+- `EffectApplier` (4× useful, score=3.897840685)
+- `validateContent()` (4× useful, score=3.85957827)
+- `formatEvent()` (3× useful, score=2.943999577)
+- `ScoreTracker` (3× useful, score=2.922368377)
 
 **Known dead ends** — questions that led nowhere; don't re-derive.
 - "Find a document heading node named Room entry text"
@@ -863,17 +956,17 @@ Nodes (4): Answer, Outcome, Q: ENG2-HELP-01 revision 2: which node owns go <dire
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `vitest` connect `vitest` to `npcTopicOverlap.ts`, `ui.ts`, `parser.ts`, `persistence.ts`, `content.ts`, `NpcGates.test.ts`, `mechanics.ts`, `LoadResult`, `ScoreTracker.ts`, `AuthoredWinPath.test.ts`, `GameState.ts`, `npcTopicOverlapHandoffCases.ts`, `contentToolchain.ts`, `npcTopicOverlapPairCases.ts`, `validateContent.ts`, `NpcTypes.test.ts`, `authored.ts`, `package.json`, `devDependencies`, `npcs.ts`, `EffectApplier.ts`, `CommandTable.test.ts`, `Game.ts`?**
-  _High betweenness centrality (0.146) - this node is a cross-community bridge._
+- **Why does `vitest` connect `vitest` to `npcTopicOverlap.ts`, `GameWindow.ts`, `ui.ts`, `parser.ts`, `persistence.ts`, `content.ts`, `NpcGates.test.ts`, `scenery-validation.test.ts`, `PuzzleSystem.test.ts`, `LoadResult`, `ScoreTracker.ts`, `GameEvent`, `mechanics.ts`, `zone1.ts`, `contentToolchain.ts`, `adapt.ts`, `area-progress.test.ts`, `validateContent.ts`, `NpcTypes.test.ts`, `authored.ts`, `main.ts`, `package.json`, `devDependencies`, `npcs.ts`, `CommandTable.test.ts`?**
+  _High betweenness centrality (0.107) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `ContentBundle` (e.g. with `11. Win check owner` and `2. Boot, title screen and session start`) actually correct?**
   _`ContentBundle` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Issues` be split into smaller, more focused modules?**
-  _Cohesion score 0.044444444444444446 - nodes in this community are weakly interconnected._
-- **Why does `ContentBundle` connect `ContentBundle` to `GameWindow.ts`, `commandResolution.ts`, `ContentBundle.ts`, `ui.ts`, `SaveManager.ts`, `Effect`, `InteractionRules.ts`, `parser.ts`, `persistence.ts`, `content.ts`, `TopicSelection.ts`, `cli.ts`, `ScoreTracker`, `mechanics.ts`, `LoadResult`, `ScoreTracker.ts`, `GameState.ts`, `vitest`, `generate.ts`, `contentToolchain.ts`, `Content authoring rules`, `adapt.ts`, `SpecTopic`, `validateContent.ts`, `NpcTypes.test.ts`, `authored.ts`, `main.ts`, `npcs.ts`, `EffectApplier.ts`, `Game.ts`?**
-  _High betweenness centrality (0.073) - this node is a cross-community bridge._
+  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
+- **Why does `ContentBundle` connect `ContentBundle` to `GameWindow.ts`, `commandResolution.ts`, `content/index.ts`, `common.ts`, `ui.ts`, `SaveManager.ts`, `Effect`, `GameState`, `parser.ts`, `persistence.ts`, `content.ts`, `TopicSelection.ts`, `cli.ts`, `ScoreTracker`, `scenery-validation.test.ts`, `PuzzleSystem.test.ts`, `LoadResult`, `ScoreTracker.ts`, `3. Rule catalogue`, `GameState.ts`, `mechanics.ts`, `zone1.ts`, `Content authoring rules`, `HazardSystem.ts`, `adapt.ts`, `area-progress.test.ts`, `HintSystem.ts`, `Shared rule spine`, `6. Key flows`, `validateContent.ts`, `NpcTypes.test.ts`, `authored.ts`, `PuzzleGraph.ts`, `main.ts`, `npcs.ts`, `EffectApplier.ts`, `Game.ts`?**
+  _High betweenness centrality (0.077) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `GameEvent` (e.g. with `1. Purpose and authority` and `6. Canonical event union and rendering`) actually correct?**
   _`GameEvent` has 5 INFERRED edges - model-reasoned connections that need verification._
-- **Should `GameWindow.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07067307692307692 - nodes in this community are weakly interconnected._
-- **Why does `GameEvent` connect `vitest` to `GameWindow.ts`, `ui.ts`, `Effect`, `persistence.ts`, `ScoreTracker`, `mechanics.ts`, `LoadResult`, `ScoreTracker.ts`, `ConversationFlow.ts`, `AuthoredWinPath.test.ts`, `ContentBundle`, `Game`, `SpecTopic`, `HintSystem`, `NpcTypes.test.ts`, `authored.ts`, `main.ts`, `npcs.ts`, `Storage schema`, `EffectApplier.ts`, `Game.ts`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **Should `npcTopicOverlap.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.10758998435054773 - nodes in this community are weakly interconnected._
+- **Why does `Engine issues — batched hand-off` connect `Issues` to `EffectApplier.ts`?**
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._

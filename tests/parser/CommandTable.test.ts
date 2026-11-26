@@ -208,3 +208,47 @@ describe('ENG2-HELP-01 canonical command table', () => {
     );
   });
 });
+
+// Follow-up (issue 9): ENGINE_ISSUES.md "Decisions settled with the user" →
+// Batch E1 settles two more supported forms — `ask about <topic>` ("ask syntax")
+// and bare quiz numbers ("Quiz answers"). The "Help" row defines help as one
+// static list of every supported command, alias and required syntax, so both
+// forms must appear in the generated copy. Only helpText() output is observed.
+describe('issue 9 forms in the generated help text', () => {
+  it('ENG9-ASKINFER-01: helpText() lists ask about <topic> and explains that the NPC is inferred when exactly one is present', async () => {
+    const { helpText } = await loadCommandTable();
+    const text = helpText();
+
+    expect(text, 'help must list the inferred ask syntax').toContain(
+      'ask about <topic>',
+    );
+    expect(
+      text.toLowerCase(),
+      'help must explain that the NPC is inferred',
+    ).toContain('infer');
+    expect(
+      text.toLowerCase(),
+      'help must explain that inference applies when exactly one NPC is present',
+    ).toContain('exactly one');
+  });
+
+  it('ENG9-BAREANSWER-01: helpText() lists the bare quiz number forms 1, 2, …', async () => {
+    const { helpText } = await loadCommandTable();
+    const text = helpText();
+
+    expect(
+      text,
+      'help must list bare quiz numbers as required by ENGINE_ISSUES.md Batch E1',
+    ).toContain('1, 2, …');
+  });
+
+  it('ENG2-HELP-01: helpText() keeps ask <npc> about <topic> and answer N alongside the issue 9 forms', async () => {
+    const { helpText } = await loadCommandTable();
+    const text = helpText();
+
+    expect(text, 'the explicit ask form must remain in help').toContain(
+      'ask <npc> about <topic>',
+    );
+    expect(text, 'the answer N form must remain in help').toContain('answer N');
+  });
+});

@@ -6,6 +6,7 @@ export interface CommandSpec {
   readonly verb: string;
   readonly syntax: string;
   readonly aliases: readonly string[];
+  readonly detail?: string;
 }
 
 export interface DirectionSpec {
@@ -47,12 +48,23 @@ export const COMMAND_TABLE: readonly CommandSpec[] = [
   { verb: 'score', syntax: 'score', aliases: [] },
   { verb: 'help', syntax: 'help', aliases: ['?'] },
   { verb: 'talk-to', syntax: 'talk-to <npc>', aliases: ['talk'] },
-  { verb: 'ask', syntax: 'ask <npc> about <topic>', aliases: [] },
+  {
+    verb: 'ask',
+    syntax: 'ask <npc> about <topic>',
+    aliases: [],
+    detail:
+      'Also ask about <topic>: the NPC is inferred when exactly one is present.',
+  },
   { verb: 'tell', syntax: 'tell <npc> about <topic>', aliases: [] },
   { verb: 'give', syntax: 'give <npc> <item>', aliases: [] },
   { verb: 'show', syntax: 'show <npc> <item>', aliases: [] },
   { verb: 'bye', syntax: 'bye', aliases: ['goodbye'] },
-  { verb: 'answer', syntax: 'answer N', aliases: [] },
+  {
+    verb: 'answer',
+    syntax: 'answer N',
+    aliases: [],
+    detail: 'Bare quiz numbers 1, 2, … are also accepted.',
+  },
   { verb: 'hint', syntax: 'hint [target]', aliases: [] },
 ];
 
@@ -71,9 +83,14 @@ function aliasSuffix(aliases: readonly string[]): string {
   return aliases.length === 0 ? '' : `  (${aliases.join(', ')})`;
 }
 
+function detailSuffix(detail: string | undefined): string {
+  return detail === undefined ? '' : `  — ${detail}`;
+}
+
 export function helpText(): string {
   const commands = COMMAND_TABLE.map(
-    (spec) => `  ${spec.syntax}${aliasSuffix(spec.aliases)}`,
+    (spec) =>
+      `  ${spec.syntax}${aliasSuffix(spec.aliases)}${detailSuffix(spec.detail)}`,
   );
   const directions = DIRECTIONS.map(
     (direction) => `${direction.name} (${direction.shortcut})`,

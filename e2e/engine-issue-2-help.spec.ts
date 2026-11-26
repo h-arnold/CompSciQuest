@@ -143,4 +143,47 @@ test.describe('engine issue 2 help output', () => {
     await expect(command).toBeVisible();
     await expect(command).toBeEditable();
   });
+
+  test('ENG9-ASKINFER-01 — browser help lists ask about <topic> and the NPC-inference wording', async ({
+    page,
+  }) => {
+    await bootNewGame(page);
+    await submit(page, 'help');
+
+    const lines = await transcript(page);
+    expect(lines).toContain('> help');
+    const help = helpEntry(lines);
+    expect(help, 'help keeps the explicit ask form').toContain(
+      'ask <npc> about <topic>',
+    );
+    expect(help, 'help lists the inferred ask about <topic> form').toContain(
+      'ask about <topic>',
+    );
+    expect(help.toLowerCase(), 'help explains NPC inference').toContain(
+      'infer',
+    );
+    expect(
+      help.toLowerCase(),
+      'help says inference applies when exactly one NPC is present',
+    ).toContain('exactly one');
+  });
+
+  test('ENG9-BAREANSWER-01 — browser help lists the bare quiz number forms 1, 2, …', async ({
+    page,
+  }) => {
+    await bootNewGame(page);
+    await submit(page, '?');
+
+    const lines = await transcript(page);
+    expect(lines).toContain('> ?');
+    const help = helpEntry(lines);
+    expect(help, 'help keeps the canonical answer form').toContain('answer N');
+    expect(help, 'help lists the accepted bare quiz numbers').toContain(
+      '1, 2, …',
+    );
+    expect(
+      help.toLowerCase(),
+      'help describes bare numbers as an accepted answer form',
+    ).toContain('bare quiz numbers');
+  });
 });

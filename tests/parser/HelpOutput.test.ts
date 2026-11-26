@@ -86,3 +86,30 @@ describe('ENG2-HELP-01 help handler output', () => {
     ).toBe(true);
   });
 });
+
+// Follow-up (issue 9): the player-facing help reply must surface the two forms
+// added by ENGINE_ISSUES.md Batch E1 ("ask syntax" and "Quiz answers"), because
+// "Help" is one static list of every supported command and required syntax.
+describe('issue 9 forms in the help reply', () => {
+  it('ENG9-ASKINFER-01: the help reply lists ask about <topic> with NPC-inference wording', async () => {
+    const text = await helpMessage();
+
+    expect(text, 'the reply must list the inferred ask syntax').toContain(
+      'ask about <topic>',
+    );
+    expect(
+      text.toLowerCase(),
+      'the reply must explain NPC inference',
+    ).toContain('infer');
+    expect(
+      text.toLowerCase(),
+      'the reply must say inference applies when exactly one NPC is present',
+    ).toContain('exactly one');
+  });
+
+  it('ENG9-BAREANSWER-01: the help reply lists the bare quiz number forms 1, 2, …', async () => {
+    const text = await helpMessage();
+
+    expect(text, 'the reply must list bare quiz numbers').toContain('1, 2, …');
+  });
+});
