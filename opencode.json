@@ -14,15 +14,17 @@
         "type": "local",
         "command": [
           "graphify-mcp",
-          "/workspaces/CompSciQuest/graphify-out/graph.json"
-        ]
+          "graphify-out/graph.json"
+        ],
+        "cwd": "."
       },
       "coverage-local": {
         "type": "local",
         "command": [
           "graphify-mcp",
-          "/workspaces/CompSciQuest/docs/graphify-out/graph.json"
-        ]
+          "docs/graphify-out/graph.json"
+        ],
+        "cwd": "."
       },
       "playwright": {
         "type": "local",
