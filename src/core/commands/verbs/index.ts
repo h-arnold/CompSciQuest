@@ -141,11 +141,14 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
     return [message('You cannot see that here.')];
   }
   // storage-schema.md §3.3: transfer-item owner keys are 'player', actor IDs
-  // or room IDs. Scenery is an interaction target, not a room catalogue entry,
-  // so an item put on visible scenery belongs to the room it stands in.
-  const toOwnerId = isSceneryVisible(context, command.targetId)
-    ? context.state.player.position.roomId
-    : command.targetId;
+  // or room IDs. Scenery and authored item fixtures are interaction targets,
+  // not room catalogue entries, so a put onto either belongs to the room it
+  // stands in. A plain item target (for example a container) keeps its ID.
+  const putFlags = putInteraction(command, context);
+  const toOwnerId =
+    isSceneryVisible(context, command.targetId) || putFlags.length > 0
+      ? context.state.player.position.roomId
+      : command.targetId;
   return [
     {
       kind: 'transfer-item',
@@ -153,7 +156,7 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
       fromOwnerId,
       toOwnerId,
     },
-    ...putInteraction(command, context),
+    ...putFlags,
     message('You put it down.'),
   ];
 }
