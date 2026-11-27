@@ -76,7 +76,7 @@ function quizPanel(page: Page) {
 }
 
 function requirementNode(page: Page) {
-  return page.locator('.quiz-panel > p');
+  return page.locator('.quiz-panel > p[aria-live="polite"]');
 }
 
 function requirementLine(quiz: Quiz, wrongAnswersSpent = 0): string {
@@ -91,11 +91,10 @@ async function displayedQuestion(
   page: Page,
   quiz: Quiz,
 ): Promise<QuizQuestion> {
-  const questionLines = await quizPanel(page)
-    .locator('> div')
-    .allTextContents();
-  const first = questionLines[0];
-  const prompt = (first ?? '').replace(/^Question \d+ of \d+: /u, '');
+  // The prompt is the first direct paragraph (§6.1); the numbered options are
+  // the panel's direct div children.
+  const promptLine = await quizPanel(page).locator('> p').first().textContent();
+  const prompt = (promptLine ?? '').replace(/^Question \d+ of \d+: /u, '');
   const question = quiz.questionIds
     .map((id) => authoredQuestion(id))
     .find((entry) => entry.prompt === prompt);
@@ -225,7 +224,7 @@ test.describe('engine follow-ups — fresh start and live allowance', () => {
         .locator('button, a, input, select, textarea, [role="button"]')
         .count(),
     ).toBe(0);
-    await expect(quizPanel(page).locator('> div').first()).toContainText(
+    await expect(quizPanel(page).locator('> p').first()).toContainText(
       'Question 2 of',
     );
     const nextQuestion = await displayedQuestion(page, quiz);
@@ -258,7 +257,7 @@ test.describe('engine follow-ups — fresh start and live allowance', () => {
     await expect(quizPanel(page)).toBeVisible();
     await expect(requirementNode(page)).toHaveText(requirementLine(nextQuiz));
     expect(nextQuiz.questionIds.length - nextQuiz.passMark).toBe(1);
-    await expect(quizPanel(page).locator('> div').first()).toContainText(
+    await expect(quizPanel(page).locator('> p').first()).toContainText(
       'Question 1 of',
     );
   });

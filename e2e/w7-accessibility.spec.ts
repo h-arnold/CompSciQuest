@@ -125,7 +125,7 @@ test('W7 accessibility — labels, live transcript, keyboard order, focus, contr
 // an authored quiz is active, and no stale live-region node survives a fresh
 // start. Values come from the generated authored quiz, never from prose copy.
 function requirementNode(page: Page) {
-  return page.locator('.quiz-panel > p');
+  return page.locator('.quiz-panel > p[aria-live="polite"]');
 }
 
 async function accessibilityCommand(page: Page, raw: string): Promise<void> {

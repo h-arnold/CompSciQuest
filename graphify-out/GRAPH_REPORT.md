@@ -1,7 +1,7 @@
 # Graph Report - brave-wolf  (2026-11-27)
 
 ## Corpus Check
-- 585 files · ~291,369 words
+- 585 files · ~291,538 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 6, .jsonc 1, .css 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7300249e`
+- Built from commit: `0177b711`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -346,21 +346,21 @@
 5. `Effect` - 64 edges
 6. `submit()` - 62 edges
 7. `asText()` - 62 edges
-8. `Command` - 60 edges
-9. `FakeRandom` - 60 edges
+8. `FakeRandom` - 60 edges
+9. `Command` - 60 edges
 10. `finding()` - 58 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `8.2 Result type` --references--> `SaveControls`  [INFERRED]
   docs/developer/storage-schema.md → src/ui/SaveControls.ts
-- `1. Purpose` --references--> `ContentBundle`  [INFERRED]
-  docs/developer/content-toolchain.md → src/content/ContentBundle.ts
 - `7. Random port` --references--> `Random`  [INFERRED]
   docs/developer/shared-rules.md → src/core/Random.ts
+- `H — Hazards and hints` --references--> `HintSystem`  [INFERRED]
+  docs/developer/content-rules.md → src/core/hints/HintSystem.ts
 - `4. Failure consequences` --references--> `AreaDefinition`  [INFERRED]
   docs/developer/hazards.md → src/content/AreaDefinition.ts
-- `D — Data and cards` --references--> `RoomDefinition`  [INFERRED]
-  docs/developer/content-rules.md → src/content/RoomDefinition.ts
+- `11. Flow` --references--> `Game`  [INFERRED]
+  docs/developer/storage-schema.md → src/application/Game.ts
 
 ## Import Cycles
 - 2-file cycle: `e2e/w7-full-win-trace.ts -> e2e/w7-full-win/ward-checkpoint.ts -> e2e/w7-full-win-trace.ts`
@@ -1637,16 +1637,16 @@ Nodes (10): 1. Purpose and authority, 7. Core contracts, 1. Scope, 1. Purpose, 3
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `GameWindow` (13× useful, score=12.750625294)
-- `EffectApplier` (9× useful, score=8.676737779)
-- `transferItem()` (8× useful, score=7.905145939)
-- `ContentBundle` (8× useful, score=7.643190623)
-- `COMMAND_TABLE` (7× useful, score=6.926520897)
-- `resolveGameCommand()` (7× useful, score=6.803411196)
-- `helpText()` (6× useful, score=5.937377907)
-- `TopicResolver` (6× useful, score=5.806886406)
-- `inventoryOf()` (5× useful, score=4.967195297)
-- `takeHandler()` (5× useful, score=4.90650167)
+- `GameWindow` (13× useful, score=12.749729828)
+- `EffectApplier` (9× useful, score=8.676128419)
+- `transferItem()` (8× useful, score=7.904590767)
+- `ContentBundle` (8× useful, score=7.642653848)
+- `COMMAND_TABLE` (7× useful, score=6.926034453)
+- `resolveGameCommand()` (7× useful, score=6.802933398)
+- `helpText()` (6× useful, score=5.936960929)
+- `TopicResolver` (6× useful, score=5.806478593)
+- `inventoryOf()` (5× useful, score=4.966846455)
+- `takeHandler()` (5× useful, score=4.906157091)
 
 **Known dead ends** — questions that led nowhere; don't re-derive.
 - "Find a document heading node named Room entry text"
@@ -1667,16 +1667,16 @@ Nodes (10): 1. Purpose and authority, 7. Core contracts, 1. Scope, 1. Purpose, 3
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `vitest` connect `vitest` to `PlacedBlockClosure.test.ts`, `catalogueOf`, `area-progress.test.ts`, `Issues`, `authoredGame`, `SaveManager.ts`, `verbs/index.ts`, `engine-followups-2-hintretry.spec.ts`, `contentToolchain.ts`, `zone1.ts`, `topicOverlap.ts`, `persistence.ts`, `Game`, `ContentBundle.ts`, `stringList`, `GameEvent`, `GameWindow.ts`, `mechanics.ts`, `QuizRevision.test.ts`, `SaveDto.ts`, `area-score-attribution.test.ts`, `game-fresh-start-seam.test.ts`, `parser.ts`, `authored.ts`, `Q: Which graph nodes are canonical for content bundle loading, declaration-order catalogues and structural validation gates?`, `CommandTable.test.ts`, `Q: Which graph nodes are canonical for the parser and one-command turn pipeline seams used by slice parser-turn?`, `AreaChangeLifeGate.test.ts`, `LoadConfirmation.test.ts`, `ScoreTracker.ts`, `validateContent.ts`, `Q: ConversationNode ConversationTopic generateContent generateNodes npcData generatedFile topicActorFindings nodeTopicFindings NpcGates.test.ts`, `RecordingGame`, `Q: Do the revision-1 helpers bypass validateContent(), finding() or collection()?`, `GameStateDto`, `Q: Which owner builds the audited area set and drives covered-topic completion in the world-graph gate?`, `W7GateFeedback.test.ts`, `Round2UnlockRefusal.test.ts`, `TopicSelection.test.ts`?**
-  _High betweenness centrality (0.094) - this node is a cross-community bridge._
+  _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `ContentBundle` (e.g. with `11. Win check owner` and `2. Boot, title screen and session start`) actually correct?**
   _`ContentBundle` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Should `helpers.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.049442457395329265 - nodes in this community are weakly interconnected._
 - **Why does `ContentBundle` connect `ContentBundle` to `Random`, `PlacedBlockClosure.test.ts`, `Effect`, `catalogueOf`, `area-progress.test.ts`, `authoredGame`, `SaveManager.ts`, `verbs/index.ts`, `engine-followups-2-hintretry.spec.ts`, `zone1.ts`, `topicOverlap.ts`, `content/index.ts`, `persistence.ts`, `Game`, `Game`, `TopicSelection.ts`, `NpcGates.test.ts`, `ContentBundle.ts`, `stringList`, `SaveManager.ts`, `GameEvent`, `adapt.ts`, `commandResolution.ts`, `GameWindow.ts`, `PuzzleGraph.ts`, `ScoreTracker`, `generate.ts`, `common.ts`, `mechanics.ts`, `area-score-attribution.test.ts`, `Effect`, `Q: Where are the persistence contracts canonical: SaveManager, StorageAdapter, GameStateDto, LoadResult and LoadFailureReason, Save quarantine, ScoreTracker?`, `parser.ts`, `authored.ts`, `main.ts`, `GameState.ts`, `AreaChangeLifeGate.test.ts`, `LoadConfirmation.test.ts`, `Command`, `ScoreTracker.ts`, `validateContent.ts`, `Q: ConversationNode ConversationTopic generateContent generateNodes npcData generatedFile topicActorFindings nodeTopicFindings NpcGates.test.ts`, `Q: Which production nodes own GameWindow, Terminal, OutputLog, ScorePanel, SaveControls and TitleScreen responsibilities?`, `PuzzleSystem.ts`, `Q: Which owner builds the audited area set and drives covered-topic completion in the world-graph gate?`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `GameEvent` (e.g. with `1. Purpose and authority` and `6. Canonical event union and rendering`) actually correct?**
   _`GameEvent` has 5 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Random` be split into smaller, more focused modules?**
   _Cohesion score 0.13675213675213677 - nodes in this community are weakly interconnected._
-- **Why does `GameEvent` connect `GameEvent` to `Random`, `PlacedBlockClosure.test.ts`, `Effect`, `area-progress.test.ts`, `SaveManager.ts`, `verbs/index.ts`, `engine-followups-2-hintretry.spec.ts`, `compilerOptions`, `zone1.ts`, `topicOverlap.ts`, `persistence.ts`, `Game`, `ContentBundle.ts`, `GameWindow.ts`, `ConversationFlow.ts`, `vitest`, `ScoreTracker`, `common.ts`, `asRecord`, `mechanics.ts`, `QuizRevision.test.ts`, `ComposedReaction.ts`, `ContentBundle`, `area-score-attribution.test.ts`, `Effect`, `Q: Where are the persistence contracts canonical: SaveManager, StorageAdapter, GameStateDto, LoadResult and LoadFailureReason, Save quarantine, ScoreTracker?`, `authored.ts`, `AreaChangeLifeGate.test.ts`, `LoadConfirmation.test.ts`, `ScoreTracker.ts`, `Q: ConversationNode ConversationTopic generateContent generateNodes npcData generatedFile topicActorFindings nodeTopicFindings NpcGates.test.ts`, `RecordingGame`, `GameStateDto`, `Q: Which production nodes own GameWindow, Terminal, OutputLog, ScorePanel, SaveControls and TitleScreen responsibilities?`, `PuzzleSystem.ts`, `Q: Which owner builds the audited area set and drives covered-topic completion in the world-graph gate?`?**
-  _High betweenness centrality (0.026) - this node is a cross-community bridge._
+- **Why does `GameState` connect `GameState.ts` to `Random`, `PlacedBlockClosure.test.ts`, `Effect`, `catalogueOf`, `area-progress.test.ts`, `authoredGame`, `SaveManager.ts`, `verbs/index.ts`, `engine-followups-2-hintretry.spec.ts`, `zone1.ts`, `GameStateDto`, `topicOverlap.ts`, `persistence.ts`, `Game`, `TopicSelection.ts`, `stringList`, `SaveManager.ts`, `GameEvent`, `ConversationFlow.ts`, `PuzzleGraph.ts`, `common.ts`, `mechanics.ts`, `Storage schema`, `ContentBundle`, `Shared rule spine`, `Effect`, `Q: Where are the persistence contracts canonical: SaveManager, StorageAdapter, GameStateDto, LoadResult and LoadFailureReason, Save quarantine, ScoreTracker?`, `parser.ts`, `authored.ts`, `CommandTable.test.ts`, `InteractionRules.ts`, `Command`, `ScoreTracker.ts`, `Q: ConversationNode ConversationTopic generateContent generateNodes npcData generatedFile topicActorFindings nodeTopicFindings NpcGates.test.ts`, `Q: Which production nodes own GameWindow, Terminal, OutputLog, ScorePanel, SaveControls and TitleScreen responsibilities?`, `PuzzleSystem.ts`, `Q: Which owner builds the audited area set and drives covered-topic completion in the world-graph gate?`, `TopicSelection.test.ts`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
