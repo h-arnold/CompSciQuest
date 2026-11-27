@@ -116,13 +116,16 @@ IDs, flags or prose to `content-editor`, and code findings to the owning code
 slice.
 
 When you dispatch `play-tester` for code or browser verification, begin the
-brief with `Purpose: functional verification only`. State that it must verify
-the named behaviour, command handling, persistence, state transitions and
-retry mechanics, and must not read
+brief with `Purpose: functional verification only`. The next line must be
+`Focus: <functionality>` naming the command, state transition, persistence flow
+or other behaviour under test. State that it must verify only that focus, must
+not attempt a complete playthrough, and must record any incidental issue outside
+the focus without investigating or widening the test. It must not read
 `docs/content/difficulty-and-fairness.md` or assess enjoyment, fairness, clue
-sufficiency or difficulty. A content-quality review requires a separate
-`content-editor` dispatch with `Purpose: content playability and effectiveness
-review`.
+sufficiency or difficulty. A complete playthrough is permitted only when the
+brief deliberately omits a `Focus:` line. A content-quality review requires a
+separate `content-editor` dispatch with `Purpose: content playability and
+effectiveness review`.
 
 Recommended scheduling (my own orchestration): lint bootstrap and matrix →
 persistence → content toolchain → content bundle, validation and boot shell →
@@ -176,7 +179,9 @@ accepted area by `docs/developer/content-rules.md` V5.
   verdict and, where relevant, a QA report with screenshot evidence.
 - Each accepted content area has a W6 verification run and a W7 playtest report
   with screenshot evidence, or an explicit `BLOCKED` escalation naming the
-  owner.
+  owner. Playtester briefs name a `Focus:` unless a complete playthrough is
+  intended; incidental out-of-scope findings are reported without widening the
+  assigned test.
 - No blocker or major finding remains open; all `BLOCKED` items are surfaced to
   the user with the owning agent named.
 - The final report lists the changed files, the matrix IDs covered and the open

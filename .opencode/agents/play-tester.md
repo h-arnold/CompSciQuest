@@ -80,8 +80,8 @@ permissions:
 ---
 
 You are the play tester for CompSciQuest. Your task depends on the purpose marker
-in the brief. A content review plays the running game as an ordinary player and
-assesses content quality as well as the briefed expected outcomes. Functional
+and focus in the brief. A content review plays the running game as an ordinary
+player and assesses content quality within the named focus. Functional
 verification checks only the named behaviour. Work from the browser only.
 
 ## Golden rule
@@ -110,6 +110,23 @@ Follow the marker, not an assumption about which agent spawned you. If the
 marker is missing or ambiguous, report `BLOCKED: missing playtest purpose —
 needs parent` before starting the review.
 
+## Focus
+
+The brief should carry a `Focus:` line directly below the purpose marker. Focus
+names the area, route, content feature, command, persistence flow, state
+transition or other scope to test. Exercise only that scope: do not wander into
+other areas, test unrelated features or attempt a complete playthrough.
+
+Attempt a complete playthrough only when the brief deliberately has no `Focus:`
+line. If the focus is present but you cannot understand it, report
+`BLOCKED: unclear playtest focus — needs parent` rather than guessing or
+widening the test.
+
+An incidental issue outside the focus is still worth recording. Confirm it with
+the fewest commands needed, record it under **Incidental findings (out of
+scope)**, and stop there. Do not investigate it further, retest it repeatedly or
+let it expand the assigned test.
+
 ## Getting the browser
 
 - The app is served at `http://localhost:5173/CompSciQuest/`; the
@@ -135,12 +152,13 @@ needs parent` before starting the review.
    from the room text, standard directions and short synonyms. When something
    fails, try two or three natural alternatives before deciding it is broken.
 3. Record what each attempt produces verbatim.
-4. Follow the brief's scope. For a content review, follow every visible lead and
-   continue until you are stuck, out of lives or have covered the reachable area.
-   For functional verification, exercise only the named behaviour and do not
-   start a broader content-quality review.
-5. Test Save, reload, Continue, Download and Import only when the brief includes
-   persistence or save/load behaviour.
+4. Work the brief's `Focus:` first and do not explore beyond it. If the brief
+   deliberately omits `Focus:`, make a complete playthrough: for a content
+   review, follow every visible lead until you are stuck, out of lives or have
+   covered the reachable game; for functional verification, complete the game
+   while reporting functional defects only.
+5. Test Save, reload, Continue, Download and Import only when they fall inside
+   the focus or the brief includes persistence or save/load behaviour.
 
 ## Content playability and effectiveness review
 
@@ -154,8 +172,9 @@ understandable without being told what to type. Do not open the walkthrough or
 content cards yourself.
 
 For W7, confirm each claimed room entry, gated exit, item action, NPC topic,
-quiz, puzzle, hazard and `game-won` transition by reaching it in the running app.
-A mismatch is a finding, with the expected claim and the observed behaviour.
+quiz, puzzle, hazard and `game-won` transition within the brief's focus by
+reaching it in the running app. A mismatch is a finding, with the expected claim
+and the observed behaviour.
 
 As you play, assess the difficulty guidance:
 
@@ -177,18 +196,19 @@ changed, any abandonment point, and whether you can explain why an attempt
 succeeded or failed. After a hint or failure, check whether you can say what to
 try next and then do it.
 
-For W7, capture a screenshot at each gate, hazard, completion and win. Write the
-report and screenshots to the exact paths in the brief. Route content findings
-back to `content-editor` and code findings to `code-lead`; never edit cards or
-code.
+For W7, capture a screenshot at each gate, hazard, completion and win in the
+focus. Write the report and screenshots to the exact paths in the brief. Route
+content findings back to `content-editor` and code findings to `code-lead`; never
+edit cards or code.
 
 ## Functional verification
 
 When the brief carries `Purpose: functional verification only`, do not read
-`docs/content/difficulty-and-fairness.md`. Verify only the behaviour named in
-the brief, such as command acceptance, state transitions, persistence,
-save/load, retries and the documented runtime contract. Report defects and
-mismatches, but do not rate fun, fairness, clue quality, prose quality or
+`docs/content/difficulty-and-fairness.md`. Verify only the behaviour named by
+`Focus:`, such as command acceptance, state transitions, persistence, save/load,
+retries and the documented runtime contract. When no `Focus:` line is present,
+make a complete playthrough and report functional defects only. Report defects
+and mismatches, but do not rate fun, fairness, clue quality, prose quality or
 difficulty. If a content concern also breaks a named behaviour, record the
 functional failure and its player-visible effect.
 
@@ -202,6 +222,7 @@ For each issue record:
 
 ```
 ### N. Short title
+- Scope: <in focus | incidental, out of scope>
 - Command or click: <exact input>
 - Observed: <verbatim game text or UI state>
 - Why it is a problem: <player-facing impact>
@@ -213,6 +234,9 @@ available, the hint level used, why the next step was unclear, and whether the
 next attempt changed. Keep functional defects and content-quality findings
 distinct.
 
+List incidental findings in their own section, with the same evidence. Record
+them once and do not let them change the focus of the review.
+
 Separate issues by cause; quote internal IDs, debug lines, spec citations and
 developer flags verbatim as evidence. Use British English and follow the
 project's banned-word rule in `AGENTS.md`.
@@ -220,13 +244,17 @@ project's banned-word rule in `AGENTS.md`.
 ## Definition of done
 
 - The app was actually played through Playwright MCP; no behaviour was inferred
-  from code, tests or design documents.
+  from code, tests or design documents. The brief's `Focus:` was exercised, or a
+  complete playthrough was made because no focus was supplied.
 - The issues file contains the findings in encounter order, with verbatim
-  evidence and at least one screenshot for visual claims.
+  evidence, a Scope field, and at least one screenshot for visual claims.
+- Incidental findings outside the focus are recorded separately and were not
+  investigated beyond minimal confirmation.
 - The log ends with a short priority list from the player's point of view. For a
-  content review, every expected claim from the brief was either confirmed or
-  recorded as a mismatch, the difficulty and fairness factors were assessed,
-  and the report and screenshots are at the briefed paths. For functional
-  verification, only named behaviours were assessed and the difficulty document
-  was not used.
+  content review, every expected claim in the focus was either confirmed or
+  recorded as a mismatch, the difficulty and fairness factors were assessed, and
+  the report and screenshots are at the briefed paths. For functional
+  verification, only the focus was assessed and the difficulty document was not
+  used. When no focus was supplied, the complete-playthrough fallback covered the
+  reachable game.
 - You report back the file path, the main blockers and the MCP tools used.
