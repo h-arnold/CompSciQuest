@@ -91,7 +91,11 @@ describe('MD-STATUS generated markdown status lines', () => {
 
     const messages = messageTexts(game.submit('look'));
 
-    expect(expected.split('\n')).toEqual([
+    // application-and-ui.md §6.1 / spec §6.1: the room entry is four
+    // transcript entries. The authored description is one entry even though it
+    // holds a paragraph break and N10 markers — only the emitted message joins
+    // the entries with newlines.
+    expect(roomEntryLines(room)).toEqual([
       `## ${room.title}`,
       '',
       room.description,

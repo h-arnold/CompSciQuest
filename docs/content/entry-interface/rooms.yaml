@@ -33,13 +33,15 @@ rooms:
   - id: room-arrival
     title: The Arrival Bay
     aliases: [arrival, landing, scan]
-    description: >-
-      The register lies open, a mark beside your name. The AI reads it in the flat
-      voice of a machine that has read it a thousand times: attention not
+    description: |
+      The register lies open, a mark beside your name. ***The AI*** reads it in
+      the flat voice of a machine that has read it a thousand times: attention not
       satisfied. The classroom folds along its grid lines; the ceiling becomes a
       row of tiny switches. You stand among humming cable. The AI waits, assembled
       from the attendance record with your name at the top. It has the air of a
-      clerk who has stamped the form. An east route glows.
+      clerk who has stamped the form.
+
+      An *east route* glows.
     topicIds: [ai-ethics-and-implications]
     exits:
       - direction: east

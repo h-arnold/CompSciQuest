@@ -20,17 +20,19 @@ rooms:
   - id: room-network-hub
     title: The Network Hub
     aliases: [patch bay, broadcast bay]
-    description: >-
+    description: |
       Around you, brass sockets crowd the hub, each with a little label, all
       humming one low note. A yellowed card reads 'since the 1990s' in fading
       ink. The hub copies every packet to every port, so every route shows at
-      once. The AI calls it 'on the record'; nobody unplugged it. South opens
-      into the Assistance Ward. The east and north teaching sockets are dark
-      until the ward's calibration mark is on record, and carry traffic once
-      it is; their labels carry the same notice. A port label clings to the
-      east socket. A fresh paper label on the north socket reads THE RULE
-      MACHINE; north leads to the rule quarters and the mill beyond them. West
-      leads to arrival; in, to the interface.
+      once. ***The AI*** calls it 'on the record'; nobody unplugged it.
+
+      South opens into the Assistance Ward. The east and north teaching sockets
+      are dark until the ward's calibration mark is on record, and carry traffic
+      once it is; their labels carry the same notice. A **port label** clings to
+      the east socket; *east* leads to the Switchyard. A **patch-bay legend** is
+      clipped to the frame above the sockets. A fresh paper label on the north
+      socket reads THE RULE MACHINE; *north* leads to the rule quarters and the
+      mill beyond them. *west* leads to arrival; *in*, to the interface.
     topicIds: []
     exits:
       - direction: west
@@ -81,3 +83,23 @@ items:
         flag and opens no gate; it simply lets you read the worn LIVE stamp and
         the Assistance Ward calibration notice. The label is fixed to its
         socket, so it is never a required item.
+  - id: item-patch-bay-legend
+    name: patch-bay legend
+    aliases: [legend, port legend, patch legend, patch bay legend]
+    portable: false
+    description: |
+      A card pinned beside the sockets sets out each port, its label and its light.
+
+      | Port | Label | State |
+      | --- | --- | --- |
+      | west | ARRIVAL | dark |
+      | east | LIVE | bright |
+      | in | INTERFACE | dark |
+      | north | THE RULE MACHINE | bright |
+    initialRoom: room-network-hub
+    authoring:
+      useNotes: >-
+        Purely decorative and examinable only. The table restates the port labels
+        and lights already visible in the room; it sets no flag, opens no gate and
+        carries no score or course fact. It exists to exercise table rendering in
+        the pilot.

@@ -60,6 +60,17 @@ async function submitCommand(page: Page, raw: string): Promise<void> {
   await input.press('Enter');
 }
 
+// The DOM-only renderer consumes Markdown emphasis markers and concatenates
+// paragraph nodes without a separator, so derive the expected transcript text
+// from the authored description in the same way before comparing.
+function renderedDescription(description: string): string {
+  return description
+    .replaceAll(/\*{1,3}/gu, '')
+    .split(/\n{2,}/u)
+    .map((paragraph) => paragraph.replaceAll(/\n+/gu, ' ').trim())
+    .join('');
+}
+
 test.describe('generated zone-1 content', () => {
   let yamlRequests: string[] = [];
   let consoleErrors: string[] = [];
@@ -102,7 +113,7 @@ test.describe('generated zone-1 content', () => {
     expect(worlds).toHaveLength(1);
     expect(areas).toHaveLength(6);
     expect(rooms).toHaveLength(23);
-    expect(items).toHaveLength(63);
+    expect(items).toHaveLength(64);
     expect(actors).toHaveLength(20);
     expect(actorStates).toHaveLength(22);
     expect(conversationTopics).toHaveLength(123);
@@ -136,7 +147,7 @@ test.describe('generated zone-1 content', () => {
     const output = (await page.locator('.output-log').textContent()) ?? '';
     const lines = await transcript(page);
     expect(lines).toContain(startRoom.title);
-    expect(output).toContain(startRoom.description);
+    expect(output).toContain(renderedDescription(startRoom.description));
     expect(output).toContain('Exits:');
     // Authored arrival prose, not a stub string.
     expect(output).toContain('attention not satisfied');
@@ -156,7 +167,7 @@ test.describe('generated zone-1 content', () => {
     await submitCommand(page, 'look');
     expect(await transcript(page)).toContain('> look');
     expect((await page.locator('.output-log').textContent()) ?? '').toContain(
-      startRoom.description,
+      renderedDescription(startRoom.description),
     );
 
     await page.getByRole('button', { name: 'Save', exact: true }).click();
@@ -210,7 +221,7 @@ test.describe('generated zone-1 content', () => {
     expect(await transcript(page)).toContain('Game imported.');
     const restored = (await page.locator('.output-log').textContent()) ?? '';
     expect(restored).toContain(startRoom.title);
-    expect(restored).toContain(startRoom.description);
+    expect(restored).toContain(renderedDescription(startRoom.description));
     await expect(page.locator('.score-panel')).toContainText('Score: 0');
     await expect(page.locator('.score-panel')).toContainText('Lives: 3');
   });
