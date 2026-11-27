@@ -41,8 +41,15 @@ function authoredQuestion(questionId: string): AuthoredQuestion {
 
 // application-and-ui.md §7.2: these values arrive ready-calculated in the view
 // model. The UI renders them as text and decides no rules.
-function requirementLine(quiz: AuthoredQuiz, questionCount: number): string {
-  const remainingWrong = questionCount - quiz.passMark;
+function requirementLine(
+  quiz: AuthoredQuiz,
+  questionCount: number,
+  wrongAnswersSpent = 0,
+): string {
+  const remainingWrong = Math.max(
+    0,
+    questionCount - quiz.passMark - wrongAnswersSpent,
+  );
   return `Pass mark: ${quiz.passMark} correct of ${questionCount}. Wrong answers allowed: ${remainingWrong}.`;
 }
 
@@ -139,9 +146,10 @@ async function expectRequirement(
   page: Page,
   quiz: AuthoredQuiz,
   questionCount: number,
+  wrongAnswersSpent = 0,
 ): Promise<void> {
   await expect(requirementNode(page)).toHaveText(
-    requirementLine(quiz, questionCount),
+    requirementLine(quiz, questionCount, wrongAnswersSpent),
   );
   // Text-only: no injected markup and no clickable option controls. Answers
   // stay in the labelled Command textbox (application-and-ui.md §7.2).
@@ -180,14 +188,20 @@ test.describe('ENG30-PASSMARK-01 — quiz pass requirement and wrong allowance',
     await expectRequirement(page, quiz, quiz.questionIds.length);
   });
 
-  test('ENG30-PASSMARK-01 — the pass line is unchanged after an incorrect answer while the question advances', async ({
+  test('ENG30-PASSMARK-01 — the wrong-answer allowance drops by one after an incorrect answer while the question advances', async ({
     page,
   }) => {
     const quiz = authoredQuiz('quiz-switchyard');
+    const questionCount = quiz.questionIds.length;
     await enterSwitchFloorQuiz(page);
     const displayed = await displayedQuestion(page, quiz);
     const raw = String(optionNumber(displayed, false));
     const before = await transcript(page);
+    // The settled switchyard allowance starts at one spare wrong answer
+    // (passMark 2 of 3). This is derived from the authored bundle, not pinned.
+    const startingAllowance = questionCount - quiz.passMark;
+    expect(startingAllowance).toBe(1);
+    await expectRequirement(page, quiz, questionCount);
 
     await submit(page, raw);
     await waitForLine(page, `> ${raw}`);
@@ -203,7 +217,12 @@ test.describe('ENG30-PASSMARK-01 — quiz pass requirement and wrong allowance',
       .locator('> div')
       .allTextContents();
     expect(questionLines[0]).toMatch(/^Question 2 of \d+: /u);
-    await expectRequirement(page, quiz, quiz.questionIds.length);
+    const next = await displayedQuestion(page, quiz);
+    expect(next.question.id).not.toBe(displayed.question.id);
+    // One wrong answer spent: the allowance falls 1 → 0 and the panel stays
+    // text-only with numbered, authored options for the advanced question.
+    expect(startingAllowance - 1).toBe(0);
+    await expectRequirement(page, quiz, questionCount, 1);
   });
 
   test('ENG30-PASSMARK-01 — no active quiz hides the panel and leaves no pass line', async ({

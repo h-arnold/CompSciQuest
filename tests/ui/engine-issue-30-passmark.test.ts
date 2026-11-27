@@ -1,16 +1,18 @@
 // ENG30-PASSMARK-01: quiz pass requirement and remaining wrong-answer
 // allowance as view data (ENGINE_ISSUES.md decision row 30 L53, issues table
 // #30 L88; PLAYTEST_ISSUES.md §30; combat.md §2/§3; application-and-ui.md
-// §6.1, §7.1, §7.2). Both numbers are derived at view-build time from
-// quiz.passMark and the question count only; the panel renders them as text
-// and decides no rules. No course fact is authored here.
+// §6.1, §7.1, §7.2). passMark is the authored count; remainingWrong is the
+// count minus the wrong answers already given in the live attempt, clamped at
+// zero. Both are derived at view-build time; the panel renders them as text
+// and decides no rules. Attempts, lives, score and flags are ignored. No
+// course fact is authored here.
 import { afterEach, describe, expect, it } from 'vitest';
 import type { QuizView } from '../../src/application/GameViewData';
-import type { GameStateDto } from '../../src/core/GameState';
 import type { GameEvent } from '../../src/core/events/GameEvent';
 import { formatEvent } from '../../src/ui/formatEvent';
 import { QuizPanel } from '../../src/ui/QuizPanel';
 import {
+  activeQuizState,
   authoredBundle,
   authoredGame,
   authoredState,
@@ -48,20 +50,6 @@ function firstQuestion(quizId: string) {
   return question;
 }
 
-function activeQuizState(
-  quizId: string,
-  overrides: Partial<GameStateDto['quiz']> = {},
-): GameStateDto['quiz'] {
-  return {
-    activeQuizId: quizId,
-    questionIds: [...authoredQuiz(quizId).questionIds],
-    index: 0,
-    correctCount: 0,
-    answers: [],
-    ...overrides,
-  };
-}
-
 // Declares the contract fields explicitly so the stub is not a fresh literal
 // checked against the pre-implementation five-field QuizView. Structural typing
 // keeps it assignable to QuizView both before and after the interface grows.
@@ -92,13 +80,15 @@ describe('ENG30-PASSMARK-01: quiz view data (application-and-ui.md §7.2)', () =
     });
   });
 
-  it('ENG30-PASSMARK-01: the two numbers ignore correctCount, attempts, lives, score and flags', () => {
+  it('ENG30-REANCHOR-UNIT-01: attempts, lives, score and flags are ignored while the crafted attempt has no wrong answers left', () => {
     // quiz-data-compression is authored with passMark 4 across five questions:
-    // 4 to pass and 1 wrong answer affordable, whatever the rest of the state.
+    // 4 to pass and 1 wrong answer affordable at the start of an attempt.
+    // The second state has spent that allowance (answers.length - correctCount
+    // is 1), so max(0, (5 - 4) - 1) is 0; passMark stays the authored count.
     const quizId = 'quiz-data-compression';
     const question = firstQuestion(quizId);
     const basePlayer = authoredState().player;
-    const expected = {
+    const expectedBase = {
       quizId,
       prompt: question.prompt,
       options: question.options,
@@ -108,26 +98,32 @@ describe('ENG30-PASSMARK-01: quiz view data (application-and-ui.md §7.2)', () =
       remainingWrong: 1,
     };
     const states = [
-      authoredState({
-        quiz: activeQuizState(quizId),
-        flags: {},
-        player: { ...basePlayer, lives: 3 },
-        progress: [switchyardProgress({ earnedScore: 0 })],
-        quizAttempts: {},
-      }),
-      authoredState({
-        quiz: activeQuizState(quizId, {
-          correctCount: 2,
-          answers: [0, 1, 0],
+      {
+        state: authoredState({
+          quiz: activeQuizState(quizId),
+          flags: {},
+          player: { ...basePlayer, lives: 3 },
+          progress: [switchyardProgress({ earnedScore: 0 })],
+          quizAttempts: {},
         }),
-        flags: { 'failed-attempts:quiz-data-compression': true },
-        player: { ...basePlayer, lives: 1 },
-        progress: [switchyardProgress({ earnedScore: 99 })],
-        quizAttempts: { [quizId]: 7 },
-      }),
+        expected: expectedBase,
+      },
+      {
+        state: authoredState({
+          quiz: activeQuizState(quizId, {
+            correctCount: 2,
+            answers: [0, 1, 0],
+          }),
+          flags: { 'failed-attempts:quiz-data-compression': true },
+          player: { ...basePlayer, lives: 1 },
+          progress: [switchyardProgress({ earnedScore: 99 })],
+          quizAttempts: { [quizId]: 7 },
+        }),
+        expected: { ...expectedBase, remainingWrong: 0 },
+      },
     ];
 
-    for (const state of states) {
+    for (const { state, expected } of states) {
       const { game } = authoredGame({ state });
       expect(game.getViewData().activeQuiz).toEqual(expected);
     }

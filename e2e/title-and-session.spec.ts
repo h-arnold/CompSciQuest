@@ -63,8 +63,10 @@ test.describe('title screen and session boot', () => {
   test('E2E-BOOT-03 — a typed command echoes, produces output, refreshes the score panel and enters history', async ({
     page,
   }) => {
-    // Re-seed before navigation: Continue must read a valid save with score 7
-    // while New Game starts at score 0, so the panel change is observable.
+    // Re-seed before navigation: the title screen must offer a valid save
+    // with score 7 while New Game starts at score 0. Fresh start now writes
+    // its own save immediately, so re-seed the score-7 save after New Game
+    // before typed `load`; that keeps the 0 → 7 panel refresh observable.
     const seeded = makeSave({ earnedScore: 7 });
     await page.addInitScript((text: string) => {
       localStorage.setItem('compsciquest:save:v1', text);
@@ -72,6 +74,10 @@ test.describe('title screen and session boot', () => {
     await page.goto('./');
     await page.getByRole('button', { name: 'New Game' }).click();
     await expect(scorePanel(page)).toContainText('Score: 0');
+    await page.evaluate(({ key, text }) => localStorage.setItem(key, text), {
+      key: SAVE_KEY,
+      text: seeded,
+    });
 
     await submit(page, 'load');
 

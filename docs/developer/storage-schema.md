@@ -297,10 +297,11 @@ export interface SaveManager {
 Catalogues and `StorageAdapter`/`Clock` are injected into `SaveManager`, keeping
 it testable with in-memory fakes and a fake clock.
 
-`Game.submit` also calls `SaveManager.save()` automatically after each core
-command that advances the turn, through the same seam as explicit Save, once the
-turn's events are final. This writes only the live save key (§11); meta actions
-and commands rejected in an end state do not autosave.
+`Game.submit` autosaves through `SaveManager.save()` after each core command
+that advances the turn, once the turn's events are final. Meta actions and
+commands rejected in an end state never trigger that turn-advancing autosave.
+`newGame`, `restart` and typed `restart` write the fresh state through the same
+seam instead (§11); all these writes touch only the live save key.
 
 ## 11. Flow
 
@@ -309,6 +310,9 @@ save:     GameState.toDto() → buildDto() → JSON.stringify
           → StorageAdapter.write('compsciquest:save:v1', json)
 
 autosave: successful turn-advancing command → final turn events
+          → the same write as save (live key only; quarantine untouched)
+
+new game: newGame() / restart() / typed restart → createInitial()
           → the same write as save (live key only; quarantine untouched)
 
 download: GameState.toDto() → buildDto() → JSON.stringify
@@ -324,9 +328,11 @@ import:   File.text() → validate() → restore(dto) → GameState
 ```
 
 Meta actions (save, load, download, import, restart) are intercepted by `Game`
-before core command dispatch and do not advance the turn or autosave; commands
-rejected in an end state do not advance the turn or autosave either
-([application-and-ui.md §4.1](application-and-ui.md#41-meta-actions)).
+before core command dispatch and do not advance the turn or trigger the
+turn-advancing autosave; commands rejected in an end state behave the same
+([application-and-ui.md §4.1](application-and-ui.md#41-meta-actions)). Typed
+`restart` is a fresh-start path and writes the new state as shown above, while
+`download`, `load` and `import` still write no live save.
 
 ## 12. Invariants the implementation must keep
 

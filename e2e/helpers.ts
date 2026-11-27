@@ -224,6 +224,3 @@ export function watchConsole(page: Page): () => readonly string[] {
 
 export const DOWNLOAD_NAME =
   /^compsciquest-save-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.json$/;
-
-export const QUARANTINE_DOWNLOAD_NAME =
-  /^compsciquest-quarantine-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z\.json$/;

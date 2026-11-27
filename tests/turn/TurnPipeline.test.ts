@@ -82,7 +82,7 @@ describe('one-command turn pipeline', () => {
     expect(submitted).toBe(2);
   });
 
-  it('P-TURN-04: meta actions are intercepted before core dispatch and never advance turn', async () => {
+  it('ENG24-REANCHOR-UNIT-02: meta actions are intercepted before core dispatch and never advance turn (P-TURN-04)', async () => {
     const calls: string[] = [];
     let saves = 0;
     let loads = 0;
@@ -108,7 +108,7 @@ describe('one-command turn pipeline', () => {
       }),
     );
 
-    for (const raw of ['save', 'load', 'download', 'import {}', 'restart']) {
+    for (const raw of ['save', 'load', 'download', 'import {}']) {
       game.submit(raw);
     }
 
@@ -117,6 +117,14 @@ describe('one-command turn pipeline', () => {
     expect(saves).toBe(1);
     expect(loads).toBe(1);
     expect(downloads).toBe(1);
+
+    // Typed restart is a meta action too, but it starts a new game and writes
+    // that fresh state through saveGame() -> SaveManager.save() (§4/§4.1).
+    game.submit('restart');
+
+    expect(saves).toBe(2);
+    expect(game.getViewData().turn).toBe(0);
+    expect(calls.filter((call) => call === 'resolve')).toHaveLength(0);
     expect(calls).toContain('clear-views');
   });
 

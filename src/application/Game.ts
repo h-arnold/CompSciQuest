@@ -147,31 +147,6 @@ function areaViews(
   });
 }
 
-function metaActionOf(raw: string): MetaAction | undefined {
-  const trimmed = raw.trim();
-  const lowered = trimmed.toLowerCase();
-  switch (lowered) {
-    case 'save': {
-      return { kind: 'save' };
-    }
-    case 'load': {
-      return { kind: 'load' };
-    }
-    case 'download': {
-      return { kind: 'download' };
-    }
-    case 'restart': {
-      return { kind: 'restart' };
-    }
-    default: {
-      const prefix = 'import ';
-      return lowered.startsWith(prefix)
-        ? { kind: 'import', text: trimmed.slice(prefix.length) }
-        : undefined;
-    }
-  }
-}
-
 function quizView(
   state: GameState,
   bundle: ContentBundle,
@@ -192,7 +167,12 @@ function quizView(
     questionNumber: state.quiz.index + 1,
     questionCount,
     passMark: quiz.passMark,
-    remainingWrong: questionCount - quiz.passMark,
+    remainingWrong: Math.max(
+      0,
+      questionCount -
+        quiz.passMark -
+        (state.quiz.answers.length - state.quiz.correctCount),
+    ),
   };
 }
 
@@ -228,12 +208,14 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
+  // The single fresh-state seam: every fresh start (including the fallback
+  // below and the typed `restart` meta action) constructs state here only.
+  const createFreshState = (): GameState => createInitial(dependencies.bundle);
   // The injected runtime state is the one live state object: injected appliers,
   // tracker and session already point at it, and every production system reads
   // and writes it. Restores still pass through createFromDto so the derived
   // score is rebuilt from progress.
-  let state: GameState =
-    dependencies.initialState ?? createInitial(dependencies.bundle);
+  let state: GameState = dependencies.initialState ?? createFreshState();
   adoptSeed(dependencies.random, state);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
@@ -358,7 +340,17 @@ export function createGame(dependencies: GameDependencies): Game {
 
   const saveGame = (): void => {
     recordSeed(dependencies.random, state);
-    dependencies.saveManager.save(state);
+    // SaveManager takes a plain DTO: a freshly created runtime state carries a
+    // toDto() method and a derived score getter, neither of which is data.
+    dependencies.saveManager.save(createFromDto(state).toDto());
+  };
+
+  // Fresh starts share one save/publish sequence; callers supply the fresh
+  // state so each call site goes through the single construction seam above.
+  const startFresh = (fresh: GameState): readonly GameEvent[] => {
+    const events = replaceState(fresh, true);
+    saveGame();
+    return publish(events);
   };
 
   const downloadGame = (): void => {
@@ -416,7 +408,7 @@ export function createGame(dependencies: GameDependencies): Game {
         return importMeta(meta.text);
       }
       case 'restart': {
-        return publish(replaceState(createInitial(dependencies.bundle), true));
+        return startFresh(createFreshState());
       }
     }
   };
@@ -492,13 +484,13 @@ export function createGame(dependencies: GameDependencies): Game {
       return publish(observed);
     },
     newGame(): void {
-      publish(replaceState(createInitial(dependencies.bundle), true));
+      startFresh(createFreshState());
     },
     continueGame(dto: SaveDto): void {
       publish(replaceState(createFromDto(dto.state), false));
     },
     restart(): void {
-      publish(replaceState(createInitial(dependencies.bundle), true));
+      startFresh(createFreshState());
     },
     getViewData(): GameViewData {
       const speaking = Object.entries(state.npcs).find(
@@ -542,4 +534,31 @@ export function createGame(dependencies: GameDependencies): Game {
       return result;
     },
   };
+}
+
+// Pure classification helper; a hoisted declaration stays available to submit()
+// wherever it is placed in the module.
+function metaActionOf(raw: string): MetaAction | undefined {
+  const trimmed = raw.trim();
+  const lowered = trimmed.toLowerCase();
+  switch (lowered) {
+    case 'save': {
+      return { kind: 'save' };
+    }
+    case 'load': {
+      return { kind: 'load' };
+    }
+    case 'download': {
+      return { kind: 'download' };
+    }
+    case 'restart': {
+      return { kind: 'restart' };
+    }
+    default: {
+      const prefix = 'import ';
+      return lowered.startsWith(prefix)
+        ? { kind: 'import', text: trimmed.slice(prefix.length) }
+        : undefined;
+    }
+  }
 }

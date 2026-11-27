@@ -70,6 +70,9 @@ the marks and options) reject a quiz with `passMark < 1`, a `passMark` above
    returns `ask-question` while questions remain or `end-quiz` to finish
    ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping)).
    An out-of-range answer gets a friendly message and does not advance the quiz.
+   The `QuizView` wrong-answer allowance is derived from `passMark` and the
+   live attempt's `answers`/`correctCount`
+   ([application-and-ui.md §7.2](application-and-ui.md#72-view-data)).
 5. On finish, emit `quiz-ended` with `passed`, then omit `activeQuizId` and
    reset `index`, `correctCount` and `answers` for the next attempt. Apply
    `onPass` or `onFail` effects through `EffectApplier`.

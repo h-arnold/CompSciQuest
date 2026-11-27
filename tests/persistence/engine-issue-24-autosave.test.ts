@@ -252,10 +252,10 @@ describe('ENG24-AUTOSAVE-01 — autosave after a successful command (ENGINE_ISSU
     expect(setup.storage.read(SAVE_KEY)).not.toBe('previous-live-save');
   });
 
-  it('ENG24-AUTOSAVE-01: typed meta aliases add no autosave, while Download still writes dated JSON and logs its inherited line', async () => {
+  it('ENG24-REANCHOR-UNIT-01: typed download, load and import add no autosave, while Download still writes dated JSON and logs its inherited line', async () => {
     const setup = await makeSetup();
 
-    for (const raw of ['download', 'load', 'import {}', 'restart']) {
+    for (const raw of ['download', 'load', 'import {}']) {
       setup.game.submit(raw);
     }
 
@@ -276,6 +276,26 @@ describe('ENG24-AUTOSAVE-01 — autosave after a successful command (ENGINE_ISSU
             event.type === 'message' && event.text === 'Save downloaded.',
         ),
     ).toBe(true);
+  });
+
+  it('ENG24-REANCHOR-UNIT-01: typed restart writes the live save with fresh state and turn 0', async () => {
+    const setup = await makeSetup();
+
+    setup.game.submit('restart');
+
+    expect(setup.recorder.snapshots).toHaveLength(1);
+    expect(setup.recorder.snapshots[0]?.dto.turn).toBe(0);
+    const writes = setup.storage.writes.filter(
+      (write) => write.key === SAVE_KEY,
+    );
+    expect(writes).toHaveLength(1);
+    const envelope = JSON.parse(writes[0]?.json ?? '') as SaveDto;
+    expect(envelope.version).toBe(1);
+    expect(envelope.state.turn).toBe(0);
+    expect(setup.storage.writes.every((write) => write.key === SAVE_KEY)).toBe(
+      true,
+    );
+    expect(setup.storage.removals).toEqual([]);
   });
 
   it('ENG24-AUTOSAVE-01: explicit Save still logs Game saved. and writes the live save exactly once', async () => {

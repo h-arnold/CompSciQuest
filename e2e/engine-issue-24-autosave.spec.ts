@@ -59,7 +59,12 @@ test.describe('autosave on accepted commands', () => {
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
     await page.getByRole('button', { name: 'New Game' }).click();
     await expectWorkspace(page);
-    expect(await readStorage(page, SAVE_KEY)).toBeNull();
+    // Fresh start persists immediately (ENG24-FRESHSTART-01): the live save
+    // exists before the first command, holding turn 0 at the start position.
+    const fresh = await liveEnvelope(page);
+    expect(fresh.dto.version).toBe(1);
+    expect(fresh.dto.state.turn).toBe(0);
+    expect(fresh.dto.state.player.position).toEqual(START_POSITION);
 
     await submit(page, 'look');
 

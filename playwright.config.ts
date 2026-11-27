@@ -3,7 +3,11 @@
 // @playwright/test package, so the config is a plain exported object: this
 // keeps config loading independent of module resolution from the repo root.
 
-const baseURL = 'http://localhost:5173/CompSciQuest/';
+// Defaults preserve local/CI behaviour; E2E_PORT/E2E_BASE_URL allow QA runs
+// against an already-running dev server on another port.
+const port = process.env.E2E_PORT ?? '5173';
+const baseURL =
+  process.env.E2E_BASE_URL ?? `http://localhost:${port}/CompSciQuest/`;
 
 export default {
   testDir: './e2e',
@@ -23,7 +27,7 @@ export default {
     },
   ],
   webServer: {
-    command: 'npm run dev -- --port 5173 --strictPort',
+    command: `npm run dev -- --port ${port} --strictPort`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

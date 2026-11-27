@@ -130,6 +130,26 @@ export function authoredState(
   });
 }
 
+// A live quiz attempt for an authored quiz. Question order and IDs come from
+// the committed catalogue; overrides describe only the attempt's progress.
+export function activeQuizState(
+  quizId: string,
+  overrides: Partial<GameStateDto['quiz']> = {},
+): GameStateDto['quiz'] {
+  const quiz = authoredBundle.quizzes.getById(quizId);
+  if (quiz === undefined) {
+    throw new Error(`Authored quiz '${quizId}' is missing from the catalogue.`);
+  }
+  return {
+    activeQuizId: quizId,
+    questionIds: [...quiz.questionIds],
+    index: 0,
+    correctCount: 0,
+    answers: [],
+    ...overrides,
+  };
+}
+
 export function switchyardProgress(
   overrides: Partial<GameStateDto['progress'][number]> = {},
 ): GameStateDto['progress'][number] {

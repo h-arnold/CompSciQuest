@@ -227,15 +227,16 @@ through the `EventBus`. It increments `GameStateDto.turn` once per submitted gam
 command, whether or not the command succeeded. It never throws on bad input;
 unparseable text becomes an `unknown` command and a friendly message.
 
-After each core command that advances the turn, `submit` writes the live save to
-browser storage through the same `saveGame()` → `SaveManager.save()` seam as
-explicit Save, once the turn's events are final. Meta actions and commands
-rejected while `status !== 'playing'` do not autosave
-([storage-schema.md §11](storage-schema.md#11-flow)).
+After each core command that advances the turn, `submit` autosaves the final
+state through the `saveGame()` → `SaveManager.save()` seam
+([storage-schema.md §10](storage-schema.md#10-api-contracts)). Meta actions and
+commands rejected while `status !== 'playing'` do not trigger that autosave.
 
 `newGame`, `continueGame` and `restart` replace the current `GameState`, clear
-the views' transient state and emit the initial room batch. A reloaded end state
-does not re-emit `game-won` or `game-over` ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
+the views' transient state and emit the initial room batch. `newGame` and
+`restart` also write the freshly created state through the same seam, so
+Continue after a reload starts the new game. A reloaded end state does not
+re-emit `game-won` or `game-over` ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
 
 While `status !== 'playing'`, `submit` accepts only `look`, `examine`,
 `inventory`, `score` and `help`; every other command returns a friendly "the
@@ -258,11 +259,13 @@ export type MetaAction =
 
 `Game` owns interception so the behaviour is identical whether the action came
 from a button or the terminal. Meta actions never enter the core `Command`
-union and never advance `turn`. `openSaveFile` is injected from `src/main.ts`;
-`GameWindow` owns the download and import controls, and import from a button
-supplies `text` from `openSaveFile`. Typed `import` opens the same file picker
-rather than expecting pasted JSON. `load` rebinds the restored `GameState` and
-refreshes the views without re-emitting an end event.
+union and never advance `turn`. Typed `restart` starts a new game and writes
+that fresh state through the `saveGame()` → `SaveManager.save()` seam (§4);
+`download`, `load` and `import` do not autosave. `openSaveFile` is injected from
+`src/main.ts` and `GameWindow` owns the download and import controls; import
+from a button supplies `text` from `openSaveFile`. Typed `import` opens the same
+file picker rather than expecting pasted JSON. `load` rebinds the restored
+`GameState` and refreshes the views without re-emitting an end event.
 
 ## 5. Canonical command union and verbs
 
@@ -674,11 +677,14 @@ linked spec topics using `SpecTopicCatalogue` labels. `Game.getViewData()` caps
 `visitedRoomCount` at the area's declared `roomIds.length`, so the panel never
 shows more visits than the area has rooms.
 
-`QuizView.passMark` is the authored `quiz.passMark` count, and
-`QuizView.remainingWrong` is `questionCount - quiz.passMark`.
-`Game.getViewData()` derives both at view-build time from those two values,
-independent of answers so far, attempts, lives and score; panels present them
-as supplied.
+`QuizView.passMark` is the authored `quiz.passMark` count.
+`QuizView.remainingWrong` is the wrong answers still affordable in the active
+attempt: `questionCount - quiz.passMark`, minus `answers.length - correctCount`
+from the live attempt (`questionCount` is `QuizStateDto.questionIds.length`),
+clamped at zero. `Game.getViewData()` derives both at view-build time; a correct
+answer leaves the allowance unchanged, a wrong answer reduces it by one and a
+new quiz resets it. Attempts, lives, score and flags are ignored, and panels
+present the values as supplied.
 
 `Terminal` owns a bounded in-memory command history with no persistence and no
 duplicate suppression, navigated with the up/down arrows. It calls
