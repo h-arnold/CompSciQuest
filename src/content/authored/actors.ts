@@ -17,5 +17,9 @@ export const actors: readonly ActorDefinition[] = [
   {"id":"npc-the-selvedge-warden","aliases":["selvedge warden","warden"],"initialStateId":"actorstate-selvedge-warden-looping"},
   {"id":"npc-the-bobbin-lad","aliases":["bobbin lad","lad"],"initialStateId":"actorstate-ready"},
   {"id":"npc-the-slop-cousin","aliases":["slop cousin","cousin"],"initialStateId":"actorstate-slop-cousin-beaming"},
+  {"id":"npc-nia","aliases":["nia"],"initialStateId":"actorstate-ready"},
+  {"id":"npc-mateo","aliases":["mateo"],"initialStateId":"actorstate-ready"},
+  {"id":"npc-priya","aliases":["priya"],"initialStateId":"actorstate-ready"},
+  {"id":"npc-kofi","aliases":["kofi"],"initialStateId":"actorstate-ready"},
   {"id":"npc-the-ai","aliases":["ai","tutor","the tutor"],"initialStateId":"actorstate-ai-cold"}
 ];
