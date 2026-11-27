@@ -337,7 +337,7 @@ or a joke target (narrative-principles.md §10).
 
 1. **Resolved:** all `quiz-`, `q-`, `hint-`, `puzzle-` and `hazard-` IDs in this file
    are approved and recorded in the approved cards. The four ideation decisions
-   are approved (bible §11).
+   are approved.
 2. Confirm the two-clue placements for each gated exit and fixture when the rooms and
    NPC cards are briefed (N6).
 3. **Resolved:** sub-batching — brief all card kinds for the area, then review in two

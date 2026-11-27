@@ -173,6 +173,12 @@ each accepted area by V5 (`play-tester.md`), not a §12 requirement.
 - `docs/developer/documentation-style-guide.md` is the source of truth for
   documentation style, ownership, structure and audit scope. Link to it;
   never restate its rules.
+- **Delivery narrative belongs in the scratchpad only.** Documentation, source
+  files and code comments must not record what was implemented, in what order,
+  in which increment or with what evidence. Write that content to
+  `.opencode/scratchpad/`. The style guide's
+  [What never belongs](docs/developer/documentation-style-guide.md#what-never-belongs)
+  owns the rule for docs.
 - **Same-change documentation obligation.** A change that alters documented
   behaviour carries its documentation update in the same slice, delegated to
   the `docs` agent (`.opencode/agents/docs.md`). This binds `code-lead` and

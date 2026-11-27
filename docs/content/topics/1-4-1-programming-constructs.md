@@ -4,8 +4,7 @@
 conversation-topic id scheme are allocated in §10. Gate 1 dispatch: wave 1 briefed
 2026-11-25 (rooms + concourse + hub amendment in one brief; then NPCs, puzzles,
 quizzes, hazards — the wave order had not yet been adopted, so these five run
-parallel); hints hold in wave 2 for puzzle-id ratification. Standing wave order from
-now on: §11.
+parallel); hints hold in wave 2 for puzzle-id ratification. Standing wave order: `.opencode/agents/content-editor.md` Gate 1.
 
 ## 1. Scope and area
 
@@ -378,22 +377,22 @@ Runtime **flags** (kebab-case, no prefix; unique in-world):
 | `rogue-thread-filed`                                                                             | rogue puzzle onSolve                                                                                                                          | Warp Walk light 4 (with the previous)                  |
 | `master-demonstrated`                                                                            | `quiz-finished-rail` onPass                                                                                                                   | the Rail's despatch beat                               |
 | `pass-count-predicted` (allocated 2026-11-25, editor — the Weft Counter's prediction beat, §5)   | the Weft Tally's prediction topic (ask-topic; in-room; one-shot)                                                                              | the count puzzle's requirement list (puzzle card)      |
-| `bell-wire-seated` (ratified 2026-11-25 at review close-out; D2-proposed by the puzzle-writer)   | the bell wire's verb action (USE per `item-bell-wire` useNotes) — **seam-deferred, bible §11**                                                | `puzzle-mend-the-bell`'s requirement list              |
-| `addressing-plate-re-lettered` (ratified 2026-11-25; D2)                                         | the addressing plate's verb action (the letter rack re-lettering, per useNotes) — seam-deferred, bible §11                                    | `puzzle-mend-the-bell`'s requirement list              |
-| `dressing-re-ordered` (ratified 2026-11-25; D2)                                                  | the shade cards' verb action (PUT on the step hangers in the card's order) — seam-deferred, bible §11                                         | `puzzle-dress-the-warp`'s requirement list             |
-| `shed-plate-returned` (ratified 2026-11-25; D2)                                                  | the shed plate's verb action (returning the diamond plate to its rail slot) — seam-deferred, bible §11                                        | `puzzle-lift-the-shed`'s requirement list              |
-| `else-plate-restored` (ratified 2026-11-25; D2)                                                  | the else plate's verb action (seating it in its plain rectangular slot) — seam-deferred, bible §11                                            | `puzzle-lift-the-shed`'s requirement list              |
-| `tray-routed-by-condition` (ratified 2026-11-25; D2)                                             | the pick trolley's verb action (routing picks 9, 12, 15 by the plate's condition) — seam-deferred, bible §11                                  | `puzzle-lift-the-shed`'s requirement list              |
-| `slip-tooth-pried` (ratified 2026-11-25; D2)                                                     | the slip tooth's verb action (prying it from the counting ratchet) — seam-deferred, bible §11                                                 | `puzzle-seat-the-ratchet`'s requirement list           |
-| `counting-ratchet-reseated` (ratified 2026-11-25; D2)                                            | the counting ratchet's verb action (re-seating it so one tooth serves one pass) — seam-deferred, bible §11                                    | `puzzle-seat-the-ratchet`'s requirement list           |
-| `until-clause-restored` (ratified 2026-11-25; D2)                                                | the condition plate's verb action (PUT the until plate on the exit gate) — seam-deferred, bible §11                                           | `puzzle-close-the-selvedge`'s requirement list         |
-| `rogue-thread-in-drawer` (ratified 2026-11-25; D2)                                               | the rogue thread's verb action (PUT in the counterfoil drawer) — seam-deferred, bible §11                                                     | `puzzle-file-the-rogue-thread`'s requirement list      |
+| `bell-wire-seated` (ratified 2026-11-25 at review close-out; D2-proposed by the puzzle-writer)   | the bell wire's verb action (USE per `item-bell-wire` useNotes) — **seam-deferred**                                                           | `puzzle-mend-the-bell`'s requirement list              |
+| `addressing-plate-re-lettered` (ratified 2026-11-25; D2)                                         | the addressing plate's verb action (the letter rack re-lettering, per useNotes) — seam-deferred                                               | `puzzle-mend-the-bell`'s requirement list              |
+| `dressing-re-ordered` (ratified 2026-11-25; D2)                                                  | the shade cards' verb action (PUT on the step hangers in the card's order) — seam-deferred                                                    | `puzzle-dress-the-warp`'s requirement list             |
+| `shed-plate-returned` (ratified 2026-11-25; D2)                                                  | the shed plate's verb action (returning the diamond plate to its rail slot) — seam-deferred                                                   | `puzzle-lift-the-shed`'s requirement list              |
+| `else-plate-restored` (ratified 2026-11-25; D2)                                                  | the else plate's verb action (seating it in its plain rectangular slot) — seam-deferred                                                       | `puzzle-lift-the-shed`'s requirement list              |
+| `tray-routed-by-condition` (ratified 2026-11-25; D2)                                             | the pick trolley's verb action (routing picks 9, 12, 15 by the plate's condition) — seam-deferred                                             | `puzzle-lift-the-shed`'s requirement list              |
+| `slip-tooth-pried` (ratified 2026-11-25; D2)                                                     | the slip tooth's verb action (prying it from the counting ratchet) — seam-deferred                                                            | `puzzle-seat-the-ratchet`'s requirement list           |
+| `counting-ratchet-reseated` (ratified 2026-11-25; D2)                                            | the counting ratchet's verb action (re-seating it so one tooth serves one pass) — seam-deferred                                               | `puzzle-seat-the-ratchet`'s requirement list           |
+| `until-clause-restored` (ratified 2026-11-25; D2)                                                | the condition plate's verb action (PUT the until plate on the exit gate) — seam-deferred                                                      | `puzzle-close-the-selvedge`'s requirement list         |
+| `rogue-thread-in-drawer` (ratified 2026-11-25; D2)                                               | the rogue thread's verb action (PUT in the counterfoil drawer) — seam-deferred                                                                | `puzzle-file-the-rogue-thread`'s requirement list      |
 
 These ten are the puzzles' intermediate action flags: their setters are the
 items' declared verb actions (ON the wording in each item's `useNotes`), and
-the engine seam that executes card-declared verb effects is deferred (bible
-§11, user decision 2026-11-25) — the cards stay authored on the ratified
-shapes and no card rewrites when the seam lands.
+the engine seam that executes card-declared verb effects is deferred; the
+cards stay authored on the ratified shapes and no card rewrites when the seam
+lands.
 
 Quiz-pass flags follow the `shared-rules.md` §5 convention `quiz-passed:<quizId>` and are
 not separately allocated. The avalanche's `when` condition reads
@@ -415,9 +414,7 @@ items' and rooms' ratified aliases.
 
 ## 11. Dispatch plan and scoring (standing practice, 2026-11-25)
 
-**Wave order for this area** (adopted by the user as editor practice, bible
-§11; applies to every area from now on — zone 1 predates it and is
-grandfathered):
+**Wave order for this area** (`.opencode/agents/content-editor.md` Gate 1):
 
 1. **Rooms** — `rooms.yaml` for the area (+ the zone's concourse and the hub
    exit amendment where they exist): the world skeleton, gates and items.

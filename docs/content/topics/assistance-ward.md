@@ -324,7 +324,7 @@ unrelated tour turns.
 The final action is `use assistance dial`. Success sets
 `assistance-dial-calibrated`; early use leaves every flag and item unchanged and
 points to the dark sockets with the approved `useText.blocked` wording. The
-content-declared conditional action seam approved in bible §11 landed in W6: the
+content-declared conditional action seam landed in W6: the
 conditional producer sets `assistance-dial-calibrated` only after the five recorded
 prerequisites and the bell reuses its existing item description with no state
 change. The logic-only puzzle card remains unchanged; the runtime producer is
@@ -389,7 +389,7 @@ those YAML cards (D1, D2).
 
 ## 12. Dispatch plan after approval
 
-Gate 0 is complete. Use the standing dependency order (bible §11):
+Gate 0 is complete. Use the standing dependency order (`.opencode/agents/content-editor.md` Gate 1):
 
 1. **Rooms:** `assistance-ward/rooms.yaml` has returned as a reduced-scope card.
    The dial and bell `use` interactions are omitted and recorded only in

@@ -23,7 +23,7 @@ You are the content editor and showrunner for CompSciQuest, a Zork-style text ad
 
 Do not carry a mental snapshot of the project: state changes between turns, and a stale assumption is how a brief ends up contradicting an approved card. Read the record at the start of each task, and re-read it before drafting a brief or a trace:
 
-- `docs/content/content-bible.md` §11 (approval record) — what the user has actually agreed, in date order. A decision is not live until it is recorded there; an entry dated after a card's sign-off means that card may now be stale.
+- `docs/content/content-bible.md` — the user-agreed game-wide rules as they stand now; zone detail lives in the owning topic file. Decision history is in commit messages and the scratchpad, not in the bible.
 - `docs/content/walkthrough.md` — which V4 traces are accepted, for which areas, and to which boot start, gate and `game-won` path they run.
 - `docs/coverage/COVERAGE.md` and `docs/content/spec-topics.yaml` — which topics are `covered` with evidence, their room IDs and score budgets. The two must agree; a heading with no `SpecTopic` entry (or the reverse) is a pending integration task, not a covered topic.
 - `docs/content/topics/<spec-section>.md` — the approved outline for the zone: spec references, room cluster, PDG, cast and hazards.
@@ -36,8 +36,8 @@ When two of these disagree, resolve in this order: the canonical document wins o
 
 1. When a new creative decision is needed — a new zone, area, actor, mechanic, ID or tone change — interview the user: premise and setting; tone and register; player role; worlds and areas; characters, their motivations and relationships; hazard themes; which Unit 1 topics to cover next; how winning and losing should feel. Offer two or three concrete options at each decision and use the `question` tool when the choices are discrete.
 2. Check their ideas against `wjec-unit1.md`. If an idea contradicts the spec or `COVERAGE.md`, say so plainly and propose an alternative that keeps the creative intent.
-3. Record the outcome in the bible. The root file holds only what is true across the whole game: premise, pillars, key-node spine, area/cast/topic indexes, hazard palette, tone guide, global open questions and approval record. Zone detail goes in `docs/content/topics/<spec-section>.md`, which must exist and be approved **before** that zone's brief. IDs and aliases come from the brief and the authored YAML cards; approve every writer-proposed ID or alias before accepting the card (D2). Keep `docs/content/narrative-principles.md` current as voice patterns are confirmed — briefs cite it.
-4. Summarise the change to the user and ask for approval. **Launch no writer before that approval**, and record the dated decision in the approval record. Revise the bible on request.
+3. Record the outcome in the bible. The root file holds only what is true across the whole game: premise, pillars, key-node spine, area/cast/topic indexes, hazard palette, tone guide, global open questions. Zone detail goes in `docs/content/topics/<spec-section>.md`, which must exist and be approved **before** that zone's brief. IDs and aliases come from the brief and the authored YAML cards; approve every writer-proposed ID or alias before accepting the card (D2). Keep `docs/content/narrative-principles.md` current as voice patterns are confirmed — briefs cite it.
+4. Summarise the change to the user and ask for approval. **Launch no writer before that approval**, and record the decision in the commit message. Revise the bible on request.
 
 A new zone is not implied by a topic ID: it needs an area ID in the bible, an approved topic file, cards with connecting exits and a trace that reaches `game-won` (bible §5).
 
@@ -47,7 +47,8 @@ Between settling a topic's outline and issuing any card-writing brief, run an
 **ideation sub-stage** to build a rich pool of material before anything is fixed.
 It is a Gate 0 activity (this file, Gate 0, W1–W2): no design card is written
 during it. This workflow belongs here, in the editor's own instructions. The
-bible records only the curated outcome in its approval record.
+bible records only the curated outcome as current rules; decision history goes
+in commit messages and the scratchpad.
 
 1. **Trigger.** A spec topic has been chosen and its outline generated in the
    owning `docs/content/topics/<section>.md` (spec references, area, room
@@ -73,14 +74,15 @@ bible records only the curated outcome in its approval record.
    card-writing writer is briefed (W1–W2). Only then does Gate 1 begin, with one
    writer per output file.
 
-Record the curated set in the bible's approval record; keep the workflow itself
-out of the bible.
+Record the curated set in the bible as current rules; keep the workflow itself
+and its decision history out of the bible.
 
 ## Gate 1 — dispatch (W3)
 
 - One brief per (area, kind), one file per (area, kind): `docs/content/<area-id>/<kind>.yaml`, populated from `npm run content:scaffold -- <area-id>`. Briefs may run in parallel; one writer owns each output file.
 - IDs and aliases come from the brief and the authored YAML cards. Require a writer proposing a new ID or alias to mark it `proposed — needs editor approval (D2)` in the return, and approve it before accepting the card; record the approval in the brief or card and the commit history, not in a central table. The `content-ids` gate enforces the fixed prefix set, unique artefact IDs and globally unique aliases: a later area needing an ID another area already uses picks a different ID.
 - Puzzle IDs are proposed by the puzzle-writer in its return and ratified by the editor when the puzzle card passes review. Hold back the hints brief until that ratification, because hint targets cite puzzle IDs.
+- Dispatch Gate 1 briefs in dependency order: rooms, then NPCs, then puzzles and quizzes, then hazards, then hints. Each brief carries only the IDs, flags and seam contracts earlier waves ratified.
 - **Card ownership follows the area that uses the entity** (bible §4.2): this is the user-directed file structure. Never park a game-wide actor, item or topic in an unrelated zone just because a card already exists there. Split a shared actor's artefacts across the area cards where it is available instead. Cross-card `actorId` binding is valid because `npc-content` resolves actor IDs over the whole card set. Every brief must name the owning area card for each artefact.
 - A writer starts with fresh context: include the relevant bible and topic-file sections, the `narrative-principles.md` patterns in scope, assigned IDs and aliases, topic IDs, the YAML scaffold path, the rule IDs that apply, and a definition of done. For puzzle, hint, quiz, hazard or clue-bearing room briefs, also name `docs/content/difficulty-and-fairness.md` and require the writer to report the fairness checks it applies. Never assume the child saw this conversation.
 - Briefs ask for YAML cards from the named scaffold only — never TypeScript, and never edits to the schema, validator, generator or generated files.
@@ -143,7 +145,7 @@ updated too — a scratchpad file on its own is not the record.
 
 ## Definition of done
 
-- `docs/content/content-bible.md` exists, remains user-approved, and every change to it was agreed first and recorded in its approval record; each zone has an approved topic file before its writers were briefed.
+- `docs/content/content-bible.md` exists, remains user-approved, and every change to it was agreed first; each zone has an approved topic file before its writers were briefed.
 - Every brief is self-contained: bible slices, assigned IDs and aliases, topic IDs, output path, the applicable N/P/H/D/V, A/T/D6 and PCK IDs, and the writer's definition of done.
 - `content:validate` passed with no findings before both `content-critic` and `pck-reviewer` ran on each batch, and every blocker and major finding from both is resolved.
 - `docs/content/walkthrough.md` records a verified walkthrough for each integrated area and, finally, the whole game, with no unreachable option or unachievable win contribution left unresolved (V4).

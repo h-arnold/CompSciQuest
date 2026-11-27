@@ -4,7 +4,7 @@
 This file holds the idea pool co-developed with the user on 2026-11-25 so that no
 idea lives only in conversation. When a zone is fleshed out in detail, its section
 splits into its own `docs/content/topics/<zone>.md` and goes to the user for
-approval; only then is the bible amended (§5, §7, §11) and only then does the
+approval; only then is the bible amended (§5, §7) and only then does the
 zone's Gate 1 begin. Every ID below is a working name: `proposed — needs editor
 allocation and user approval` (D2). Course facts cite
 `docs/exam-specs/wjec-unit1.md` line numbers; the spec is authoritative.
@@ -428,8 +428,7 @@ visual check); algorithms that validate and verify.
    equivalents at topic-file stage. User's own seeds welcome.
 5. IDs and aliases: all working names (rooms, items, licences, flags, quiz
    ids, `q-pc-` pool) pending editor allocation and approval at the bible amendment (D2).
-6. Bible amendment (§5 area index, §7 topic index revision, §11
-   approval record) — NEXT STEP: draft and put to the user for approval (W2),
+6. Bible amendment (§5 area index, §7 topic index revision) — NEXT STEP: draft and put to the user for approval (W2),
    then the Zone A topic file spin-off, then Gate 1 briefs.
 7. ~~Collection frame; slop-cousin anchoring~~ — answered in principle
    2026-11-25: Licence Desk frame; cousin anchored in Zone A recurring
