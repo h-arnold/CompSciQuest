@@ -187,10 +187,11 @@ the interaction and scenery shape checks shared with authoring:
   Target-reference checks stay with `content-ids`.
 
 NPC actor binding is checked at authoring time: every authored topic and node
-carries an `actorId` that resolves to one actor, and the `npc-content` gate
-enforces it ([content-rules.md §4.3 "Actor binding"](content-rules.md#43-npc-card),
-[§8](content-rules.md#8-fixed-contracts-content-must-use)). That gate is
-authoring-only, so boot does not re-check it. The remaining shape checks (stray
+carries an `actorId` that resolves to one actor, except for a brief-approved
+global topic, and the `npc-content` gate enforces it
+([npcs.md §8 "Actor binding"](npcs.md#8-npc-card-format),
+[content-rules.md §8](content-rules.md#8-fixed-contracts-content-must-use)). That
+gate is authoring-only, so boot does not re-check it. The remaining shape checks (stray
 keys outside `authoring:`, document `status`, unresolved `todo` placeholders)
 run only in `npm run content:validate` on the YAML. The four
 runtime-mirrored gates share one check function across authoring, test and boot;

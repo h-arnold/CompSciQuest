@@ -305,7 +305,7 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - **Opening amendment PASS (2026-11-25).** The arrival and Network Hub rooms and
   the AI topics are validated with no findings. Code-lead landed the
   `in-room`/`in-area` seam; why-here and failure are active in `room-arrival`,
-  escape in `room-network-hub`, with the catch-all global (C2/C6). The AI artefacts
+  escape in `room-network-hub`, with the catch-all global (T1, T2). The AI artefacts
   live in the arrival and hub NPC cards under the user-directed area ownership rule
   (bible §4.2). Both reviewers returned PASS on the moved cards after one stale-prompt
   minor was closed. The final whole-set `content-critic` pass (V4, N2, N6, N7, D3)

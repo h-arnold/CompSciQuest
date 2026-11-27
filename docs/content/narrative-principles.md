@@ -23,10 +23,7 @@ story develops; only `confirmed` entries influence writing.
   **first use** pair it with a short plain-English gloss in apposition; after
   that the term stands alone.
 - Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
-- Keep second person, present tense and one consistent register (N4). Room
-  descriptions stay at or under 200 words (N8) — a ceiling, not a target. Most
-  rooms should be shorter; longer passages are for key nodes and NPC teaching
-  beats only.
+- Keep second person, present tense and one consistent register (N4). 
 - Avoid repetition of sentence structures or writing effects. Especially cliches such as:
   - It's not x it y.
   - Repetitions of what something is not. This is appropriate when used sparingly.
@@ -37,8 +34,7 @@ story develops; only `confirmed` entries influence writing.
   "the rogue thread — the **rogue value**, the mill's name for it — reads −1". After the
   pairing, either may lead, but quizzes, hint targets and coverage evidence always use
   the formal term, so the world never becomes the only route to the marks.
-- **Craft and cultural vocabulary is explained in passing (added by user instruction,
-  2026-11-25).** Where a pupil may reasonably not know the word — warp, weft, shed,
+- **Craft and cultural vocabulary is explained in passing**. Where a pupil may reasonably not know the word — warp, weft, shed,
   selvedge, heddle, carthen, paned — the area, the items and the NPC conversations
   give a short in-voice explanation on first use: one clause, deadpan, never a lesson
   (N8 discipline still applies). The explanation never displaces a technical term and
@@ -52,7 +48,7 @@ the same empty slot."
 of the computer, if you think about it." The shorthand is imprecise, the gloss
 never names the formal term and the sentence eats space without teaching.
 
-**World richness and examinables (confirmed 2026-11-25).** The user wants a rich,
+**World richness and examinables**. The user wants a rich,
 engaging world: a room description should name several concrete things worth
 looking at, and some items may exist purely to be examined, with no puzzle or story
 work to do. Such an item earns its place through a vivid, specific description. It

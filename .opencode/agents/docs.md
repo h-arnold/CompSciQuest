@@ -110,12 +110,6 @@ permissions:
   - action: grep
     resource: "*"
     effect: allow
-  - action: webfetch
-    resource: "*"
-    effect: deny
-  - action: websearch
-    resource: "*"
-    effect: deny
 ---
 
 # Documentation agent instructions
@@ -284,14 +278,14 @@ Provide a concise handoff summary including:
 │   │   ├── documentation-style-guide.md                 # Canonical writing authority: writing rules, ownership, audit scope
 │   │   ├── architecture.md                              # Layer boundaries and dependency direction, module layout, module responsibilities and code conventions.
 │   │   ├── shared-rules.md                              # Conditions, triggers, effects, scheduler, seeded `Random`; owns the turn-pipeline contract
-│   │   ├── content-rules.md                             # Content authoring rulebook: W1–W7 workflow, N/P/C/H/D/V rules, shared agent contract
+│   │   ├── content-rules.md                             # Cross-cutting content rulebook: W1–W7 workflow, N/P/H/D/V rules, shared agent contract
 │   │   ├── content-toolchain.md                         # YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff
 │   │   ├── application-and-ui.md                        # Application shell: boot, Game facade, Command/GameEvent unions, canonical content bundle, behavioural signatures, UI, view model, win check
 │   │   ├── storage-schema.md                            # Save DTOs, validation, quarantine, restore-time derivation
 │   │   ├── combat.md                                    # Adversarial quiz combat: questions, grading, pass/fail effects, retries
 │   │   ├── hazards.md                                   # Declarative scheduled life-loss rules
 │   │   ├── hints.md                                     # Escalating hint ladders, cooldowns, penalties
-│   │   ├── npcs.md                                      # Actors, actor states, topics, ConvNode, knowledge gating, TopicResolver
+│   │   ├── npcs.md                                      # NPC authoring (A1–A6, T1–T6, D6), actors, states, topics, ConvNode, knowledge gating, TopicResolver
 │   │   └── puzzles.md                                   # Action-flag puzzle completion, rewards, PDG validation
 │   ├── content/                                         # Owned by content-editor: content-bible.md, narrative-principles.md,
 │   │                                                    #   difficulty-and-fairness.md (cross-content difficulty, fairness and playtest guidance),

@@ -72,8 +72,8 @@ an update here.
 | Application shell, UI, view model, win check  | `application-and-ui.md` (§§3–4, 7–11)                                         |
 | Persistence                                   | `storage-schema.md` (§§3, 7–9)                                                |
 | Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
-| Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                |
-| Content authoring and toolchain               | `content-rules.md`, `content-toolchain.md`                                    |
+| Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md` (A/T/D6 rules, card format and gates), `puzzles.md` |
+| Content authoring and toolchain               | `content-rules.md` (cross-cutting N/P/H/D/V rules), `content-toolchain.md`     |
 | Content difficulty and playability             | `docs/content/difficulty-and-fairness.md` (content-owned guidance)           |
 | Spec topics and coverage                      | `docs/coverage/COVERAGE.md` (coverage decisions owned by `content-editor`)    |
 | Documentation writing rules                   | `docs/developer/documentation-style-guide.md`                                 |

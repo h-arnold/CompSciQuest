@@ -244,7 +244,7 @@ the world layer redundant and leave boot dependent on declaration order.
 `GameState.createInitial()` resolves from `bundle.worlds.all[0]` → its
 `startAreaId` → that area's `startRoomId` (`src/core/GameState.ts` L104–115); the
 "Boot start position" row of
-[content-rules.md §8](../developer/content-rules.md#8-decisions-content-must-not-assume)
+[content-rules.md §8](../developer/content-rules.md#8-fixed-contracts-content-must-use)
 records this. The level start is simply an area's own `startRoomId`: it is where
 hazard and quiz-failure returns land, and lives reset on **area change**, not on
 every room move
