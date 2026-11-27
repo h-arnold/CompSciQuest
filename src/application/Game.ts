@@ -234,6 +234,10 @@ export function createGame(dependencies: GameDependencies): Game {
   // The current suggestion is view state, not persisted game state. It comes
   // only from the NPC event stream; the panel never computes a prompt itself.
   let conversationPrompt: string | undefined;
+  // Transient hint-view suppression: a new quiz attempt hides hints from the
+  // previous attempt in the view only. Persisted HintStateDto records, hint
+  // penalties, cooldown counters and quiz scoring are never touched.
+  let isHintViewSuppressed = false;
 
   const evaluator = createConditionEvaluator();
   const ruleEngine = createRuleEngine({
@@ -311,16 +315,31 @@ export function createGame(dependencies: GameDependencies): Game {
     }
   };
 
-  const publish = (events: readonly GameEvent[]): readonly GameEvent[] => {
-    for (const event of events) {
-      if (event.type === 'topic-suggested') {
+  // Private view-event bookkeeping for the single publish seam. This is not a
+  // second event owner: EventBus still publishes the whole batch unchanged.
+  const observeViewEvent = (event: GameEvent): void => {
+    switch (event.type) {
+      case 'topic-suggested': {
         conversationPrompt = event.text;
-        continue;
+        break;
       }
-      if (event.type === 'conversation-ended') {
+      case 'conversation-ended': {
         conversationPrompt = undefined;
+        break;
+      }
+      case 'quiz-started': {
+        isHintViewSuppressed = true;
+        break;
+      }
+      case 'hint-shown': {
+        isHintViewSuppressed = false;
+        break;
       }
     }
+  };
+
+  const publish = (events: readonly GameEvent[]): readonly GameEvent[] => {
+    for (const event of events) observeViewEvent(event);
     dependencies.bus.publish(events);
     return events;
   };
@@ -332,6 +351,7 @@ export function createGame(dependencies: GameDependencies): Game {
     state = next;
     adoptSeed(dependencies.random, state);
     conversationPrompt = undefined;
+    isHintViewSuppressed = false;
     rebind();
     dependencies.clearViews?.();
     if (shouldResetSession) session.newGame();
@@ -366,6 +386,7 @@ export function createGame(dependencies: GameDependencies): Game {
       state = dependencies.saveManager.restore(result.dto);
       adoptSeed(dependencies.random, state);
       conversationPrompt = undefined;
+      isHintViewSuppressed = false;
       rebind();
       dependencies.clearViews?.();
     }
@@ -377,11 +398,12 @@ export function createGame(dependencies: GameDependencies): Game {
 
   const loadMeta = (): readonly GameEvent[] => {
     const result = dependencies.saveManager.load();
-    return result.ok
-      ? publish(
-          replaceState(dependencies.saveManager.restore(result.dto), false),
-        )
-      : metaMessage('No saved game could be loaded.');
+    if (!result.ok) return metaMessage('No saved game could be loaded.');
+    const batch = replaceState(
+      dependencies.saveManager.restore(result.dto),
+      false,
+    );
+    return publish([...batch, { type: 'message', text: 'Game loaded.' }]);
   };
 
   const importMeta = (text: string): readonly GameEvent[] => {
@@ -516,7 +538,9 @@ export function createGame(dependencies: GameDependencies): Game {
         areas: areaViews(state, dependencies.bundle),
         ...(activeQuiz && { activeQuiz }),
         ...(conversation && { conversation }),
-        hints: hintViews(state, dependencies.bundle),
+        hints: isHintViewSuppressed
+          ? []
+          : hintViews(state, dependencies.bundle),
       };
     },
     save(): void {

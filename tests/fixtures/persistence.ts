@@ -103,11 +103,21 @@ export class RecordingBus implements EventBus {
   publish(events: readonly GameEvent[]): void {
     this.batches.push(events);
     this.events.push(...events);
+    // Mirror the canonical createEventBus() (src/core/events/EventBus.ts:L11):
+    // a publish notifies every subscriber with each event in the batch. Without
+    // this, a mounted GameWindow never sees the batch and the transcript stays
+    // empty even though the batch was recorded.
+    for (const listener of this.listeners) {
+      for (const event of events) listener(event);
+    }
   }
 
   subscribe(listener: (event: GameEvent) => void): () => void {
     this.listeners.push(listener);
-    return noop;
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index !== -1) this.listeners.splice(index, 1);
+    };
   }
 }
 

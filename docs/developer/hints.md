@@ -86,6 +86,13 @@ canonical union in
 [application-and-ui.md §6](application-and-ui.md#6-canonical-event-union-and-rendering);
 `HintPanel` renders it with `textContent`.
 
+A `quiz-started` for a new attempt clears hints from the **view** only: until a
+fresh `hint-shown` arrives, `GameViewData.hints` is empty
+([application-and-ui.md §7.2](application-and-ui.md#72-view-data)). Persisted
+`HintStateDto` records, hint penalties and cooldown counters are unchanged, and
+a blocked retry that emits no `quiz-started` leaves the visible hint in place
+([combat.md §3](combat.md#3-flow)).
+
 ## 4. Adaptive behaviour
 
 Explicit delivery is the `hint` command. Automatic delivery applies when
@@ -105,7 +112,8 @@ skips automatic delivery.
 Each trigger delivers at most one level, and a hint shown this turn is not
 delivered again by a later pass in the same turn. Further levels remain
 available through an explicit `hint`, subject to `cooldownTurns`. Automatic
-hints emit the same `hint-shown` event, so the UI needs no special case.
+hints emit the same `hint-shown` event, so the UI needs no special case and they
+also lift the view suppression from §3.
 
 **There is no "reveal the answer" level**: even the final hint is a nudge or
 instruction, and the player must still supply an answer to pass a quiz.

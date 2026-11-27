@@ -61,6 +61,9 @@ the marks and options) reject a quiz with `passMark < 1`, a `passMark` above
 2. `start-quiz` creates `QuizStateDto`, shuffles `questionIds` with the injected
    `Random`, and emits `quiz-started`. Question order is fixed for the attempt;
    [shared-rules.md §7](shared-rules.md#7-random-port) owns the seed contract.
+   A retry's `quiz-started` clears the previous attempt's hints from the view
+   ([hints.md §3](hints.md#3-commands-and-delivery),
+   [application-and-ui.md §7.2](application-and-ui.md#72-view-data)).
 3. Emit `question-asked` with the prompt and numbered options. The UI's
    `QuizPanel` renders them as text.
 4. The player answers using an accepted form (§4), for example `answer 2`. The

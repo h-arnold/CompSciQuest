@@ -32,6 +32,7 @@ export class QuizPanel {
     // stays unchanged; the values arrive ready-calculated from the view model.
     const requirement = document.createElement('p');
     requirement.textContent = `Pass mark: ${quiz.passMark} correct of ${quiz.questionCount}. Wrong answers allowed: ${quiz.remainingWrong}.`;
+    requirement.setAttribute('aria-live', 'polite');
     this.element.append(requirement);
   }
 }
