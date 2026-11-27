@@ -265,7 +265,10 @@ that fresh state through the `saveGame()` → `SaveManager.save()` seam (§4);
 `src/main.ts` and `GameWindow` owns the download and import controls; import
 from a button supplies `text` from `openSaveFile`. Typed `import` opens the same
 file picker rather than expecting pasted JSON. `load` rebinds the restored
-`GameState` and refreshes the views without re-emitting an end event.
+`GameState`, refreshes the views without re-emitting an end event, and
+publishes one canonical `message` event with the engine-authored line
+`Game loaded.` alongside the initial room batch. A failed load publishes only
+`No saved game could be loaded.`
 
 ## 5. Canonical command union and verbs
 
@@ -608,6 +611,10 @@ Panels are mounted once at bootstrap and toggled from the view model or event
 stream; they are never destroyed and recreated mid-turn. `index.html` keeps
 only `#app`; all markup is created by `GameWindow` and its children.
 
+`QuizPanel`'s pass requirement `<p>` is a polite live region
+(`aria-live="polite"`), so assistive technology announces it when a quiz
+starts.
+
 ### 7.2 View data
 
 Events are a stream; `ScorePanel` needs current aggregate state and is forbidden
@@ -685,6 +692,19 @@ clamped at zero. `Game.getViewData()` derives both at view-build time; a correct
 answer leaves the allowance unchanged, a wrong answer reduces it by one and a
 new quiz resets it. Attempts, lives, score and flags are ignored, and panels
 present the values as supplied.
+
+The two values appear in one childless `<p>` reading `Pass mark: N correct of
+M. Wrong answers allowed: W.`; that paragraph is the live region described in
+§7.1 and is absent when no quiz is active.
+
+`GameViewData.hints` lists hint levels shown in the persisted state. A new quiz
+attempt suppresses that list in the view: `quiz-started` makes `hints` empty,
+and the next `hint-shown` restores it. The suppression is view-only: persisted
+hint records, penalties and cooldown counters are unchanged
+([hints.md §3](hints.md#3-commands-and-delivery),
+[combat.md §3](combat.md#3-flow)). State replacement through `newGame`,
+`continueGame`, `restart`, `load` or an import clears it with the other
+transient view state.
 
 `Terminal` owns a bounded in-memory command history with no persistence and no
 duplicate suppression, navigated with the up/down arrows. It calls
