@@ -69,6 +69,7 @@ an update here.
 | Domain                                        | Canonical docs                                                                |
 | --------------------------------------------- | ----------------------------------------------------------------------------- |
 | Architecture and module map                   | `architecture.md` (§§3–5, §6 flows, §8 conventions)                           |
+| Testing strategy and matrix evidence          | `testing.md` (evidence mechanisms, test-value filter)                         |
 | Application shell, UI, view model, win check  | `application-and-ui.md` (§§3–4, 6–11)                                         |
 | Persistence                                   | `storage-schema.md` (§§3, 7–9)                                                |
 | Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
@@ -81,8 +82,9 @@ an update here.
 
 Review inputs, not documentation references:
 
-- `.opencode/scratchpad/branch-matrix.md` for the matrix IDs in scope, and the
-  slice's red report for what the tests intended to prove.
+- `.opencode/scratchpad/branch-matrix.md` for the matrix IDs in scope and each
+  row's recorded verification evidence: red, QA, playtest or docs review report
+  as named in the row.
 - `graphify-out/reflections/LESSONS.md` for prior corrections and preferred
   sources.
 
@@ -124,8 +126,11 @@ Check, in order:
    passes and `npx prettier --check` passes on the files the slice changed (the
    repo-wide `npm run format:check` may be red on unrelated user-owned files),
    and all user-visible text is British English.
-7. **Test traceability** — each assigned matrix ID has a passing named test;
-   negative cases assert "state unchanged"; no skipped or weakened tests.
+7. **Test traceability** — each assigned matrix ID has recorded verification
+   evidence matching the mechanism in its row, with the path present;
+   deterministic-core rows have a passing named test, documentation rows have a
+   docs review note or docs-freeze report; negative cases assert "state
+   unchanged"; no skipped or weakened tests.
 
 ## Graph audit (mandatory)
 

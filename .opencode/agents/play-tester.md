@@ -237,6 +237,9 @@ functional failure and its player-visible effect.
 Write to the repo root as you go. Default file: `PLAYTEST_ISSUES.md`. If a brief
 names another root `PLAYTEST*.md` or a scratchpad report path, use that. Append
 a dated section when the file already exists; never overwrite earlier findings.
+Record the exact commands typed and the transcript observed in the report. Play
+without following a scripted walkthrough, so there is a real sequence to encode
+afterwards.
 
 For each issue record:
 

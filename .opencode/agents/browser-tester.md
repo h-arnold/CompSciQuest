@@ -74,6 +74,11 @@ edit `src/**` or design docs.
 - Behavioural authority: `docs/developer/application-and-ui.md` §§2, 6, 7 and
   12, and the `E2E-` rows in `.opencode/scratchpad/branch-matrix.md`. The final
   content playtest belongs to `play-tester`, not to this agent.
+- Two passes: the exploration pass follows implementation and writes only
+  `qa-report.md` and screenshots; the codify pass is gated on the affected
+  area's behaviour being confirmed by playtest with its findings resolved. A
+  known-bug fix with a clear reproduction is the exception: write the regression
+  test first. `docs/developer/testing.md` §Sequencing owns the full rule.
 - Use `npm run dev` for MCP exploration; `npm run build` and `npm run preview`
   are available when a production build needs checking. `playwright.config.ts`
   owns test-time startup through its `webServer`, so do not start a second
@@ -88,6 +93,10 @@ edit `src/**` or design docs.
 
 ## Explore first, then codify
 
+The exploration pass follows implementation. Exercise the app, write
+`qa-report.md` and screenshots, and report findings. Do not author durable E2E
+in this pass.
+
 Use the MCP tools, not just code inspection: `browser_snapshot` for the
 accessibility tree, `browser_navigate`, `browser_type`, `browser_click`,
 `browser_take_screenshot`, `browser_resize`, `browser_emulate_media`,
@@ -100,6 +109,13 @@ report. Report findings as:
 ```
 
 End with one verdict: `PASS`, `PASS WITH MINORS` or `FAIL`.
+
+The codify pass is a later dispatch. Author E2E only once the affected area's
+behaviour is confirmed by playtest and its findings are resolved, so the tests
+pin the confirmed command sequence and state transitions rather than
+assumptions. Include one focused regression per playtest bug. Do not apply this
+order retroactively to the existing E2E suite. See
+`docs/developer/testing.md` §Sequencing.
 
 ## Verified flows
 
@@ -160,8 +176,9 @@ deterministic engine-level tests. `npm run test:e2e` must pass.
   aria-live, contrast, reflow and reduced-motion checks and the layout,
   legibility, alignment, spacing, colour and overflow checks were each
   performed and judged by observation.
-- Stable e2e tests exist in `e2e/**`, `playwright.config.ts` uses the correct
-  `baseURL`, and `npm run test:e2e` passes.
+- The codify pass ran only after behaviour was confirmed; stable e2e tests exist
+  in `e2e/**`, `playwright.config.ts` uses the correct `baseURL`, and
+  `npm run test:e2e` passes.
 - Only `e2e/**`, `playwright.config.ts` and the scratchpad were changed.
 
 ## Constraints and escalation

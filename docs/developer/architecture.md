@@ -225,7 +225,8 @@ The core stays DOM-free and deterministic: inject `EventBus`, `StorageAdapter`,
 `Clock` and `Random`, use in-memory fakes and a fake clock rather than real
 `localStorage` or the system clock, and keep content fixtures small and
 deterministic. Run `npm test`, `npm run test:e2e`, `npm run typecheck` and
-`npm run lint`; `package.json` lists every script.
+`npm run lint`; `package.json` lists every script. The evidence rule, test-value
+filter and copy-pinning guidance are owned by [testing.md](testing.md).
 
 Persistence invariants are listed in
 [storage-schema.md §12](storage-schema.md#12-invariants-the-implementation-must-keep);

@@ -277,6 +277,7 @@ Provide a concise handoff summary including:
 │   │   ├── README.md                                    # Index: one line per developer doc, naming its owned subject
 │   │   ├── documentation-style-guide.md                 # Canonical writing authority: writing rules, ownership, audit scope
 │   │   ├── architecture.md                              # Layer boundaries and dependency direction, module layout, module responsibilities and code conventions.
+│   │   ├── testing.md                                   # Testing strategy: verification evidence, red-first scope, test-value filter, generated-copy pinning
 │   │   ├── shared-rules.md                              # Conditions, triggers, effects, scheduler, seeded `Random`; owns the turn-pipeline contract
 │   │   ├── content-rules.md                             # Cross-cutting content rulebook: W1–W7 workflow, N/P/H/D/V rules, shared agent contract
 │   │   ├── content-toolchain.md                         # YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff
