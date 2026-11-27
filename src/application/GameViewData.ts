@@ -30,6 +30,9 @@ export interface QuizView {
   readonly options: readonly string[];
   readonly questionNumber: number;
   readonly questionCount: number;
+  // Derived at view-build time from the authored pass mark and question count.
+  readonly passMark: number;
+  readonly remainingWrong: number;
 }
 
 export interface ConversationView {
