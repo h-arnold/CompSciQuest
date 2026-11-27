@@ -109,7 +109,7 @@ Ten prose-bearing cards re-briefed after the user approved the §2 amendment and
   cards, the revised Switchyard rooms card, and the AI NPC content split into
   `entry-interface/npcs.yaml` and `network-hub/npcs.yaml`, with the AI artefacts
   removed from zone 1. The three AI topics carry room scopes (why-here and failure
-  in arrival, escape in the hub) and the catch-all stays global (C2/C6).
+  in arrival, escape in the hub) and the catch-all stays global (T1/T2).
   `content:validate` passed with no findings after every writer round. Both
   reviewers returned PASS on the moved cards; the one C2 stale-prompt minor was
   closed. The final whole-set `content-critic` pass (V4, N2, N6, N7, D3) returned

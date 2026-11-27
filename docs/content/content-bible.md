@@ -258,8 +258,8 @@ failures and V4 trace rely on.
 
 Role-level detail for the two game-wide actors is here; zone-specific actors are
 described in their topic file. Every actor has a distinct role, voice, motivation and
-relationship, with opposing motivations preferred (C1). All conversational input
-resolves to an in-character reply (C2).
+relationship, with opposing motivations preferred (A1). All conversational input
+resolves to an in-character reply (T1).
 
 | ID | Role | Voice | Motivation | Relationship | Owning file |
 | --- | --- | --- | --- | --- | --- |
@@ -390,10 +390,10 @@ files explain what each ID is for; this table owns the spellings.
 | `actorstate-` | `actorstate-ai-cold`, `actorstate-ai-grudging` | — | root; reserved |
 | `actorstate-` | `actorstate-predecessor-glitch` | — | root; reserved |
 | `actorstate-` | `actorstate-foreman-busy`, `actorstate-foreman-helpful` | — | 1.2.1; reserved |
-| `actorstate-` | `actorstate-ready` | — | root; generic default actor state (rulebook §4.3), needed by every actor as `initialStateId` |
-| `topic-` (conversation) | `topic-ai-verdict`, `topic-ai-unit-two-taunt`, `topic-ai-default` | — | root; reserved; `topic-ai-default` is the in-character catch-all (C2) |
+| `actorstate-` | `actorstate-ready` | — | root; generic default actor state ([npcs.md §8](../developer/npcs.md#8-npc-card-format) / actor binding), needed by every actor as `initialStateId` |
+| `topic-` (conversation) | `topic-ai-verdict`, `topic-ai-unit-two-taunt`, `topic-ai-default` | — | root; reserved; `topic-ai-default` is the in-character catch-all (T1) |
 | `topic-` (conversation) | `topic-ai-why-here`, `topic-ai-escape`, `topic-ai-failure` | — | root; allocated 2026-11-25 for the arrival conversation. `special` keyword matches; no flags or course facts. `topic-ai-failure` is the editor's third ID for the user-approved third topic. |
-| `topic-` (conversation) | `topic-predecessor-default` | — | root; in-character catch-all (C2) |
+| `topic-` (conversation) | `topic-predecessor-default` | — | root; in-character catch-all (T1) |
 | `topic-` (conversation) | `topic-predecessor-comic-sans`, `topic-predecessor-geese`, `topic-predecessor-duck-as-bit` | — | root / 1.2.1; reserved |
 | `topic-` (conversation) | `topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor` | — | 1.2.1; reserved |
 | `topic-` (conversation) | `topic-foreman-show-gauge`, `topic-foreman-show-lens`, `topic-foreman-show-fork`, `topic-foreman-show-nibble` | — | 1.2.1; editor-allocated 2026-11-24 to produce the four SHOW-leaf flags (`overflow-checked`, `badge-scaled`, `bit-rate-counted`, `capacity-labelled`) after the V4 review; always active `show`-matched topics |
@@ -403,8 +403,8 @@ files explain what each ID is for; this table owns the spellings.
 | `topic-` (conversation) | `topic-conductor-samples`, `topic-conductor-depth`, `topic-conductor-storage`, `topic-conductor-default` | — | 1.2.1; choirmaster |
 | `topic-` (conversation) | `topic-keeper-units`, `topic-keeper-capacity`, `topic-keeper-default` | — | 1.2.1; stack keeper |
 | `topic-` (conversation) | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default` | — | 1.2.1; press operator |
-| `node-` | `node-ai-verdict`, `node-predecessor-advice` | — | root; reserved; forced teaching beats only (C4) |
-| `node-` | `node-foreman-switch-lesson`, `node-operator-choose` | — | 1.2.1; forced teaching beats only (C4) |
+| `node-` | `node-ai-verdict`, `node-predecessor-advice` | — | root; reserved; forced teaching beats only (T3) |
+| `node-` | `node-foreman-switch-lesson`, `node-operator-choose` | — | 1.2.1; forced teaching beats only (T3) |
 | `quiz-` | `quiz-switchyard`, `quiz-data-types`, `quiz-number-systems`, `quiz-character-representation`, `quiz-graphics-representation`, `quiz-sound-representation`, `quiz-storage-units`, `quiz-data-compression` | — | 1.2.1; reserved |
 | `q-` | `q-dr-01` … `q-dr-32` | — | 1.2.1; question pool, 0-based correct-option indices on cards |
 | `puzzle-` | the ten IDs in `topics/1-2-1-data-representation.md` §5 | — | 1.2.1; core chain |
@@ -506,7 +506,7 @@ must not reuse them bare).
 | `npc-` | `npc-the-bobbin-lad` | bobbin lad | 1.4.1 Zone A |
 | `npc-` | `npc-the-slop-cousin` | slop cousin, cousin | root + all four 1.4 zones (§6) |
 | `actorstate-` | `actorstate-loomwright-witnessing`, `actorstate-loomwright-complete`, `actorstate-warp-dresser-flustered`, `actorstate-warp-dresser-orderly`, `actorstate-shed-opener-dithering`, `actorstate-shed-opener-sorted`, `actorstate-weft-tally-counting`, `actorstate-weft-tally-exact`, `actorstate-selvedge-warden-looping`, `actorstate-selvedge-warden-dismissed`, `actorstate-slop-cousin-beaming` | — | 1.4.1 Zone A; the generic `actorstate-ready` stays the rulebook default |
-| `node-` | `node-loomwright-demonstration`, `node-selvedge-signal` | — | 1.4.1 Zone A; deliberate teaching beats only (C4) |
+| `node-` | `node-loomwright-demonstration`, `node-selvedge-signal` | — | 1.4.1 Zone A; deliberate teaching beats only (T3) |
 | `quiz-` | `quiz-pattern-bureau`, `quiz-threading-order`, `quiz-colour-court`, `quiz-weft-tally`, `quiz-selvedge`, `quiz-finished-rail` | — | 1.4.1 Zone A |
 | `q-` | `q-pc-01` … `q-pc-24` | — | 1.4.1 Zone A; question pool, 0-based correct-option indices |
 | `hazard-` | `hazard-pick-avalanche`, `hazard-dye-pad`, `hazard-slop-worksheet` | — | 1.4.1 Zone A; the avalanche arms after the demonstration (user decision, 2026-11-25) |
@@ -588,7 +588,7 @@ explicitly expendable items; `compsciquest:save:v1` is never touched.
 `narrative-principles.md` §2 and then approved a full-scope prose revision after
 seeing before/after examples. Briefs cite the confirmed "Flair before the fact"
 and "Presence, not labels" patterns in §11 of that document alongside N3, N4, N5,
-N6, N8, C1, C2, P2, H1 and D2. The ten prose-bearing YAML cards are in scope;
+N6, N8, A1, T1, P2, H1 and D2. The ten prose-bearing YAML cards are in scope;
 `spec-topics.yaml` is evidence metadata and is not re-briefed. The user also asked
 for a richer world with many examinable props, some with no puzzle or story
 function; these need new IDs and aliases in §9 before any room brief can name them.
@@ -648,7 +648,7 @@ Recorded in §12.
     to `room-network-hub`, where the route ports are visible; the pre-existing
     `topic-ai-verdict`, `topic-ai-unit-two-taunt` and `topic-ai-default` stay
     global so the AI keeps a catch-all in every room and `node-ai-verdict` keeps
-    its global default (C6). This relocates the escape question from the arrival
+    its global default (T2). This relocates the escape question from the arrival
     beat to the hub beat in the V4 trace; no ID, flag, gate, score or spec claim
     changes.
 

@@ -165,7 +165,7 @@ labels", §11 of narrative-principles); prose ceiling 200 words (N8).
 ## 4. Cast
 
 Six residents plus the cousin; every actor distinct in role, voice, motivation
-and relationship (C1), each with at most one recurring phrase (§7 of
+and relationship (A1), each with at most one recurring phrase (§7 of
 narrative-principles). Silent-ready rule holds: no greeting on state entry
 (recorded decision); greetings live in topic responses.
 
@@ -190,7 +190,7 @@ a teaching beat, the **give-matched Licence delivery** topic (match kind
 `give`, itemIds the pattern card; effects `transfer-item`, `set-flag`,
 teaching message; per the rulebook's topic union), stray-card redirect topics
 (N5: the refusal teaches where the card goes), a demonstration topic gated on
-the room's fix, a freetext catch-all (`in-room` scoped, C6), and 2–4 characterful
+the room's fix, a freetext catch-all (`in-room` scoped, T2), and 2–4 characterful
 topics. The cousin carries one vandal topic per room, `in-room` scoped; one
 optional AI cameo (`topic-ai-licence`) in-room at the Bureau, flavour only.
 
@@ -408,7 +408,7 @@ resident; per-room `in-room`-scoped cousin vandal topics; catch-alls scoped
 to the actor's room; reserved: `topic-ai-licence` (bureau, cameo, flavour
 only). Node scheme mirrors: `node-<actor-stem>-<beat>`; the two ratified
 nodes stay in bible §9. Conversation "object ids" (the `ask` vocabulary)
-come from the bible alias registry only (C6): each room's teaching nouns
+come from the bible alias registry only (T4): each room's teaching nouns
 (warp, weft, shed, selvedge, ratchet, rota, pigeonholes) resolve through the
 items' and rooms' ratified aliases.
 

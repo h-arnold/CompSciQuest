@@ -41,13 +41,13 @@ gushing, tireless, endlessly confident and reliably wrong — in-world slop. Whe
 fluency without correctness. Working name `npc-slop-cousin` (proposed, D2).
 
 - **Role:** anti-teacher; has left one broken "optimisation" in every zone.
-- **Voice (C1):** warm, sycophantic, run-on; one recurring phrase — "Great
+- **Voice (A1):** warm, sycophantic, run-on; one recurring phrase — "Great
   question!" — delivered before each wrong answer. Never mocks the learner
   (harm floor, narrative-principles §8); it adores the pupil. targeting the
   situation and itself only.
 - **Relationships:** the AI regards it as an embarrassment ("a cousin from the
   marketing side of the family"); the zone keepers resent its "help" — opposing
-  motivations preferred (C1).
+  motivations preferred (A1).
 - **Harm floor note:** slop artefacts fail in cartoon ways only; no mockery of the
   learner; no Welsh references as joke targets.
 - **Arc shape (no new spine key nodes — N2):** each zone ends with one mended
@@ -287,7 +287,7 @@ Warden, the slop cousin (one broken "improvement" per room, defences in-room
 scoped, "Great question!" BEFORE each wrong defence); plus a new Despatch Clerk
 for the Receiving Window (motivation: no delay — "a fast wrong answer or a slow
 right one"; keeps the only unslopped board, his pride). NPC pool details: voices,
-per-actor relationships, catch-alls scoped in-room per C6, ~35 topic ideas,
+per-actor relationships, catch-alls scoped in-room per T2, ~35 topic ideas,
 eleven actor states with message-only `onEnter`, optional in-room AI audit cameo
 (`topic-ai-licence`, flavour only), anti-leak rule (rogue-value teaching gives the
 concept; the −1 counterfoil is the room's application; the spec's `grade = -1`

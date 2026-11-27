@@ -10,7 +10,7 @@ story develops; only `confirmed` entries influence writing.
 - These principles govern voice, humour, stakes and consequences in all game
   text. They are not game content: no design cards and no TypeScript live here.
 - The rulebook `docs/developer/content-rules.md` remains authoritative for the
-  N/P/C/H/D rules. If a principle and a rule disagree, the rulebook wins and the
+  N/P/H/D rules, with `docs/developer/npcs.md` owning the A/T rules. If a principle and a rule disagree, the rulebook wins and the
   editor escalates rather than quietly choosing one.
 - `docs/exam-specs/wjec-unit1.md` remains the authority for every course fact.
   Humour never changes a definition, an example, a number or a spec depth
@@ -156,10 +156,10 @@ unregistered noun, which turns it into the guess-the-noun trap N6 forbids.
   Wit is the only limit beyond the harm floor (§8).
 - The harm floor still forbids **mockery of the learner**. An NPC may be rude to
   the player's avatar; it never sneers at the pupil's intelligence or ability.
-- Each NPC has a distinct role, voice, motivation and relationship (C1) and may
+- Each NPC has a distinct role, voice, motivation and relationship (A1) and may
   own **at most one recurring phrase**. There is no global catchphrase cap:
   variety comes from the cast, not from a count.
-- Every conversational input still resolves to an in-character reply (C2), and
+- Every conversational input still resolves to an in-character reply (T1), and
   teaching beats stay diegetic (N3).
 
 **Example:** "Oh, brilliant. Another student who's read the spec. I'll just fetch
@@ -186,7 +186,7 @@ mockery of the learner and is barred by the harm floor.
   game.
 - Even absurd-option punishments stay in-world (§6). A character may be
   humiliated by the situation; the reader is never addressed.
-- This sits alongside C2: no "parser error" phrasing and no out-of-character
+- This sits alongside T1 and A5: no "parser error" phrasing and no out-of-character
   defaults.
 
 **Non-example:** "Nice try — the author never planned for that." Fun in a
