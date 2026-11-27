@@ -159,10 +159,11 @@ test.describe('meta actions and end states', () => {
     await expect(scorePanel(page)).toContainText('Score: 0');
     expect(await persistedTurn(page)).toBe(0);
 
-    // The quarantine button has no typed alias; it is covered by UI-BOOT-10.
-    await expect(
-      page.getByRole('button', { name: 'Download quarantined save' }),
-    ).toBeVisible();
+    // Issue 31 removes the quarantine download button; the stored recovery
+    // copy is still asserted in save-import.spec.ts (E2E-BOOT-07/UI-BOOT-10).
+    await expect(page.getByRole('button', { name: /quarantine/i })).toHaveCount(
+      0,
+    );
   });
 
   for (const status of ['won', 'lost'] as const) {

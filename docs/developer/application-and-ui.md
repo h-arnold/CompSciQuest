@@ -48,7 +48,8 @@ Boot sequence (`src/main.ts`):
    `restart` meta action (§4.1).
 
 A corrupt or quarantined save disables Continue; the player starts fresh. The
-quarantined text stays downloadable through `SaveControls`.
+quarantined text stays in storage for manual inspection by a developer;
+`SaveControls` has no action to download it.
 
 ## 3. Content bundle and registration
 
@@ -225,6 +226,12 @@ event buffer and ordering, and returns the buffered batch it also publishes
 through the `EventBus`. It increments `GameStateDto.turn` once per submitted game
 command, whether or not the command succeeded. It never throws on bad input;
 unparseable text becomes an `unknown` command and a friendly message.
+
+After each core command that advances the turn, `submit` writes the live save to
+browser storage through the same `saveGame()` → `SaveManager.save()` seam as
+explicit Save, once the turn's events are final. Meta actions and commands
+rejected while `status !== 'playing'` do not autosave
+([storage-schema.md §11](storage-schema.md#11-flow)).
 
 `newGame`, `continueGame` and `restart` replace the current `GameState`, clear
 the views' transient state and emit the initial room batch. A reloaded end state
@@ -590,8 +597,7 @@ The app uses plain DOM and one stylesheet (`src/ui/style.css`); no UI framework.
    │  │  └─ Terminal               (prompt + input + history)
    │  └─ aside
    │     ├─ ScorePanel             (worlds/areas, score, spec area)
-   │     └─ SaveControls           (Save, Load, Download, Import, Restart,
-   │                                Download quarantined save)
+   │     └─ SaveControls           (Save, Load, Download, Import, Restart)
    └─ .title-overlay               (TitleScreen: Continue / New Game)
 ```
 
