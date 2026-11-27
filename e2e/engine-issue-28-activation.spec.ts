@@ -15,6 +15,7 @@ import {
   readStorage,
   SAVE_KEY,
   seedStorage,
+  START_ROOM_TITLE,
   startNewGame,
   submit,
   transcript,
@@ -116,9 +117,27 @@ test('ENG28-ACTIVATION-01 — activation and repeated unrelated commands stay si
   });
 
   // The first turn after loading the partial flag activates both real puzzles.
+  // MD-STATUS-01/02 (spec §6.1) render room entry and `look` as a four-part
+  // shape headed by `## <title>`. textContent strips the `##`, so inspect the
+  // heading node: the new h2 after the initial room entry must be the look
+  // transcript's location heading, not the old bare "The Arrival Bay." line.
+  const headingsBefore = await page.locator('.output-log h2').count();
   const activation = await command(page, 'look');
   expect(activation).toContain('> look');
-  expect(activation.join('\n')).toContain('The Arrival Bay.');
+  expect(
+    await page.locator('.output-log h2').count(),
+    'look adds a location heading to the transcript',
+  ).toBe(headingsBefore + 1);
+  await expect(page.locator('.output-log h2').nth(headingsBefore)).toHaveText(
+    START_ROOM_TITLE,
+  );
+  const lookEntry = page
+    .locator('.output-log > div')
+    .filter({ has: page.locator('h2', { hasText: START_ROOM_TITLE }) })
+    .last();
+  await expect(lookEntry, 'look keeps the four-part room shape').toContainText(
+    'Exits:',
+  );
   expectNoActivation(activation);
 
   for (const raw of ['look', 'inventory', 'look']) {

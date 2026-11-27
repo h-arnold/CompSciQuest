@@ -2,6 +2,7 @@
 // events are suppressed; score-changed prints once only on a real gain, in
 // friendly wording without a room ID. Labels come from the injected bundle.
 import type { ContentBundle } from '../content/ContentBundle';
+import { roomEntryLines } from '../core/RoomText';
 import type { GameEvent } from '../core/events/GameEvent';
 
 function topicLabel(bundle: ContentBundle, topicId: string): string {
@@ -25,12 +26,7 @@ export function formatEvent(
       ];
     }
     case 'room-entered': {
-      return [
-        event.room.title,
-        '',
-        event.room.description,
-        `Exits: ${event.room.exits.join(', ')}`,
-      ];
+      return roomEntryLines(event.room);
     }
     case 'question-asked': {
       return [
@@ -39,13 +35,13 @@ export function formatEvent(
       ];
     }
     case 'score-changed': {
-      return event.delta > 0 ? [`You earned ${event.delta} points.`] : [];
+      return event.delta > 0 ? [`You earned **${event.delta}** points.`] : [];
     }
     case 'topic-completed': {
-      return [`Topic completed: ${topicLabel(bundle, event.topicId)}.`];
+      return [`Topic completed: **${topicLabel(bundle, event.topicId)}**.`];
     }
     case 'lives-changed': {
-      return [`Lives: ${event.lives}.`];
+      return [`Lives: **${event.lives}**.`];
     }
     case 'game-over': {
       return [`Game over — ${event.reason}. Final score: ${event.finalScore}.`];

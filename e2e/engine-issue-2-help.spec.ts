@@ -1,9 +1,12 @@
 // Engine issue 2 / ENG2-HELP-01 (Batch E Group A). The player-facing help reply
 // is generated from the canonical command table, so these checks assert the
 // promised syntax and aliases through the browser rather than pinning content
-// IDs. Navigation uses Playwright's configured baseURL by default; CSQ_E2E_URL
+// IDs. MD-HELP-01/02 (spec §6.3) changed the layout to six bold group headings,
+// inline-code syntax and one allow-listed Pages footer link; the assertions
+// below follow that contract without weakening the promised command coverage.
+// Navigation uses Playwright's configured baseURL by default; CSQ_E2E_URL
 // may point a local repro at another server.
-import { expect, test, type Page } from 'playwright/test';
+import { expect, test, type Locator, type Page } from 'playwright/test';
 import {
   seedStorage,
   START_ROOM_TITLE,
@@ -14,7 +17,21 @@ import {
 
 const APP_URL = process.env['CSQ_E2E_URL'];
 
-const HELP_LEAD = 'Available commands:';
+// The transcript accessor reads textContent, so Markdown markers are stripped:
+// `**Reading the room**` is present in the DOM as a strong heading and read as
+// "Reading the room". The legend bullet alongside it makes the match unique.
+const HELP_LEAD = 'Reading the room';
+const HELP_LEGEND = 'Bold marks something you can examine or use.';
+const HELP_GROUPS = [
+  'Reading the room',
+  'Movement',
+  'Looking and handling',
+  'People',
+  'Progress',
+  'Saves',
+] as const;
+const PAGES_LINK = 'https://h-arnold.github.io/CompSciQuest/';
+const PAGES_LINK_TEXT = 'CompSciQuest on GitHub Pages';
 
 const noConsoleErrors: () => readonly string[] = () => [];
 
@@ -44,13 +61,28 @@ const PROMISED = [
   'bye  (goodbye)',
   'answer N',
   'hint [target]',
-  'Directions: north (n), south (s), east (e), west (w), up (u), down (d), in (in), out (out).',
+  // MD-HELP-01 replaced the old `Directions: north (n), …` prose line with the
+  // inline-code direction names plus the canonical alias suffix on the `go`
+  // row (spec §6.3). Both lists are pinned here so every direction name and
+  // every short/long alias remains covered in the generated order.
+  'go <direction> — or type a direction: north, south, east, west, up, down, in, out',
+  '(n, s, e, w, u, d, in, out, north, south, east, west, up, down)',
 ] as const;
 
 function helpEntry(lines: readonly string[]): string {
-  const entry = lines.find((line) => line.startsWith(HELP_LEAD));
+  const entry = lines.find(
+    (line) => line.startsWith(HELP_LEAD) && line.includes(HELP_LEGEND),
+  );
   expect(entry, 'a help entry is present in the transcript').toBeDefined();
   return entry as string;
+}
+
+// Scope DOM assertions to the one transcript wrapper whose leading strong
+// node is the new `**Reading the room**` heading; the footer link lives there.
+function helpBlock(page: Page): Locator {
+  return page.locator('.output-log > div').filter({
+    has: page.locator('p > strong', { hasText: HELP_LEAD }),
+  });
 }
 
 async function bootNewGame(page: Page): Promise<void> {
@@ -83,13 +115,53 @@ test.describe('engine issue 2 help output', () => {
     for (const promised of PROMISED) {
       expect(help, `help promises ${promised}`).toContain(promised);
     }
-    expect(help.split('\n').length).toBeGreaterThanOrEqual(23);
+
+    // The generated string is rendered as block/list nodes, so the old count
+    // of literal newlines is now a count of logical paragraphs and list items.
+    const block = helpBlock(page);
+    await expect(
+      block,
+      'one generated help block in the transcript',
+    ).toHaveCount(1);
+    await expect(
+      block.locator('p > strong'),
+      'bold grouped sections',
+    ).toHaveText([...HELP_GROUPS]);
+    expect(
+      await block.locator('p, li').count(),
+      'help still exposes at least 23 rendered logical lines',
+    ).toBeGreaterThanOrEqual(23);
 
     await submit(page, '?');
     const aliasLines = await transcript(page);
     expect(aliasLines).toContain('> ?');
     expect(helpEntry(aliasLines), '? prints the same static list as help').toBe(
       help,
+    );
+  });
+
+  test('MD-HELP-02 — help has one allow-listed Pages footer link with safe attributes', async ({
+    page,
+  }) => {
+    await bootNewGame(page);
+    await submit(page, 'help');
+
+    const block = helpBlock(page);
+    await expect(block, 'the generated help block').toHaveCount(1);
+    const link = block.locator('a');
+    await expect(link, 'a single footer link in the help block').toHaveCount(1);
+    await expect(link).toHaveText(PAGES_LINK_TEXT);
+    await expect(link).toHaveAttribute('href', PAGES_LINK);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    await expect(
+      page.locator('.output-log a'),
+      'no other link in the rendered transcript',
+    ).toHaveCount(1);
+
+    const help = helpEntry(await transcript(page));
+    expect(help.endsWith(PAGES_LINK_TEXT), 'the link is the help footer').toBe(
+      true,
     );
   });
 
@@ -133,7 +205,8 @@ test.describe('engine issue 2 help output', () => {
 
     const afterHelp = await transcript(page);
     expect(afterHelp).toContain('> help');
-    expect(helpEntry(afterHelp)).toContain('Available commands:');
+    expect(helpEntry(afterHelp)).toContain(PROMISED[0]);
+    expect(helpEntry(afterHelp).endsWith(PAGES_LINK_TEXT)).toBe(true);
 
     await submit(page, 'score');
     const afterScore = await transcript(page);

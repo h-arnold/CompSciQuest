@@ -182,6 +182,26 @@ quiz, puzzle, hazard and `game-won` transition within the brief's focus by
 reaching it in the running app. A mismatch is a finding, with the expected claim
 and the observed behaviour.
 
+### Markdown formatting pilot
+
+When the brief names the Markdown formatting pilot for `room-arrival` and
+`room-network-hub`, check these in the running app only, using ordinary player
+commands:
+
+- In `room-arrival`, the formatted affordances: bold things the player can
+  handle, `***The AI***` on first mention with later mentions plain, and the
+  italic exit.
+- In `room-network-hub`, the styled `**port label**`, `***The AI***`, the italic
+  exits and the physical clause that introduces the `patch-bay legend`.
+- `examine patch-bay legend` shows the port table with readable, aligned columns.
+- The AI verdict shows the fenced machine readout after the prose.
+- `help` shows the reading legend, grouped sections and the GitHub Pages footer
+  link.
+
+Record a recommendation on whether the location heading should be `##` or
+`###`, with the on-screen evidence. Treat the brief's expected outcome as a
+claim to check, not a command script.
+
 As you play, assess the difficulty guidance:
 
 - Can you tell what the goal, obstacle and available tools are?
@@ -223,6 +243,9 @@ functional failure and its player-visible effect.
 Write to the repo root as you go. Default file: `PLAYTEST_ISSUES.md`. If a brief
 names another root `PLAYTEST*.md` or a scratchpad report path, use that. Append
 a dated section when the file already exists; never overwrite earlier findings.
+Record the exact commands typed and the transcript observed in the report. Play
+without following a scripted walkthrough, so there is a real sequence to encode
+afterwards.
 
 For each issue record:
 
@@ -263,4 +286,5 @@ project's banned-word rule in `AGENTS.md`.
   verification, only the focus was assessed and the difficulty document was not
   used. When no focus was supplied, the complete-playthrough fallback covered the
   reachable game.
+- For the Markdown formatting pilot, the report covers the two rooms' affordances, the legend table, the AI verdict fence and the help legend and footer link, and records a `##` versus `###` heading recommendation with evidence.
 - You report back the file path, the main blockers and the MCP tools used.

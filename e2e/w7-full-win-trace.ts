@@ -188,21 +188,34 @@ export async function playQuiz(
   const quiz = authoredQuiz(quizId);
   const lines = [...(await command(page, raw))];
   await expect(page.locator('.quiz-panel')).toBeVisible();
-  const requirement = await page.locator('.quiz-panel > p').textContent();
+  const requirement = await page
+    .locator('.quiz-panel > p[aria-live="polite"]')
+    .textContent();
   expect(requirement).toBe(
     `Pass mark: ${quiz.passMark} correct of ${quiz.questionIds.length}. Wrong answers allowed: ${quiz.questionIds.length - quiz.passMark}.`,
   );
   const panel = page.locator('.quiz-panel');
-  expect(await page.locator('.quiz-panel > p').locator('*').count()).toBe(0);
+  expect(
+    await page
+      .locator('.quiz-panel > p[aria-live="polite"]')
+      .locator('*')
+      .count(),
+  ).toBe(0);
   expect(
     await panel.locator('button, a, input, select, textarea').count(),
   ).toBe(0);
   const prompts: string[] = [];
   for (let index = 0; index < quiz.questionIds.length; index += 1) {
+    // Options stay on the div channel; the prompt is the first direct
+    // paragraph and the requirement is a separate polite live region.
+    const promptLine = await page
+      .locator('.quiz-panel > p')
+      .first()
+      .textContent();
+    const prompt = (promptLine ?? '').replace(/^Question \d+ of \d+: /u, '');
     const panelLines = await page
       .locator('.quiz-panel > div')
       .allTextContents();
-    const prompt = (panelLines[0] ?? '').replace(/^Question \d+ of \d+: /u, '');
     // Question order is randomised by the game RNG: resolve by displayed
     // prompt against this quiz's authored entries, never by catalogue index.
     const question = quiz.questionIds
@@ -210,7 +223,7 @@ export async function playQuiz(
       .find((entry) => entry.prompt === prompt);
     if (question === undefined)
       throw new Error(`No authored question for prompt: ${prompt}`);
-    expect(numberedOptions(panelLines.slice(1))).toEqual(question.options);
+    expect(numberedOptions(panelLines)).toEqual(question.options);
     prompts.push(prompt);
     const correct = question.correctOptionIds[0];
     if (correct === undefined)

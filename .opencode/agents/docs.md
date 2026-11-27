@@ -299,6 +299,7 @@ Provide a concise handoff summary including:
 │   │   ├── README.md                                    # Index: one line per developer doc, naming its owned subject
 │   │   ├── documentation-style-guide.md                 # Canonical writing authority: writing rules, ownership, audit scope
 │   │   ├── architecture.md                              # Layer boundaries and dependency direction, module layout, module responsibilities and code conventions.
+│   │   ├── testing.md                                   # Testing strategy: verification evidence, red-first scope, test-value filter, generated-copy pinning
 │   │   ├── shared-rules.md                              # Conditions, triggers, effects, scheduler, seeded `Random`; owns the turn-pipeline contract
 │   │   ├── content-toolchain.md                         # YAML authoring format, review labels, D/V1 rules, scaffolds, validator, generator and the authoring-to-bundle handoff
 │   │   ├── application-and-ui.md                        # Application shell: boot, Game facade, Command/GameEvent unions, canonical content bundle, behavioural signatures, UI, view model, win check

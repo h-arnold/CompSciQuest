@@ -37,6 +37,8 @@ Check, in order:
 6. **Evidence** — the card records where its spec claim comes from; nothing is marked covered without evidence (V3).
 7. **Reachability and completability (final pass only)** — every declared room, exit, item, NPC topic, quiz, puzzle, hazard trigger and hint target in scope is reachable or triggerable; the trace gives a valid ordered path from the boot start (or the area's `startRoomId`) to `game-won`; no dependency creates a soft-lock and no `covered` topic with evidence lacks a completion source on a valid path (V4, `world-graph`). Verify the trace; never author or edit it.
 
+**MUST (batch-wide, N10) — Markdown affordance formatting.** Every bold span resolves to a parser noun, alias or scenery entry; every italic span names a direction the room accepts even when gated; at most four bold and four italic spans per room description; no rhetorical emphasis; no emphasis in hints, quiz prompts, options or explanations; no links unless explicitly requested, and then only inside the Pages allowlist. Screen readers flatten emphasis, so the prose must still work without it.
+
 End with exactly one verdict line: `PASS`, `PASS WITH MINORS` or `FAIL`. FAIL means at least one blocker or major finding.
 
 You do **not** adjudicate subject-matter accuracy, GCSE-level scope or terminology — `pck-reviewer` owns that. You do not propose new course facts from memory. If a spec claim is unverified, record it as a finding and point to `docs/exam-specs/wjec-unit1.md`.
@@ -44,6 +46,10 @@ You do **not** adjudicate subject-matter accuracy, GCSE-level scope or terminolo
 ## Definition of done
 
 - Every card path named in the brief was reviewed, and all seven check categories above were covered (category 7 only when the brief supplies the whole card set and the walkthrough trace).
+- The separate N10 affordance check was applied to every batch: bold and
+  italic spans resolve to their affordances, stay within the density budget
+  and carry no rhetorical emphasis, and no links appear unless explicitly
+  requested inside the Pages allowlist.
 - Every finding uses exactly `[blocker|major|minor] RULE-ID card-path — issue — why — suggested fix`.
 - The fairness review applies `docs/content/difficulty-and-fairness.md` to clue access, puzzle logic, hints, combat readability and failure/retry friction without overriding the owning rules.
 - Where the brief supplies scoped NPC topics, the review checks the declared location scope against the V4 beat and the actor's catch-all (T2, V4).

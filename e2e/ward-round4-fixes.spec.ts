@@ -193,9 +193,15 @@ test('WR4-B1 — look no longer claims the block sits on top of the cabinet', as
   await toDemonstration(page);
 
   await submit(page, 'look');
+  // §6.1: look emits the four-part room-entry shape, so the location title is
+  // its own level-two heading entry rather than a prefix to the description.
+  // Scope to the entry produced by this look, not the earlier arrival heading.
+  const lookOutput = page.locator('.output-log > div').last();
+  await expect(
+    lookOutput.getByRole('heading', { name: 'Demonstration Ward', level: 2 }),
+  ).toBeVisible();
   const lines = await transcript(page);
   const description = lines.at(-1) ?? '';
-  expect(description).toContain('Demonstration Ward.');
   expect(description).toContain('a practice block is part of the bench set');
   expect(description.toLowerCase()).not.toContain('on top');
   expect(errors()).toEqual([]);

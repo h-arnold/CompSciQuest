@@ -40,9 +40,12 @@ and `docs/content/narrative-principles.md` (§2 register, §8 harm floor). Read
 the brief as well. The rules named in your contract doc live in
 their owning documents (bible, narrative principles, toolchain,
 application-and-ui, editor and play-tester). The output path is given in the
-brief and always ends in `hints.yaml`. Write only that file. Use block scalars for hint text, keep
-authoring metadata under `authoring:`, and never edit the schema, validator,
-generator or generated TypeScript.
+brief and always ends in `hints.yaml`. Write only that file. Use a literal `|`
+block for multi-paragraph hint text (a folded `>-` destroys paragraph breaks).
+Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10): hints carry no emphasis at all; inline code,
+lists, tables and fences are enough. Keep authoring metadata under
+`authoring:`, and never edit the schema, validator, generator or generated
+TypeScript.
 
 Rules you own: H2, H2a, H3, P6, N4 in `hints.md`; cross-cutting N and P rules in
 `narrative-principles.md` §2, `content-bible.md` §7 and `application-and-ui.md`
@@ -86,9 +89,10 @@ Use the
 [definition of done](../../docs/developer/hints.md#81-definition-of-done).
 Before finishing, read each level in order and confirm none gives the answer;
 for each target, confirm the player can identify the goal, blocker and tools
-from the authored clues before hints are needed. Your final message must
-include the card path, hint and target IDs, the fairness check for each ladder
-and flagged assumptions.
+from the authored clues before hints are needed. Use literal `|` blocks for multi-paragraph hint text and carry no
+emphasis (N10); inline code, lists, tables and fences are enough. Your
+final message must include the card path, hint and target IDs, the
+fairness check for each ladder and flagged assumptions.
 
 ## Constraints and escalation
 

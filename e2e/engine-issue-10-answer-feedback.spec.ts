@@ -51,14 +51,21 @@ function numberedOptions(lines: readonly string[]): readonly string[] {
 }
 
 async function displayedQuestion(page: Page): Promise<DisplayedQuestion> {
-  const lines = await page.locator('.quiz-panel > div').allTextContents();
-  const first = lines[0] ?? '';
+  // The prompt is the first direct paragraph (§6.1); the numbered options are
+  // the panel's direct div children. The trailing requirement paragraph is a
+  // separate live region and is deliberately not read as an option.
+  const promptLine = await page
+    .locator('.quiz-panel > p')
+    .first()
+    .textContent();
+  const first = promptLine ?? '';
   const prompt = first.replace(/^Question \d+ of \d+: /u, '');
   const question = switchyardQuestions.find((entry) => entry.prompt === prompt);
   if (question === undefined) {
     throw new Error(`No generated authored question for prompt: ${prompt}`);
   }
-  const options = numberedOptions(lines.slice(1));
+  const lines = await page.locator('.quiz-panel > div').allTextContents();
+  const options = numberedOptions(lines);
   expect(
     options,
     'the displayed options are the generated authored options, in order',
@@ -92,7 +99,7 @@ async function enterSwitchFloorQuiz(page: Page): Promise<void> {
   // `quiz-started` is a suppressed internal-ID event (application-and-ui.md
   // §6.1), so the panel and its first rendered question are the stable seam.
   await expect(page.locator('.quiz-panel')).toBeVisible();
-  await expect(page.locator('.quiz-panel > div').first()).toContainText(
+  await expect(page.locator('.quiz-panel > p').first()).toContainText(
     'Question 1 of 3:',
   );
 }

@@ -39,9 +39,14 @@ and `docs/content/difficulty-and-fairness.md`. Read the
 brief as well. The rules named in your contract doc live in their owning
 documents (bible, narrative principles, toolchain, application-and-ui, editor
 and play-tester). The output path is given in the brief and always ends in
-`rooms.yaml`. Write only that file. Use block scalars for prose, keep authoring
-metadata under `authoring:`, and never edit the schema, validator, generator or
-generated TypeScript.
+`rooms.yaml`. Write only that file. Use a literal `|` block for room descriptions
+and other multi-paragraph prose (a folded `>-` destroys paragraph breaks). Apply
+[N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10):
+bold marks a thing the player can handle, bold italic a person they can address,
+italic a way through; style only resolvable spans on first mention, keep to at
+most four bold and four italic spans per room description, and never use emphasis
+for rhetorical stress. Keep authoring metadata under `authoring:`, and never edit
+the schema, validator, generator or generated TypeScript.
 
 Rules you own: N4, N5, N6, N8, D2–D4 in `areas.md`; cross-cutting N1–N3 in
 `content-bible.md` (§3 for N3), N4/N5 and N9 in `narrative-principles.md` §2 and
@@ -95,7 +100,8 @@ Use the
 [definition of done](../../docs/developer/areas.md#91-definition-of-done).
 Before finishing, check every ID and alias against the brief and the authored
 cards, every topic ID against the bible and `COVERAGE.md`, and re-read each
-description for voice. Your final
+description for voice. Check that multi-paragraph room descriptions
+use literal `|` blocks, since a folded `>-` destroys paragraph breaks. Your final
 message must include the card path, room and topic IDs, flagged assumptions and
 every proposed extra item with its ID, aliases and `portable` value.
 

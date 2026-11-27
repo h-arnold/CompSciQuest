@@ -37,9 +37,10 @@ in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` and
 `docs/content/narrative-principles.md`. Read the brief as well. The rules named
 in your contract doc live in their owning documents (bible, narrative
 principles, toolchain, application-and-ui, editor and play-tester). The output
-path is given in the brief and always ends in `npcs.yaml`. Write only that file. Use block scalars for prose, keep authoring metadata under
-`authoring:`, and never edit the schema, validator, generator or generated
-TypeScript.
+path is given in the brief and always ends in `npcs.yaml`. Write only that file.
+Use a literal `|` block for multi-paragraph prose (a folded `>-` destroys
+paragraph breaks), keep authoring metadata under `authoring:`, and never edit
+the schema, validator, generator or generated TypeScript.
 
 Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
 `content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 (IDs and
@@ -59,7 +60,9 @@ and its examples.
    topic (A2, D6;
    [D6](../../docs/developer/npcs.md#dialogue-plan-metadata-d6)).
 3. **Draft responses** before `match`, `isActive` and `effects`; apply A3–A5
-   from `npcs.md` to every line.
+   from `npcs.md` to every line. Bold italic marks a person the player can
+   address; quoted speech takes no style; inline code inside speech is allowed
+   only when an NPC dictates code or a value ([N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10)).
 4. **Test** each line against A1/A5 and each plan against A2; revise until the
    takeaway survives without the plan.
 5. **Write the fallback** against A6, then move to pass 2.

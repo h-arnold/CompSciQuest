@@ -68,8 +68,12 @@ time, and you may proceed only after they explicitly approve that edit.
   `playwright.config.ts` and DTO type files are setup, not TDD violations. Say
   explicitly when a slice is scaffolding.
 - The deterministic core is strictly test-first: matrix row → failing Vitest
-  test → smallest implementation → review.
-- UI and browser work is verification-led. Behavioural expectations come from
+  test → smallest implementation → review. It covers parser, command resolution,
+  effects, conditions, scoring, persistence, content validation and renderer
+  security invariants.
+- UI, browser and narrative/player-facing work is verification-led. E2E and
+  playtest are the primary gates; see `docs/developer/testing.md` §Sequencing for
+  when E2E is authored. Behavioural expectations come from
   `docs/developer/application-and-ui.md` §12; accessibility and aesthetics are
   judged by the `browser-tester` once something renders. For an accepted content
   area, the ordered path in `docs/content/walkthrough.md` is the expected
@@ -82,20 +86,34 @@ time, and you may proceed only after they explicitly approve that edit.
 Dispatch `test-planner` once to write `.opencode/scratchpad/branch-matrix.md`.
 Re-dispatch it when a new slice introduces branches not already listed, and at
 each slice completion so it can fill the `code path::symbol` column from the
-updated graph. The matrix is the shared contract: every later brief names the
-exact matrix IDs in scope.
+updated graph and the `verification evidence` column with the mechanism and path
+before any row is marked `COVERED`. The matrix is the shared contract: every
+later brief names the exact matrix IDs in scope.
 
 ## Gate 2 — dispatch one slice at a time
 
 For each slice, brief the agents in this order:
 
-1. `test-writer` — red tests for the assigned matrix IDs, with the red report at
-   `.opencode/scratchpad/slices/<slice-id>/red-report.md`.
-2. `code-implementer` — make those exact tests green, then `graphify update .`.
+1. `test-writer` — for deterministic-core slices only, red tests for the
+   assigned matrix IDs, with the red report at
+   `.opencode/scratchpad/slices/<slice-id>/red-report.md`. UI and browser slices
+   go straight to implementation with E2E/playtest verification; do not fabricate
+   a red report for them.
+2. `code-implementer` — make those exact tests green where a red report exists,
+   then `graphify update .`.
 3. `code-reviewer` — independent review into
    `.opencode/scratchpad/slices/<slice-id>/review.md`.
-4. `browser-tester` — for any UI-affecting slice, MCP exploration and e2e tests
-   into `.opencode/scratchpad/slices/<slice-id>/qa-report.md`.
+4. `browser-tester` (exploration pass) — for any UI-affecting slice, MCP
+   exploration, screenshots and accessibility/aesthetics checks into
+   `.opencode/scratchpad/slices/<slice-id>/qa-report.md`. UI slices still get
+   the QA report and screenshots immediately after implementation. Author no
+   durable E2E in this pass.
+5. `browser-tester` (E2E authoring pass) — a separate dispatch once the affected
+   area's behaviour is confirmed by playtest and its findings are resolved.
+   Author E2E for the confirmed command sequence and state transitions, plus one
+   focused regression per playtest bug. For a known-bug fix with a clear
+   reproduction, write the regression test first, then fix. Do not apply this
+   order retroactively to the existing E2E suite.
 
 Briefs must be self-contained: the child has fresh context. Include the slice
 ID, exact matrix IDs, authoritative document sections, file paths it may edit,
@@ -176,9 +194,13 @@ it from the V4 trace in `docs/content/walkthrough.md`.
 ## Definition of done
 
 - `branch-matrix.md` exists and every row cites a canonical document section.
-- Each non-scaffolding slice has a red report; scaffolding slices are labelled
-  as such in the report instead. Every slice has a verification run, a review
-  verdict and, where relevant, a QA report with screenshot evidence.
+- Deterministic-core slices have a red report; scaffolding slices are labelled
+  as such in the report instead. UI and browser slices have QA evidence from the
+  exploration pass, with E2E added by the later authoring pass once behaviour is
+  confirmed; accepted content areas have W7 playtest evidence, and
+  documentation-only slices have a docs review note or docs-freeze report
+  recorded as `docs: path`. Every slice has a verification run and a review
+  verdict; UI slices include a QA report with screenshot evidence.
 - Each accepted content area has a W6 verification run and a W7 playtest report
   with screenshot evidence, or an explicit `BLOCKED` escalation naming the
   owner. Playtester briefs name a `Focus:` unless a complete playthrough is
@@ -192,10 +214,12 @@ it from the V4 trace in `docs/content/walkthrough.md`.
 ## Constraints and escalation
 
 Hard limits: never edit source, tests, e2e tests or configuration; never act as
-any of the five workers; never mark a matrix row covered without a passing test;
-never invent behaviour where the design documents are silent. Web access and
-subagents other than the five code workers, the `docs` agent and `content-editor`
-are denied.
+any of the five workers; never mark a matrix row covered without recorded
+verification evidence from an approved mechanism — deterministic Vitest, browser
+E2E, playtest or documentation review (`docs: path`) — with the mechanism and
+evidence path recorded in the row; never invent behaviour where the design
+documents are silent. Web access and subagents other than the five code workers,
+the `docs` agent and `content-editor` are denied.
 
 Stop and ask the user when the design documents conflict, when a needed ID or
 contract is missing, or when two reviewers disagree. Reviewers do not enter the

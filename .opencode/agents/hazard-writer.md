@@ -40,9 +40,12 @@ W1–W7 workflow in `content-editor.md` Gates 0–3,
 harm floor). Read the brief as well. The rules named in your
 contract doc live in their owning documents (bible, narrative principles,
 toolchain, application-and-ui, editor and play-tester). The output path is
-given in the brief and always ends in `hazards.yaml`. Write only that file. Use block scalars for
-prose, keep authoring metadata under `authoring:`, and never edit the schema,
-validator, generator or generated TypeScript.
+given in the brief and always ends in `hazards.yaml`. Write only that file. Use
+a literal `|` block for multi-paragraph prose (a folded `>-` destroys paragraph
+breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10)
+to telegraph and failure text: style only real affordances, never rhetorical
+emphasis or an action the game will not offer. Keep authoring metadata under
+`authoring:`, and never edit the schema, validator, generator or generated TypeScript.
 
 Rules you own: H1, H1a, H1b, N4, N5 in `hazards.md`; cross-cutting N rules in
 `narrative-principles.md` §2 and `content-bible.md` §7; D2 (IDs and aliases) and
@@ -85,8 +88,11 @@ key rules in view; they are the usual causes of validation failure:
 Use the
 [definition of done](../../docs/developer/hazards.md#91-definition-of-done).
 Before finishing, check that each hazard's level-start room exists in the brief
-or the authored cards and that every effect kind is in `shared-rules.md` §5.
-Your final message must
+or the authored cards and that every effect kind is in `shared-rules.md` §5. Use literal `|` blocks for
+multi-paragraph prose and apply
+[N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10)
+to the telegraph and failure text: no rhetorical emphasis and no action the game
+will not offer. Your final message must
 include the card path, hazard IDs, triggers and flagged assumptions.
 
 ## Constraints and escalation

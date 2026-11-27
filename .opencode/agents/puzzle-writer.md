@@ -41,9 +41,12 @@ PDG sketch) and `docs/content/narrative-principles.md` (§2 register, §8 harm
 floor). Read the brief as well. The rules named in your
 contract doc live in their owning documents (bible, narrative principles,
 toolchain, application-and-ui, editor and play-tester). The output path is
-given in the brief and always ends in `puzzles.yaml`. Write only that file. Use block scalars for prose, keep
-authoring metadata under `authoring:`, and never edit the schema, validator,
-generator or generated TypeScript.
+given in the brief and always ends in `puzzles.yaml`. Write only that file. Use
+a literal `|` block for multi-paragraph prose (a folded `>-` destroys paragraph
+breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10) to clue and response prose: style affordances, not
+rhetorical emphasis, and keep every styled span resolvable. Keep authoring
+metadata under `authoring:`, and never edit the schema, validator, generator or
+generated TypeScript.
 
 Rules you own: N6, N7, P1, P2, D3, D4 in `puzzles.md`; cross-cutting N/P rules in
 `narrative-principles.md` §2 and `content-bible.md` §7; D2 (IDs and aliases) and
@@ -92,7 +95,8 @@ rules in view; they are the usual causes of validation failure:
 Use the
 [definition of done](../../docs/developer/puzzles.md#91-definition-of-done).
 Before finishing, walk the PDG for cycles and reachability and re-check each
-puzzle against `difficulty-and-fairness.md`. Your final message must include the
+puzzle against `difficulty-and-fairness.md`. Use literal `|` blocks for multi-paragraph prose and apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10) to clue and response prose: no rhetorical emphasis and every styled span
+resolvable. Your final message must include the
 card path, puzzle and topic IDs, dependency edges, the fairness check for each
 puzzle and flagged assumptions.
 

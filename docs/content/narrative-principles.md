@@ -9,8 +9,8 @@ story develops; only `confirmed` entries influence writing.
 
 - These principles govern voice, humour, stakes and consequences in all game
   text. They are not game content: no design cards and no TypeScript live here.
-- Cross-cutting rules live with the documents that own their subject: N4, N5
-  and N9 here; N1–N3 and N6 in `content-bible.md`; P1 and P2 in the bible's
+- Cross-cutting rules live with the documents that own their subject: N4, N5,
+  N9 and N10 here; N1–N3 and N6 in `content-bible.md`; P1 and P2 in the bible's
   topic index, P6 in `application-and-ui.md` §10; D rules in
   `content-toolchain.md`; V rules in the editor and play-tester instructions.
   Kind-specific authoring rules live in the owning contract doc (`areas.md`,
@@ -69,6 +69,80 @@ for examinable props, `portable`, in-world refusals and the confirmed
 "Presence, not labels" pattern. Room prose length is likewise owned by
 [areas.md N8](../developer/areas.md#write-the-room-first): at most two paragraphs,
 usually 200–300 words unless extra detail is warranted.
+
+### Markdown affordance formatting (N10)
+
+Player-facing prose is rendered as constrained Markdown
+([application-and-ui.md §6.1](../developer/application-and-ui.md#61-event-to-view-mapping)).
+Emphasis describes an affordance, not a taxonomy: it gives one precedence rule
+when a noun is also a door or a person, matches the parser's command families,
+and can be taught in `help`.
+
+| Style               | Meaning                           | Commands it advertises                   |
+| ------------------- | --------------------------------- | ---------------------------------------- |
+| `**bold**`          | A thing the player can handle     | `examine`, `take`, `use`, `open`, `put`  |
+| `***bold italic***` | A person the player can address   | `talk-to`, `ask`, `tell`, `give`, `show` |
+| `*italic*`          | A way through                     | `go` or a direction                      |
+| Plain               | Scene, atmosphere, abstract nouns | None                                     |
+
+If one noun offers two affordances in one sentence, split the sentence and style
+each affordance once:
+
+```text
+The **east door** is bolted; *east* leads to the Switchyard.
+A **port label** on the east socket reads LIVE; *east* leads to the Switchyard.
+```
+
+Do not stack `***` on a door, or use both bold and italic on one mention unless
+the noun is a person.
+
+Guardrails:
+
+1. **Resolvable spans only.** A bold span must resolve through an item name or
+   alias, an actor name or alias, or a scenery entry. An italic span must name a
+   direction the room accepts, even if the exit is currently gated. Bold must
+   never promise an `EXAMINE` that fails.
+2. **First mention only.** Style a noun on its first mention in a room entry or
+   message; repeat mentions are plain.
+3. **Density budget.** At most four bold spans and four italic spans per room
+   description. Move extra detail into `EXAMINE` responses or split the room.
+4. **No rhetorical emphasis.** No `*very*`, no `**never**` and no bold for
+   shouting. Rewrite a sentence that needs stress; the three styles stay
+   unambiguous.
+5. **Formatting supplements presence.** Every styled noun still sits in a
+   physical clause; no "Items here:" lists or labels standing in for prose
+   ([§11](#11-pattern-log-living)).
+6. **No styles in titles, names, aliases, topic prompts or quoted speech.**
+   Dialogue stays in quotation marks. Inline code inside speech is allowed when
+   an NPC dictates code or a value.
+7. **No emphasis in hints, quiz prompts, quiz options or quiz explanations.**
+   Inline code, lists, tables and fences are enough; emphasis must not cue an
+   answer.
+8. **Accessibility does not depend on emphasis.** Screen readers flatten bold
+   and italic, so emphasis is an additional cue and the words carry the meaning.
+
+Where each format belongs:
+
+| Context                   | Paragraphs                                  | Bold / bold italic / italic    | Inline code              | Lists          | Tables                 | Fences                | Links                             |
+| ------------------------- | ------------------------------------------- | ------------------------------ | ------------------------ | -------------- | ---------------------- | --------------------- | --------------------------------- |
+| Room description          | Yes                                         | Yes, within the density budget | Sparingly                | No             | No                     | No                    | No                                |
+| Item or actor description | Yes                                         | Yes                            | Yes                      | Sparingly      | Reference objects only | No                    | No                                |
+| NPC dialogue or node text | Yes                                         | No                             | Yes, for code and values | Sparingly      | No                     | Machine readouts only | No                                |
+| Hint                      | Yes                                         | No                             | Yes                      | Yes, for steps | Yes, for comparisons   | Yes, for code         | No                                |
+| Quiz prompt and options   | Prompt yes; options no                      | No                             | Yes, for expressions     | No             | No                     | No                    | No                                |
+| Quiz explanation          | Yes                                         | No                             | Yes                      | Yes            | Yes                    | Yes                   | No                                |
+| Help, title and credits   | Yes                                         | Group headings and the legend  | Yes, for syntax          | Yes            | Directions if useful   | No                    | GitHub Pages only, when requested |
+| Anywhere                  | No raw HTML, no images, no decorative rules |                                |                          |                |                        |                       |                                   |
+
+**Links.** The renderer permits only the GitHub Pages site
+`https://h-arnold.github.io/CompSciQuest/` and paths beneath it. Links are
+allowed by the renderer but must not appear in content unless the user explicitly
+requests one; the default is no links. Link text is descriptive, never a bare URL
+or "click here", and a link is never required to understand or solve anything.
+Disallowed links render as plain label text.
+
+Content headings start at `###`, because `##` is reserved for the location
+heading in the transcript ([application-and-ui.md §6.1](../developer/application-and-ui.md#61-event-to-view-mapping)).
 
 ## 3. Comic mode
 
@@ -267,6 +341,10 @@ worth promoting.
   strings and N6 clue strings byte-identical. Room length now follows N8 in
   [areas.md](../developer/areas.md#write-the-room-first): at most two paragraphs,
   usually 200–300 words, with extra detail where the area warrants it.
+- Formatting supplements presence
+  ([N10](#markdown-affordance-formatting-n10)): a styled noun still sits in a
+  physical clause, and no "Items here:" list or styled label stands in for
+  prose. Screen readers flatten emphasis, so the words must work without it.
 
 ## 12. Change control
 
@@ -315,3 +393,8 @@ worth promoting.
   third-person; the humour targets its excessive help, never the learner. The
   four former pupils are recoverable people, and cognitive decline remains
   satire rather than a course or medical claim.
+- 2026-11-27 — **Affordance formatting added to the "Presence, not labels"
+  pattern (§11).** The agreed Markdown convention
+  ([N10](#markdown-affordance-formatting-n10)) supplements physical presence: a
+  styled noun stays in a physical clause and no label
+  replaces prose. No story fact, ID, alias or card changes.

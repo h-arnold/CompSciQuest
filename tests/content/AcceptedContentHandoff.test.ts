@@ -63,7 +63,7 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
     // docs/coverage/COVERAGE.md and walkthrough.md §8.4 — never the bundle.
     expect(expectedZone1Counts(acceptedCards())).toEqual({
       rooms: 23,
-      items: 63,
+      items: 64,
       areas: 6,
       worlds: 1,
       actors: 20,

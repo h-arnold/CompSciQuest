@@ -59,7 +59,7 @@ function quizPanel(page: Page) {
 }
 
 function requirementNode(page: Page) {
-  return page.locator('.quiz-panel > p');
+  return page.locator('.quiz-panel > p[aria-live="polite"]');
 }
 
 function numberedOptions(lines: readonly string[]): readonly string[] {
@@ -81,8 +81,10 @@ async function displayedQuestion(
   page: Page,
   quiz: AuthoredQuiz,
 ): Promise<DisplayedQuestion> {
-  const lines = await quizPanel(page).locator('> div').allTextContents();
-  const first = lines[0] ?? '';
+  // The prompt is the first direct paragraph (§6.1); the numbered options are
+  // the panel's direct div children.
+  const promptLine = await quizPanel(page).locator('> p').first().textContent();
+  const first = promptLine ?? '';
   const prompt = first.replace(/^Question \d+ of \d+: /u, '');
   const question = quiz.questionIds
     .map((id) => authoredQuestion(id))
@@ -90,7 +92,8 @@ async function displayedQuestion(
   if (question === undefined) {
     throw new Error(`No generated authored question for prompt: ${prompt}`);
   }
-  const options = numberedOptions(lines.slice(1));
+  const lines = await quizPanel(page).locator('> div').allTextContents();
+  const options = numberedOptions(lines);
   expect(
     options,
     'displayed options are the authored options, in order',
@@ -181,11 +184,15 @@ test.describe('ENG30-PASSMARK-01 — quiz pass requirement and wrong allowance',
     await enterSwitchFloorQuiz(page);
 
     const displayed = await displayedQuestion(page, quiz);
-    const lines = await quizPanel(page).locator('> div').allTextContents();
-    expect(lines[0]).toBe(
+    const promptLine = await quizPanel(page)
+      .locator('> p')
+      .first()
+      .textContent();
+    expect(promptLine).toBe(
       `Question 1 of ${quiz.questionIds.length}: ${displayed.question.prompt}`,
     );
-    expect(numberedOptions(lines.slice(1))).toEqual(displayed.question.options);
+    const lines = await quizPanel(page).locator('> div').allTextContents();
+    expect(numberedOptions(lines)).toEqual(displayed.question.options);
     await expectRequirement(page, quiz, quiz.questionIds.length);
   });
 
@@ -214,10 +221,11 @@ test.describe('ENG30-PASSMARK-01 — quiz pass requirement and wrong allowance',
     expect(feedback).toEqual([`Incorrect. ${displayed.question.explanation}`]);
 
     await expect(quizPanel(page)).toBeVisible();
-    const questionLines = await quizPanel(page)
-      .locator('> div')
-      .allTextContents();
-    expect(questionLines[0]).toMatch(/^Question 2 of \d+: /u);
+    const promptLine = await quizPanel(page)
+      .locator('> p')
+      .first()
+      .textContent();
+    expect(promptLine).toMatch(/^Question 2 of \d+: /u);
     const next = await displayedQuestion(page, quiz);
     expect(next.question.id).not.toBe(displayed.question.id);
     // One wrong answer spent: the allowance falls 1 → 0 and the panel stays
@@ -251,10 +259,11 @@ test.describe('ENG30-PASSMARK-01 — quiz pass requirement and wrong allowance',
       await enterQuizFromSave(page, quiz);
 
       const firstQuestion = authoredQuestion(quiz.questionIds[0] ?? '');
-      const questionLines = await quizPanel(page)
-        .locator('> div')
-        .allTextContents();
-      expect(questionLines[0]).toBe(
+      const promptLine = await quizPanel(page)
+        .locator('> p')
+        .first()
+        .textContent();
+      expect(promptLine).toBe(
         `Question 1 of ${questionCount}: ${firstQuestion.prompt}`,
       );
       await expectRequirement(page, quiz, questionCount);

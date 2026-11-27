@@ -45,7 +45,7 @@ export class FakeElement {
   parentNode: FakeElement | undefined;
 
   constructor(tagName: string) {
-    this.tagName = tagName.toUpperCase();
+    this.tagName = tagName.startsWith('#') ? tagName : tagName.toUpperCase();
   }
 
   private selectAll(selector: string): FakeElement[] {

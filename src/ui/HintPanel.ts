@@ -1,7 +1,7 @@
 // Inline hint panel (application-and-ui.md §7.1, §7.2). It shows the most
 // recent hint from view data; hint selection and penalties belong to core.
 import type { GameViewData } from '../application/GameViewData';
-import { appendLine } from './appendLine';
+import { appendMarkdownBlock } from './appendMarkdown';
 
 export class HintPanel {
   readonly element: HTMLElement;
@@ -19,6 +19,6 @@ export class HintPanel {
     if (hint === undefined) {
       return;
     }
-    appendLine(this.element, `Hint ${hint.level}: ${hint.text}`);
+    appendMarkdownBlock(this.element, `Hint ${hint.level}: ${hint.text}`);
   }
 }

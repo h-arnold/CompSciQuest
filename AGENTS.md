@@ -95,7 +95,7 @@ assessment.
 | Agent              | Owns                                                                                                                                                | Scratchpad output                                   |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | `test-planner`     | `branch-matrix.md` only                                                                                                                             | `branch-matrix.md`                                  |
-| `test-writer`      | `tests/**`                                                                                                                                          | `slices/<id>/red-report.md`                         |
+| `test-writer`      | `tests/**` (deterministic-core slices)                                                                                                              | `slices/<id>/red-report.md`                         |
 | `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts`                                                                                            | `slices/<id>/implementation.md`                     |
 | `code-reviewer`    | nothing — read-only                                                                                                                                 | `slices/<id>/review.md`                             |
 | `browser-tester`   | `e2e/**`, `playwright.config.ts`                                                                                                                    | `slices/<id>/qa-report.md` and screenshots          |
@@ -117,10 +117,14 @@ its exact output path; no agent invents one.
 1. `code-lead` dispatches `test-planner` to create or extend the branch matrix.
    Every row cites a canonical document section; no behaviour is invented.
 2. For each slice, brief workers in order: `test-writer` (red Vitest tests for
-   named matrix IDs), `code-implementer` (smallest compliant change to make them
-   green, then `graphify update .`), `code-reviewer` (independent findings), and
-   `browser-tester` for UI-affecting slices (MCP exploration, screenshots,
-   accessibility/aesthetics and e2e tests).
+   named matrix IDs, deterministic-core slices only), `code-implementer`
+   (smallest compliant change, then `graphify update .`), `code-reviewer`
+   (independent findings), and `browser-tester` for UI-affecting slices (MCP
+   exploration, screenshots, accessibility/aesthetics, QA report). UI and
+   browser slices skip `test-writer`; they get that report immediately, and E2E
+   is authored in a later pass once the affected area's behaviour is confirmed by
+   playtest and findings are resolved. See
+   [testing.md](docs/developer/testing.md) §Sequencing.
 3. For an accepted content area, `content-editor` dispatches `play-tester`
    directly for W7 with `Purpose: content playability and effectiveness review`:
    it plays the running app with ordinary commands, checks the trace's expected
@@ -140,15 +144,26 @@ its exact output path; no agent invents one.
    `npx prettier --check` on the files the slice changed. The repo-wide
    `npm run format:check` may be red on user-owned docs and configuration and is
    not a gate. `code-lead`, not `test-writer`, owns the final green check.
+7. Mark a matrix row `COVERED` only with recorded verification evidence from an
+   approved mechanism, with the mechanism and evidence path in the row. See
+   [testing.md](docs/developer/testing.md) for the mechanisms and test-value
+   filter.
 
-The workflow is contract-first, test-first: scaffolding (TypeScript lint support,
-`playwright.config.ts` and DTO types; the stub fixture was scaffolding until its
-retirement) is exempt from red-first; the deterministic core is strictly
-red-green; UI and browser work is verification-led. `architecture.md` §12 sets
-the build order — persistence, then content registry and UI shell, then hazards
-and puzzles, NPCs, quiz combat and hints. Lint bootstrap and the parser slice are
-lead additions; the final content check is the W7 playtest required for
-each accepted area by V5 (`play-tester.md`), not a §12 requirement.
+The workflow is contract-first: scaffolding (TypeScript lint support,
+`playwright.config.ts` and DTO types) is exempt from red-first; red-first is
+mandatory only for the deterministic core — parser, command resolution, effects,
+conditions, scoring, persistence, content validation and renderer security
+invariants. UI, browser and narrative/player-facing work is verification-led,
+with E2E and playtest as the primary gates. Browser work has two passes:
+exploration with a QA report and screenshots after implementation, then E2E
+authoring once the area's behaviour is confirmed by playtest and findings are
+resolved. [testing.md](docs/developer/testing.md) owns that sequencing rule, the
+evidence rule, the test-value filter and copy-pinning guidance.
+`architecture.md` §12 sets the build order —
+persistence, then content registry and UI shell, then hazards and puzzles, NPCs,
+quiz combat and hints. Lint bootstrap and the parser slice are lead additions;
+the final content check is the W7 playtest required for each accepted area by
+V5 (`play-tester.md`), not a §12 requirement.
 
 ### Graphify in every code brief
 

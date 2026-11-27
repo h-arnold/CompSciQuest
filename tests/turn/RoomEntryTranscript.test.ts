@@ -45,7 +45,7 @@ describe('authored room-entry transcript', () => {
           `Authored room '${roomId}' is missing from the catalogue.`,
         );
       }
-      expect(lines).toContain(room.title);
+      expect(lines).toContain(`## ${room.title}`);
       expect(lines).toContain(room.description);
       expect(lines).toContain(
         `Exits: ${room.exits.map((exit) => exit.direction).join(', ')}`,
@@ -68,7 +68,7 @@ describe('authored room-entry transcript', () => {
     }
   });
 
-  it('ROOM-TEXT-05: a turn-supplied room event formats as title, blank line, description and Exits while panels use view data', () => {
+  it('MD-STATUS-01: a turn-supplied room event formats as level-two heading, blank line, description and Exits while panels use view data', () => {
     const { game } = authoredGame({
       state: authoredState({ roomId: 'room-arrival' }),
     });
@@ -83,7 +83,7 @@ describe('authored room-entry transcript', () => {
     const lines = formatEvent(entered, authoredBundle);
 
     expect(lines).toEqual([
-      entered.room.title,
+      `## ${entered.room.title}`,
       '',
       entered.room.description,
       `Exits: ${entered.room.exits.join(', ')}`,
@@ -157,7 +157,7 @@ describe('authored room-entry transcript', () => {
       room: summaryOf('room-switch-floor'),
     });
     const hazardLines = transcript(hazardBatch);
-    expect(hazardLines.indexOf('The Switch Floor')).toBeLessThan(
+    expect(hazardLines.indexOf('## The Switch Floor')).toBeLessThan(
       hazardLines.findIndex((line) => line.startsWith('Heat haze curls')),
     );
     expect(bus.batches.at(-1)).toEqual(hazardBatch);

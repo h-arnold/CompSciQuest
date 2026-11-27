@@ -42,9 +42,11 @@ the topics in your brief, `docs/content/content-bible.md` and
 brief as well. The rules named in your contract doc live in their owning
 documents (bible, narrative principles, toolchain, application-and-ui, editor
 and play-tester). The output path is given in the brief and always ends in
-`quizzes.yaml`. Write only that file. Use block scalars for prose, keep
-authoring metadata under `authoring:`, and never edit the schema, validator,
-generator or generated TypeScript.
+`quizzes.yaml`. Write only that file. Use a literal `|` block for multi-paragraph
+prose (a folded `>-` destroys paragraph breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10): quiz
+prompts, options and explanations carry no emphasis; inline code for expressions
+is enough. Keep authoring metadata under `authoring:`, and never edit the
+schema, validator, generator or generated TypeScript.
 
 Rules you own: P3, P4, P5, N3, N4, D3 in `combat.md`; cross-cutting P1, P2 and
 N5 in `content-bible.md` §7 and `narrative-principles.md` §2; P6 in
@@ -90,7 +92,9 @@ rules in view; they are the usual causes of validation failure:
 Use the
 [definition of done](../../docs/developer/combat.md#81-definition-of-done).
 Before finishing, re-check each question against the spec section cited in the
-brief and verify every effect kind against `shared-rules.md` §5. Your final
+brief and verify every effect kind against `shared-rules.md` §5. Use literal `|` blocks for multi-paragraph prose and carry no emphasis in
+prompts, options or explanations (N10); inline code for expressions is
+enough. Your final
 message must include the card path, quiz and question IDs, AO mix, the
 readability and retry-friction check and flagged assumptions.
 

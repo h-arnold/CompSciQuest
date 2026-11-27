@@ -143,6 +143,12 @@ the author expected.
 - An essential puzzle action must not depend on one exact phrase. Make the
   intended action discoverable through registered vocabulary and feedback rather
   than through trial-and-error punishment.
+- Formatting must not cue an answer or promise an action the game will not honour.
+  Under the N10 affordance rule in [narrative-principles.md](../content/narrative-principles.md#markdown-affordance-formatting-n10), emphasis marks a real affordance: an italic span names
+  a direction the room accepts even when gated, and a bold noun resolves to
+  something the player can examine or use. A gated exit may be styled italic but
+  never presented as un-gated, and an unexaminable noun is never styled as
+  examinable.
 
 ### 2.4 Treat hints as part of the game's design
 

@@ -4,8 +4,12 @@
 // from the module under test.
 import { describe, expect, it } from 'vitest';
 import type { CommandSpec } from '../fixtures/commandTable';
+import {
+  HELP_GROUPS,
+  hasCommandToken,
+  loadCommandTable,
+} from '../fixtures/commandTable';
 import { resolveGameCommand } from '../../src/application/commandResolution';
-import { hasCommandToken, loadCommandTable } from '../fixtures/commandTable';
 import {
   KEY_A,
   CHEST_ID,
@@ -120,6 +124,43 @@ describe('ENG2-HELP-01 canonical command table', () => {
     const { COMMAND_TABLE } = await loadCommandTable();
 
     expect(normalise(COMMAND_TABLE)).toEqual(normalise(CANONICAL_COMMANDS));
+  });
+
+  it('MD-HELP-01: every COMMAND_TABLE entry declares one of the four documented command groups', async () => {
+    const { COMMAND_TABLE } = await loadCommandTable();
+
+    expect(COMMAND_TABLE).toHaveLength(CANONICAL_COMMANDS.length);
+    for (const spec of COMMAND_TABLE) {
+      expect(
+        spec.group,
+        `${spec.verb} must declare a help group (spec §6.3)`,
+      ).toBeDefined();
+      if (spec.group === undefined) {
+        throw new Error(`${spec.verb} must declare a help group (spec §6.3)`);
+      }
+      expect(HELP_GROUPS, `${spec.verb} group must be documented`).toContain(
+        spec.group,
+      );
+    }
+
+    const usedGroups = new Set(COMMAND_TABLE.map((spec) => spec.group));
+    const usedGroupNames = [...usedGroups].map(String);
+    expect(sortedBy(usedGroupNames, (group) => group)).toEqual(
+      sortedBy([...HELP_GROUPS], (group) => group),
+    );
+    // Saves is a help section fed by SAVE_ACTIONS, not a COMMAND_TABLE group.
+    expect(usedGroupNames).not.toContain('Saves');
+
+    // Anchors from the help structure in spec §6.3.
+    const byVerb = new Map(
+      COMMAND_TABLE.map((spec) => [spec.verb, spec.group]),
+    );
+    expect(byVerb.get('go')).toBe('Movement');
+    expect(byVerb.get('look')).toBe('Looking and handling');
+    expect(byVerb.get('examine')).toBe('Looking and handling');
+    expect(byVerb.get('talk-to')).toBe('People');
+    expect(byVerb.get('ask')).toBe('People');
+    expect(byVerb.get('score')).toBe('Progress');
   });
 
   it('ENG2-HELP-01: DIRECTIONS pins the eight documented name and shortcut pairs', async () => {

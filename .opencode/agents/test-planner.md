@@ -70,12 +70,24 @@ no tests and no implementation code.
 Write `.opencode/scratchpad/branch-matrix.md`. Each row is:
 
 ```
-ID | area | input/trigger | precondition | expected observable result | doc section | layer | code path::symbol | status
+ID | area | input/trigger | precondition | expected observable result | doc section | layer | code path::symbol | verification evidence | status
 ```
 
 Use stable IDs: `P-` parser/commands, `C-` conditions and triggers, `E-` effects
 and scheduling, `S-` save/load/quarantine, `UI-` view and UI, `E2E-` browser
-flows. Status is `SPECIFIED`, `UNMAPPED`, `GAP` or `COVERED`.
+flows. Status is `SPECIFIED`, `UNMAPPED`, `GAP` or `COVERED`. `COVERED` means the
+row records verification evidence from one approved mechanism: a deterministic
+Vitest test, a browser E2E assertion, a playtest observation with a named report
+and screenshot, or a documentation review with a docs agent review note or
+docs-freeze report. Record `verification evidence` as `mechanism: path`; use
+`docs: path` for a documentation row. An empty cell keeps the row at `SPECIFIED`,
+`UNMAPPED` or `GAP`. The mechanisms and their evidence paths are defined in
+`docs/developer/testing.md`.
+
+A row whose expected result rests on a code-lead or worker reading of a silent
+specification stays `SPECIFIED` (or `GAP` when no document is named to decide it)
+even if a test passes, and its `verification evidence` cell must state that the
+evidence is a recorded reading, not a settled contract.
 
 Include a "Gaps and ambiguities" section listing every silent decision. When
 code lands, `code-lead` re-dispatches you at slice completion; use that pass to
@@ -98,6 +110,11 @@ than guessing paths.
   interval.
 - End states: win, loss, corrupt live save, end-state command gating, and the
   rule that restore never re-emits an end event.
+- Expected mechanism follows the row's subject: deterministic Vitest for core
+  logic, browser E2E for player-visible outcomes, playtest for player-facing
+  quality, fairness, clue access and prose, and documentation review for
+  documentation-only changes. Never record evidence that was not supplied, and
+  never add a row expecting a Vitest test only to fill the matrix.
 
 ## Graphify as the map
 
@@ -122,7 +139,10 @@ than guessing paths.
 
 ## Definition of done
 
-- Every row has a unique ID, a doc-section citation and a test layer.
+- Every row has a unique ID, a doc-section citation, a layer (for example core,
+  parser, UI, E2E, content, docs or playtest) and a
+  `verification evidence` cell; `COVERED` rows name a mechanism and its path,
+  using `docs: path` for a documentation row.
 - All required categories and boundary rows above are present.
 - Every silence in the documents appears in "Gaps and ambiguities", not as an
   invented expectation.

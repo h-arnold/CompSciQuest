@@ -334,6 +334,13 @@ via `textContent` — no HTML. `narrative-principles.md` remains authoritative f
 voice, humour, stakes, harm floor, fourth wall and Welsh references; the owning
 documents and subsystem contracts win on any conflict.
 
+**Typography (N10).** Player-facing prose is constrained Markdown. Bold marks a
+thing the player can handle, bold italic a person they can address and italic a
+way through; plain text carries scene and atmosphere. Emphasis is an additional
+cue, not a decision: screen readers flatten it, and every styled noun still sits
+in a physical clause. Writers follow
+[narrative-principles.md, Markdown affordance formatting (N10)](narrative-principles.md#markdown-affordance-formatting-n10).
+
 Three tonal modes are colours of **one deadpan register**, selected by context
 rather than mixed at random:
 
@@ -388,3 +395,7 @@ explicitly expendable items; `compsciquest:save:v1` is never touched.
 - Which cast belongs in Zones B–D? They are unscoped until each zone is briefed.
 
 Zone-specific questions are in the owning topic file.
+
+## 11. Approval record
+
+- 2026-11-27 — **Typography convention recorded in the tone guide.** A pointer to the agreed Markdown affordance rule (narrative-principles.md, Markdown affordance formatting (N10)) documents the convention for writers. No creative decision, ID, alias, card, flag, gate, score, coverage entry or V4 trace changes.

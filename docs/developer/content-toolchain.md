@@ -35,6 +35,13 @@ unresolved `todo` placeholder. Field names come from the subsystem documents
 §4, not the schema. An item may declare a top-level `useText` with required
 `success` and optional `blocked` prose; the Zod item shape enforces that.
 
+Multi-paragraph prose uses a literal YAML block scalar (`|`). A folded scalar
+(`>-`) joins its lines into one paragraph and destroys paragraph breaks, so it
+is reserved for single-paragraph strings. Fenced code and tables inside a
+literal block are indented consistently with the rest of the block; YAML strips
+that indentation, so the Markdown reaches the transcript unchanged. No schema
+change is required: descriptions and responses are already strings.
+
 Card allocation follows the ownership rule in
 [bible §4.2](../content/content-bible.md#42-card-ownership-by-area--user-directed-structure):
 an artefact belongs in the card of the area that uses it. The validator and
@@ -226,7 +233,9 @@ within each file — because
 [shared-rules.md §10](shared-rules.md#10-determinism-and-ordering-rules) requires
 declaration-order evaluation. Entries are not sorted by ID: that would break the
 order `AreaDefinition.roomIds` is derived from. No timestamps are emitted, and
-each file carries a header marking it as generated.
+each file carries a header marking it as generated. `JSON.stringify` emits
+embedded newlines as `\n` escapes, so a literal block becomes one escaped line
+and each generated entry stays on one line; the 600-line cap is unaffected.
 
 The generated files are committed, so the site remains fully static; Vite never
 parses YAML at build or runtime. `src/content/index.ts` exports `loadContent()`,

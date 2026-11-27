@@ -75,15 +75,18 @@ async function displayedQuestion(
   page: Page,
   quiz: AuthoredQuiz,
 ): Promise<AuthoredQuestion> {
-  const lines = await quizPanel(page).locator('> div').allTextContents();
-  const prompt = (lines[0] ?? '').replace(/^Question \d+ of \d+: /u, '');
+  // The prompt is the first direct paragraph (§6.1); numbered options are the
+  // panel's direct div children, with the requirement as a separate live region.
+  const promptLine = await quizPanel(page).locator('> p').first().textContent();
+  const prompt = (promptLine ?? '').replace(/^Question \d+ of \d+: /u, '');
   const question = quiz.questionIds
     .map((id) => questionFor(id))
     .find((entry) => entry.prompt === prompt);
   if (question === undefined) {
     throw new Error(`No authored question matches prompt: ${prompt}`);
   }
-  expect(numberedOptions(lines.slice(1))).toEqual(question.options);
+  const lines = await quizPanel(page).locator('> div').allTextContents();
+  expect(numberedOptions(lines)).toEqual(question.options);
   return question;
 }
 

@@ -55,8 +55,17 @@ conversationTopics:
           },
       }
     responses:
-      - >-
-        The mark beside your name is tapped twice, the way a clerk taps a form left on the desk too long. The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
+      - |
+        The mark beside your name is tapped twice, the way a clerk taps a form left
+        on the desk too long. The pupil was marked inattentive. The entry stands
+        until mastery of the whole of Unit 1 is demonstrated. You will demonstrate
+        it here.
+
+        ```
+        ATTENDANCE: NOT SATISFIED
+        MASTERY: 0 / UNIT 1
+        ENTRY: STANDS
+        ```
     strategy: { kind: once }
     effects:
       - {

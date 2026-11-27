@@ -1,5 +1,6 @@
 // Canonical verb table (architecture.md §4, application-and-ui.md §5.1/§5.2).
 // One handler per command kind; handlers return effects and never mutate state.
+import { roomEntryLines } from '../../RoomText';
 import type { TurnContext } from '../../TurnContext';
 import type { Effect } from '../../effects/Effect';
 import type { Command } from '../Command';
@@ -84,8 +85,15 @@ function isUnlocked(context: TurnContext, targetId: string): boolean {
 function describeRoom(context: TurnContext): Effect {
   const roomId = context.state.player.position.roomId;
   const room = context.bundle.rooms.getById(roomId);
+  if (room === undefined) {
+    return message('You see nothing special.');
+  }
   return message(
-    room ? `${room.title}. ${room.description}` : 'You see nothing special.',
+    roomEntryLines({
+      title: room.title,
+      description: room.description,
+      exits: room.exits.map((exit) => exit.direction),
+    }).join('\n'),
   );
 }
 
@@ -368,7 +376,7 @@ function scoreHandler(
   context: TurnContext,
 ): readonly Effect[] {
   return command.kind === 'score'
-    ? [message(`Your score is ${context.state.score}.`)]
+    ? [message(`Your score is **${context.state.score}**.`)]
     : [];
 }
 
