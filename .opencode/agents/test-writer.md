@@ -70,6 +70,12 @@ write a Vitest test only to mark a matrix row covered.
 These rules apply to deterministic-core rows only. The evidence rule and
 test-value filter are owned by `docs/developer/testing.md`.
 
+- In test files you are already touching, delete tests that fail the test-value
+  filter (`docs/developer/testing.md`) before adding new ones — fake-DOM shape
+  assertions, duplicate pins of generated copy, weak counts or tests written
+  only to fill a matrix row. Do not widen scope or delete known-bug regression
+  tests. If a deleted test is evidence for a `COVERED` row, tell `code-lead` in
+  your final message for reconciliation; never leave it silently `COVERED`.
 - Name the test after its matrix ID, for example
   `it('S-07: newer save version is rejected', ...)`.
 - Before an implementation lands, run `npm test` and confirm each new test
