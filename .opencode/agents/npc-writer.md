@@ -42,9 +42,8 @@ path is given in the brief and always ends in `npcs.yaml`. Write only that file.
 TypeScript.
 
 Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
-`content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 in
-`content-bible.md`
-§9 and D1, D3, D4 and D5 in `content-toolchain.md` §§2/4. Work in two passes:
+`content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 (IDs and
+aliases) and D1, D3, D4 and D5 in `content-toolchain.md` §§2/4. Work in two passes:
 author the exchange, then implement it.
 
 ## Pass 1 — author the exchange
@@ -98,7 +97,7 @@ view; they are the usual causes of validation failure:
 Use the
 [definition of done](../../docs/developer/npcs.md#111-definition-of-done).
 Before finishing, verify every referenced actor, item, node, topic and quiz ID
-exists in the bible or brief, and confirm the expected post-quiz state recorded
+exists in the brief or the authored cards, and confirm the expected post-quiz state recorded
 in the brief or the `start-quiz` topic's `authoring.note`. Your final message
 must include the card path, actor and topic IDs, the `content:validate` verdict
 and flagged assumptions.
@@ -107,7 +106,7 @@ and flagged assumptions.
 
 Agent-specific hard limits: write only the assigned `npcs.yaml`; no TypeScript
 or engine code, including the schema, validator, generator and generated files;
-no HTML; no invented IDs or aliases; no answer leakage; no parser-error or "I
+no HTML; no ID or alias that is neither assigned in the brief nor marked `proposed — needs editor approval (D2)` in the return; no answer leakage; no parser-error or "I
 don't understand that" phrasing. For every other blocker and for the review
 loop, follow
 [npcs.md §11.2](../../docs/developer/npcs.md#112-hard-constraints-and-escalation):

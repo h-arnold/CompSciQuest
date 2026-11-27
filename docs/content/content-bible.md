@@ -1,36 +1,10 @@
 # CompSciQuest content bible
 
-**Status: approved 2026-11-24, including the curated ideation set for the first zone.**
-**Assistance Ward amendment approved 2026-11-26: mandatory onboarding area, four recoverable pupils and non-assessed `tutorial-mechanics` topic (§§4–7, §9–§12); six Gate 0 ideation streams curated and user-approved; all cards returned, W4 revision round 1 validated, CC-01 closed in code, PCK re-review PASS and content-critic PASS WITH MINORS; the CC-04 revision validates but focused critic re-review found a runtime selector blocker; code repair is PASS and final content-critic and focused PCK re-reviews are PASS; all six cards approved and revalidated; final whole-set V4 review returned PASS WITH MINORS with no blocker or major; focused minor closure complete: content-critic PASS WITH MINORS and PCK PASS with no blocker or major; the approved conditional dial producer landed in W6 and is recorded in §12.**
-**Unit 1.4 scoping amendment applied 2026-11-25 (The Pattern Mill, four areas — §5, §6, §7, §9, §11, §12): W2 approval requested; no 1.4 writer briefed.**
-The user approved the original bible, then the root/topic split with 1.2.1 Data
-representation as the first zone, then (after the Gate 0 ideation sub-stage, whose
-workflow now lives in `.opencode/agents/content-editor.md`) the
-curated cast, hazard, question-pool and prologue decisions. This file is the **root
-bible**; zone detail lives in `docs/content/topics/*.md`. The first zone's six design
-cards were subsequently briefed, written, reviewed and integrated (see `status.md`).
-The bible is co-authored with the user and
-changes only with their agreement (`content-editor.md` Gate 0, W1–W2). It governs
-creative choices; the owning documents and subsystem contracts govern authoring
-practice; `docs/exam-specs/wjec-unit1.md` governs course facts.
-
-**Opening-sequence amendment (2026-11-25): approved.** The user asked for
-an opening in which the pupil is absorbed during a classroom attention scan, meets
-the misaligned AI in a new arrival room, and is taken to a zone-choice starting
-point called **The Network Hub**. Only The Switchyard is described in room detail.
-As first drafted the user chose "bible now, cards later", so the amendment itself
-changed no approved card, ID in a card, flag, dependency, score or V4 trace. The user
-then approved the amendment and authorised the card update in a second decision;
-that revision is briefed separately and recorded in `status.md`. The Network Hub
-teaching batch is **not** part of this work: it stays described only.
-
-> **Format migration.** The six approved first-zone cards have been migrated
-> verbatim to YAML under `docs/content/1-2-1-data-representation/`, and the Markdown
-> originals have been retired, as described in `status.md` and specified in
-> `docs/developer/content-toolchain.md`. Any `*.md` card name cited in this bible
-> is historical provenance; it resolves to the corresponding `.yaml` card.
-> Migration changed format only — never narrative, IDs, flags, dependencies or
-> scores. Later amendments are made to the YAML cards.
+This bible owns game-wide creative decisions: the premise, pillars, key-node
+spine, area and cast indexes, topic index, hazard palette and tone guide. Zone
+detail lives in `docs/content/topics/*.md`; authoring rules live in the owning
+documents and subsystem contracts; `docs/exam-specs/wjec-unit1.md` is the
+authority for course facts. The bible changes only with the user's agreement.
 
 ## 1. Authority and file map
 
@@ -41,14 +15,13 @@ then the bible; data shape and runtime behaviour → subsystem docs and
 documents and subsystem contracts; creative choices → the bible, subject to the
 rules.
 
-| File                                               | Holds                                                                                                                                                                                        |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/content/content-bible.md`                    | Overarching, game-wide material: premise, pillars, key-node spine, area/cast/topic indexes, hazard palette, master ID/alias registry, tone guide, global open questions and approval record. |
-| `docs/content/topics/1-2-1-data-representation.md` | Everything specific to the first zone: spec references, room cluster, PDG, selected hazards, teaching beats, IDs and zone questions.                                                         |
-| `docs/content/topics/assistance-ward.md`           | Approved high-level onboarding outline: mandatory hub checkpoint, three-room loop, four recoverable pupils, full command tour, non-assessed practice systems and curation questions.         |
-| `docs/content/topics/1-1-computer-architecture.md` | Parked detail for the former first zone. Reserved IDs and topics are kept alive here, not briefed.                                                                                           |
-| `docs/content/narrative-principles.md`             | Voice, humour, harm floor, fourth wall and Welsh references (**approved 2026-11-24**; settled authority for briefs).                                                                         |
-| `docs/content/status.md`                           | Gate states, file states and both review verdicts.                                                                                                                                           |
+| File                                               | Holds                                                                                                                                                                                |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `docs/content/content-bible.md`                    | Overarching, game-wide material: premise, pillars, key-node spine, area/cast/topic indexes, hazard palette, tone guide, global open questions and approval record.                   |
+| `docs/content/topics/1-2-1-data-representation.md` | Everything specific to the first zone: spec references, room cluster, PDG, selected hazards, teaching beats, IDs and zone questions.                                                 |
+| `docs/content/topics/assistance-ward.md`           | Approved high-level onboarding outline: mandatory hub checkpoint, three-room loop, four recoverable pupils, full command tour, non-assessed practice systems and curation questions. |
+| `docs/content/topics/1-1-computer-architecture.md` | Parked detail for the former first zone. Reserved IDs and topics are kept alive here, not briefed.                                                                                   |
+| `docs/content/narrative-principles.md`             | Voice, humour, harm floor, fourth wall and Welsh references (**approved 2026-11-24**; settled authority for briefs).                                                                 |
 
 The editor's own process — including the Gate 0 ideation sub-stage (W1–W2) — lives
 in `.opencode/agents/content-editor.md`; this file records only the curated outcome
@@ -100,20 +73,20 @@ failure.
   AI judged not to be paying attention.
 - The opening now shows that judgement being made: the classroom attention scan is
   the moment of absorption (§4.1). The Network Hub's 1990s label is in-world colour,
-  never a course fact (§10).
+  never a course fact (§9).
 
 ## 3. Pillars (N1)
 
 Every area, character and hazard must trace to at least one pillar. A card that
 cannot is rejected.
 
-| #   | Pillar                               | What it means in practice                                                                                                                                                                               |
-| --- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P-a | **Attention is the scarce resource** | The AI's misalignment is about attention. The game never accepts "I was there" as mastery; the player must _demonstrate_ understanding. Source of the premise, the verdict key node and the AI's voice. |
-| P-b | **The machine is a place**           | Every GCSE concept is a mechanism of the world, not an interruption to it (N3). A quiz is a challenge issued by an in-world actor; a puzzle is a task that uses the concept.                            |
-| P-c | **Competence opens doors**           | Gates are conceptual mastery, not arbitrary keys. Every gate has an in-fiction reason and two discoverable clues in room, NPC or item text (N6). No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the editor's alias registry. Difficulty is reasoning (AO2/AO3), never obscurity. |
-| P-d | **Deadpan absurdity**                | Comic timing, cartoon peril, absurd options, bounded comeuppance. The joke never changes a course fact and never mocks the learner (narrative-principles.md §§3, 6, 8).                                 |
-| P-e | **Oversight matters**                | Legal, social, ethical, environmental and professional dimensions are integrated into topics, not bolted on — the spec requires this and the premise embodies it (1.1.1, 1.2.3, 1.5.2, 1.8.1).          |
+| #   | Pillar                               | What it means in practice                                                                                                                                                                                                                                                                                                                       |
+| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P-a | **Attention is the scarce resource** | The AI's misalignment is about attention. The game never accepts "I was there" as mastery; the player must _demonstrate_ understanding. Source of the premise, the verdict key node and the AI's voice.                                                                                                                                         |
+| P-b | **The machine is a place**           | Every GCSE concept is a mechanism of the world, not an interruption to it (N3). A quiz is a challenge issued by an in-world actor; a puzzle is a task that uses the concept.                                                                                                                                                                    |
+| P-c | **Competence opens doors**           | Gates are conceptual mastery, not arbitrary keys. Every gate has an in-fiction reason and two discoverable clues in room, NPC or item text (N6). No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the aliases declared on items and actors. Difficulty is reasoning (AO2/AO3), never obscurity. |
+| P-d | **Deadpan absurdity**                | Comic timing, cartoon peril, absurd options, bounded comeuppance. The joke never changes a course fact and never mocks the learner (narrative-principles.md §§3, 6, 8).                                                                                                                                                                         |
+| P-e | **Oversight matters**                | Legal, social, ethical, environmental and professional dimensions are integrated into topics, not bolted on — the spec requires this and the premise embodies it (1.1.1, 1.2.3, 1.5.2, 1.8.1).                                                                                                                                                  |
 
 ## 4. Key-node spine (N2)
 
@@ -161,7 +134,7 @@ beat asserts a course fact.
    everything it receives to every port, so all the routes are visible at once:
    one live, the rest dark. The AI says it is still on the record, which is why
    nobody switched it off. The 1990s line is **flavour only**: it is never taught,
-   quizzed or used as evidence for a spec topic (§10).
+   quizzed or used as evidence for a spec topic (§9).
 4. **The mandatory orientation checkpoint.** The hub gains an ungated south
    route to **The Assistance Ward** (`area-assistance-ward`,
    `room-assistance-intake`). The same AI gives a weary, passive-aggressive tour
@@ -223,9 +196,9 @@ gates and exits belong in each topic file.
 | `area-entry-interface`             | Opening key node: the classroom scan and the AI's tribunal in `room-arrival`.                                                                                                                                               | root bible §4.1                          | Provisional; not briefed                                                                                                                                                                                                                                                                                                   |
 | `area-network-hub`                 | **Zone-choice starting point — The Network Hub.** An older hub that copies every packet to every port; the south ward route is open and the teaching ports wait for ward calibration.                                       | root bible §4.1                          | Described only; not briefed, not a teaching zone                                                                                                                                                                                                                                                                           |
 | `area-assistance-ward`             | **The Assistance Ward.** Mandatory, unscored onboarding checkpoint reached south of the hub; three-room command tour with the AI and four recoverable former pupils.                                                        | `topics/assistance-ward.md`              | Curated Gate 0 set approved 2026-11-26; all cards returned, W4 revision round 1 validated, CC-01 closed in code, PCK re-review PASS and content-critic PASS WITH MINORS; CC-04 revision validated; first focused critic FAIL on runtime selector blocker; code repair, final content-critic and final focused PCK all PASS |
-| `area-1-2-1-data-representation`   | **First zone — The Switchyard.** Layers of abstraction as physical floors.                                                                                                                                                  | `topics/1-2-1-data-representation.md`    | Approved, generated and integrated (see `status.md`)                                                                                                                                                                                                                                                                       |
+| `area-1-2-1-data-representation`   | **First zone — The Switchyard.** Layers of abstraction as physical floors.                                                                                                                                                  | `topics/1-2-1-data-representation.md`    | Approved, generated and integrated                                                                                                                                                                                                                                                                                         |
 | `area-1-4-programming-constructs`  | **The Pattern Mill (Zone A of 1.4)** — a Welsh woollen mill where the constructs are the loom's own mechanics; spec topics `algorithms-and-pseudocode`, `programming-constructs`.                                           | `topics/1-4-1-programming-constructs.md` | Approved (W2, 2026-11-25); Zone A topic file approved; **Gate 1 briefs dispatched 2026-11-25**                                                                                                                                                                                                                             |
-| `area-1-4-concourse`               | **The Rule Machine Concourse** — user-directed placeholder front area for Unit 1.4: links back to the Network Hub (north) and forward to the mill; dark ports reserved for Zones B–D. Navigation-only, no topics, no score. | — (concise definition in §11 item 15)    | Authoring in W3 (wave 1, 2026-11-25)                                                                                                                                                                                                                                                                                       |
+| `area-1-4-concourse`               | **The Rule Machine Concourse** — user-directed placeholder front area for Unit 1.4: links back to the Network Hub (north) and forward to the mill; dark ports reserved for Zones B–D. Navigation-only, no topics, no score. | — (concise definition in §10 item 15)    | Authoring in W3 (wave 1, 2026-11-25)                                                                                                                                                                                                                                                                                       |
 | `area-1-4-search-and-sort`         | Zone B of 1.4 — searching and sorting (the five algorithms).                                                                                                                                                                | Zone B topic file when scoped            | Planned; unscoped                                                                                                                                                                                                                                                                                                          |
 | `area-1-4-maintainable-programs`   | Zone C of 1.4 — maintainable, reliable programs (1.4.1 maintainability + 1.5.1 folded in).                                                                                                                                  | Zone C topic file when scoped            | Planned; unscoped                                                                                                                                                                                                                                                                                                          |
 | `area-1-4-validation-verification` | Zone D of 1.4 — validation and verification (its own area).                                                                                                                                                                 | Zone D topic file when scoped            | Planned; unscoped                                                                                                                                                                                                                                                                                                          |
@@ -306,14 +279,14 @@ hooks, not course facts, and never displace a technical term.
 
 **Offstage:** the teacher who built the AI (coffee, Reddit) is part of the frame and
 the Resolution node. No actor ID is allocated yet. The expendable
-`item-comic-sans-cartridge` (§9) nods to the predecessor without requiring the teacher
+`item-comic-sans-cartridge` nods to the predecessor without requiring the teacher
 to appear.
 
 ## 7. Topic index
 
 Bare kebab-case IDs below are **spec topic IDs**: they become `## Topic: <id>` headings
 in `docs/coverage/COVERAGE.md` at integration (V3, Gate 3). They are distinct from
-conversation-topic IDs, which carry the `topic-` prefix (§9). Writers use only these
+conversation-topic IDs, which carry the `topic-` prefix. Writers use only these
 IDs and never mark a topic `covered` without teaching and assessment evidence
 (P1, V3). Exact spec references and teaching beats for each batch are in the owning
 topic file; this is an index only. An approved non-assessed onboarding topic may
@@ -373,276 +346,7 @@ telegraphs, are decisions recorded in each topic file.
 Absurd options are comic detours, not gates: an unflagged option from registered
 nouns, costing one life and a bounded in-world comeuppance (narrative-principles.md §6).
 
-## 9. Master ID and alias registry
-
-Writers copy IDs from this table verbatim; a request for a new ID goes back to the
-editor and the user (D2). IDs are kebab-case with a kind prefix, and no writer
-invents one outside their brief. This registry stays at the **root** because
-global uniqueness of aliases is a game-wide rule (D2; shared-rules.md §10). Aliases
-are lowercase words or short phrases, unique across **all** objects and NPCs. Zone
-files explain what each ID is for; this table owns the spellings.
-
-| Prefix                  | ID                                                                                                                                                                                                                            | Aliases                                                                                                           | Owner                                                                                                                                                                                                                                                                             |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `room-`                 | `room-entry-interface`                                                                                                                                                                                                        | interface, entry, hub                                                                                             | root                                                                                                                                                                                                                                                                              |
-| `room-`                 | `room-arrival`                                                                                                                                                                                                                | arrival, landing, scan                                                                                            | root; opening sequence (§4.1)                                                                                                                                                                                                                                                     |
-| `room-`                 | `room-network-hub`                                                                                                                                                                                                            | patch bay, broadcast bay                                                                                          | root; zone-choice starting point (§4.1). `hub` stays with `room-entry-interface`. `concourse` moved to `room-1-4-concourse` 2026-11-25 (editor registry de-duplication: the alias was double-claimed when the 1.4 concourse area was added; content-ids gate enforces uniqueness) |
-| `area-`                 | `area-network-hub`                                                                                                                                                                                                            | —                                                                                                                 | root; described only, not briefed                                                                                                                                                                                                                                                 |
-| `world-`                | `world-wjec-gcse-computer-science-2025-spec`                                                                                                                                                                                  | —                                                                                                                 | root; the single world (§5). User supplied the stem; `world-` is the mandatory D2 prefix.                                                                                                                                                                                         |
-| `room-`                 | `room-switch-floor`                                                                                                                                                                                                           | switch floor, foundry, workshop                                                                                   | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-binary-hall`                                                                                                                                                                                                            | binary hall, hall, counting hall                                                                                  | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-hex-deck`                                                                                                                                                                                                               | hex deck, deck, hexadecimal                                                                                       | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-character-tiles`                                                                                                                                                                                                        | character tiles, tiles, characters                                                                                | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-picture-mosaic`                                                                                                                                                                                                         | picture mosaic, mosaic, gallery                                                                                   | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-sound-choir`                                                                                                                                                                                                            | sound choir, choir, sampling                                                                                      | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-storage-stacks`                                                                                                                                                                                                         | storage stacks, stacks, capacity                                                                                  | 1.2.1                                                                                                                                                                                                                                                                             |
-| `room-`                 | `room-compression-press`                                                                                                                                                                                                      | compression press, press, squash                                                                                  | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-switch-gauge`                                                                                                                                                                                                           | switch gauge, gauge                                                                                               | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-hex-nibble-card`                                                                                                                                                                                                        | nibble card, hex card                                                                                             | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-ascii-stamp`                                                                                                                                                                                                            | ascii stamp, stamp                                                                                                | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-pixel-lens`                                                                                                                                                                                                             | pixel lens, lens                                                                                                  | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-sample-fork`                                                                                                                                                                                                            | sample fork, fork                                                                                                 | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-compression-die`                                                                                                                                                                                                        | compression die, die                                                                                              | 1.2.1                                                                                                                                                                                                                                                                             |
-| `item-`                 | `item-comic-sans-cartridge`                                                                                                                                                                                                   | comic sans cartridge, cursed cartridge                                                                            | root; expendable joke item                                                                                                                                                                                                                                                        |
-| `item-`                 | `item-decimal-sample`                                                                                                                                                                                                         | decimal sample, sample                                                                                            | 1.2.1; portable Binary Hall sample for the accepted real-bin action                                                                                                                                                                                                               |
-| `item-`                 | `item-before-label`                                                                                                                                                                                                           | before label, tube label                                                                                          | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-oil-can`                                                                                                                                                                                                                | oil can, oilcan                                                                                                   | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-route-diagram`                                                                                                                                                                                                          | route diagram, painted diagram                                                                                    | 1.2.1; reserved, not declared — the painted diagram is room prose, not an item (2026-11-25)                                                                                                                                                                                       |
-| `item-`                 | `item-rule-card`                                                                                                                                                                                                              | rule card, sum card                                                                                               | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-overflow-tray`                                                                                                                                                                                                          | overflow tray, catch tray                                                                                         | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-spare-drawer`                                                                                                                                                                                                           | spare drawer, drawer                                                                                              | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-mosaic-ruler`                                                                                                                                                                                                           | mosaic ruler, ruler                                                                                               | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-vector-sheet`                                                                                                                                                                                                           | vector sheet, curve sheet                                                                                         | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-patch-lead`                                                                                                                                                                                                             | patch lead, lead                                                                                                  | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-brass-plate`                                                                                                                                                                                                            | brass plate, plate                                                                                                | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-sample-tray`                                                                                                                                                                                                            | sample tray, output tray                                                                                          | 1.2.1; decorative examinable                                                                                                                                                                                                                                                      |
-| `item-`                 | `item-port-label`                                                                                                                                                                                                             | port label, live port                                                                                             | network-hub; decorative examinable                                                                                                                                                                                                                                                |
-| `npc-`                  | `npc-the-ai`                                                                                                                                                                                                                  | ai, tutor, the tutor                                                                                              | root                                                                                                                                                                                                                                                                              |
-| `npc-`                  | `npc-predecessor`                                                                                                                                                                                                             | predecessor, former pupil, glitch                                                                                 | root                                                                                                                                                                                                                                                                              |
-| `npc-`                  | `npc-the-foreman`                                                                                                                                                                                                             | foreman, gaffer                                                                                                   | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-nibble-clerk`                                                                                                                                                                                                            | nibble clerk, clerk, abacus                                                                                       | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-typesetter`                                                                                                                                                                                                              | typesetter, setter, compositor                                                                                    | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-mosaic-critic`                                                                                                                                                                                                           | mosaic critic, critic, curator                                                                                    | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-choirmaster`                                                                                                                                                                                                             | choirmaster, conductor, maestro                                                                                   | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-stack-keeper`                                                                                                                                                                                                            | stack keeper, stacker, custodian                                                                                  | 1.2.1                                                                                                                                                                                                                                                                             |
-| `npc-`                  | `npc-press-operator`                                                                                                                                                                                                          | press operator, operator, compactor                                                                               | 1.2.1                                                                                                                                                                                                                                                                             |
-| `actorstate-`           | `actorstate-ai-cold`, `actorstate-ai-grudging`                                                                                                                                                                                | —                                                                                                                 | root; reserved                                                                                                                                                                                                                                                                    |
-| `actorstate-`           | `actorstate-predecessor-glitch`                                                                                                                                                                                               | —                                                                                                                 | root; reserved                                                                                                                                                                                                                                                                    |
-| `actorstate-`           | `actorstate-foreman-busy`, `actorstate-foreman-helpful`                                                                                                                                                                       | —                                                                                                                 | 1.2.1; reserved                                                                                                                                                                                                                                                                   |
-| `actorstate-`           | `actorstate-ready`                                                                                                                                                                                                            | —                                                                                                                 | root; generic default actor state ([npcs.md §8](../developer/npcs.md#8-npc-card-format) / actor binding), needed by every actor as `initialStateId`                                                                                                                                                                                      |
-| `topic-` (conversation) | `topic-ai-verdict`, `topic-ai-unit-two-taunt`, `topic-ai-default`                                                                                                                                                             | —                                                                                                                 | root; reserved; `topic-ai-default` is the in-character catch-all (T1)                                                                                                                                                                                                             |
-| `topic-` (conversation) | `topic-ai-why-here`, `topic-ai-escape`, `topic-ai-failure`                                                                                                                                                                    | —                                                                                                                 | root; allocated 2026-11-25 for the arrival conversation. `special` keyword matches; no flags or course facts. `topic-ai-failure` is the editor's third ID for the user-approved third topic.                                                                                      |
-| `topic-` (conversation) | `topic-predecessor-default`                                                                                                                                                                                                   | —                                                                                                                 | root; in-character catch-all (T1)                                                                                                                                                                                                                                                 |
-| `topic-` (conversation) | `topic-predecessor-comic-sans`, `topic-predecessor-geese`, `topic-predecessor-duck-as-bit`                                                                                                                                    | —                                                                                                                 | root / 1.2.1; reserved                                                                                                                                                                                                                                                            |
-| `topic-` (conversation) | `topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor`                                                                                                                                                   | —                                                                                                                 | 1.2.1; reserved                                                                                                                                                                                                                                                                   |
-| `topic-` (conversation) | `topic-foreman-show-gauge`, `topic-foreman-show-lens`, `topic-foreman-show-fork`, `topic-foreman-show-nibble`                                                                                                                 | —                                                                                                                 | 1.2.1; editor-allocated 2026-11-24 to produce the four SHOW-leaf flags (`overflow-checked`, `badge-scaled`, `bit-rate-counted`, `capacity-labelled`) after the V4 review; always active `show`-matched topics                                                                     |
-| `topic-` (conversation) | `topic-clerk-bases`, `topic-clerk-carries`, `topic-clerk-shifts`, `topic-clerk-bases-known`, `topic-clerk-shifts-known`, `topic-clerk-default`                                                                                | —                                                                                                                 | 1.2.1; nibble clerk                                                                                                                                                                                                                                                               |
-| `topic-` (conversation) | `topic-setter-ascii`, `topic-setter-unicode`, `topic-setter-string`, `topic-setter-default`                                                                                                                                   | —                                                                                                                 | 1.2.1; typesetter                                                                                                                                                                                                                                                                 |
-| `topic-` (conversation) | `topic-critic-vectors`, `topic-critic-depth`, `topic-critic-storage`, `topic-critic-default`                                                                                                                                  | —                                                                                                                 | 1.2.1; mosaic critic                                                                                                                                                                                                                                                              |
-| `topic-` (conversation) | `topic-conductor-samples`, `topic-conductor-depth`, `topic-conductor-storage`, `topic-conductor-default`                                                                                                                      | —                                                                                                                 | 1.2.1; choirmaster                                                                                                                                                                                                                                                                |
-| `topic-` (conversation) | `topic-keeper-units`, `topic-keeper-capacity`, `topic-keeper-default`                                                                                                                                                         | —                                                                                                                 | 1.2.1; stack keeper                                                                                                                                                                                                                                                               |
-| `topic-` (conversation) | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default`                                                                                                                                                      | —                                                                                                                 | 1.2.1; press operator                                                                                                                                                                                                                                                             |
-| `node-`                 | `node-ai-verdict`, `node-predecessor-advice`                                                                                                                                                                                  | —                                                                                                                 | root; reserved; forced teaching beats only (T3)                                                                                                                                                                                                                                   |
-| `node-`                 | `node-foreman-switch-lesson`, `node-operator-choose`                                                                                                                                                                          | —                                                                                                                 | 1.2.1; forced teaching beats only (T3)                                                                                                                                                                                                                                            |
-| `quiz-`                 | `quiz-switchyard`, `quiz-data-types`, `quiz-number-systems`, `quiz-character-representation`, `quiz-graphics-representation`, `quiz-sound-representation`, `quiz-storage-units`, `quiz-data-compression`                      | —                                                                                                                 | 1.2.1; reserved                                                                                                                                                                                                                                                                   |
-| `q-`                    | `q-dr-01` … `q-dr-32`                                                                                                                                                                                                         | —                                                                                                                 | 1.2.1; question pool, 0-based correct-option indices on cards                                                                                                                                                                                                                     |
-| `puzzle-`               | the ten IDs in `topics/1-2-1-data-representation.md` §5                                                                                                                                                                       | —                                                                                                                 | 1.2.1; core chain                                                                                                                                                                                                                                                                 |
-| `puzzle-`               | `puzzle-check-the-overflow-register`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge`, `puzzle-make-room-for-the-welsh-letter`, `puzzle-count-the-bit-rate`, `puzzle-label-the-capacity`, `puzzle-choose-the-compression` | —                                                                                                                 | 1.2.1; curated leaves                                                                                                                                                                                                                                                             |
-| `hazard-`               | `hazard-switch-overheat`, `hazard-bit-rot`, `hazard-carry-overflow`, `hazard-glyph-corruption`, `hazard-detention-bell`                                                                                                       | —                                                                                                                 | 1.2.1; selected for first zone                                                                                                                                                                                                                                                    |
-| `hazard-`               | `hazard-overheat`, `hazard-pop-quiz`                                                                                                                                                                                          | —                                                                                                                 | reserved palette IDs                                                                                                                                                                                                                                                              |
-| `hint-`                 | `hint-switchyard`, `hint-number-systems`, `hint-data-types`, `hint-representation`, `hint-storage-capacity`, `hint-compression-ratio`                                                                                         | —                                                                                                                 | 1.2.1; reserved                                                                                                                                                                                                                                                                   |
-| `room-`                 | `room-cpu-lab`, `room-component-workbench`, `room-register-rail`, `room-cache-vault`, `room-storage-bays`, `room-peripheral-dock`, `room-hardware-recycling`                                                                  | lab, cpu lab, workbench, bench, rail, registers, vault, cache, bays, storage, dock, peripherals, recycling, scrap | 1.1; parked                                                                                                                                                                                                                                                                       |
-| `item-`                 | `item-bus-map`, `item-cache-cartridge`, `item-storage-ledger`                                                                                                                                                                 | bus map, map, cache cartridge, cartridge, storage ledger, ledger                                                  | 1.1; parked                                                                                                                                                                                                                                                                       |
-| `puzzle-`               | `puzzle-map-the-bus`, `puzzle-route-the-buses`, `puzzle-decode-fde`, `puzzle-tune-cache`, `puzzle-partition-memory`, `puzzle-sort-storage`, `puzzle-match-peripheral`, `puzzle-audit-hardware`                                | —                                                                                                                 | 1.1; parked                                                                                                                                                                                                                                                                       |
-| `quiz-`                 | `quiz-components`, `quiz-fde-cycle`, `quiz-storage`; `q-ca-01` … `q-ca-18`                                                                                                                                                    | —                                                                                                                 | 1.1; parked                                                                                                                                                                                                                                                                       |
-| `hint-`                 | `hint-bus-map`, `hint-fde-cycle`, `hint-storage-sort`                                                                                                                                                                         | —                                                                                                                 | 1.1; parked                                                                                                                                                                                                                                                                       |
-
-The prefix `topic-` is used only for **conversation** topics. Spec topic IDs (§7)
-are bare kebab-case names matching the `## Topic: <name>` headings planned for
-COVERAGE.md.
-
-**Decorative examinables and the area-writer's authority (approved
-2026-11-25).** The twelve decorative examinable `item-` registry entries above
-carry no flag, score, topic or puzzle dependency; they exist so a room has several
-things worth examining. Eleven are declared in the cards; `item-route-diagram` is
-reserved and undeclared because the painted route diagram is room prose
-(2026-11-25). Their
-`portable` value follows real-world plausibility: fixed scenery (a brass plate, a
-painted diagram, a rack label, a drawer, a tray, a port label) is `portable: false`;
-movable props (an oil can, a rule card, a ruler, a sheet, a lead) are `portable: true`.
-`takeHandler()` currently ignores `portable`, so a code fix is needed before W6/W7 —
-reported to the code-facing branch matrix, not authored here (N5 requires in-world
-failure text for a refused TAKE). That fix is now decided: see the take-refusal
-contract below.
-
-**Take-refusal contract (user decision, 2026-11-25; `P-TAKE-01` ratified `SPECIFIED`
-in the branch matrix).** An item may carry an optional `refusalText` string: the
-in-world text shown when the player tries to take a non-portable item. When the prop
-is absent, the runtime uses the exact fallback `"You cannot take that item with
-you."`. A refused TAKE emits that one message, performs no `transfer-item`, leaves
-state unchanged and leaves the item examinable. The prop is optional and adds **no
-course fact**: no YAML card needs editing, no ID or alias changes, and no brief,
-review or coverage update follows from this decision. The fallback wording is a user
-decision, **not** a citation from `docs/exam-specs/wjec-unit1.md`; it must never be
-used as spec evidence or treated as a taught fact. The runtime seam (`ItemDefinition`
-and the take handler) belongs to `code-lead` and is pinned in
-`application-and-ui.md` §3.2/§5.1–§5.2 by that document's owner — outside the
-content editor's edit boundary (N5). The **area-writer may create further examinable
-props** that do not conflict with the plot, puzzles, gates or existing aliases. Each
-new item must have a globally unique ID and aliases checked against this registry;
-the writer marks each as `proposed — needs editor approval` in the return, and the
-editor ratifies it in §9 before the card is accepted (D2). Writers may set `portable`
-from real-world plausibility without a new mechanic.
-
-### The Assistance Ward — curated IDs and aliases approved 2026-11-26
-
-The user approved the six-stream Gate 0 curation on 2026-11-26. These IDs and
-aliases are ratified for Gate 1 briefs (D2). The final `use` action contract remains
-subject to the runtime-seam check and the standing deferral in §12. At curation no
-ward YAML card existed yet; all six cards and five owning-card amendments have
-since returned and passed validation after W4 revision round 1. Batch PCK
-re-review returned PASS and content-critic returned PASS WITH MINORS. The CC-04
-revision validates; focused PCK re-review returned PASS, while focused
-content-critic re-review found the empty-object `tell` reason producer
-unreachable under the then-current selector. `code-lead` closed the runtime
-blocker with independent PASS; the prompt revision validates; final content-critic and focused PCK re-reviews returned PASS with no
-findings. All six ward cards now carry `status: approved` and the full set revalidates.
-The final whole-set V4 review returned PASS WITH MINORS with no blocker or major; the
-minors are recorded in `.opencode/scratchpad/content/assistance-ward/v4-minor-closure.md`
-and focused independent closure confirmation is complete at W5: content-critic
-PASS WITH MINORS and PCK PASS with no blocker or major. AW-V4-01 (the conditional
-dial producer) remains the accepted deferral that keeps W7 blocked.
-
-| Prefix        | ID                                                                                                                                                                                   | Aliases                                | Owner                                                              |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------ |
-| `area-`       | `area-assistance-ward`                                                                                                                                                               | assistance ward, ward                  | Assistance Ward                                                    |
-| `room-`       | `room-assistance-intake`                                                                                                                                                             | intake, intake bay                     | Assistance Ward                                                    |
-| `room-`       | `room-assistance-demonstration`                                                                                                                                                      | demonstration, demonstration ward      | Assistance Ward                                                    |
-| `room-`       | `room-assistance-records`                                                                                                                                                            | records, records office                | Assistance Ward                                                    |
-| `npc-`        | `npc-nia`, `npc-mateo`, `npc-priya`, `npc-kofi`                                                                                                                                      | nia, mateo, priya, kofi                | Assistance Ward                                                    |
-| `actorstate-` | `actorstate-ai-reluctant-guide`, `actorstate-nia-observant`, `actorstate-mateo-reading`, `actorstate-priya-reasoning`, `actorstate-kofi-cycling`                                     | —                                      | Assistance Ward NPC card; `npc-the-ai` remains in the arrival card |
-| `item-`       | `item-assistance-tally-token`                                                                                                                                                        | tally token, intake token              | Assistance Ward — Intake                                           |
-| `item-`       | `item-assistance-observation-card`                                                                                                                                                   | observation card, observation slip     | Assistance Ward — Intake                                           |
-| `item-`       | `item-assistance-instruction-card`                                                                                                                                                   | instruction card, practice instruction | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-practice-key`                                                                                                                                                       | practice key, demo key                 | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-practice-cabinet`                                                                                                                                                   | practice cabinet, demo cabinet         | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-practice-block`                                                                                                                                                     | practice block, demo block             | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-practice-bell`                                                                                                                                                      | practice bell, demo bell               | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-practice-crank`                                                                                                                                                     | practice crank, demo crank             | Assistance Ward — Demonstration                                    |
-| `item-`       | `item-assistance-audit-card`                                                                                                                                                         | audit card, choice card                | Assistance Ward — Records                                          |
-| `item-`       | `item-assistance-recovery-board`                                                                                                                                                     | recovery board, pupil record board     | Assistance Ward — Records                                          |
-| `item-`       | `item-assistance-calibration-dial`                                                                                                                                                   | calibration dial, assistance dial      | Assistance Ward — Records                                          |
-| `item-`       | `item-assistance-interface-plaque`                                                                                                                                                   | ward port plaque, teaching-port plaque | Switchyard — `room-entry-interface`                                |
-| `topic-`      | `topic-ai-ward-default`, `topic-ai-ward-intake`, `topic-ai-ward-demonstration`, `topic-ai-ward-records`, `topic-ai-ward-quiz`, `topic-ai-ward-calibration`, `topic-ai-ward-complete` | —                                      | Assistance Ward NPC card                                           |
-| `topic-`      | `topic-ai-ward-conversation`, `topic-ai-ward-answers`, `topic-ai-ward-hints`, `topic-ai-ward-failure`, `topic-ai-ward-save`                                                          | —                                      | Assistance Ward NPC card; W7 keyword-alignment fix (2026-11-27)    |
-| `topic-`      | `topic-nia-default`, `topic-nia-recovered-default`, `topic-nia-observation`                                                                                                          | —                                      | Assistance Ward NPC card                                           |
-| `topic-`      | `topic-mateo-default`, `topic-mateo-recovered-default`, `topic-mateo-instruction`                                                                                                    | —                                      | Assistance Ward NPC card                                           |
-| `topic-`      | `topic-kofi-default`, `topic-kofi-recovered-default`, `topic-kofi-practice-cycle`                                                                                                    | —                                      | Assistance Ward NPC card                                           |
-| `topic-`      | `topic-priya-default`, `topic-priya-recovered-default`, `topic-priya-choice-start`, `topic-priya-choice-made`, `topic-priya-choice-reason`                                           | —                                      | Assistance Ward NPC card                                           |
-| `node-`       | `node-priya-choice`                                                                                                                                                                  | —                                      | Assistance Ward NPC card; sticky choose-then-reason teaching beat  |
-| `quiz-`       | `quiz-assistance-orientation`                                                                                                                                                        | —                                      | Assistance Ward                                                    |
-| `q-`          | `q-ao-01` … `q-ao-04`                                                                                                                                                                | —                                      | Assistance Ward                                                    |
-| `puzzle-`     | `puzzle-calibrate-assistance`                                                                                                                                                        | —                                      | Assistance Ward                                                    |
-| `hint-`       | `hint-assistance-orientation`, `hint-assistance-intake`, `hint-assistance-demonstration`                                                                                             | —                                      | Assistance Ward; room-scoped ladders added in the W7 fix round     |
-
-| Flag                                      | Single producer                         | Reader                                                                  |
-| ----------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
-| `nia-observation-recovered`               | `topic-nia-observation`                 | Quiz start, dial guard, final puzzle                                    |
-| `mateo-reading-recovered`                 | `topic-mateo-instruction`               | Quiz start, dial guard, final puzzle                                    |
-| `priya-reasoning-recovered`               | `topic-priya-choice-reason`             | Quiz start, dial guard, final puzzle                                    |
-| `kofi-operation-recovered`                | `topic-kofi-practice-cycle`             | Quiz start, dial guard, final puzzle                                    |
-| `priya-choice-taken`                      | `topic-priya-choice-made`               | `topic-priya-choice-reason`; `topic-priya-choice-start` activity/resume |
-| `quiz-passed:quiz-assistance-orientation` | `quiz-assistance-orientation` `onPass`  | Dial guard, final puzzle                                                |
-| `assistance-dial-calibrated`              | Successful `use assistance dial`        | Final puzzle only                                                       |
-| `tutorial-complete`                       | `puzzle-calibrate-assistance` `onSolve` | Hub east, hub north, older-interface east                               |
-
-All ward scores are 0. `tutorial-mechanics` is a non-assessed onboarding topic,
-not a D2 artefact ID; its coverage heading and `SpecTopic` entry are `in progress`,
-`maxScore 0`, and outside the win set.
-
-### The Pattern Mill (Zone A, 1.4.1 constructs) — approved (W2) 2026-11-25
-
-Working names for the scoped Zone A, approved with the topic file on 2026-11-25; the
-Zone A topic file cites this table. Zone A conversation topic ids and flag ids are
-allocated in the topic file's §10 (applied at W2 approval); the two special nodes are
-already here. Bare nouns freed by this table: **window**, **warp**, **counter**,
-**court**, **mill**, **selvedge**, **bobbin** (each claimed where shown; later zones
-must not reuse them bare).
-
-| Prefix        | ID                                                                                                                                                                                                                                                                                                                                                                                                 | Aliases                                     | Owner                                                                                                                                                                                                                                                                                                  |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `area-`       | `area-1-4-programming-constructs`                                                                                                                                                                                                                                                                                                                                                                  | the pattern mill, the mill                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-pattern-bureau`                                                                                                                                                                                                                                                                                                                                                                              | pattern bureau, bureau                      | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-bobbin-window`                                                                                                                                                                                                                                                                                                                                                                               | bobbin window, window                       | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-warp-walk`                                                                                                                                                                                                                                                                                                                                                                                   | warp walk, warp                             | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-threading-order`                                                                                                                                                                                                                                                                                                                                                                             | threading order                             | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-colour-court`                                                                                                                                                                                                                                                                                                                                                                                | colour court, court                         | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-weft-counter`                                                                                                                                                                                                                                                                                                                                                                                | weft counter, counter                       | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-endless-selvedge`                                                                                                                                                                                                                                                                                                                                                                            | endless selvedge, selvedge                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `room-`       | `room-finished-rail`                                                                                                                                                                                                                                                                                                                                                                               | finished rail                               | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-pattern-card-sequence`                                                                                                                                                                                                                                                                                                                                                                       | sequence card                               | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-pattern-card-selection`                                                                                                                                                                                                                                                                                                                                                                      | selection card                              | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-pattern-card-count-iteration`                                                                                                                                                                                                                                                                                                                                                                | count card                                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-pattern-card-condition-iteration`                                                                                                                                                                                                                                                                                                                                                            | condition card                              | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-shed-plate`                                                                                                                                                                                                                                                                                                                                                                                  | shed plate, diamond plate                   | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-else-plate`                                                                                                                                                                                                                                                                                                                                                                                  | else plate                                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-counting-ratchet`                                                                                                                                                                                                                                                                                                                                                                            | counting ratchet, counting disc             | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-slip-tooth`                                                                                                                                                                                                                                                                                                                                                                                  | slip tooth                                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-condition-plate`                                                                                                                                                                                                                                                                                                                                                                             | condition plate, until plate                | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-rogue-thread`                                                                                                                                                                                                                                                                                                                                                                                | rogue thread, rogue value                   | 1.4.1 Zone A; the spec term rides as its alias                                                                                                                                                                                                                                                         |
-| `item-`       | `item-bell-wire`                                                                                                                                                                                                                                                                                                                                                                                   | bell wire                                   | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-carthen`                                                                                                                                                                                                                                                                                                                                                                                     | carthen, blanket                            | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-mill-duck`                                                                                                                                                                                                                                                                                                                                                                                   | mill duck, loom duck                        | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-whist-cards`                                                                                                                                                                                                                                                                                                                                                                                 | whist cards, playing cards                  | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-mill-clock`                                                                                                                                                                                                                                                                                                                                                                                  | mill clock, stopped clock                   | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-postmark-album`                                                                                                                                                                                                                                                                                                                                                                              | postmark album, stamp album                 | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-postmark-pad`                                                                                                                                                                                                                                                                                                                                                                                | postmark pad, Machynlleth postmark          | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-paned-mug`                                                                                                                                                                                                                                                                                                                                                                                   | paned mug, tea mug                          | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-woven-door-label`                                                                                                                                                                                                                                                                                                                                                                            | woven label, door label                     | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-pattern-leaflet`                                                                                                                                                                                                                                                                                                                                                                             | pattern leaflet, training leaflet           | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `item-`       | `item-pick-trolley`                                                                                                                                                                                                                                                                                                                                                                                | pick trolley, sheet trolley                 | 1.4.1 Zone A; USE sets `tray-routed-by-condition` (trace §8.6 P6); examinable prop                                                                                                                                                                                                                     |
-| `item-`       | `item-quality-book`                                                                                                                                                                                                                                                                                                                                                                                | quality book, incident book                 | 1.4.1 Zone A; decorative examinable; its "STACK: OVERFLOWED" fields are colour only (flavour bar in the topic file)                                                                                                                                                                                    |
-| `item-`       | `item-weft-kettle`                                                                                                                                                                                                                                                                                                                                                                                 | weft kettle, mill kettle                    | 1.4.1 Zone A; decorative examinable                                                                                                                                                                                                                                                                    |
-| `npc-`        | `npc-the-loomwright`                                                                                                                                                                                                                                                                                                                                                                               | loomwright, loom wright                     | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-warp-dresser`                                                                                                                                                                                                                                                                                                                                                                             | warp dresser                                | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-shed-opener`                                                                                                                                                                                                                                                                                                                                                                              | shed opener                                 | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-weft-tally`                                                                                                                                                                                                                                                                                                                                                                               | weft tally, tally                           | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-selvedge-warden`                                                                                                                                                                                                                                                                                                                                                                          | selvedge warden, warden                     | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-bobbin-lad`                                                                                                                                                                                                                                                                                                                                                                               | bobbin lad                                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `npc-`        | `npc-the-slop-cousin`                                                                                                                                                                                                                                                                                                                                                                              | slop cousin, cousin                         | root + all four 1.4 zones (§6)                                                                                                                                                                                                                                                                         |
-| `actorstate-` | `actorstate-loomwright-witnessing`, `actorstate-loomwright-complete`, `actorstate-warp-dresser-flustered`, `actorstate-warp-dresser-orderly`, `actorstate-shed-opener-dithering`, `actorstate-shed-opener-sorted`, `actorstate-weft-tally-counting`, `actorstate-weft-tally-exact`, `actorstate-selvedge-warden-looping`, `actorstate-selvedge-warden-dismissed`, `actorstate-slop-cousin-beaming` | —                                           | 1.4.1 Zone A; the generic `actorstate-ready` stays the `npcs.md` §8 default                                                                                                                                                                                                                            |
-| `node-`       | `node-loomwright-demonstration`, `node-selvedge-signal`                                                                                                                                                                                                                                                                                                                                            | —                                           | 1.4.1 Zone A; deliberate teaching beats only (T3)                                                                                                                                                                                                                                                      |
-| `quiz-`       | `quiz-pattern-bureau`, `quiz-threading-order`, `quiz-colour-court`, `quiz-weft-tally`, `quiz-selvedge`, `quiz-finished-rail`                                                                                                                                                                                                                                                                       | —                                           | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `q-`          | `q-pc-01` … `q-pc-24`                                                                                                                                                                                                                                                                                                                                                                              | —                                           | 1.4.1 Zone A; question pool, 0-based correct-option indices                                                                                                                                                                                                                                            |
-| `hazard-`     | `hazard-pick-avalanche`, `hazard-dye-pad`, `hazard-slop-worksheet`                                                                                                                                                                                                                                                                                                                                 | —                                           | 1.4.1 Zone A; the avalanche arms after the demonstration (user decision, 2026-11-25)                                                                                                                                                                                                                   |
-| `hint-`       | `hint-pattern-bureau`, `hint-threading-order`, `hint-colour-court`, `hint-weft-tally`, `hint-selvedge`, `hint-finished-rail`, `hint-bobbin-window` (allocated 2026-11-25, user-approved: every Puzzle Mill beacon hintable; wave-2)                                                                                                                                                                | —                                           | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
-| `item-`       | `item-mill-board`                                                                                                                                                                                                                                                                                                                                                                                  | mill board, board                           | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the board's "3" is the mill's shared figure                                                                                                                                                                                                      |
-| `item-`       | `item-demonstration-book`                                                                                                                                                                                                                                                                                                                                                                          | demonstration book, demonstration ledger    | 1.4.1 Zone A; ratified 2026-11-25 (review close-out)                                                                                                                                                                                                                                                   |
-| `item-`       | `item-rota-board`                                                                                                                                                                                                                                                                                                                                                                                  | rota board, rota, duty rota                 | 1.4.1 Zone A; ratified 2026-11-25 (review close-out)                                                                                                                                                                                                                                                   |
-| `item-`       | `item-addressing-plate`                                                                                                                                                                                                                                                                                                                                                                            | addressing plate, address plate             | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); its letter rack is the bell puzzle's fixture route                                                                                                                                                                                               |
-| `item-`       | `item-dye-pad`                                                                                                                                                                                                                                                                                                                                                                                     | dye pad, dyeing pad                         | 1.4.1 Zone A; ratified 2026-11-25 (review close-out; D2 mark per the npc card's conventions note)                                                                                                                                                                                                      |
-| `item-`       | `item-slop-worksheet`                                                                                                                                                                                                                                                                                                                                                                              | slop worksheet, pattern workbook, worksheet | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the cousin's tempting-object trap (hazard target)                                                                                                                                                                                                |
-| `item-`       | `item-counterfoil-drawer`                                                                                                                                                                                                                                                                                                                                                                          | counterfoil drawer, counterfoils            | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); the rogue thread's PUT target                                                                                                                                                                                                                    |
-| `item-`       | `item-signing-board`                                                                                                                                                                                                                                                                                                                                                                               | signing board                               | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); decorative examinable                                                                                                                                                                                                                            |
-| `item-`       | `item-dye-vat`                                                                                                                                                                                                                                                                                                                                                                                     | dye vat                                     | 1.4.1 Zone A; ratified 2026-11-25 (review close-out); decorative examinable; carries the N5 failure framing                                                                                                                                                                                            |
-| `puzzle-`     | `puzzle-mend-the-bell`, `puzzle-dress-the-warp`, `puzzle-lift-the-shed`, `puzzle-seat-the-ratchet`, `puzzle-close-the-selvedge`, `puzzle-file-the-rogue-thread`                                                                                                                                                                                                                                    | —                                           | 1.4.1 Zone A; **ratified 2026-11-25 at review close-out** (user decision: puzzle ids ratify here when the card passes review — both reviewers returned, majors resolved, `content:validate` PASS); the ten intermediate action flags these read are allocated in topic file §10, seam-deferred per §12 |
-| `area-`       | `area-1-4-concourse`                                                                                                                                                                                                                                                                                                                                                                               | concourse                                   | 1.4 placeholder front area (user-directed, 2026-11-25)                                                                                                                                                                                                                                                 |
-| `room-`       | `room-1-4-concourse`                                                                                                                                                                                                                                                                                                                                                                               | concourse                                   | 1.4 placeholder front area; navigation-only; dark ports reserved for Zones B–D                                                                                                                                                                                                                         |
-
-Zone A's **puzzle ids are proposed by the puzzle-writer** in its return and ratified by
-the editor here when the puzzle card passes review — user decision, 2026-11-25.
-**Ratified 2026-11-25 (review close-out):** the six puzzle ids (row above), the nine
-item ids missing from the table at W3 (row above, including the three selvedge
-fixtures and the slope-worksheet target), and the ten intermediate action flags
-(allocated in topic file §10 with the §12 seam deferral). Item-alias uniqueness holds
-by the validator's uniqueness gate (`content:validate` PASS, 2026-11-25, full set).
-The hints brief follows ratification, because hint `targets` cite puzzle ids. Writers still
-mark every id they did not receive in a brief as `proposed — needs editor approval (D2)`.
-Zone A's flags and the conversation-topic id scheme are in the approved topic file §10;
-Zone B's records-office cast must not take `registrar` or `warden` bare (claimed here);
-its sketch renames at its own scoping (D2).
-
-## 10. Tone guide
+## 9. Tone guide
 
 All text is **second person, present tense, British English**, rendered as plain text
 via `textContent` — no HTML. `narrative-principles.md` remains authoritative for
@@ -703,475 +407,21 @@ and "Presence, not labels" patterns in §11 of that document alongside N3, N4, N
 N6, N8, A1, T1, P2, H1 and D2. The ten prose-bearing YAML cards are in scope;
 `spec-topics.yaml` is evidence metadata and is not re-briefed. The user also asked
 for a richer world with many examinable props, some with no puzzle or story
-function; these need new IDs and aliases in §9 before any room brief can name them.
-Recorded in §12.
+function; these need editor-approved IDs and aliases before any room brief can name them.
+Recorded in §11.
 
-## 11. Global open questions
+## 10. Global open questions
 
-1. ~~**Approval of the split and revision.**~~ **Resolved 2026-11-24:** the split,
-   indexes, registry and first-zone detail are approved, as is the curated ideation
-   set (§12). Gate 1 may begin.
-2. **Names/aliases for the AI and predecessor.** Working IDs and aliases remain
-   provisional. Confirm or replace on approval.
-3. **Area boundaries per zone.** Decided case by case; each new area needs a topic
-   file and a bible revision before its brief. `area-future-zones` is a placeholder.
-4. **Growth of the win set.** The win set is every topic that reaches `covered` with
-   evidence in COVERAGE.md. Provisional answer: the game is winnable at each stage.
-5. **Teacher as an actor.** Offstage; confirm when the Entry Interface or Resolution
-   node is briefed.
-6. **Unit 2 taunts.** Confirm the wording is flavour only and never assesses
-   programming knowledge.
-7. **Coverage integration.** Topic IDs in §7 are mirrored into COVERAGE.md only at
-   integration (V3, Gate 3); writers must use these IDs and no others.
-8. **`narrative-principles.md` — RESOLVED 2026-11-24.** The user approved it; it is
-   settled authority for writer briefs (status.md, principles §12).
-9. **Review grouping for the first area.** Editorial plan: brief all card kinds for
-   the area, then review in two groups — number systems first, then representation —
-   with one writer per output file. Confirm if a single batch is preferred.
-10. ~~**Approval of the opening-sequence amendment (§4.1).**~~ **Resolved
-    2026-11-25:** the user approved the bible text and authorised the card update.
-11. ~~**World declaration and boot start.**~~ **Resolved 2026-11-25:** one world,
-    areas as zones; ID `world-wjec-gcse-computer-science-2025-spec` (§5, §9). The
-    declaration moves to `area-entry-interface`, whose `startRoomId` is
-    `room-arrival`.
-12. **Card revision — in progress.** The authorised batch touches two new area
-    rooms cards, the existing Switchyard `rooms.yaml`, the V4 trace and the
-    `COVERAGE.md` room index. The NPC card needs no change: actors are globally
-    addressable, the AI's verdict topics already exist, and no placement field is
-    authored. Tracked in `status.md`.
-13. ~~**Network Hub teaching.**~~ **Resolved 2026-11-25:** describe only. The user
-    chose not to scope `network-hardware` (1.3.1) in this batch; the hub is a
-    starting point with no assessed content.
-14. **Per-room/area conversation scoping — DECIDED 2026-11-25; runtime now
-    landed.** The user wants game-wide actors to carry options that apply only in
-    their own rooms or areas. The agreed seam is **not** a field on
-    `ConversationTopic`: code-lead added two position-sensitive condition kinds
-    to the shared union, `in-room` (`roomId`) and `in-area` (`worldId`, `areaId`)
-    (`src/core/rules/Condition.ts`; `ConditionEvaluator` compares the player's
-    current `Position`; shared-rules.md §3, npcs.md §2). Locality is authored as
-    `isActive: { kind: in-room, roomId: ... }` or `in-area` on a topic; an
-    unscoped topic stays globally reachable. `ConversationTopic` therefore keeps
-    only its optional `actorId` binding. Moving an actor between area cards does
-    **not** provide scoping, because catalogues are global and card location is
-    authoring ownership only; the entry-effect flag workaround was rejected.
-
-    **Final allocation, approved 2026-11-25:** `topic-ai-why-here` and
-    `topic-ai-failure` are scoped to `room-arrival`; `topic-ai-escape` is scoped
-    to `room-network-hub`, where the route ports are visible; the pre-existing
-    `topic-ai-verdict`, `topic-ai-unit-two-taunt` and `topic-ai-default` stay
-    global so the AI keeps a catch-all in every room and `node-ai-verdict` keeps
-    its global default (T2). This relocates the escape question from the arrival
-    beat to the hub beat in the V4 trace; no ID, flag, gate, score or spec claim
-    changes.
-
-    **Card ownership, approved 2026-11-25:** the user also asked for YAML files to
-    be grouped by area so entity data is not scattered. The AI actor, its two
-    states, `node-ai-verdict` and the four arrival/global topics (`topic-ai-verdict`,
-    `topic-ai-unit-two-taunt`, `topic-ai-default`, `topic-ai-why-here`,
-    `topic-ai-failure`) move to a new `docs/content/entry-interface/npcs.yaml`;
-    `topic-ai-escape` moves to a new `docs/content/network-hub/npcs.yaml`; the zone-1
-    `npcs.yaml` keeps only the predecessor and the Switchyard teaching. Cross-card
-    `actorId` binding is safe: `npc-content` resolves actor IDs over the whole card
-    set, so the hub topic can bind to an actor declared in the arrival card. The
-    one-file-per-(area, kind) rule
-    ([content-toolchain.md §2](../developer/content-toolchain.md#2-authoring-format))
-    is unchanged.
-
-15. **Zone A (The Pattern Mill) scoping — RESOLVED 2026-11-25.** Unit 1.4 is
-    four areas (Zone A constructs — approved first; Zone B search & sort; Zone C
-    maintainable programs with 1.5.1 folded in; Zone D validation &
-    verification). Zone A ratified: two coverage topics; arrays taught
-    in-zone; the Pattern Shop setting; the avalanche arming after the
-    demonstration. Connection (user-directed, 2026-11-25): `room-network-hub`
-    gains one new exit (**north**) to `room-1-4-concourse` — a placeholder
-    Unit 1.4 front area, navigation-only, one room: south back to the hub,
-    east to `room-pattern-bureau`; dark, unauthorised ports label Zones B–D
-    for later scoping. The mill card's Bureau exits west to the concourse.
-    The hub amendment and the concourse are Zone A's Gate 1 writer tasks (the
-    hub card is approved; the amendment is a re-brief, not an editor edit).
-    The cast for Zones B–D is unscoped; bare `registrar`/`warden` are claimed
-    by Zone A (§9).
-16. **Assistance Ward — RESOLVED and curated 2026-11-26.** The user approved a
-    mandatory first lesson south of the hub, a three-room two-dimensional loop,
-    four recoverable former pupils (Nia, Mateo, Priya and Kofi), a full command
-    tour, a weary passive-aggressive AI guide, real zero-score
-    quiz/puzzle/hint practice and no hazards or life loss. Cognitive decline is
-    satire only. `tutorial-mechanics` is a non-assessed `in progress` topic with
-    `maxScore 0`, excluded from the win set. After six ideation streams, the user
-    approved fixed-fixture conversation recoveries, Priya's sticky two-turn
-    choice node, explicit-only Gate 1 hints, the 12-item roster, four quiz keys,
-    the composite final-puzzle requirement and the five existing-card
-    amendments. IDs and aliases are ratified in §9; details are in
-    `topics/assistance-ward.md`. Gate 1 briefs open only where the runtime
-    contract is available. The ward NPC catch-all additionally requires the
-    `code-lead` first-active-default selector fix; the dial and bell actions
-    remain subject to the deferred content-declared `use` seam.
+- Is the teacher ever an actor? It is offstage in the frame and the Resolution
+  node, with no actor ID allocated.
+- Which cast belongs in Zones B–D? They are unscoped until each zone is briefed.
 
 Zone-specific questions are in the owning topic file.
 
-## 12. Approval record
+## 11. Approval record
 
-- 2026-11-24 — Initial draft from the interview: premise, five pillars, key-node
-  spine, provisional first zone (1.1 Computer architecture), two agreed actors, full
-  Unit 1 topic allocation, PDG sketch, palette hazards, provisional registry and tone
-  guide. **Approved by the user on 2026-11-24; no writer briefed.**
-- 2026-11-24 — **Revision approved.** User requested 1.2.1 Data representation as
-  the first zone. Decisions: concept **A — The Switchyard**; 1.2.1 replaces 1.1 as
-  first batch (1.1 parked); short 1.1.1-mapped transistor prologue at awareness depth.
-- 2026-11-24 — **Structural split approved.** User asked that the root bible hold
-  only overarching rules and principles and that specific topics live in their own
-  files. Root slimmed to an index and rule file; zone detail moved to
-  `topics/1-2-1-data-representation.md` and parked 1.1 detail to
-  `topics/1-1-computer-architecture.md`. Master alias registry retained at root to
-  enforce global uniqueness.
-- 2026-11-24 — **Ideation sub-stage completed and curated.** Six ideation-only
-  agents reported; editor whittled the returns to a workable first-zone set,
-  rejecting out-of-scope future-zone ideas, superseded IDs and the unavoidable
-  pop-quiz hazard. User approved four decisions: all six layer NPCs; three added
-  hazards (total five, all three themes); question pool extended to `q-dr-32`;
-  prologue quiz costs no life and returns to `room-switch-floor`. Curated IDs and
-  aliases now in §9; zone detail in `topics/1-2-1-data-representation.md`.
-  **No writer briefed; Gate 1 ready.**
-- 2026-11-24 — **V4 integration fix (editor allocation).** Four `show`-matched foreman
-  conversation topic IDs (`topic-foreman-show-gauge`, `-show-lens`, `-show-fork`,
-  `-show-nibble`) allocated in §9 to give the four SHOW-leaf flags a runtime producer
-  after the whole-set V4 review. This is an editor ID allocation to close a
-  reachability blocker, not a new game mechanic: the `show` verb and the four flags
-  were already approved in the registry.
-- 2026-11-25 — **Opening-sequence amendment approved.** The user chose a classroom
-  attention scan for the absorption, a new arrival room for the AI meeting, and a
-  new zone-choice starting point named **The Network Hub**. The 1990s age stays as
-  in-world colour by explicit user choice and is barred from teaching, quizzing and
-  evidence (§10). The first decision was "bible now, cards later", so §4.1, §5,
-  §9, §10 and §11 changed but no card, flag, dependency, score, generated file or
-  V4 trace did at that point.
-- 2026-11-25 — **Card update authorised; world shape decided.** The user approved
-  the amendment and confirmed that existing cards must be updated. One world for
-  the machine was chosen over a world per topic; its ID is
-  `world-wjec-gcse-computer-science-2025-spec` (D2 prefix added to the user's stem).
-  The Network Hub stays described only: no `network-hardware` teaching batch in
-  this work.
-- 2026-11-25 — **Arrival conversation added.** The user asked that the misaligned
-  AI be introduced as a character the player can question. Three in-character
-  topics were approved — `topic-ai-why-here`, `topic-ai-escape` and
-  `topic-ai-failure` — covering why the pupil is there, how to get out, and what
-  failure means. They are flavour only: no flags, gates, quizzes or spec facts.
-  Briefed to the NPC writer as an addition to `npcs.yaml`.
-- 2026-11-25 — **Room-scoping design decision.** The user chose a proper runtime
-  seam over moving card ownership or using entry-effect flags. Code-lead landed
-  `in-room`/`in-area` conditions in the shared condition union and evaluator;
-  locality is authored in `isActive`, not as topic fields (§11 item 14).
-- 2026-11-25 — **AI topics split by room.** The user approved re-briefing the AI
-  content now the seam exists. `topic-ai-why-here` and `topic-ai-failure` take an
-  `in-room room-arrival` scope, `topic-ai-escape` takes `in-room room-network-hub`,
-  and the three pre-existing AI topics stay global. No new ID or alias; the
-  escape beat moves from arrival to the hub in the V4 trace.
-- 2026-11-25 — **AI cards moved by area.** The user asked for YAML to be grouped
-  by area rather than scattered. A new `entry-interface/npcs.yaml` owns the AI
-  actor, its states, its node and the five arrival/global topics; a new
-  `network-hub/npcs.yaml` owns the hub-scoped escape topic; zone-1 `npcs.yaml`
-  keeps the predecessor and all Switchyard teaching. No toolchain or governing-rules
-  change is needed because the generator and gates merge collections across
-  cards.
-- 2026-11-25 — **Tone revision approved, full scope.** The user judged the existing
-  prose too curt and negative-heavy under the superseded §2 wording, reviewed
-  before/after examples and chose "Everything built so far". Ten prose-bearing
-  cards are re-briefed: three rooms, three NPC cards, quizzes, puzzles, hazards and
-  hints. `spec-topics.yaml` is excluded as evidence metadata. Frozen across every
-  brief: all IDs and aliases (§9), flags, gates, scores, dependencies, spec facts
-  and worked examples, the two N6 clues for each gate, and the H1 telegraph strings
-  quoted in `hazards.yaml` and the V4 trace. Route: Gate 1 re-brief → D5/V1 validate
-  → V2 both reviewers → V4 trace audit → W6 regeneration and W7 walkthrough.
-- 2026-11-25 — **N8 word ceiling raised to 200.** The user asked for room prose to
-  have room to describe and breathe, and specified that 200 is a limit rather than
-  a target. The N8 rule, `narrative-principles.md` §2 and §11, the topic file and
-  the area-writer instructions were updated. All currently authored room
-  descriptions (68–80 words) remain valid; the change does not by itself reopen
-  any accepted card.
-- 2026-11-25 — **Room discoverability and examinables approved, IDs pending.** The
-  user noted that room prose made residents hard to find and asked for vivid
-  descriptions with plenty of things to examine, including props with no gameplay
-  role. "Presence, not labels" was added as a confirmed pattern in
-  `narrative-principles.md` §11 and a richness directive in §2. Because
-  `describeRoom()` renders only title plus description, the prose must name
-  registered nouns and give NPCs a visible action. **Room briefs are paused** until
-  the user approves the new decorative item IDs and aliases for §9; no writer has
-  been dispatched with an unregistered noun.
-- 2026-11-25 — **Decimal sample ID approved.** The user approved
-  `item-decimal-sample`, aliases `decimal sample` and `sample`, as a portable item
-  in `room-binary-hall`. This registers the entity already required by the accepted
-  V4 real-bin action; it adds no new flag, gate, score, topic or course fact.
-- 2026-11-25 — **Take-refusal contract approved (P-TAKE-01).** The user decided that
-  an item may carry an optional in-world `refusalText` for a refused TAKE, with the
-  exact fallback `"You cannot take that item with you."` when the prop is absent;
-  the branch-matrix row is ratified `SPECIFIED`. Recorded in §9. The wording is a
-  user decision, not a spec citation, and adds no course fact. No YAML card, ID,
-  alias, flag, gate, score, coverage entry or V4 trace changes, so no writer is
-  briefed and no review cycle opens. The `ItemDefinition` and take-handler seam is a
-  `code-lead` handoff; the pins in `application-and-ui.md` §3.2/§5.1–§5.2 (and any
-  N5 example in `narrative-principles.md`) are outside the content editor's edit boundary and
-  are made by their owner.
-- 2026-11-25 — **Ideation sub-stage moved to the editor's agent instructions.** The
-  user asked that the workflow documentation sit with the editor process rather than
-  in the bible, so the former §13 was removed from this file and now lives in
-  `.opencode/agents/content-editor.md` under Gate 0 (W1–W2). This file keeps only the
-  curated outcome (§12 entries above) and a one-line pointer in §1. The move changes
-  no decision, ID, alias, card, flag, gate, score, coverage entry or V4 trace, so no
-  writer is briefed and no review cycle opens. The completed 1.2.1 ideation sub-stage
-  is recorded in the 2026-11-24 entry above and in `status.md`.
-- 2026-11-25 — **Unit 1.4 scoped: four areas (The Pattern Mill is Zone A).** The user
-  settled the split: four areas — Zone A programming constructs (scoped first), Zone B
-  searching and sorting, Zone C maintainable programs (1.4.1 maintainability + 1.5.1
-  folded in), Zone D validation and verification (its own area). Zone A's ideation
-  sub-stage ran (six ideation-only briefs; two corrupt quiz-writer runs voided and
-  re-run) and was curated. The user then ratified the curation **and the four
-  follow-on decisions**: coverage = two spec topics for Zone A
-  (`algorithms-and-pseudocode`, `programming-constructs`); arrays taught in-zone
-  (the 1.2.2 zone applies-and-extends later); the stack avalanche arms **after the
-  Shed Opener's demonstration**, not on first entry; and the setting is the
-  **Pattern Shop** — Zone A is **The Pattern Mill**, a Welsh woollen mill
-  (`area-1-4-programming-constructs`, working title). Full working names in §9 and
-  `docs/content/topics/1-4-algorithms.md` (ratified) with the spin-off draft at
-  `docs/content/topics/1-4-1-programming-constructs.md`. W2 approval of this
-  amendment requested; **no writer briefed for any 1.4 zone yet.**
-- 2026-11-25 — **Terminology pairing and diegetic glossing (user instruction).**
-  Every world term rides with the formal term: on first use pair the mill's name
-  with the spec's (the rogue thread is the **rogue value**, L1261; a pattern card is
-  the construct licence), and craft or cultural vocabulary a pupil may reasonably
-  not know — warp, weft, shed, selvedge, carthen, paned — gets a short in-voice
-  explanation on first use (one clause, not a lesson). Quizzes always teach and test
-  the spec terms; a mill nickname never substitutes for one in a quiz key.
-  Recorded in `narrative-principles.md` §2 and the Zone A topic file; the Welsh and
-  weaving glossary is in the topic file's §8.
-- 2026-11-25 — **W2 approval given; Gate 1 opened for Zone A (W3).** The user
-  approved the 1.4 scoping amendment and the Zone A topic file and instructed
-  the editor to proceed with the Gate 1 briefs. Three follow-on decisions:
-  **(a) Puzzle ids are proposed by the puzzle-writer** in its return and
-  ratified by the editor in §9 when the card passes review — the hints brief
-  is deliberately held back until ratification (user decision). **(b) Score
-  budgets are set at W4/W5 from the scorable set that comes back and passes
-  review** ("I'd rather spec coverage be thorough"): writers declare
-  content-declared scores following the zone-1 shape (quiz 2, puzzle 1, rooms
-  0, capstone free to reach 3), and `spec-topics.yaml` carries a generous
-  placeholder `maxScore` (60) per Zone A topic so the `score-content` gate is
-  satisfiable before review, with the true budgets recorded at integration
-  (V3). **(c) A 1.4 placeholder area — `area-1-4-concourse`, room
-  `room-1-4-concourse` — links back to `room-network-hub` (hub gains a north
-  exit) and forward to `room-pattern-bureau` (Bureau west; its critical
-  complement is the concourse's east). Zones B–D will hang off dark ports in
-  the concourse when scoped (user instruction)**. §5, §9 and §11 updated the
-  same date. Seven W3 briefs in wave 1: mill rooms + concourse rooms, puzzles,
-  quizzes, NPCs, hazards, and the hub-card amendment; the hints brief is wave
-  2, after puzzle-id ratification.
-- 2026-11-25 — **Workflow amendments (user decisions, second batch).** Three
-  standing practices adopted, effective immediately, plus their answering
-  choices:
-  **(a) Dependency-ordered Gate 1 for every area** — one wave order:
-  rooms (+ concourse + hub exit) → NPCs → puzzles and quizzes → hazards →
-  hints. Each wave's brief carries only the ids, flags and seam contracts the
-  earlier waves ratified; writer-proposed ids are marked `proposed — needs
-editor approval (D2)` and ratified in §9 at review acceptance. Documented as
-  editor practice, not governing-rules text (user decision).
-  **(b) Scoring from authored activities — no budgets.** Writers declare
-  per-activity scores; the accepted per-topic total is _recorded_ as
-  `maxScore` at integration (W5) and never pre-set. The `score-content` cap
-  check is retired and the `SpecTopic.maxScore` field becomes optional — a
-  validator/schema change queued for `code-lead` (not dispatched from the
-  forked thread); until it lands the two Zone A entries keep neutral
-  placeholders that nothing must be read as budgeting from.
-  **(c) Hub-and-spoke world topology.** The Network Hub stays the world's
-  hub; every Unit 1.x zone attaches through its own concourse area (one room,
-  navigation-only, no score, no topics) linking back to the hub and forward
-  to the zone's entry; inter-zone movement always travels via the hub and
-  concourses while intra-zone movement stays linear-or-bush with
-  reconverging gates (N2 unchanged). Standing topology paragraph added to §5.
-  **(d) The Switchyard (zone 1) keeps its direct hub connection as built**
-  ("leave for now. I'll fix this in a future pass") — the concourse pattern
-  applies to every area from 1.4 onward.
-- 2026-11-25 — **Fix-action seam deferred; content and logic sorted first, then
-  the editor stops (user decision).** The wave-1 aggregate surfaced that the
-  engine has no content-driven route for verb actions: `use` is a stubbed
-  refusal, `put` transfers only, `examine` describes only, hazards cannot
-  `set-flag` — so the ten verb-shaped intermediate requirement flags of the six
-  Zone A puzzles (`bell-wire-seated`, `addressing-plate-re-lettered`,
-  `dressing-re-ordered`, `shed-plate-returned`, `else-plate-restored`,
-  `tray-routed-by-condition`, `slip-tooth-pried`, `counting-ratchet-reseated`,
-  `until-clause-restored`, `rogue-thread-in-drawer`) and zone-1's accepted
-  walkthrough's USE/PUT steps (steps 3, 5 and 7) have no setter in the current
-  engine. The user deferred the mechanic: **agents on another device are
-  finishing the engine implementation; the editor's job is to get the content
-  and logic sorted, then stop.** Consequences recorded: (1) Zone A's cards
-  stand authored on the ratified shapes — puzzles declare requirements only,
-  and items' `useNotes` describe the intended verb actions — so no card
-  rewrites when the seam lands; (2) the needed seam is a code-lead contract:
-  content-declared `use`/`put` item-on-target effects (schema + adapter +
-  validator gate + verb-handler consumption + tests); the four give/delivery
-  flags, `pass-count-predicted` (NPC topic) and `pad-checked` (crackle-test
-  topic) are already routeable through conversation topics and are unaffected;
-  (3) zone-1's walkthrough claims that assume the seam stay as recorded and are
-  re-proven at its later W6/W7 pass; (4) Zone A's V4 trace and W7 walkthrough run
-  only after the seam exists. The editor does not rewire the puzzles to
-  conversation topics (the option was declined by deferral).
-- 2026-11-25 — **Bobbin Window hint ladder allocated (user-approved).** The
-  user chose to allocate a ladder so every Puzzle Mill beacon is hintable:
-  `hint-bobbin-window` (the room-stem scheme the six ratified ladders use) —
-  the wave-2 hints brief authors it for `puzzle-mend-the-bell`. §9 updated.
-- 2026-11-25 — **Concourse alias de-duplicated (editor registry maintenance).**
-  `concourse` was double-claimed by `room-network-hub` (legacy flavour) and the
-  new `room-1-4-concourse` (its §9 alias). The hub keeps `patch bay,
-broadcast bay`; the concourse room keeps `concourse`. Hub card amended in
-  area-writer round 1 (2026-11-25); §9's hub row records the move.
-- 2026-11-25 — **Actor presence model confirmed (W4).** Per §11 item 12,
-  actors are globally addressable and no placement field is authored;
-  `in-room`/`in-area` scope a topic by the **player's** room/area
-  (`ConditionEvaluator` compares the player's `Position`). The Loomwright's
-  despatch audit (`topic-loomwright-audit`, rail-scoped, `start-quiz`
-  `quiz-finished-rail`) is therefore reachable at the Finished Rail under the
-  authored model; the rooms card's rail description carries his attendance in
-  fiction ("Presence, not labels"); no two-room presence is authored and no
-  `move-actor` effect exists or is needed.
-- 2026-11-25 — **Slop-worksheet harm shape (user decision at W4).** The user
-  chose to keep H1 uniform: `hazard-slop-worksheet` gains `change-lives −1` +
-  `move-player room-pattern-bureau` like every other hazard; zone 1's five
-  hazards remain the precedent. The "no life loss" wording in the W3 hazard
-  brief (editor slip) is void; topic file §7's "pure detour" stands as the
-  lesson framing (the detour is the walk back), with no H1 waiver. Hazard
-  writer round 1 applies it.
-- 2026-11-25 — **Zone A review close-out and id ratification (W4 complete).**
-  Both reviewers returned: pck-reviewer PASS WITH MINORS (its minor — the
-  `while ... repeat` terminology — closed in the quiz card's consolidated
-  round; verified `endwhile`-free), content-critic FAIL whose 8 majors and
-  12 minors are all now resolved or editor-routed: hazards (H1 harm shape
-  per this record; dye-pad counterplay producer) closed; rooms (D3 useNotes
-  ×3, N6 discovery text, three selvedge fixtures, rail note + attendance) —
-  closed; puzzles (four N6 majors, D4 quote refreshes, D3 `complete-topic`)
-  — closed; quiz (N5 onPass messages ×3, PCK-TERM re-key) — closed; npcs
-  (C6 note) — closed; editor-side: P1 rail anchor (topic file §6 amended),
-  P2 arrays (deferred to the W5 evidence note), N8 (Bureau 202 → 198 words),
-  D2 count reconciliation. **Ratified in §9:** the six puzzle ids, the nine
-  missing item ids (incl. `item-slop-worksheet` and the three selvedge
-  fixtures), and the ten intermediate action flags (allocated topic file
-  §10, seam-deferred per this record's verb-action entry). Full-set
-  `content:validate` PASS, no findings, after all rounds. The hints brief
-  (wave 2, seven ladders) follows this entry.
-- 2026-11-25 — **Zone A W5 integration (the coverage flip) and hand-off.** With
-  the V4 trace §8 accepted (final whole-set critic pass PASS WITH MINORS,
-  three minors dispositioned editor-side; steps 22/29 corrected to the rail
-  door's four glass section lights), `programming-constructs`
-  (`maxScore` 14 = 4×2 quiz + 6 puzzle) and `algorithms-and-pseudocode`
-  (`maxScore` 5 = bureau 2 + rail 3, the rail capstone AO3) are declared
-  `covered` in `docs/coverage/COVERAGE.md` and `docs/content/spec-topics.yaml`
-  — the 60 placeholders retired per topic file §11's recorded-sums decision —
-  with the room index extended by the concourse and the eight mill rooms and
-  the integration verdict recording the Zone A pass. Deferral notes ride the
-  evidence: arrays (1D pigeonholes; the 2D Duty Rota, L1308) and string
-  handling (the addressing plate's find-and-replace beat, L1263–1280, in
-  spirit) are taught in-zone without a dedicated retrieval beat; the
-  applying-and-extending beats belong to the 1.2.2 zone (`maxScore` 0 there if
-  both are live). With this flip the win set is ten topics and the end state is
-  the rail quiz pass (trace §8 step 30; the `Session.ts` win predicate). The
-  ten §8.6 interaction rows and four scenery declarations are the W6 contract
-  for `code-lead` (zone-1's runtime findings remain on its queue); W7
-  (`browser-tester` with §8 as the script) follows its green.
-- 2026-11-26 — **Assistance Ward high-level outline approved; Gate 0 ideation
-  authorised.** The user chose The Assistance Ward, reached **south** of the
-  Network Hub to preserve a two-dimensional map, and then chose the fully
-  interactive tour: the ward is a mandatory checkpoint before the teaching-zone
-  ports open. Decisions: three-room loop (Intake Bay → Demonstration Ward →
-  Records Office → hub); four recoverable former pupils named Nia, Mateo, Priya
-  and Kofi, with cultures represented only through names; the existing
-  `npc-the-ai` as a weary, passive-aggressive guide; full canonical command tour;
-  real practice quiz, puzzle and hint ladder; no hazards and no life loss; all
-  scores 0. Cognitive decline and "trivial before 2023" are satire only, never
-  course facts. `tutorial-mechanics` is an explicitly non-assessed `in progress`
-  topic, `maxScore 0`, excluded from the win set; `ai-ethics-and-implications`
-  remains untouched. IDs and aliases in §9 are allocated from this approved
-  outline. The topic file `topics/assistance-ward.md` records the room cluster,
-  provisional PDG, safeguards and curation questions. **No ward writer briefed;
-  six-stream Gate 0 ideation is next, followed by editor curation and a second
-  user approval before Gate 1.**
-- 2026-11-26 — **Assistance Ward Gate 0 curation approved; Gate 1 authorised.**
-  Six ideation-only streams returned and the editor curated their survivor set.
-  The user approved: fixed-fixture `ask`/`tell` recoveries for Nia, Mateo and
-  Kofi; a sticky two-turn choose-then-reason node for Priya; optional
-  `show`/`give` practice only on non-essential props; the 12-item roster and
-  aliases; generic `actorstate-ready` plus four recovered pupil states; the
-  ward AI topic set and the global-default ward exclusion; the four recovery
-  flags, Priya's intermediate choice flag and `assistance-dial-calibrated`;
-  `q-ao-01`–`q-ao-04` with keys 1/2/1/3, pass mark 3 of 4 and zero-life retries;
-  one composite `all` puzzle requirement; explicit-only three-level hints for
-  Gate 1; and the hub, Switchyard interface, arrival-world and AI-default card
-  amendments. The final `use assistance dial` and `use practice bell` contracts
-  remain subject to the read-only runtime-seam check and the standing §12
-  deferral. IDs and aliases are ratified in §9 and the approved topic file is
-  `topics/assistance-ward.md`. **No ward writer briefed until eligible Gate 1
-  briefs are dispatched.**
-- 2026-11-27 — **Assistance Ward conditional `use` seam approved; authored
-  `useText` sign-off.** The user lifted the standing deferral for the calibration
-  dial and put the practice bell in scope; the conditional `use` producer has
-  since landed in W6. The user approved these exact player-facing strings,
-  sourced from an approved authored card field (`useText`) rather than a
-  code-owned constant; code must not invent the wording:
-  - `item-assistance-calibration-dial` `useText.success`: "The dial gives a small, reluctant click. All five sockets are lit; the teaching ports have stopped pretending to be decoration."
-  - `item-assistance-calibration-dial` `useText.blocked`: "The dial does not move. Look at the five empty sockets: OBSERVE needs Nia's observation card, READ needs Mateo's instruction card, REASON needs Priya's reason, OPERATE needs Kofi's practice cycle, and ORIENTATION PASS needs the practice quiz. Fill all five, then try again."
-    The practice bell has no new string: it reuses its existing approved item
-    description verbatim as its only runtime feedback — "You find the practice
-    bell screwed to the bench, with a dark felt striker beside it. Its label reads
-    HARMLESS PRACTICE." — with no state change, no flag, no score and no blocked
-    branch. The user's stated rationale: light world-humour, a failure explanation
-    that is clearer and more explicit for a tutorial level, and the bell reusing
-    existing prose. The bell contract is confirmed as the card's existing one:
-    harmless, scoreless and flag-free, with no state mutation and no room
-    interaction. The cards' `authoring.useNotes` remain untouched as historical
-    authoring context. This adds no ID, alias, flag, gate, score, coverage entry
-    or V4 trace change; the schema, generator, runtime seam and tests are
-    `code-lead`'s handoff.
-- 2026-11-27 — **W6 landing of the approved `use` seam.** `code-lead` slice
-  `ward-w6-generation` is FINAL / PASS: all 14 authored modules regenerated,
-  92 files / 652 tests green, independent review PASS WITH MINORS with no blocker
-  or major. The dial sets `assistance-dial-calibrated` only after the five recorded
-  prerequisites, using `useText` verbatim; the bell reuses its item description
-  with no state change. AW-V4-01 is closed and the ward W7 playtest is unblocked.
-- 2026-11-27 — **W7 ward findings fix round authorised.** The user asked for all
-  13 numbered findings in `PLAYTEST-assistance-ward.md` to be addressed and a
-  focused ward-only W7 re-test; the out-of-scope Switchyard route note is context
-  only. Editor decisions, recorded here under that instruction (D2, §8):
-  - Accept both `unlock <item> <target>` and `unlock <item> with <target>` in the
-    parser, with an in-world error that names the missing object rather than
-    claiming the carried key is absent. The assessed quiz key stays correct and
-    its explanation teaches both accepted forms.
-  - Accept `place` as a parser alias for `put` so the approved instruction card
-    and Mateo's recovery text remain valid; no card word is changed for this.
-  - Accept the natural `talk to <npc>` spacing alongside `talk-to <npc>`.
-  - Replace the generated `flag-set` gate line with in-world, authored exit
-    feedback for the three ward gates and a non-technical fallback elsewhere.
-  - Split the Records AI lesson into keyword-addressed topics
-    (`topic-ai-ward-conversation`, `-answers`, `-hints`, `-failure`, `-save`) so
-    the obvious question word gets its own answer; `quiz` no longer starts the
-    audit — `orientation`, `audit`, `test` and `practice test` still do — and no
-    AI question may start or silently restart a quiz in progress.
-  - Split the ward ladder into room-scoped sequences
-    (`hint-assistance-intake`, `hint-assistance-demonstration` and the retained
-    `hint-assistance-orientation` for Records/quiz/puzzle), each naming the
-    stalled step without supplying the answer.
-  - Post-choice `tell priya …` accepts the wording the prompt invites; SHOW and
-    GIVE announce the transfer at the moment it happens; hub and interface prose
-    stays true after their gates open; the bell check belongs to Demonstration.
-    These are revisions to approved cards and parser acceptance only: no new flag,
-    score, gate, coverage claim or topic status. New topic and hint IDs are
-    allocated in §9. Writers own the YAML; `code-lead` owns schema, generator,
-    runtime and generated files.
-- 2026-11-27 — **Round-2 re-test findings approved for fix.** The user approved
-  replacing the previously ratified `item-assistance-calibration-dial`
-  `useText.blocked` string, which the re-test found falsely reports five empty
-  sockets after four records are filled. The superseding string is: "The dial
-  does not move. Lit sockets show records already entered; dark ones still need
-  attention. OBSERVE needs Nia's observation card, READ needs Mateo's instruction
-  card, REASON needs Priya's reason, OPERATE needs Kofi's practice cycle, and
-  ORIENTATION PASS needs the practice quiz. Fill any remaining sockets, then try
-  again." It remains verbatim authored content from the card field, with no new
-  flag, score or state. The user also approved the docs agent adding "declared
-  room IDs" to the user-owned `hints.md` H2 and hint-target rules. Other round-2
-  findings — state-true room and item prose, the `saving` keyword and the
-  wrong-order unlock refusal — are fixes to existing content or code, not new
-  mechanics.
+The root bible, the Assistance Ward outline and the Unit 1.4 Zone A topic file
+are approved by the user. Each new zone is approved before its topic file is
+written and its writer is briefed. Approved IDs and aliases live in the authored
+cards and the owning topic files; review verdicts and delivery history belong in
+commit messages and the working record, not in this bible.

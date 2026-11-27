@@ -13,7 +13,7 @@ now on: §11.
   woollen mill inside the machine. Working zone title; the user picked the
   Pattern Shop reading from three proposals.
 - **World:** the single machine world (`world-wjec-gcse-computer-science-
-  2025-spec`); this area declares **no `worlds` block** — the world is declared
+2025-spec`); this area declares **no `worlds` block** — the world is declared
   once, in the boot area (bible §5).
 - **Level start:** `room-pattern-bureau` (`startRoomId`; hazard and quiz-failure
   returns land here). Lives 3, reset on area change (§8).
@@ -22,7 +22,7 @@ now on: §11.
   machine to the mill. `room-network-hub` gains a north exit to the concourse;
   the concourse exits south back to the hub and east to the Bureau; the
   Bureau's west exit lands in the concourse. Zones B–D hang off dark ports in
-  the concourse when scoped (bible §11 item 15).
+  the concourse when scoped (bible §10 item 15).
 - **Coverage topics (ratified: two):** `algorithms-and-pseudocode` (defining
   algorithms: pseudo-code and flowcharts) and `programming-constructs`
   (the construct strand: everything L1169–1180). Both become `## Topic:`
@@ -49,17 +49,17 @@ All course facts come from `docs/exam-specs/wjec-unit1.md` (§1.4.1, L1161–151
   and coverage evidence always use the formal term**; a mill nickname never
   substitutes for a spec term in a quiz key. Room summaries of the pairs:
 
-| Room | World term | Formal term (spec) |
-| --- | --- | --- |
-| Pattern Bureau | the pattern card | the construct demonstration; **pseudo-code** (L1197) and the **flowchart** symbols (L1227–1233) |
-| Threading Order | the dressing order | **sequence** — instructions one after another (L1253) |
-| Colour Court | which colours lift | **selection** — `if … else … end if`, `case select` (L1255, L1211); comparisons (L1282–1291) |
-| Weft Counter | the passes | **count-controlled iteration** — `for i = 1 to 10 … next i` (L1217); the **incremental count**, `count = count + 1` (L1259) |
-| Endless Selvedge | the cloth's end | **condition-controlled iteration** — `repeat … until`, `while … repeat` (L1218–1221); the **rogue value** (L1261) |
-| Finished Rail | the master cloth | the joined **algorithm**: input → compute → output, written, corrected, tested, interpreted (L1169) |
-| Bobbin Window | bobbins in, cloth out | **input and output** (L1251) |
-| Mill Board / drawer tally | the board and the private drawer | **global and local variables** (L1304–1306) |
-| the pigeonholes / the rota | the pigeonholes; the rota board | **arrays** — 1D and 2D, first element at position `[0]` (L1308) |
+| Room                       | World term                       | Formal term (spec)                                                                                                          |
+| -------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Pattern Bureau             | the pattern card                 | the construct demonstration; **pseudo-code** (L1197) and the **flowchart** symbols (L1227–1233)                             |
+| Threading Order            | the dressing order               | **sequence** — instructions one after another (L1253)                                                                       |
+| Colour Court               | which colours lift               | **selection** — `if … else … end if`, `case select` (L1255, L1211); comparisons (L1282–1291)                                |
+| Weft Counter               | the passes                       | **count-controlled iteration** — `for i = 1 to 10 … next i` (L1217); the **incremental count**, `count = count + 1` (L1259) |
+| Endless Selvedge           | the cloth's end                  | **condition-controlled iteration** — `repeat … until`, `while … repeat` (L1218–1221); the **rogue value** (L1261)           |
+| Finished Rail              | the master cloth                 | the joined **algorithm**: input → compute → output, written, corrected, tested, interpreted (L1169)                         |
+| Bobbin Window              | bobbins in, cloth out            | **input and output** (L1251)                                                                                                |
+| Mill Board / drawer tally  | the board and the private drawer | **global and local variables** (L1304–1306)                                                                                 |
+| the pigeonholes / the rota | the pigeonholes; the rota board  | **arrays** — 1D and 2D, first element at position `[0]` (L1308)                                                             |
 
 - **Depth discipline:** nothing beyond 1.4.1's list is taught. The spec's
   programming-error taxonomy (logical/runtime/syntax, L1694–1701) belongs to
@@ -69,7 +69,7 @@ All course facts come from `docs/exam-specs/wjec-unit1.md` (§1.4.1, L1161–151
 - **Arrays (ratified: taught here):** 1D via the weft pigeonholes, 2D via the
   rota board (the spec's own 6×5 rows-and-columns shape, L1308). The two
   counting conventions are stated together **once**, at the arrays beat: `for
-  i = 1 to 10` counts one to ten (L1217); array positions start at zero
+i = 1 to 10` counts one to ten (L1217); array positions start at zero
   (`myArray[0]`, L1308). The 1.2.2 zone applies-and-extends later at
   `maxScore 0` there if both are live (the `switch-to-bit` model).
 
@@ -170,17 +170,17 @@ and relationship (A1), each with at most one recurring phrase (§7 of
 narrative-principles). Silent-ready rule holds: no greeting on state entry
 (recorded decision); greetings live in topic responses.
 
-| Actor | Voice | Motivation (opposing) | Relationship |
-| --- | --- | --- | --- |
-| `npc-the-loomwright` — the Registrar of the Bureau; keeper of patterns and licences | Dry, bureaucratic, stamp-cultured: "Stamps don't lie. People do." | Paperwork without error; a licence stamped on charm is a forged record | Loathes the cousin (filed him under *miscellaneous*); defers to the AI's marks but files its audits unopened; wary respect for the Selvedge Warden |
-| `npc-the-warp-dresser` — the Threading Order's sequence keeper | Timid, ritual-bound, apologises to looms; never first | Order is kindness: a thread crossed in the wrong order snarls the whole cloth | Trade insults with the Shed Opener; in awe of the Warden; terror of the cousin's "improvements" |
-| `npc-the-shed-opener` — the Colour Court's selection keeper | Fast, crisp, contemptuous of dithering — stuck dithering since her plate went missing | No case unhandled, no `else` forgotten | Sparred with the Warp Dresser for years; gratitude stiff and unpractised; the cousin's "urgent sells" is her open wound |
-| `npc-the-weft-tally` — the Weft Counter's counting keeper | Precise; counts aloud, including Tuesdays and her own passes; "Exactly ten." | A count is a promise owed to whoever queued | Professional sibling of the Selvedge Warden ("she waits; I count"); formal correspondence with a duck; cold on the cousin |
-| `npc-the-selvedge-warden` — the Endless Selvedge's keeper | Short, final sentences; patience gone mineral; warmth budgeted to the whist table | Every line must end: a queue without an exit is a crowd | "Anything that cannot fail is not a condition" — her verdict on the cousin; respects the Loomwright's paper, prefers a plate |
-| `npc-the-bobbin-lad` — the Bobbin Window's despatch keeper | Cheerful, quick, allergic to delay; "a fast wrong answer or a slow right one" | Nothing waits twice at his window | Pride: his board is the only one the cousin never slopped; fond of the Weft Tally; cautious of the pick-pile |
-| `npc-the-slop-cousin` — recurring vandal (bible §6) | Gushing, run-on; "Great question!" before each wrong answer; adores the pupil, blames looms | Helpfulness at volume | The AI's cousin and disappointment; every resident's open case |
+| Actor                                                                               | Voice                                                                                       | Motivation (opposing)                                                         | Relationship                                                                                                                                       |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npc-the-loomwright` — the Registrar of the Bureau; keeper of patterns and licences | Dry, bureaucratic, stamp-cultured: "Stamps don't lie. People do."                           | Paperwork without error; a licence stamped on charm is a forged record        | Loathes the cousin (filed him under _miscellaneous_); defers to the AI's marks but files its audits unopened; wary respect for the Selvedge Warden |
+| `npc-the-warp-dresser` — the Threading Order's sequence keeper                      | Timid, ritual-bound, apologises to looms; never first                                       | Order is kindness: a thread crossed in the wrong order snarls the whole cloth | Trade insults with the Shed Opener; in awe of the Warden; terror of the cousin's "improvements"                                                    |
+| `npc-the-shed-opener` — the Colour Court's selection keeper                         | Fast, crisp, contemptuous of dithering — stuck dithering since her plate went missing       | No case unhandled, no `else` forgotten                                        | Sparred with the Warp Dresser for years; gratitude stiff and unpractised; the cousin's "urgent sells" is her open wound                            |
+| `npc-the-weft-tally` — the Weft Counter's counting keeper                           | Precise; counts aloud, including Tuesdays and her own passes; "Exactly ten."                | A count is a promise owed to whoever queued                                   | Professional sibling of the Selvedge Warden ("she waits; I count"); formal correspondence with a duck; cold on the cousin                          |
+| `npc-the-selvedge-warden` — the Endless Selvedge's keeper                           | Short, final sentences; patience gone mineral; warmth budgeted to the whist table           | Every line must end: a queue without an exit is a crowd                       | "Anything that cannot fail is not a condition" — her verdict on the cousin; respects the Loomwright's paper, prefers a plate                       |
+| `npc-the-bobbin-lad` — the Bobbin Window's despatch keeper                          | Cheerful, quick, allergic to delay; "a fast wrong answer or a slow right one"               | Nothing waits twice at his window                                             | Pride: his board is the only one the cousin never slopped; fond of the Weft Tally; cautious of the pick-pile                                       |
+| `npc-the-slop-cousin` — recurring vandal (bible §6)                                 | Gushing, run-on; "Great question!" before each wrong answer; adores the pupil, blames looms | Helpfulness at volume                                                         | The AI's cousin and disappointment; every resident's open case                                                                                     |
 
-Actor states (proposed, bible §9): each resident starts in a working-difficulty
+Actor states (proposed for editor approval, D2): each resident starts in a working-difficulty
 state (`flustered`, `dithering`, `counting`, `looping`) and flips on the room's
 quiz pass (`orderly`, `sorted`, `exact`, `dismissed`); the Loomwright has
 `witnessing` and `complete`; the cousin has `beaming` everywhere. States change
@@ -232,7 +232,7 @@ the entry demonstration):
 
 ## 6. Quizzes, hints and teaching beats
 
-- **Six quizzes (proposed ids, bible §9):** `quiz-pattern-bureau`
+- **Six quizzes (proposed ids for editor approval, D2):** `quiz-pattern-bureau`
   (pseudo-code reading + the five flowchart symbols, L1197–1245),
   `quiz-threading-order` (sequence, incl. input-before-output discipline,
   L1251/1253), `quiz-colour-court` (selection + comparisons,
@@ -240,13 +240,13 @@ the entry demonstration):
   count, L1217/1259), `quiz-selvedge` (until/while + the rogue value,
   L1218–1221/1261), `quiz-finished-rail` (synthesis: choose the construct
   for a fresh problem — the AO3 capstone, L1169).
-  *(Amended 2026-11-25 at W4, editor — the P1 anchor made explicit:
+  _(Amended 2026-11-25 at W4, editor — the P1 anchor made explicit:
   `quiz-finished-rail` completes `algorithms-and-pseudocode` — L1169 is the
   algorithms section's write/correct/test/interpret line, P3 assigns AO3 to
   design/evaluation topics, and with the Bureau quiz's 2 the recorded
   5-point budget for that topic lands there (§11). Its questions synthesise
   the constructs as the algorithm's parts, which is the point of the
-  capstone.)*
+  capstone.)_
 - **Question pool:** `q-pc-01` … `q-pc-24` (proposed), ~4 per quiz; each
   quiz ≥1 AO1 and ≥1 AO2; AO3 permitted throughout (algorithms are a design
   topic, P3); `passMark` 3 of 4; explanation after every answer (P4);
@@ -260,7 +260,7 @@ the entry demonstration):
   `else` assumed harmless (L1255); repeat…until assumed skippable
   (L1218 vs L1221); the rogue value refused as a data error (L1261);
   symbols judged by silhouette (L1229–1231); XOR read as OR (L1302).
-- **Hints (proposed ids, bible §9):** one ladder per quiz/puzzle cluster,
+- **Hints (proposed ids for editor approval, D2):** one ladder per quiz/puzzle cluster,
   six total, in the Loomwright's "guidance for learners" sheets — nudge →
   structure → procedure, 2–4 levels; unlock on `failed-attempts:<quizId>`
   (1/2/3) and `turns-since:<puzzleId>` (3/5/7); `cooldownTurns: 2`; zero
@@ -272,7 +272,7 @@ the entry demonstration):
 - **`hazard-pick-avalanche`** (machine faults; DECIDED). The Colour Court's
   pick-pile goes over. **Trigger (ratified):** on room entry AFTER the
   Shed Opener's demonstration is complete (`when`: `quiz-passed:quiz-colour-
-  court` **and not** `colours-lifted` — the demonstration flag is the quiz's
+court` **and not** `colours-lifted` — the demonstration flag is the quiz's
   own pass flag) while the selection fix is still undone. Until it arms, the
   room is safe; the telegraphs are read either way — the yellowed tally
   card ("one sheet from going over") and her line about the pile. Effects:
@@ -301,7 +301,7 @@ the entry demonstration):
 
 The mill is the zone's Welshness — the west Wales woollen trade — delivered
 as setting, never as a joke target (§8 of narrative-principles) and never
-displacing a formal term (§10 of the bible). Per the user instruction of
+displacing a formal term (§9 of the bible). Per the user instruction of
 2026-11-25, every glossary term gets a short in-voice explanation on first
 use, one clause, from the area, an item's description or an NPC's dialogue:
 
@@ -334,8 +334,8 @@ use, one clause, from the area, an item's description or an NPC's dialogue:
 1. Quiz roster finalisation (six as proposed is the default) and the
    per-quiz AO spreads — settled into the Gate 1 quiz brief (2026-11-25):
    six quizzes, passMark 3 of 4, pool `q-pc-01…24`.
-2. ~~Alias ratification~~ — **settled:** approved with the W2 amendment
-   (bible §9, 2026-11-25). Zone A conversation topic and flag ids are
+2. ~~Alias ratification~~ — **settled:** approved with the W2 amendment and
+   recorded in the approved cards (2026-11-25). Zone A conversation topic and flag ids are
    allocated in §10 below.
 3. The give→transfer and quiz-issues-item seams proven in the V4 trace
    before any quiz card relies on item-issue on pass. Both unions exist
@@ -344,55 +344,55 @@ use, one clause, from the area, an item's description or an NPC's dialogue:
 4. ~~Hub port direction~~ — **settled (2026-11-25, user-directed):** the hub
    gains a **north** exit to the new placeholder concourse
    (`room-1-4-concourse`); the concourse joins the Bureau. Zones B–D hang
-   off its dark ports later (bible §11 item 15).
+   off its dark ports later (bible §10 item 15).
 5. The avalanche's trigger wiring (entry after
    `quiz-passed:quiz-colour-court`, selection still unresolved) drafted
    into the hazard card at Gate 1; the trace proves no first-entry fire and
    safe re-entry.
-6. Decorative items' `portable` calls (allocated in §9 of the bible) are
+6. Decorative items' `portable` calls (allocated with the W2 amendment) are
    re-checked at brief time against the take-refusal contract (P-TAKE-01).
 7. Zone C's `maintainable-programs` topic file inherits the anti-leak rules
    and the two-conventions arrays beat when it is scoped (bible §7).
 8. Puzzle ids: proposed by the puzzle-writer (user decision 2026-11-25),
-   ratified in bible §9 at review acceptance; the hints brief waits for
+   ratified at review acceptance in the approved cards; the hints brief waits for
    them (wave 2).
 
 ## 10. Flag and conversation-topic allocation (applied at W2 approval, 2026-11-25)
 
 Runtime **flags** (kebab-case, no prefix; unique in-world):
 
-| Flag | Set by | Read by |
-| --- | --- | --- |
-| `demo-on-record` | `quiz-pattern-bureau` onPass | Bureau's east exit guard |
-| `bell-mended` | `puzzle-mend-the-bell` (id proposed by the puzzle-writer) onSolve | Bobbin Lad topics (prediction beat) |
-| `pad-checked` (ratified, 2026-11-25) — the dye-pad disarm | the Weft Tally's crackle-test topic (ask her about the dried pad; set-flag in its effects; examining the pad in-room is the in-fiction route) | `hazard-dye-pad`'s `when` guard (hazards card, wave 1) |
-| `weft-ratchet-heard` (allocated 2026-11-25; content key, not a registry id — D2 does not apply) | the Weft Tally's `topic-weft-tally-count-known` (first ask) | `topic-weft-tally-prediction` |
-| `card-sequence-given` | Warp Dresser's give topic | Threading Order puzzle guard |
-| `card-selection-given` | Shed Opener's give topic | Colour Court puzzle guard |
-| `card-count-given` | Weft Tally's give topic | Weft Counter puzzle guard |
-| `card-condition-given` | Selvedge Warden's give topic | Selvedge puzzles' guards |
-| `threading-ordered` | sequence puzzle onSolve | Warp Walk light 1 |
-| `colours-lifted` | selection puzzle onSolve | Warp Walk light 2; avalanche disarm |
-| `weft-counted` | count puzzle onSolve | Warp Walk light 3 |
-| `condition-plate-set` | selvedge plate puzzle onSolve | Warp Walk light 4 (with the next) |
-| `rogue-thread-filed` | rogue puzzle onSolve | Warp Walk light 4 (with the previous) |
-| `master-demonstrated` | `quiz-finished-rail` onPass | the Rail's despatch beat |
-| `pass-count-predicted` (allocated 2026-11-25, editor — the Weft Counter's prediction beat, §5) | the Weft Tally's prediction topic (ask-topic; in-room; one-shot) | the count puzzle's requirement list (puzzle card) |
-| `bell-wire-seated` (ratified 2026-11-25 at review close-out; D2-proposed by the puzzle-writer) | the bell wire's verb action (USE per `item-bell-wire` useNotes) — **seam-deferred, bible §12** | `puzzle-mend-the-bell`'s requirement list |
-| `addressing-plate-re-lettered` (ratified 2026-11-25; D2) | the addressing plate's verb action (the letter rack re-lettering, per useNotes) — seam-deferred, bible §12 | `puzzle-mend-the-bell`'s requirement list |
-| `dressing-re-ordered` (ratified 2026-11-25; D2) | the shade cards' verb action (PUT on the step hangers in the card's order) — seam-deferred, bible §12 | `puzzle-dress-the-warp`'s requirement list |
-| `shed-plate-returned` (ratified 2026-11-25; D2) | the shed plate's verb action (returning the diamond plate to its rail slot) — seam-deferred, bible §12 | `puzzle-lift-the-shed`'s requirement list |
-| `else-plate-restored` (ratified 2026-11-25; D2) | the else plate's verb action (seating it in its plain rectangular slot) — seam-deferred, bible §12 | `puzzle-lift-the-shed`'s requirement list |
-| `tray-routed-by-condition` (ratified 2026-11-25; D2) | the pick trolley's verb action (routing picks 9, 12, 15 by the plate's condition) — seam-deferred, bible §12 | `puzzle-lift-the-shed`'s requirement list |
-| `slip-tooth-pried` (ratified 2026-11-25; D2) | the slip tooth's verb action (prying it from the counting ratchet) — seam-deferred, bible §12 | `puzzle-seat-the-ratchet`'s requirement list |
-| `counting-ratchet-reseated` (ratified 2026-11-25; D2) | the counting ratchet's verb action (re-seating it so one tooth serves one pass) — seam-deferred, bible §12 | `puzzle-seat-the-ratchet`'s requirement list |
-| `until-clause-restored` (ratified 2026-11-25; D2) | the condition plate's verb action (PUT the until plate on the exit gate) — seam-deferred, bible §12 | `puzzle-close-the-selvedge`'s requirement list |
-| `rogue-thread-in-drawer` (ratified 2026-11-25; D2) | the rogue thread's verb action (PUT in the counterfoil drawer) — seam-deferred, bible §12 | `puzzle-file-the-rogue-thread`'s requirement list |
+| Flag                                                                                             | Set by                                                                                                                                        | Read by                                                |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `demo-on-record`                                                                                 | `quiz-pattern-bureau` onPass                                                                                                                  | Bureau's east exit guard                               |
+| `bell-mended`                                                                                    | `puzzle-mend-the-bell` (id proposed by the puzzle-writer) onSolve                                                                             | Bobbin Lad topics (prediction beat)                    |
+| `pad-checked` (ratified, 2026-11-25) — the dye-pad disarm                                        | the Weft Tally's crackle-test topic (ask her about the dried pad; set-flag in its effects; examining the pad in-room is the in-fiction route) | `hazard-dye-pad`'s `when` guard (hazards card, wave 1) |
+| `weft-ratchet-heard` (allocated 2026-11-25; content key, not an artefact ID — D2 does not apply) | the Weft Tally's `topic-weft-tally-count-known` (first ask)                                                                                   | `topic-weft-tally-prediction`                          |
+| `card-sequence-given`                                                                            | Warp Dresser's give topic                                                                                                                     | Threading Order puzzle guard                           |
+| `card-selection-given`                                                                           | Shed Opener's give topic                                                                                                                      | Colour Court puzzle guard                              |
+| `card-count-given`                                                                               | Weft Tally's give topic                                                                                                                       | Weft Counter puzzle guard                              |
+| `card-condition-given`                                                                           | Selvedge Warden's give topic                                                                                                                  | Selvedge puzzles' guards                               |
+| `threading-ordered`                                                                              | sequence puzzle onSolve                                                                                                                       | Warp Walk light 1                                      |
+| `colours-lifted`                                                                                 | selection puzzle onSolve                                                                                                                      | Warp Walk light 2; avalanche disarm                    |
+| `weft-counted`                                                                                   | count puzzle onSolve                                                                                                                          | Warp Walk light 3                                      |
+| `condition-plate-set`                                                                            | selvedge plate puzzle onSolve                                                                                                                 | Warp Walk light 4 (with the next)                      |
+| `rogue-thread-filed`                                                                             | rogue puzzle onSolve                                                                                                                          | Warp Walk light 4 (with the previous)                  |
+| `master-demonstrated`                                                                            | `quiz-finished-rail` onPass                                                                                                                   | the Rail's despatch beat                               |
+| `pass-count-predicted` (allocated 2026-11-25, editor — the Weft Counter's prediction beat, §5)   | the Weft Tally's prediction topic (ask-topic; in-room; one-shot)                                                                              | the count puzzle's requirement list (puzzle card)      |
+| `bell-wire-seated` (ratified 2026-11-25 at review close-out; D2-proposed by the puzzle-writer)   | the bell wire's verb action (USE per `item-bell-wire` useNotes) — **seam-deferred, bible §11**                                                | `puzzle-mend-the-bell`'s requirement list              |
+| `addressing-plate-re-lettered` (ratified 2026-11-25; D2)                                         | the addressing plate's verb action (the letter rack re-lettering, per useNotes) — seam-deferred, bible §11                                    | `puzzle-mend-the-bell`'s requirement list              |
+| `dressing-re-ordered` (ratified 2026-11-25; D2)                                                  | the shade cards' verb action (PUT on the step hangers in the card's order) — seam-deferred, bible §11                                         | `puzzle-dress-the-warp`'s requirement list             |
+| `shed-plate-returned` (ratified 2026-11-25; D2)                                                  | the shed plate's verb action (returning the diamond plate to its rail slot) — seam-deferred, bible §11                                        | `puzzle-lift-the-shed`'s requirement list              |
+| `else-plate-restored` (ratified 2026-11-25; D2)                                                  | the else plate's verb action (seating it in its plain rectangular slot) — seam-deferred, bible §11                                            | `puzzle-lift-the-shed`'s requirement list              |
+| `tray-routed-by-condition` (ratified 2026-11-25; D2)                                             | the pick trolley's verb action (routing picks 9, 12, 15 by the plate's condition) — seam-deferred, bible §11                                  | `puzzle-lift-the-shed`'s requirement list              |
+| `slip-tooth-pried` (ratified 2026-11-25; D2)                                                     | the slip tooth's verb action (prying it from the counting ratchet) — seam-deferred, bible §11                                                 | `puzzle-seat-the-ratchet`'s requirement list           |
+| `counting-ratchet-reseated` (ratified 2026-11-25; D2)                                            | the counting ratchet's verb action (re-seating it so one tooth serves one pass) — seam-deferred, bible §11                                    | `puzzle-seat-the-ratchet`'s requirement list           |
+| `until-clause-restored` (ratified 2026-11-25; D2)                                                | the condition plate's verb action (PUT the until plate on the exit gate) — seam-deferred, bible §11                                           | `puzzle-close-the-selvedge`'s requirement list         |
+| `rogue-thread-in-drawer` (ratified 2026-11-25; D2)                                               | the rogue thread's verb action (PUT in the counterfoil drawer) — seam-deferred, bible §11                                                     | `puzzle-file-the-rogue-thread`'s requirement list      |
 
 These ten are the puzzles' intermediate action flags: their setters are the
 items' declared verb actions (ON the wording in each item's `useNotes`), and
 the engine seam that executes card-declared verb effects is deferred (bible
-§12, user decision 2026-11-25) — the cards stay authored on the ratified
+§11, user decision 2026-11-25) — the cards stay authored on the ratified
 shapes and no card rewrites when the seam lands.
 
 Quiz-pass flags follow the `shared-rules.md` §5 convention `quiz-passed:<quizId>` and are
@@ -408,15 +408,15 @@ ids on this scheme and the editor ratifies them at review): stems
 resident; per-room `in-room`-scoped cousin vandal topics; catch-alls scoped
 to the actor's room; reserved: `topic-ai-licence` (bureau, cameo, flavour
 only). Node scheme mirrors: `node-<actor-stem>-<beat>`; the two ratified
-nodes stay in bible §9. Conversation "object ids" (the `ask` vocabulary)
-come from the bible alias registry only (T4): each room's teaching nouns
+nodes are recorded in the approved cards. Conversation "object ids" (the
+`ask` vocabulary) come from the ratified aliases in the brief and cards only (T4): each room's teaching nouns
 (warp, weft, shed, selvedge, ratchet, rota, pigeonholes) resolve through the
 items' and rooms' ratified aliases.
 
 ## 11. Dispatch plan and scoring (standing practice, 2026-11-25)
 
 **Wave order for this area** (adopted by the user as editor practice, bible
-§12; applies to every area from now on — zone 1 predates it and is
+§11; applies to every area from now on — zone 1 predates it and is
 grandfathered):
 
 1. **Rooms** — `rooms.yaml` for the area (+ the zone's concourse and the hub
@@ -436,10 +436,10 @@ grandfathered):
 Per-wave handling: the editor scaffolds that wave's files just in time (the
 validator fails unresolved `todo` stubs), dispatches the briefs, runs
 `content:validate` on the returned wave, and routes findings back before
-either reviewer runs (D5/V1); a wave's newly proposed ids are ratified in
-bible §9 as part of review acceptance and reported to the user.
+either reviewer runs (D5/V1); a wave's newly proposed ids are ratified at
+review acceptance, recorded in the approved cards and reported to the user.
 
-**Scoring (user decision, 2026-11-25):** scores are *recorded*, not
+**Scoring (user decision, 2026-11-25):** scores are _recorded_, not
 budgeted. Writers declare a `score` per activity following the zone-1 shape
 (quiz 2, puzzle 1, rooms 0; capstone free to reach 3); at integration (W5)
 the accepted per-topic total is written into `spec-topics.yaml` as

@@ -4,9 +4,9 @@
 This file holds the idea pool co-developed with the user on 2026-11-25 so that no
 idea lives only in conversation. When a zone is fleshed out in detail, its section
 splits into its own `docs/content/topics/<zone>.md` and goes to the user for
-approval; only then is the bible amended (§5, §7, §9, §12) and only then does the
+approval; only then is the bible amended (§5, §7, §11) and only then does the
 zone's Gate 1 begin. Every ID below is a working name: `proposed — needs editor
-allocation and user approval` (D2, bible §9). Course facts cite
+allocation and user approval` (D2). Course facts cite
 `docs/exam-specs/wjec-unit1.md` line numbers; the spec is authoritative.
 
 ## 0. Settled decisions (user, 2026-11-25, via interview)
@@ -126,7 +126,7 @@ predecessor and the recurring cousin.
 - **The Registrar of Constructs** (entry room). Dry, bureaucratic,
   stamp-cultured; "Stamps don't lie. People do." Motivation: paperwork without
   error. Relationship: institutional loathing of the cousin, who once filed
-  him under *miscellaneous*. Teaches pseudo-code and the five flowchart
+  him under _miscellaneous_. Teaches pseudo-code and the five flowchart
   symbols; issues each construct only after a demonstration (retrieval beat).
 - **The Usher** (sequence, L1253). Timid, ritual-bound; never once been
   first. Motivation: everything in its order, always. Issue: the morning
@@ -146,7 +146,7 @@ predecessor and the recurring cousin.
   **Subtle stack-overflow nod — the user's device (2026-11-25):** the phrase
   never appears as vocabulary; the Registrar's incident form carries it as
   fields — `INCIDENT FORM 7741: Field 9, STACK: OVERFLOWED. Field 10, CAUSE:
-  URGENT (ALL).` Demonstration: she sorts a tray with the player predicting
+URGENT (ALL).` Demonstration: she sorts a tray with the player predicting
   each destination (predict-then-see). Comparison operators (L1282–1291)
   live inside her conditions.
 - **The Franking Clerk** (count-controlled iteration, L1217, L1259). Counts
@@ -154,7 +154,7 @@ predecessor and the recurring cousin.
   ten. Relationship: professional respect for the Queue Warden ("she waits; I
   count"), cold exasperation with the cousin ("he counted from one, once, and
   then stopped caring"). Issue: the cousin "improved" the franking machine to
-  stamp *lots* — nine ruins the Inspector's day, eleven stamps the player,
+  stamp _lots_ — nine ruins the Inspector's day, eleven stamps the player,
   the desk and somebody's duck. Puzzle beat: the counting disc (a ratchet
   with ten teeth) re-tunes the loop; predict the final count; the
   one-to-ten versus zero-to-nine question is a writer beat pending PCK check.
@@ -193,7 +193,7 @@ anywhere.
   selection room's telegraphed hazard** (machine faults): triggers on room
   entry while the selection is unresolved; telegraph is the yellowed index
   card ("one sheet from going over") plus the Stamp Clerk's line; `once:
-  true`; failure costs a life and returns the player to the area
+true`; failure costs a life and returns the player to the area
   `startRoomId`, never resetting puzzle phase and never offering a hint
   (H1, §8). Open seeds: a runaway loop (machine faults), a bit-rot-eaten
   terminator (corruption), a clerk pop-quiz (cartoon school). Final hazard
@@ -427,8 +427,8 @@ visual check); algorithms that validate and verify.
    a carthen proposed decorative; the raffinated Welsh bank remaps to mill
    equivalents at topic-file stage. User's own seeds welcome.
 5. IDs and aliases: all working names (rooms, items, licences, flags, quiz
-   ids, `q-pc-` pool) pending §9 allocation at the bible amendment (D2).
-6. Bible amendment (§5 area index, §7 topic index revision, §9 new IDs, §12
+   ids, `q-pc-` pool) pending editor allocation and approval at the bible amendment (D2).
+6. Bible amendment (§5 area index, §7 topic index revision, §11
    approval record) — NEXT STEP: draft and put to the user for approval (W2),
    then the Zone A topic file spin-off, then Gate 1 briefs.
 7. ~~Collection frame; slop-cousin anchoring~~ — answered in principle

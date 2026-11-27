@@ -138,7 +138,7 @@ not a cartoon consequence; it is a broken promise and a direct breach of §8.
   when and how often, and coordinates them across areas; there is no fixed
   quota. They are comic detours, not mandatory gates.
 - **Do not flag them.** The choice is written in ordinary in-world language,
-  using verbs and nouns from the agreed registry, with no warning label and no
+  using verbs and nouns from the brief and approved cards, with no warning label and no
   "are you sure?". The absurdity must be obvious from the option itself. If a
   reader cannot tell it is ridiculous, rewrite the option — do not annotate it.
 - Choosing one costs a life and triggers a severe, hilarious but bounded
@@ -308,7 +308,7 @@ worth promoting.
   descriptions and "lots of items to examine", including props with no puzzle or
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in
   §11. Room briefs are paused pending user approval of new item IDs and aliases
-  (D2, bible §9); no writer has been dispatched with unregistered nouns.
+  (D2); no writer has been dispatched with unregistered nouns.
 - 2026-11-26 — **Assistance Ward guide voice approved.** The user chose a weary,
   passive-aggressive AI for the mandatory onboarding area. Added the area-specific
   voice to §7 and the bible tone guide. The AI remains clipped, bureaucratic and

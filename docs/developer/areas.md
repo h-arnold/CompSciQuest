@@ -30,7 +30,7 @@ a conflict in favour of the rule earlier in that order.
 | N5  | Feedback for every act | Give every submitted command text with new information: a clue, a sensory detail or a character reaction.                                                                                      | Make a wrong-target `use` answer in world and point back to a clue.                                                                                                | Write a bare "you can't", "nothing happens" or parser-style refusal.       | N4      |
 | N8  | Prose length           | Keep each room description to at most two paragraphs.                                                                                                                                          | Aim for 200–300 words as the usual case; go longer only where extra detail is warranted to describe the area accurately and enjoyably.                             | Pad a room to hit a word count or write a wall of text in a key node.      | N4      |
 | N6  | Fair gates             | Give each locked exit an in-fiction justification and at least two clues discoverable before the gate is needed, placed in room, item or NPC text. Use only agreed verbs and registered nouns. | Put a clue where the player naturally looks next to the blocker.                                                                                                   | Build a maze, a guess-the-verb trap or a guess-the-noun trap.              | N7, D2  |
-| D2  | Registry               | Take every ID and alias from the bible registry; propose new ones for editor approval.                                                                                                         | Group aliases with the artefact they name.                                                                                                                         | Reuse an alias from another area or invent an id outside the brief.        | D1      |
+| D2  | IDs and aliases        | Take every ID and alias from the brief and authored cards; propose new ones for editor approval; `content-ids` enforces unique IDs, globally unique aliases and the fixed prefix set.          | Group aliases with the artefact they name.                                                                                                                         | Reuse an alias from another area or invent an id outside the brief.        | D1      |
 | D3  | Runtime shape          | Use the exact field names from [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions); omit optional fields. Prose uses block scalars.                    | Set `portable` from real-world plausibility.                                                                                                                       | Set `null` or `undefined` on an optional field, or author `roomIds`.       | D4      |
 | D4  | Authoring metadata     | Keep `interesting`, `useNotes`, `topicIds` and clues under `authoring:`.                                                                                                                       | State in `useNotes` which action sets which flag.                                                                                                                  | Expect authoring keys to reach the runtime bundle.                         | D3      |
 
@@ -52,6 +52,13 @@ they are required (D2, N6). Decorative items are never scoreable and never gate
 progress. Set `portable` from real-world plausibility — fixed scenery stays put,
 small props can be carried — and answer a refused `TAKE` in world (N5), never
 with a parser-style denial.
+
+The area-writer may add further examinable props that do not conflict with the
+plot, puzzles, gates or existing aliases. Mark each new ID and alias
+`proposed — needs editor approval` in the return; the editor approves them
+before the card is accepted (D2). The `content-ids` gate enforces unique IDs and
+globally unique aliases across every card, so an unapproved collision fails
+validation.
 
 ### Confirmed patterns
 
@@ -89,7 +96,7 @@ order and is never authored.
 
 Exits use the direction vocabulary in
 [application-and-ui.md §5](application-and-ui.md#5-canonical-command-union-and-verbs)
-and targets from the registry. Conditions use only the shared `Condition` union
+and targets from the brief and authored cards. Conditions use only the shared `Condition` union
 ([shared-rules.md §3](shared-rules.md#3-condition)). Item `initialRoom` is the
 starting owner; afterwards ownership lives on Player, NPC or Room state.
 `refusalText` is optional and omitted when the default refusal is enough.
@@ -193,7 +200,7 @@ room relies on a label or a guess-the-noun trap.
   the world).
 - Each room has an id, title, second-person present-tense block-scalar
   description of at most two paragraphs, usually 200–300 words unless extra
-  detail is warranted, registry aliases, `authoring.interesting`, at least one
+  detail is warranted, aliases from the brief, `authoring.interesting`, at least one
   `topicIds` entry (or `navigation-only`), and exits whose directions and
   targets exist; optional fields are omitted.
 - Every gate names at least two discoverable clue placements; no maze and no

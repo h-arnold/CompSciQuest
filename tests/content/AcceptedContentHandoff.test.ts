@@ -59,8 +59,8 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
   });
 
   it('W6H-COUNTS-01: card-derived counts equal the approved whole-game totals', () => {
-    // Accepted-card authority: docs/content/status.md, walkthrough.md §8.4 and
-    // the accepted YAML cards themselves — never the generated bundle.
+    // Accepted-card authority: the accepted YAML cards, the topic records in
+    // docs/coverage/COVERAGE.md and walkthrough.md §8.4 — never the bundle.
     expect(expectedZone1Counts(acceptedCards())).toEqual({
       rooms: 23,
       items: 63,

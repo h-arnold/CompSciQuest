@@ -41,7 +41,8 @@ Use the owning documents and subsystem contracts as boundaries:
   challenge. The default score penalty is zero
   ([hints.md §4](../developer/hints.md#4-adaptive-behaviour),
   [hints.md authoring rules](../developer/hints.md#write-the-ladder-first)).
-- The verb list, alias registry and command forms are fixed. Authors make intended
+- The verb list and command forms are fixed; aliases come from the brief and
+  approved cards. Authors make intended
   actions discoverable within those contracts; they do not add parser behaviour,
   verbs, aliases or answer shortcuts
   ([application-and-ui.md §5](../developer/application-and-ui.md#5-canonical-command-union-and-verbs)).
@@ -128,8 +129,8 @@ the author expected.
 **CompSciQuest application:**
 
 - The examples above explain the design principle; they are not permission to add
-  verbs or aliases. Work within the canonical command union and the bible's alias
-  registry.
+  verbs or aliases. Work within the canonical command union and the aliases in
+  the brief and approved cards.
 - Make important nouns physically present in room prose, item descriptions and
   NPC prompts. Use the existing hint system and in-world teaching beats rather
   than assuming a new tutorial system.

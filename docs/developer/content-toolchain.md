@@ -15,7 +15,8 @@ YAML is the sole authoring format. One file per (area, kind) lives under
 `docs/content/<area-id>/`; `docs/content/spec-topics.yaml` is the single
 non-per-area card and holds spec topics across all areas. Each card carries
 `kind`, `areaId`, `status`, optional `topicIds` and one or more named
-collections; every artefact has an ID from the bible §9 registry. Runtime keys
+collections; every artefact has an ID allocated in the brief and recorded on its
+card. Runtime keys
 use the exact names in the subsystem documents (D3), optional fields are omitted
 rather than set to `null`, prose uses block scalars (`>-` or `|-`), and authoring
 metadata lives under an `authoring:` block that the generator drops (D4).
@@ -148,8 +149,8 @@ fairness and data shape against the rules in their owning documents;
 `pck-reviewer` checks accuracy, GCSE depth, terminology and load. Their finding
 formats, checks and verdicts live in `content-critic.md` and `pck-reviewer.md`.
 
-ID prefixes follow the bible §9 registry (D2), including `area-` and `world-`;
-`content-ids` enforces them. An exit in a rooms card may carry an optional
+ID prefixes come from the fixed set in `tools/content/gates/contentIds.ts` (D2),
+including `area-` and `world-`; `content-ids` enforces them. An exit in a rooms card may carry an optional
 `blockedText` plain string beside `direction`, `to` and `conditions`; §5 covers
 its handoff to the runtime. Both `content-ids` and `hint-content` accept declared
 room IDs as hint-sequence targets
@@ -186,7 +187,7 @@ missing target.
 
 | Gate             | Checks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `content-ids`    | Unique artefact IDs; globally unique aliases across items and actors; ID prefixes per the bible §9 registry; every topic ID used by a card, room, puzzle or quiz resolves to a `## Topic: <id>` heading in `COVERAGE.md` or a declared spec topic; hint targets name a declared topic, puzzle, quiz or room; every exit target, `move-player` target, item `initialRoom` and area `startRoomId` names a declared room; exit directions valid.                                                                         |
+| `content-ids`    | Unique artefact IDs; globally unique aliases across items and actors; ID prefixes from the fixed set in `tools/content/gates/contentIds.ts`; every topic ID used by a card, room, puzzle or quiz resolves to a `## Topic: <id>` heading in `COVERAGE.md` or a declared spec topic; hint targets name a declared topic, puzzle, quiz or room; every exit target, `move-player` target, item `initialRoom` and area `startRoomId` names a declared room; exit directions valid.                                         |
 | `quiz-content`   | `1 <= passMark <= questionIds.length`; every questionIds entry names a declared question; every question has at least one correct option within range; explanation non-empty; an AO tag and a difficulty in `authoring`; at least one AO1 and one AO2 per quiz; `onPass` sets `quiz-passed:<id>` and emits `complete-topic`; `onFail` includes `change-lives`.                                                                                                                                                        |
 | `puzzle-graph`   | `dependsOn` IDs exist; the graph is acyclic; requirements are action-set flags rather than bare `has-item`; at least two `authoring.clues`; `topicId` names a declared spec topic.                                                                                                                                                                                                                                                                                                                                    |
 | `world-graph`    | Exactly one `worlds` declaration per world and every `definition.worldId` resolves; a world is declared by the area its `startAreaId` names; `startAreaId` and that area's `startRoomId` resolve by ID; when several worlds are declared, the world owning the authored start area is first in declaration order, because `GameState.createInitial()` boots from `worlds.all[0]`; every room is reachable from an area's `startRoomId`; every `covered` topic with evidence has a `complete-topic` completion source. |

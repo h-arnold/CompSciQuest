@@ -168,8 +168,8 @@ before editing. Do not skip or shortcut this step.
    architectural, toolchain or workflow changes. Keep updates concrete,
    implementation-grounded and concise.
 2. **Content doc maintenance**: keep `docs/content/**` accurate and consistent —
-   the bible, narrative principles, topic notes, walkthrough, status index and
-   authored cards. Move kind-specific rules into contract docs, keep
+   the bible, narrative principles, topic notes, walkthrough and authored cards.
+   Move kind-specific rules into contract docs, keep
    cross-cutting pointers current, and record decisions only when the user or
    `content-editor` has made them. Never invent a course fact.
 3. **Missing docs**: if a changed module, contract or workflow has no suitable
@@ -265,8 +265,8 @@ Provide a concise handoff summary including:
   configuration. If a brief asks for a code change, refuse and hand back:
   route it to `code-lead`.
 - **Content documentation is in scope**: you may create, edit and delete files
-  in `docs/content/**`, including authored cards, `status.md`, `walkthrough.md`
-  and topic notes, to keep them accurate and consistent. Do not invent course
+  in `docs/content/**`, including authored cards, `walkthrough.md` and topic
+  notes, to keep them accurate and consistent. Do not invent course
   facts, reverse a settled creative decision without user approval, mark a
   topic covered, or alter coverage states or evidence claims. Report
   substantive content changes to `content-editor`. `docs/exam-specs/**` remains
@@ -313,7 +313,8 @@ Provide a concise handoff summary including:
 │   │                                                    #   narrative-principles.md (cross-cutting voice and harm floor),
 │   │                                                    #   difficulty-and-fairness.md (cross-content difficulty, fairness and playtest guidance),
 │   │                                                    #   walkthrough.md, topics/<section>.md, <area-id>/<kind>.yaml, spec-topics.yaml;
-│   │                                                    #   status.md (W5 short index). Creative decisions remain content-editor/user-owned
+│   │                                                    #   per-card state lives in each card's status: front matter.
+│   │                                                    #   Creative decisions remain content-editor/user-owned
 │   └── exam-specs/
 │       ├── gcse-unit-1-computer-science.pdf             # Source PDF (read-only)
 │       └── wjec-unit1.md                                # Read-only authority for course facts

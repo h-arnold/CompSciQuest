@@ -13,8 +13,8 @@ validates. Final content-critic and focused PCK re-reviews are PASS with no find
 All six ward cards now carry `status: approved` and the full set revalidates. The final whole-set V4 review returned PASS WITH MINORS with no blocker or major; focused minor closure is complete at W5 (content-critic PASS WITH MINORS, PCK PASS, no blocker or major) and the conditional dial producer remains an accepted deferral.**
 
 This file holds the Assistance Ward's approved direction and ratified Gate 1
-contracts. The root bible remains the authority for game-wide rules, cast indexes
-and the master ID/alias registry. Course facts come from
+contracts. The root bible remains the authority for game-wide rules and cast
+indexes; IDs and aliases are fixed in the approved briefs and cards (D2). Course facts come from
 `docs/exam-specs/wjec-unit1.md`; this area makes no assessed course claim.
 `docs/content/narrative-principles.md` governs voice and the harm floor, and
 `docs/content/difficulty-and-fairness.md` governs safe sequencing, clue access and
@@ -122,7 +122,7 @@ pass/fail effects reapply it. No state has an `onEnter` greeting (T4).
 
 ## 5. Items and aliases
 
-All IDs and aliases below are ratified in bible §9 (D2).
+All IDs and aliases below are ratified in the approved cards (D2).
 
 | ID                                 | Aliases                                | Room                   | Portable | Purpose                                                                          |
 | ---------------------------------- | -------------------------------------- | ---------------------- | -------- | -------------------------------------------------------------------------------- |
@@ -178,7 +178,7 @@ application-and-ui.md §5).
 
 ## 7. Conversation architecture
 
-All topic and node IDs below are ratified in bible §9. Every topic and node
+All topic and node IDs below are ratified in the approved cards. Every topic and node
 carries `actorId`; locality is expressed through `in-room`/`in-area` in
 `isActive` (T2).
 
@@ -324,7 +324,7 @@ unrelated tour turns.
 The final action is `use assistance dial`. Success sets
 `assistance-dial-calibrated`; early use leaves every flag and item unchanged and
 points to the dark sockets with the approved `useText.blocked` wording. The
-content-declared conditional action seam approved in bible §12 landed in W6: the
+content-declared conditional action seam approved in bible §11 landed in W6: the
 conditional producer sets `assistance-dial-calibrated` only after the five recorded
 prerequisites and the bell reuses its existing item description with no state
 change. The logic-only puzzle card remains unchanged; the runtime producer is
@@ -389,7 +389,7 @@ those YAML cards (D1, D2).
 
 ## 12. Dispatch plan after approval
 
-Gate 0 is complete. Use the standing dependency order (bible §12):
+Gate 0 is complete. Use the standing dependency order (bible §11):
 
 1. **Rooms:** `assistance-ward/rooms.yaml` has returned as a reduced-scope card.
    The dial and bell `use` interactions are omitted and recorded only in

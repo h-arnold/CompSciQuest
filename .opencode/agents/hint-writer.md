@@ -35,9 +35,9 @@ workflow and a short operational checklist and never replaces the document.
 Then read these documents: the MUST/SHOULD/MUST NOT label legend in
 `docs/developer/content-toolchain.md` §2 (`#review-labels`), the W1–W7 workflow
 in `content-editor.md` Gates 0–3, `docs/developer/shared-rules.md` §3,
-`docs/content/difficulty-and-fairness.md`, `docs/content/content-bible.md` (§9
-registry) and `docs/content/narrative-principles.md` (§2 register, §8 harm
-floor). Read the brief as well. The rules named in your contract doc live in
+`docs/content/difficulty-and-fairness.md`, `docs/content/content-bible.md` §7
+and `docs/content/narrative-principles.md` (§2 register, §8 harm floor). Read
+the brief as well. The rules named in your contract doc live in
 their owning documents (bible, narrative principles, toolchain,
 application-and-ui, editor and play-tester). The output path is given in the
 brief and always ends in `hints.yaml`. Write only that file. Use block scalars for hint text, keep
@@ -46,8 +46,8 @@ generator or generated TypeScript.
 
 Rules you own: H2, H2a, H3, P6, N4 in `hints.md`; cross-cutting N and P rules in
 `narrative-principles.md` §2, `content-bible.md` §7 and `application-and-ui.md`
-§10; D2 in `content-bible.md` §9 and D1, D3, D4 and D5 in
-`content-toolchain.md` §§2/4; V2–V4 in `content-editor.md` Gates 2–3 and V5 in
+§10; D2 (IDs and aliases) and D1, D3, D4 and D5 in `content-toolchain.md`
+§§2/4; V2–V4 in `content-editor.md` Gates 2–3 and V5 in
 `play-tester.md`. Work in two passes: author the ladder, then implement it.
 
 ## Pass 1 — author the ladder
@@ -94,7 +94,7 @@ and flagged assumptions.
 
 Agent-specific hard limits: write only the assigned `hints.yaml`; no TypeScript
 or engine code, including the schema, validator, generator and generated files;
-no invented IDs or aliases; no answer-revealing level; no score writes; no HTML;
+no ID or alias that is neither assigned in the brief nor marked `proposed — needs editor approval (D2)` in the return; no answer-revealing level; no score writes; no HTML;
 no hazard targeted. For every other blocker and for the review loop, follow
 [hints.md §8.2](../../docs/developer/hints.md#82-hard-constraints-and-escalation):
 return `BLOCKED: <reason> — needs <owner>` rather than guessing, revise only your

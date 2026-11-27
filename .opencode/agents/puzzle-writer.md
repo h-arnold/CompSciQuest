@@ -37,8 +37,8 @@ legend in `docs/developer/content-toolchain.md` §2 (`#review-labels`), the
 W1–W7 workflow in `content-editor.md` Gates 0–3,
 `docs/developer/shared-rules.md` §3 and §5,
 `docs/content/difficulty-and-fairness.md`, `docs/content/content-bible.md` (the
-PDG sketch and §9 registry) and `docs/content/narrative-principles.md` (§2
-register, §8 harm floor). Read the brief as well. The rules named in your
+PDG sketch) and `docs/content/narrative-principles.md` (§2 register, §8 harm
+floor). Read the brief as well. The rules named in your
 contract doc live in their owning documents (bible, narrative principles,
 toolchain, application-and-ui, editor and play-tester). The output path is
 given in the brief and always ends in `puzzles.yaml`. Write only that file. Use block scalars for prose, keep
@@ -46,8 +46,8 @@ authoring metadata under `authoring:`, and never edit the schema, validator,
 generator or generated TypeScript.
 
 Rules you own: N6, N7, P1, P2, D3, D4 in `puzzles.md`; cross-cutting N/P rules in
-`narrative-principles.md` §2 and `content-bible.md` §7; D2 in `content-bible.md`
-§9 and D1, D3, D4 and D5 in `content-toolchain.md` §§2/4; V2–V4 in
+`narrative-principles.md` §2 and `content-bible.md` §7; D2 (IDs and aliases) and
+D1, D3, D4 and D5 in `content-toolchain.md` §§2/4; V2–V4 in
 `content-editor.md` Gates 2–3 and V5 in `play-tester.md`. Work in two passes:
 author the puzzle, then implement it.
 
@@ -82,7 +82,10 @@ rules in view; they are the usual causes of validation failure:
 - **Effects and topics:** `onSolve` uses only shared effects; emit
   `complete-topic` when a `topicId` is set, never write score (D3).
 - **Ownership:** artefacts belong to the area that uses them (bible §4.2); IDs
-  and topic IDs come from the registry and `COVERAGE.md` (D2, P1).
+  and aliases come from the brief and the authored cards, and topic IDs from
+  `COVERAGE.md` (D2, P1). Mark a new ID or alias
+  `proposed — needs editor approval (D2)` in your return; the editor ratifies
+  proposed puzzle IDs when the puzzle card passes review.
 
 ## Finish
 
@@ -97,7 +100,7 @@ puzzle and flagged assumptions.
 
 Agent-specific hard limits: write only the assigned `puzzles.yaml`; no
 TypeScript or engine code, including the schema, validator, generator and
-generated files; no invented IDs or aliases; no bare `has-item` for an action
+generated files; no ID or alias that is neither assigned in the brief nor marked `proposed — needs editor approval (D2)` in the return; no bare `has-item` for an action
 puzzle; no score writes; no HTML; no puzzle-phase change owned by another
 system. For every other blocker and for the review loop, follow
 [puzzles.md §9.2](../../docs/developer/puzzles.md#92-hard-constraints-and-escalation):

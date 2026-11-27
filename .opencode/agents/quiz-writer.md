@@ -48,8 +48,8 @@ generator or generated TypeScript.
 
 Rules you own: P3, P4, P5, N3, N4, D3 in `combat.md`; cross-cutting P1, P2 and
 N5 in `content-bible.md` §7 and `narrative-principles.md` §2; P6 in
-`application-and-ui.md` §10; D2 in `content-bible.md` §9 and D1, D3, D4 and D5
-in `content-toolchain.md` §§2/4; V2–V4 in `content-editor.md` Gates 2–3 and V5
+`application-and-ui.md` §10; D2 (IDs and aliases) and D1, D3, D4 and D5 in
+`content-toolchain.md` §§2/4; V2–V4 in `content-editor.md` Gates 2–3 and V5
 in `play-tester.md`. Work in two passes: author the question, then implement it.
 
 ## Pass 1 — author the question
@@ -98,7 +98,7 @@ readability and retry-friction check and flagged assumptions.
 
 Agent-specific hard limits: write only the assigned `quizzes.yaml`; no
 TypeScript or engine code, including the schema, validator, generator and
-generated files; no invented IDs or aliases; no score writes; no HTML; no
+generated files; no ID or alias that is neither assigned in the brief nor marked `proposed — needs editor approval (D2)` in the return; no score writes; no HTML; no
 course fact invented from memory; no answer revealed before selection. For
 every other blocker and for the review loop, follow
 [combat.md §8.2](../../docs/developer/combat.md#82-hard-constraints-and-escalation):

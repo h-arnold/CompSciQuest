@@ -225,7 +225,7 @@ or the rule the doc owns.
 
 Use **CompSciQuest** consistently; check the root `README.md` and
 `AGENTS.md` before introducing a product-name variant. Content terms — zone,
-area, card, topic, ID — follow the bible and the master ID/alias registry.
+area, card, topic, ID — follow the bible and the authored cards.
 Course facts follow `docs/exam-specs/wjec-unit1.md`; the exam specification is
 the authority for all of them.
 

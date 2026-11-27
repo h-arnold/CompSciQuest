@@ -82,7 +82,8 @@ export const ZONE1_CATALOGUES: readonly {
 // declaration order. `ai-ethics-and-implications` is a canonical heading but
 // `in progress`, so it has no spec topic and is deliberately absent here.
 // `tutorial-mechanics` is the approved non-assessed onboarding topic
-// (`maxScore 0`, outside the win set; docs/content/status.md).
+// (`maxScore 0`, outside the win set; see the topic record in
+// docs/coverage/COVERAGE.md).
 export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
   'switch-to-bit',
   'data-types',

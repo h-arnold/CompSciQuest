@@ -16,9 +16,10 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Use one `## Topic: <id>` heading per coverage topic, including explicitly
   non-assessed onboarding topics; the id must match the entry in
   `docs/content/spec-topics.yaml`.
-- ID prefixes follow D2 in
-  [content-bible.md §9](../content/content-bible.md#9-master-id-and-alias-registry); the
-  allocated IDs and aliases are in `docs/content/content-bible.md` §9.
+- ID prefixes follow the fixed set in
+  [`contentIds.ts`](../../tools/content/gates/contentIds.ts) (D2); `content-ids`
+  enforces unique IDs and globally unique aliases over all cards. IDs and aliases
+  come from the briefs and approved cards.
 - Cite the PDF section/page and the code path/symbol. An empty field means
   "not mapped yet", not "covered".
 - Status is one of `not started`, `in progress`, `covered`. Record evidence.

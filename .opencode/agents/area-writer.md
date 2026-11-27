@@ -33,9 +33,9 @@ in full. It owns every area content and technical rule; this brief adds only
 workflow and a short operational checklist and never replaces the document.
 Then read these documents: the MUST/SHOULD/MUST NOT label legend in
 `docs/developer/content-toolchain.md` §2 (`#review-labels`), the W1–W7 workflow
-in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` (§9 registry
-and §10 tone guide), `docs/content/narrative-principles.md` (§2 register and
-§11 confirmed patterns) and `docs/content/difficulty-and-fairness.md`. Read the
+in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` §9 (tone guide),
+`docs/content/narrative-principles.md` (§2 register and §11 confirmed patterns)
+and `docs/content/difficulty-and-fairness.md`. Read the
 brief as well. The rules named in your contract doc live in their owning
 documents (bible, narrative principles, toolchain, application-and-ui, editor
 and play-tester). The output path is given in the brief and always ends in
@@ -80,9 +80,11 @@ rules in view; they are the usual causes of validation failure:
   file per area; never park a shared artefact in an unrelated zone.
 - **Worlds:** declare a world exactly once, in the area its `startAreaId` names;
   other areas set only `definition.worldId`. `roomIds` is derived, never authored.
-- **Registry:** every ID and alias comes from bible §9. Propose extras as
-  `proposed — needs editor approval` in your report and never reuse an alias
-  from another area (D2).
+- **IDs and aliases:** take assigned ones from the brief and the authored cards.
+  Mark every new ID or alias `proposed — needs editor approval (D2)` in your
+  return; the editor approves it before the card is accepted. The `content-ids`
+  gate enforces the fixed prefix set, unique artefact IDs and globally unique
+  aliases, so pick a different ID if one is already used elsewhere.
 - **Data shape:** exact runtime field names, optional fields omitted, no
   `levelStart`; `definition.startRoomId` declared once (D3). Room `topicIds` and
   `useNotes` are authoring references; name the action that sets each flag (D4).
@@ -91,8 +93,9 @@ rules in view; they are the usual causes of validation failure:
 
 Use the
 [definition of done](../../docs/developer/areas.md#91-definition-of-done).
-Before finishing, check every ID against the registry, every topic ID against
-the bible and `COVERAGE.md`, and re-read each description for voice. Your final
+Before finishing, check every ID and alias against the brief and the authored
+cards, every topic ID against the bible and `COVERAGE.md`, and re-read each
+description for voice. Your final
 message must include the card path, room and topic IDs, flagged assumptions and
 every proposed extra item with its ID, aliases and `portable` value.
 
@@ -100,7 +103,7 @@ every proposed extra item with its ID, aliases and `portable` value.
 
 Agent-specific hard limits: write only the assigned `rooms.yaml`; no TypeScript
 or engine code, including the schema, validator, generator and generated files;
-no unratified IDs or aliases; no score writes; no HTML; no global mechanic invented outside the subsystem contracts (`application-and-ui.md`, `storage-schema.md`). For every other blocker and for the
+no ID or alias that is neither assigned in the brief nor marked `proposed — needs editor approval (D2)` in the return; no score writes; no HTML; no global mechanic invented outside the subsystem contracts (`application-and-ui.md`, `storage-schema.md`). For every other blocker and for the
 review loop, follow
 [areas.md §9.2](../../docs/developer/areas.md#92-hard-constraints-and-escalation):
 return `BLOCKED: <reason> — needs <owner>` rather than guessing, revise only your

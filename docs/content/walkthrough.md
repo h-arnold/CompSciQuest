@@ -28,7 +28,7 @@ and reset on area change (application-and-ui.md §3.2).
 
 > **Format migration.** Those six cards were migrated verbatim to the
 > corresponding `.yaml` files under `docs/content/1-2-1-data-representation/`, and
-> the Markdown originals were retired (see `status.md`). The `.md` names above and
+> the Markdown originals were retired. The `.md` names above and
 > elsewhere in this trace are historical provenance; they resolve to the YAML
 > cards. Migration changed format only, so this trace remains the V4 oracle;
 > later amendments are made to the YAML cards.
@@ -448,7 +448,7 @@ pass also corrected the stale leaf-step list in §4.
 demonstrations are keyword-addressed. The ward extension additionally closes
 exact-topic locality and empty-object `tell` selection with independent code PASS.
 The remaining W7 prerequisites are regeneration of the authored bundle and the
-outstanding runtime fixes recorded in `status.md`; no walkthrough step may depend
+outstanding runtime fixes; no walkthrough step may depend
 on an ID word.
 
 ## 7. Verdict
@@ -501,8 +501,8 @@ priority has landed. AW-V4-01, the deferred conditional dial producer, closed in
 W6: `code-lead` regenerated the authored bundle with `useText` verbatim and the
 ward W7 playtest was unblocked. The focused V4 minor closure is complete. The
 2026-11-27 W7 fix round added parser aliases, authored exit feedback, quiz-start
-idempotence and transfer messages; its regeneration and re-test are recorded in
-`status.md`.
+idempotence and transfer messages; the final V4 trace pass above reflects that
+round.
 
 ## 8. Zone A — The Pattern Mill (1.4.1 programming constructs): the trace extension
 
@@ -510,7 +510,8 @@ Zone A's cards are the accepted, editor-verified set under
 `docs/content/1-4-programming-constructs/` (`rooms.yaml` incl. the concourse and hub
 amendments, `npcs.yaml`, `puzzles.yaml`, `quizzes.yaml`, `hazards.yaml`, `hints.yaml`),
 built on the approved topic file `docs/content/topics/1-4-1-programming-constructs.md`
-and bible §§5–12. All ids used here are ratified (§9, 2026-11-25 review close-out);
+and bible §§5–11. All ids used here are ratified in the approved cards (2026-11-25
+review close-out);
 quotes byte-match the cards. The area's `startRoomId` is `room-pattern-bureau` — the
 return point for quiz failures and hazard teleports (lives reset on area change,
 application-and-ui.md §3.2).
@@ -659,7 +660,7 @@ lives.**
 | Warp Walk east rail door | `threading-ordered` AND `colours-lifted` AND `weft-counted` AND `condition-plate-set` AND `rogue-thread-filed` | steps 23, 27, 25, 28, 28 — door opens for step 29                                                            |
 | Hub north → concourse    | `tutorial-complete` (area change: lives reset)                                                                 | C2.10; traversed at step 20                                                                                  |
 | Concourse east → Bureau  | none (area change; the area's `startRoomId`)                                                                   | step 21                                                                                                      |
-| Rail quiz                | `topic-loomwright-audit` is `in-room: room-finished-rail`                                                      | step 30 (bible §11 item 12: presence without a placement field; the rail description carries the attendance) |
+| Rail quiz                | `topic-loomwright-audit` is `in-room: room-finished-rail`                                                      | step 30 (bible §10 item 12: presence without a placement field; the rail description carries the attendance) |
 
 The three hazards against the route: `hazard-dye-pad` fires once, scripted, at step
 25's first entry (predicted −1); `hazard-pick-avalanche` arms on `quiz-passed:
