@@ -1,7 +1,6 @@
-// Red tests for Puzzle Dependency Graph validation (puzzles.md §4, §7;
-// content-rules.md §7 (`puzzle-graph`); CT-GATE-05). The runtime bundle mirror
-// is checked through the single canonical validator at boot; the authoring
-// card set is checked through the shared toolchain gates.
+// Red tests for puzzle dependency graph validation (CT-GATE-05). The runtime
+// bundle mirror is checked through the single canonical validator at boot;
+// the authoring card set is checked through the shared toolchain gates.
 import { describe, expect, it } from 'vitest';
 import {
   LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,

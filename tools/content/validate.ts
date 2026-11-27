@@ -1,5 +1,5 @@
-// Content gates (content-toolchain.md §4; content-rules.md §7). The eight gate
-// IDs are the public contract; findings are emitted as path/entry/message/gate.
+// Content gates. The eight gate IDs are the public contract; findings are
+// emitted as path/entry/message/gate.
 
 import type {
   CardSet,
@@ -71,7 +71,7 @@ export function validateCommand(
   options?: ValidationOptions,
 ): ValidateResult {
   // The content:validate path runs C7 by default; an explicit caller options
-  // object still overrides this default (content-rules.md §7).
+  // object still overrides this default.
   const settings = options ?? { topicOverlap: true };
   const parsed = parseCardSet(cards);
   const parsedCards: ParsedCardSet = {

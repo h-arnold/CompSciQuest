@@ -23,26 +23,30 @@ and writing rules.
 
 ## Content pipeline
 
-| Doc                                          | Owns                                                                                                                  |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [content-rules.md](content-rules.md)         | The cross-cutting authoring rulebook: W1–W7 workflow, N/P/H/D/V rules and the shared agent contract.                  |
-| [content-toolchain.md](content-toolchain.md) | YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff. |
+| Doc                                          | Owns                                                                                                                              |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [content-toolchain.md](content-toolchain.md) | YAML authoring format, review labels, D/V1 rules, scaffolds, Zod shapes, validator, generator and committed generated TypeScript. |
+
+The W1–W7 workflow and its gates live in `.opencode/agents/content-editor.md`.
+Content rules live in the bible, `narrative-principles.md`, the subsystem
+contract docs and the toolchain.
 
 ## Subsystems
 
-| Doc                      | Owns                                                                                                        |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| [combat.md](combat.md)   | Adversarial quiz combat: questions, grading, pass/fail effects, retries, seeded question order.             |
-| [hazards.md](hazards.md) | Declarative, scheduled life-loss rules.                                                                     |
-| [hints.md](hints.md)     | Escalating hint ladders, cooldowns and score penalties.                                                     |
-| [npcs.md](npcs.md)       | NPC authoring (A1–A6, T1–T6, D6), actors, states, topics, `ConvNode`, knowledge gating and `TopicResolver`. |
-| [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation.                              |
+| Doc                      | Owns                                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| [areas.md](areas.md)     | Area, room and item authoring (N4–N6, N8), card format, world ownership and exits.                                    |
+| [combat.md](combat.md)   | Quiz authoring (P3–P5) and adversarial combat: questions, grading, pass/fail effects, retries, seeded question order. |
+| [hazards.md](hazards.md) | Hazard authoring (H1) and declarative, scheduled life-loss rules.                                                     |
+| [hints.md](hints.md)     | Hint authoring (H2, H3): escalating ladders, cooldowns and score penalties.                                           |
+| [npcs.md](npcs.md)       | NPC authoring (A1–A6, T1–T6, D6), actors, states, topics, `ConvNode`, knowledge gating and `TopicResolver`.           |
+| [puzzles.md](puzzles.md) | Puzzle authoring (N7) and action-flag completion, rewards and Puzzle Dependency Graph validation.                     |
 
 ## Documentation outside this folder
 
-- `docs/content/` — authored game content and its canonical records; owned by
-  the `content-editor` agent and governed by
-  [content-rules.md](content-rules.md) and the content bible.
+- `docs/content/` — authored game content and its canonical records; maintained
+  by the `docs` agent, with creative decisions owned by `content-editor` and the
+  user. Governed by the content bible and the owning rule documents.
   [Difficulty and fairness](../content/difficulty-and-fairness.md) owns
   cross-content guidance on puzzle fairness, clue access, hints, combat
   readability, failure and playtest difficulty.

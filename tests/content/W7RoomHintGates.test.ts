@@ -1,6 +1,6 @@
-// W7F-14 — room IDs are legal hint ladder targets (hints.md §§2–3;
-// content-rules.md V1/D5). Gate functions are called on in-memory parsed cards;
-// no npm command, YAML card or generated file is touched.
+// W7F-14 — room IDs are legal hint ladder targets. Gate functions are called
+// on in-memory parsed cards; no npm command, YAML card or generated file is
+// touched.
 import { describe, expect, it } from 'vitest';
 import { checkContentIds } from '../../tools/content/gates/contentIds.ts';
 import { checkHint } from '../../tools/content/gates/hint.ts';

@@ -18,13 +18,13 @@ soft-lock. It is built from the accepted cards only: the opening cards
 `rooms.yaml` and `npcs.yaml`, plus the six approved Switchyard card kinds, the six
 Assistance Ward card kinds and five owning-card amendments, and the approved
 bible and topic files. `content-critic` verifies it read-only on the final pass
-(content-rules.md V4, W4).
+(`content-critic.md` check 7, `content-editor.md` Gate 2).
 
 **Boot chain.** The single world declares `startAreaId: area-entry-interface`; that
 area declares `startRoomId: room-arrival`. `GameState.createInitial()` resolves
 `worlds.all[0]` → `startAreaId` → `startRoomId` by ID, never by array position
 (`application-and-ui.md` §3.2, `src/core/GameState.ts` L104–115). Lives start at 3
-and reset on area change (content-rules.md §8).
+and reset on area change (application-and-ui.md §3.2).
 
 > **Format migration.** Those six cards were migrated verbatim to the
 > corresponding `.yaml` files under `docs/content/1-2-1-data-representation/`, and
@@ -35,7 +35,7 @@ and reset on area change (content-rules.md §8).
 
 ## 1. Win set and completion sources
 
-Per content-rules.md §8, `game-won` fires when every mapped spec topic with `covered`
+Per application-and-ui.md §11, `game-won` fires when every mapped spec topic with `covered`
 status and evidence is completed. This zone contributes the eight topics below; each
 has at least one `complete-topic` source on the path in §2 (puzzle `onSolve` or quiz
 `onPass`). `switch-to-bit` is `maxScore 0` but still needs its completion source.
@@ -513,7 +513,7 @@ built on the approved topic file `docs/content/topics/1-4-1-programming-construc
 and bible §§5–12. All ids used here are ratified (§9, 2026-11-25 review close-out);
 quotes byte-match the cards. The area's `startRoomId` is `room-pattern-bureau` — the
 return point for quiz failures and hazard teleports (lives reset on area change,
-content-rules.md §8).
+application-and-ui.md §3.2).
 
 ### 8.1 Zone A win-set contribution and completion sources
 

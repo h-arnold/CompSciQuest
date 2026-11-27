@@ -77,8 +77,9 @@ time, and you may proceed only after they explicitly approve that edit.
   `docs/developer/application-and-ui.md` §12; accessibility and aesthetics are
   judged by the `browser-tester` once something renders. For an accepted content
   area, the ordered path in `docs/content/walkthrough.md` is the expected
-  outcome for the W7 content playtest run by `play-tester`
-  (`docs/developer/content-rules.md` V5).
+  outcome for the W7 content playtest run by `play-tester`. V5 is owned by
+  `.opencode/agents/play-tester.md`; the W7 brief is in
+  `.opencode/agents/content-editor.md`.
 
 ## Gate 1 — plan the branches
 
@@ -149,7 +150,8 @@ Recommended scheduling (my own orchestration): lint bootstrap and matrix →
 persistence → content toolchain → content bundle, validation and boot shell →
 parser and turn pipeline → hazards and puzzles → NPCs → quizzes and hints →
 browser QA. The final content verification is the W7 playtest required for each
-accepted area by `docs/developer/content-rules.md` V5.
+accepted area by V5 (`.opencode/agents/play-tester.md`); `content-editor` briefs
+it from the V4 trace in `docs/content/walkthrough.md`.
 
 ## Gate 3 — route findings
 

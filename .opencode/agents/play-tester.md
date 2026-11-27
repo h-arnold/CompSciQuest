@@ -171,6 +171,12 @@ from the room text first, and check that the content is reachable and
 understandable without being told what to type. Do not open the walkthrough or
 content cards yourself.
 
+V5 is the runtime and content-effectiveness pass: play the running app with the
+real authored bundle after W6 generation and confirm each gate, completion
+source and `game-won` transition behaves as the V4 trace expects. It does not
+replace `content-critic`'s read-only trace audit or a separate
+functional-verification brief.
+
 For W7, confirm each claimed room entry, gated exit, item action, NPC topic,
 quiz, puzzle, hazard and `game-won` transition within the brief's focus by
 reaching it in the running app. A mismatch is a finding, with the expected claim

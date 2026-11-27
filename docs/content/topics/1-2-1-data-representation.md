@@ -21,7 +21,7 @@ written and approved (see `status.md`).
 - Area ID: `area-1-2-1-data-representation`
 - World / area name: The Switchyard
 - `startRoomId`: `room-binary-hall`
-- Lives: `3`, reset on area change (content-rules.md §8)
+- Lives: `3`, reset on area change (application-and-ui.md §3.2)
 - Pillars served: P-a (the AI's "compliance checks"), P-b (each abstraction level is
   a physical floor), P-c (each level gated by a conceptual task), P-d (the foreman,
   the duck-as-bit gag, the squashed luggage)
@@ -53,7 +53,8 @@ Hub-and-spoke; every spoke reconverges at `room-binary-hall` (N2). Directions ar
 restricted to `north`, `south`, `east`, `west`, `up`, `down`, `in`, `out`
 (architecture.md §7). Every gated exit needs **two discoverable clues** in room
 descriptions, NPC dialogue or item text (N6); the room and NPC cards must supply
-them. Room descriptions stay at or under 200 words (N8) — a ceiling, not a target.
+them. Room descriptions are at most two paragraphs, usually 200–300 words unless
+extra detail is warranted (N8).
 
 | Room ID | Purpose | Topic IDs | Exits |
 | --- | --- | --- | --- |
@@ -237,7 +238,7 @@ rate → stack bytes → label capacity → pack archive → choose compression.
 ## 6. Quizzes, hints and teaching beats
 
 One quiz per spec topic keeps each quiz card's single `topicId` honest
-(content-rules.md §4.4): `quiz-switchyard`, `quiz-data-types`,
+([combat.md §6](../../developer/combat.md#6-card-format)): `quiz-switchyard`, `quiz-data-types`,
 `quiz-number-systems`, `quiz-character-representation`,
 `quiz-graphics-representation`, `quiz-sound-representation`,
 `quiz-storage-units`, `quiz-data-compression`. Question pool extended to

@@ -1,5 +1,5 @@
-// Runtime mirror of the authoring `hazard-content` gate (content-rules.md §7,
-// hazards.md §3/§6). It reads only the injected bundle and never edits content.
+// Runtime mirror of the authoring `hazard-content` gate. It reads only the
+// injected bundle and never edits content.
 import type { ContentBundle } from '../../content/ContentBundle';
 
 export function hazardContentFindings(

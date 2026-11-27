@@ -16,10 +16,10 @@ Played blind in the browser with ordinary player commands (`look`-style prose wa
 1. **New Game → arrival.** Room title rendered as a heading "The Arrival Bay" (DOM: `<h2>`), followed by two separate paragraphs:
 
    > The register lies open, a mark beside your name. **_The AI_** reads it in the flat voice of a machine that has read it a thousand times: attention not satisfied. The classroom folds along its grid lines; the ceiling becomes a row of tiny switches. You stand among humming cable. The AI waits, assembled from the attendance record with your name at the top. It has the air of a clerk who has stamped the form.
+   >
+   > An _east route_ glows.
 
-   > An *east route* glows.
-
-   `Exits: east`. DOM: `<strong><em>The AI</em></strong>` on first mention only; the later "The AI waits" is plain text. The italic *east route* is its own `<p>`.
+   `Exits: east`. DOM: `<strong><em>The AI</em></strong>` on first mention only; the later "The AI waits" is plain text. The italic _east route_ is its own `<p>`.
 
 2. `talk-to ai` → "The pointer rests on the record. Attendance is all it holds. Ask about the attendance mark, what failure means, or programming." Followed by "(You could ask about the attendance mark, what failure means, or the route out.)" A conversation panel opened: "Talking with Ai."
 
@@ -42,18 +42,18 @@ Played blind in the browser with ordinary player commands (`look`-style prose wa
 6. `east` → "The Network Hub" (DOM `<h2>`), two paragraphs:
 
    > Around you, brass sockets crowd the hub, each with a little label, all humming one low note. A yellowed card reads 'since the 1990s' in fading ink. The hub copies every packet to every port, so every route shows at once. **_The AI_** calls it 'on the record'; nobody unplugged it.
+   >
+   > South opens into the Assistance Ward. The east and north teaching sockets are dark until the ward's calibration mark is on record, and carry traffic once it is; their labels carry the same notice. A **port label** clings to the east socket; _east_ leads to the Switchyard. A **patch-bay legend** is clipped to the frame above the sockets. A fresh paper label on the north socket reads THE RULE MACHINE; _north_ leads to the rule quarters and the mill beyond them. _west_ leads to arrival; _in_, to the interface.
 
-   > South opens into the Assistance Ward. The east and north teaching sockets are dark until the ward's calibration mark is on record, and carry traffic once it is; their labels carry the same notice. A **port label** clings to the east socket; *east* leads to the Switchyard. A **patch-bay legend** is clipped to the frame above the sockets. A fresh paper label on the north socket reads THE RULE MACHINE; *north* leads to the rule quarters and the mill beyond them. *west* leads to arrival; *in*, to the interface.
-
-   `Exits: west, east, in, north, south`. DOM confirms `<strong>port label</strong>`, `<strong>patch-bay legend</strong>`, `<strong><em>The AI</em></strong>` and four `<em>` exits (*east*, *north*, *west*, *in*). The physical clause "is clipped to the frame above the sockets" introduces the legend.
+   `Exits: west, east, in, north, south`. DOM confirms `<strong>port label</strong>`, `<strong>patch-bay legend</strong>`, `<strong><em>The AI</em></strong>` and four `<em>` exits (_east_, _north_, _west_, _in_). The physical clause "is clipped to the frame above the sockets" introduces the legend.
 
 7. `examine patch-bay legend` → "A card pinned beside the sockets sets out each port, its label and its light." then a real `<table>`:
 
-   | Port | Label | State |
-   | --- | --- | --- |
-   | west | ARRIVAL | dark |
-   | east | LIVE | bright |
-   | in | INTERFACE | dark |
+   | Port  | Label            | State  |
+   | ----- | ---------------- | ------ |
+   | west  | ARRIVAL          | dark   |
+   | east  | LIVE             | bright |
+   | in    | INTERFACE        | dark   |
    | north | THE RULE MACHINE | bright |
 
    Four data rows, aligned columns, visible column headers. The prose paragraph and the table are separate blocks.
@@ -73,28 +73,28 @@ Played blind in the browser with ordinary player commands (`look`-style prose wa
 13. `west` → returned to "The Arrival Bay" (ungated).
 14. `east`, then `in` → "The Interface" (ungated); `Exits: east, out`.
 15. `out` → hub; `talk-to ai` answered normally there; `ask ai about escape` → "The south route is always open. It leads into the Assistance Ward, a safe checkpoint where the pupil may leave and re-enter without losing a life. The east and north teaching ports wait for the ward's completion mark. Take south. Let the ward write the mark." The room-scoped hub topic fired without being swallowed by the global verdict or catch-all.
-16. `help`, then `?` → identical grouped output. DOM sequence: six `<p>` bold group headings alternating with six `<ul>` lists, then a final `<p>` containing the link. Headings observed: **Reading the room**, **Movement**, **Looking and handling**, **People**, **Progress**, **Saves**. Reading legend: "Bold marks something you can examine or use." / "**_Bold italic_** marks someone you can talk to." / "*Italic* marks a way out." Footer: `<a href="https://h-arnold.github.io/CompSciQuest/" target="_blank" rel="noopener noreferrer">CompSciQuest on GitHub Pages</a>`.
+16. `help`, then `?` → identical grouped output. DOM sequence: six `<p>` bold group headings alternating with six `<ul>` lists, then a final `<p>` containing the link. Headings observed: **Reading the room**, **Movement**, **Looking and handling**, **People**, **Progress**, **Saves**. Reading legend: "Bold marks something you can examine or use." / "**_Bold italic_** marks someone you can talk to." / "_Italic_ marks a way out." Footer: `<a href="https://h-arnold.github.io/CompSciQuest/" target="_blank" rel="noopener noreferrer">CompSciQuest on GitHub Pages</a>`.
 17. Clicked the footer link → a second browser tab opened at `https://h-arnold.github.io/CompSciQuest/`. Closed it and returned to the game. Link colour `rgb(26, 79, 138)` on `rgb(255, 253, 247)` background: contrast ratio **8.16:1**. `tabIndex 0`, focus outline `solid 2px rgb(26, 79, 138)`; `document.activeElement` became the link when focused.
 18. `hint` in the hub → "No hints available here." Score remained 0 and Lives 3.
 19. DOM inspection after New Game: zero `<h1>` elements; six `<h2>` elements, all room titles.
 
 ## Expected claims — check results
 
-| Expected claim | Observed | Result |
-| --- | --- | --- |
-| Arrival affordances: first-mention `***The AI***`, later mention plain, italic exit, paragraph breaks | Step 1: `<strong><em>` on first mention, plain "The AI waits", `<em>east route</em>` in a second `<p>` | Confirmed |
-| Hub: styled `**port label**`, `**patch-bay legend**`, `***The AI***`, italic exits, physical clause | Step 6 | Confirmed |
-| Legend `EXAMINE`: table with Port / Label / State and four rows | Step 7 | Confirmed |
-| Verdict: fenced machine readout after prose, not a dense paragraph | Step 3: `<pre><code>` with three newlines | Confirmed |
-| Grouped help: reading legend, grouped sections, Pages footer link | Step 16: legend present, five named groups present plus an extra Movement group, footer link present | Confirmed with minor mismatch (finding 3) |
-| Paragraph breaks in arrival, hub, legend, verdict and help | Steps 1, 3, 6, 7, 16 | Confirmed |
-| Every bold span resolves to a handleable noun | Steps 8–10 | Confirmed |
-| Every bold-italic span is an addressable person | Steps 2, 15 | Confirmed |
-| Every italic span names a real direction, gated or open | Steps 6, 11–14 | Confirmed |
-| Fixed props refuse `take` in voice | Steps 9–10 | Confirmed |
-| Gated exits show in-world `blockedText` with `tutorial-complete` unset | Steps 11–12 | Confirmed |
-| Footer link visible, focusable, high-contrast, opens Pages in a new tab | Steps 16–17 | Confirmed |
-| Room-title entry currently `##`; documented location heading `##`, authored content from `###` | Step 1 and 6: `<h2>` room titles; no authored content headings appeared | Confirmed; recommendation below |
+| Expected claim                                                                                        | Observed                                                                                               | Result                                    |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| Arrival affordances: first-mention `***The AI***`, later mention plain, italic exit, paragraph breaks | Step 1: `<strong><em>` on first mention, plain "The AI waits", `<em>east route</em>` in a second `<p>` | Confirmed                                 |
+| Hub: styled `**port label**`, `**patch-bay legend**`, `***The AI***`, italic exits, physical clause   | Step 6                                                                                                 | Confirmed                                 |
+| Legend `EXAMINE`: table with Port / Label / State and four rows                                       | Step 7                                                                                                 | Confirmed                                 |
+| Verdict: fenced machine readout after prose, not a dense paragraph                                    | Step 3: `<pre><code>` with three newlines                                                              | Confirmed                                 |
+| Grouped help: reading legend, grouped sections, Pages footer link                                     | Step 16: legend present, five named groups present plus an extra Movement group, footer link present   | Confirmed with minor mismatch (finding 3) |
+| Paragraph breaks in arrival, hub, legend, verdict and help                                            | Steps 1, 3, 6, 7, 16                                                                                   | Confirmed                                 |
+| Every bold span resolves to a handleable noun                                                         | Steps 8–10                                                                                             | Confirmed                                 |
+| Every bold-italic span is an addressable person                                                       | Steps 2, 15                                                                                            | Confirmed                                 |
+| Every italic span names a real direction, gated or open                                               | Steps 6, 11–14                                                                                         | Confirmed                                 |
+| Fixed props refuse `take` in voice                                                                    | Steps 9–10                                                                                             | Confirmed                                 |
+| Gated exits show in-world `blockedText` with `tutorial-complete` unset                                | Steps 11–12                                                                                            | Confirmed                                 |
+| Footer link visible, focusable, high-contrast, opens Pages in a new tab                               | Steps 16–17                                                                                            | Confirmed                                 |
+| Room-title entry currently `##`; documented location heading `##`, authored content from `###`        | Step 1 and 6: `<h2>` room titles; no authored content headings appeared                                | Confirmed; recommendation below           |
 
 ## Findings for `content-editor`
 
@@ -163,7 +163,7 @@ If a future change introduces a page-level `##` section around the whole transcr
 
 ## Fairness assessment (`docs/content/difficulty-and-fairness.md`)
 
-1. **Clue access.** The two discoverable clues for the hub gates were found with ordinary commands: the hub prose at step 6 ("east and north teaching sockets are dark until the ward's calibration mark is on record") and the port label at step 8 ("TEACHING PORTS: LIVE AFTER ASSISTANCE WARD CALIBRATION"), reinforced by THE RULE MACHINE socket label and the legend. The bold handle *port label* resolved to `examine port label`; the italic exits accepted `east`, `north`, `west` and `in`. The styling never promised an un-gated route. One low-severity wording ambiguity is recorded as finding 1.
+1. **Clue access.** The two discoverable clues for the hub gates were found with ordinary commands: the hub prose at step 6 ("east and north teaching sockets are dark until the ward's calibration mark is on record") and the port label at step 8 ("TEACHING PORTS: LIVE AFTER ASSISTANCE WARD CALIBRATION"), reinforced by THE RULE MACHINE socket label and the legend. The bold handle _port label_ resolved to `examine port label`; the italic exits accepted `east`, `north`, `west` and `in`. The styling never promised an un-gated route. One low-severity wording ambiguity is recorded as finding 1.
 2. **Puzzle fairness (goal / obstacle / tools).** For the gated exits: goal = reach the Switchyard or rule quarters; obstacle = the ward calibration mark is not on record (named verbatim in both blocked messages); tools = the always-open south route, the AI's escape topic and the examinable labels. No guess-the-noun or guess-the-verb step was needed: the nouns were bold, the directions were italic and the AI supplied its own question wording.
 3. **Hints.** `hint` returned "No hints available here." with no score penalty (step 18). The fairness guidance wants graduated hints after genuine stuck evidence; in this slice that support is replaced by in-world prose and the AI topic, which was enough here. Recorded as finding 2. No hint gave away an answer because none was offered.
 4. **Combat readability.** No quiz was started in this focus, so challenger framing, numbered options and explanations were not exercised. The only scored-relevant information observed was the failure topic at step 5 (cartoon deletion, three lives, area-change reset, no progress loss) and the verdict at step 3; both were clear. The ward quiz is out of scope and was not touched.

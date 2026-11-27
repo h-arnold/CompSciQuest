@@ -1,5 +1,5 @@
-// score-content gate (content-rules.md §7, P6; application-and-ui.md §10):
-// scores, the eight SpecTopic fields, budgets and area starts.
+// score-content gate: scores, the eight SpecTopic fields, budgets and area
+// starts.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {

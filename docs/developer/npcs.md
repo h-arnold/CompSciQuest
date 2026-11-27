@@ -5,11 +5,11 @@ can challenge the player to a quiz ([combat](combat.md)). The model follows TADS
 3's conversation system (`ActorState`, `TopicEntry`, `ConvNode`, `knowsAbout`),
 so small data tables produce dialogue without a generative model or backend.
 This document owns NPC authoring rules, the runtime model, card shape, review
-checks, gates and acceptance. [Content rules](content-rules.md) owns
-cross-cutting content rules and the workflow that uses this document.
-`npc-writer` MUST read this document in full before beginning work; its agent
-brief supplies workflow and a short operational checklist, never a substitute
-for these rules.
+checks, gates and acceptance. Rules are cited by ID from their owning documents;
+the W1–W7 workflow lives in
+[content-editor.md](../../.opencode/agents/content-editor.md). `npc-writer` MUST
+read this document in full before beginning work; its agent brief supplies
+workflow and a short operational checklist, never a substitute for these rules.
 
 Start with the exchange the player should experience: voice, narrative aim,
 takeaway, fallback and comprehension. Only then choose the match kinds, gates,
@@ -26,8 +26,8 @@ nodes and effects that deliver it. Rule map:
 An NPC exchange exists to move the story forward and teach something the player
 can use. Draft the lines before filling in `match`, `isActive` and `effects`;
 those fields must serve the exchange, not replace it. The MUST, SHOULD and MUST
-NOT labels and finding severity follow
-[content-rules.md §1.1](content-rules.md#11-how-to-read-the-rules).
+NOT labels and finding severity are defined under
+[review labels](content-toolchain.md#review-labels).
 
 Apply A and T rules in this reading order: P0 D6/T4; P1 A3/A6/T6; P2
 A1/A2/A5/T1; P3 T2/T3/T5; P4 A4. A lower-priority pass never overrides a
@@ -67,7 +67,34 @@ Avoid parser-error phrasing ("Error: input not recognised. I don't understand
 that"), interchangeable replies from two voices ("An algorithm is a sequence of
 steps") and answer leakage ("The answer is B, binary search"). The rule table
 governs; these lines only illustrate A1, A3, A5 and A6. For the audience and
-tone, follow [narrative-principles.md](../content/narrative-principles.md).
+shared tone rules, follow
+[narrative-principles.md](../content/narrative-principles.md).
+
+### Voice and temperament
+
+NPCs span the full temperament range: brash, rude and wittily sarcastic; warm,
+loving and compassionate; characters who present as warm but are cruel and
+passive-aggressive; and the exact opposite. There is no quota on inverted
+personas, and any target inside the fiction is fair game, including the player's
+avatar. Wit is the only limit beyond the harm floor in
+[narrative-principles.md §8](../content/narrative-principles.md#8-harm-floor).
+An NPC never sneers at the pupil's intelligence or ability.
+
+The **Assistance Ward guide** is a confirmed area-specific voice: the AI's
+clipped bureaucracy becomes weary and passive-aggressive, resenting explanations
+it considers obvious, speaking of "the pupil" in the third person and treating
+independence as an administrative inconvenience. The joke targets its excessive
+help and self-importance; the four former pupils stay recoverable people.
+
+Each NPC has a distinct role, voice, motivation and relationship (A1) and may
+own at most one recurring phrase. There is no global catchphrase cap: variety
+comes from the cast, not a count.
+
+**Example.** "Oh, brilliant. Another student who's read the spec. I'll just
+fetch the mop, shall I?" — brash, aimed at the situation rather than the learner.
+
+**Non-example.** "You wouldn't understand this if I drew you a picture." That is
+mockery of the learner and barred by the harm floor.
 
 ### Dialogue plan metadata (D6)
 
@@ -339,7 +366,7 @@ post-quiz state in the brief or the `start-quiz` topic's `authoring.note`.
 
 `npcs.yaml` holds `actors`, `actorStates`, `conversationTopics` and
 `conversationNodes`. The common card conventions are in
-[content-rules.md §4.1](content-rules.md#41-common-conventions).
+[content-toolchain.md §2](content-toolchain.md#2-authoring-format).
 
 ```yaml
 kind: npc
@@ -425,8 +452,8 @@ conversationNodes:
 ## 9. Reviewer and playtest checks
 
 Findings use the format in
-[content-rules.md §6.1](content-rules.md#61-content-critic). Apply A, T and D6 as
-written; those tables are the technical and authoring passes. The checks below
+[content-critic.md](../../.opencode/agents/content-critic.md). Apply A, T and D6
+as written; those tables are the technical and authoring passes. The checks below
 cover evidence that the tables cannot carry alone.
 
 `content-critic` MUST:
@@ -445,7 +472,7 @@ than a stable voice, where A1 is otherwise satisfied. It MUST NOT accept
 edit a card or invent course facts.
 
 `pck-reviewer` follows the format and shared tags in
-[content-rules.md §6.2](content-rules.md#62-pck-reviewer). `PCK-DIALOGUE` is an
+[pck-reviewer.md](../../.opencode/agents/pck-reviewer.md). `PCK-DIALOGUE` is an
 authoring comprehension test: a 14–16 learner can restate what an NPC told them,
 why it helps and what to do next. Internal mechanics, parser vocabulary and
 authoring constraints are not course knowledge; register and comic timing stay
@@ -466,7 +493,7 @@ replace the critic's V4 audit.
 
 The `npc-content` gate runs at authoring time in `content:validate` and again
 before generation, never against the runtime bundle
-([content-rules.md §7](content-rules.md#7-structural-validation-gates)).
+([content-toolchain.md §4](content-toolchain.md#4-validation)).
 
 | Gate          | Checks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -494,10 +521,6 @@ covers structure only; usefulness, tone and comprehension are A tests.
 
 ## 11. Agent acceptance for NPC cards
 
-The shared contract in
-[content-rules.md §9](content-rules.md#9-agent-acceptance-contract) applies to
-every content agent; this section specialises it for NPC cards.
-
 ### 11.1 Definition of done
 
 - The brief names the approved tone mode and address form and requires the D6
@@ -511,8 +534,7 @@ every content agent; this section specialises it for NPC cards.
   state in the brief or the topic's `authoring.note`
   ([§6](#6-link-to-quiz-combat)).
 - The final report includes the card path, actor and topic IDs, the
-  `content:validate` verdict and flagged assumptions
-  ([content-rules.md §9.1](content-rules.md#91-shared-definition-of-done)).
+  `content:validate` verdict and flagged assumptions.
 - An NPC-focused W7 playtest reports the checks in
   [§9](#9-reviewer-and-playtest-checks) with screenshots to `content-editor`.
 

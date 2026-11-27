@@ -6,11 +6,12 @@ Audit the documentation in scope, decide what should change, delegate the
 fixes, and review them until no findings remain. Work in three phases: audit,
 remediate, review.
 
-In scope: `docs/developer/**`, root `AGENTS.md`, root `README.md`, the form of
-`docs/coverage/COVERAGE.md`, and the documentation-reference duties in
-`.opencode/agents/*.md`. Out of scope: the style guide itself (it is the
-standard, not an audited file), `docs/content/**` (governed by the content
-rulebook and the bible), `docs/exam-specs/**`, both `graphify-out/` trees,
+In scope: `docs/developer/**`, `docs/content/**`, root `AGENTS.md`, root
+`README.md`, the form of `docs/coverage/COVERAGE.md`, and the
+documentation-reference duties in `.opencode/agents/*.md`. Judge `docs/content/**`
+against the bible and the owning rule documents; creative decisions and course
+facts are not findings. Out of scope: the style guide itself (it is the
+standard, not an audited file), `docs/exam-specs/**`, both `graphify-out/` trees,
 working notes under `.opencode/scratchpad/**`, and generated sources.
 
 Audit and review subagents are read-only: they may write only their own
@@ -59,7 +60,7 @@ The manifest from Prepare is the exact file list; the table names each slice.
 | ------------------- | ----------------------------------------------------------------------------- |
 | Developer-core      | `architecture.md`, `shared-rules.md`, `application-and-ui.md`, `storage-schema.md` |
 | Subsystems          | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                 |
-| Toolchain and rules | `content-rules.md`, `content-toolchain.md`                                    |
+| Toolchain           | `content-toolchain.md`                                                        |
 | Traceability        | `docs/coverage/COVERAGE.md` (form only), root `README.md`                     |
 | Agent files         | root `AGENTS.md` (whole file), and the documentation-reference and ownership duties in `.opencode/agents/*.md` |
 | Index               | `docs/developer/README.md`                                                    |

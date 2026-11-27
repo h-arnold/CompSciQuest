@@ -1,6 +1,5 @@
-// YAML scaffolds (content-toolchain.md §3, §2; content-rules.md §4.2). All
-// writes go through the injected IO seam; no file is created by importing this
-// module.
+// YAML scaffolds. All writes go through the injected IO seam; no file is
+// created by importing this module.
 
 import type {
   ContentIo,

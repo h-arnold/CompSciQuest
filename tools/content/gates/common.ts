@@ -69,9 +69,9 @@ export function entriesWith(
   return keys.flatMap((key) => collection(cards, key));
 }
 
-// An area is declared under `definition:` on a canonical area card
-// (content-toolchain.md §2, content-rules.md §4.2). The `areas` collection is
-// the earlier fixture spelling; both take the same gate path.
+// An area is declared under `definition:` on a canonical area card. The
+// `areas` collection is the earlier fixture spelling; both take the same gate
+// path.
 export function areaLikes(cards: ParsedCardSet): readonly CardEntry[] {
   const definitions = cards.cards
     .map((card) => {

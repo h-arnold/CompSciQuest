@@ -1,6 +1,6 @@
 // Adapter from parsed YAML cards to the canonical ContentBundle so the shared
 // runtime validator (src/content/validateContent.ts) remains the single owner
-// of the structural checks it already implements (content-rules.md §7, D5).
+// of the structural checks it already implements.
 
 import type { AreaDefinition } from '../../src/content/AreaDefinition.ts';
 import { catalogueOf } from '../../src/content/Catalogue.ts';
@@ -73,8 +73,7 @@ export function bundleOf(cards: ParsedCardSet): ContentBundle {
 
   const rooms = of('rooms') as unknown as readonly RoomDefinition[];
   // Invalid startRoomIds are deliberately kept: the shared validator reports
-  // them as findings instead of silently dropping the area (content-rules.md
-  // §7, D5).
+  // them as findings instead of silently dropping the area.
   const areas = [
     ...of('areas'),
     ...cards.cards.flatMap((card) => {

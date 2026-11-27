@@ -1,6 +1,6 @@
-// Red tests for the score-content gate (content-rules.md §7,
-// application-and-ui.md §10). Score budgets are per topic; invalid scores and
-// missing level starts must be reported without mutating the bundle.
+// Red tests for the score-content gate. Score budgets are per topic; invalid
+// scores and missing level starts must be reported without mutating the
+// bundle.
 import { describe, expect, it } from 'vitest';
 import {
   LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,

@@ -1,5 +1,5 @@
-// content-ids gate (content-rules.md §7; content-toolchain.md §2): unique IDs,
-// unique aliases, ID prefixes and resolvable references.
+// content-ids gate: unique IDs, unique aliases, ID prefixes and resolvable
+// references.
 
 import type {
   Finding,
@@ -54,8 +54,7 @@ function duplicateFindings(cards: ParsedCardSet): readonly Finding[] {
     for (const item of items) {
       const id = asText(item.data['id']);
       if (id.length === 0) continue;
-      // A world is declared exactly once across the whole card set
-      // (content-toolchain.md §2, content-rules.md §4.2).
+      // A world is declared exactly once across the whole card set.
       if (items.filter((entry) => asText(entry.data['id']) === id).length > 1) {
         found.push(
           finding(

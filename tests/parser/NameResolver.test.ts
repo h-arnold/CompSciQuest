@@ -1,5 +1,4 @@
-// Unknown-input degradation and noun resolution (architecture.md §6.2, §9;
-// application-and-ui.md §5.2, §8; content-rules.md §8).
+// Unknown-input degradation and noun resolution.
 import { describe, expect, it } from 'vitest';
 import {
   loadGameWithPhases,

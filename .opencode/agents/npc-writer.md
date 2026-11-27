@@ -31,17 +31,22 @@ for actors, actor states, conversation topics and conversation nodes.
 **Mandatory reading.** Before any other action, read `docs/developer/npcs.md` in
 full. It owns every NPC content and technical rule; this brief adds only
 workflow and a short operational checklist and never replaces the document.
-Then read `docs/developer/content-rules.md` §1.1, §2, §3.1, §3.2 (N — Narrative,
-at least N3–N5), D1–D5 and §8, `docs/developer/content-toolchain.md` §2,
-`docs/content/content-bible.md`, `docs/content/narrative-principles.md` and the
-brief. The output path is given in the brief and always ends in `npcs.yaml`.
-Write only that file. Use a literal `|` block when paragraphs are intended
-(a folded `>-` scalar destroys paragraph breaks), keep authoring metadata under
-`authoring:`, and never edit the schema, validator, generator or generated
-TypeScript.
+Then read these documents: the MUST/SHOULD/MUST NOT label legend in
+`docs/developer/content-toolchain.md` §2 (`#review-labels`), the W1–W7 workflow
+in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` and
+`docs/content/narrative-principles.md`. Read the brief as well. The rules named
+in your contract doc live in their owning documents (bible, narrative
+principles, toolchain, application-and-ui, editor and play-tester). The output
+path is given in the brief and always ends in `npcs.yaml`. Write only that file.
+Use a literal `|` block for multi-paragraph prose (a folded `>-` destroys
+paragraph breaks), keep authoring metadata under `authoring:`, and never edit
+the schema, validator, generator or generated TypeScript.
 
-Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`, plus N3–N5 and D1–D5 in
-`content-rules.md`. Work in two passes: author the exchange, then implement it.
+Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
+`content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 in
+`content-bible.md`
+§9 and D1, D3, D4 and D5 in `content-toolchain.md` §§2/4. Work in two passes:
+author the exchange, then implement it.
 
 ## Pass 1 — author the exchange
 
@@ -58,7 +63,7 @@ and its examples.
 3. **Draft responses** before `match`, `isActive` and `effects`; apply A3–A5
    from `npcs.md` to every line. Bold italic marks a person the player can
    address; quoted speech takes no style; inline code inside speech is allowed
-   only when an NPC dictates code or a value (N10).
+   only when an NPC dictates code or a value ([N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10)).
 4. **Test** each line against A1/A5 and each plan against A2; revise until the
    takeaway survives without the plan.
 5. **Write the fallback** against A6, then move to pass 2.

@@ -1,6 +1,6 @@
-// YAML card shapes (content-toolchain.md §2, §4; content-rules.md §4.1, D3).
-// The Zod schema guards the authoring envelope; cross-artifact meaning is owned
-// by validate.ts and the eight gates, not by this file.
+// YAML card shapes. The Zod schema guards the authoring envelope;
+// cross-artifact meaning is owned by validate.ts and the eight gates, not by
+// this file.
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 import type { CardSet, Finding, ParseResult } from './contracts.ts';
@@ -9,8 +9,7 @@ import { asArray, asRecord, finding } from './gates/common.ts';
 const SHAPE_GATE = 'shape';
 
 // Scaffolds write placeholders such as `todo-name`, `room-todo-start` and
-// `todo-description`. Any unresolved placeholder fails authoring validation
-// (content-toolchain.md §4, content-rules.md §7, application-and-ui.md §3.3).
+// `todo-description`. Any unresolved placeholder fails authoring validation.
 const TODO_PLACEHOLDER = /(?:^|[-_])todo(?:[-_]|$)/iu;
 
 const KINDS = [
@@ -31,8 +30,8 @@ const useTextShape = z.object({
 });
 const itemShape = entryShape.extend({ useText: useTextShape.optional() });
 const itemsShape = z.array(itemShape).optional();
-// Authored exits may supply optional in-world denial prose (content-rules.md
-// D3/V1). Every other exit key stays permitted via passthrough.
+// Authored exits may supply optional in-world denial prose. Every other exit
+// key stays permitted via passthrough.
 const exitShape = z
   .object({ blockedText: z.string().optional() })
   .passthrough();

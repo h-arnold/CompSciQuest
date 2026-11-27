@@ -1,5 +1,4 @@
-// Red tests for the generated-bundle handoff (application-and-ui.md §3.3–§3.4;
-// content-toolchain.md §4–§5; content-rules.md D5). CT-HAND-02 asserts that the
+// Red tests for the generated-bundle handoff. CT-HAND-02 asserts that the
 // toolchain and boot share src/content/validateContent.ts instead of defining a
 // second validator; CT-HAND-03 supplies a deterministic bundle by injection.
 import { describe, expect, it } from 'vitest';

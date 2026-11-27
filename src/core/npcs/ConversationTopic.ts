@@ -6,8 +6,8 @@ import type { TopicMatch } from './TopicMatch';
 
 export interface ConversationTopic {
   readonly id: string;
-  // Optional actor binding (content-rules.md §4.3 point 2, §8). The generator
-  // emits it when authored; an unbound topic stays globally reachable.
+  // Optional actor binding, emitted by the generator when authored; an
+  // unbound topic stays globally reachable.
   readonly actorId?: string;
   readonly match: TopicMatch;
   readonly isActive: Condition;

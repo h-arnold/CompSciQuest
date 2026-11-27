@@ -5,9 +5,11 @@ Rules for writing Markdown under `docs/developer/`, the root `README.md`, root
 reviewers use this guide as the single source of truth. Agent instruction files
 link here rather than repeating the rules.
 
-This guide does not govern `docs/content/**`: the authored game content is
-ruled by `content-rules.md` and the bible, and owned by `content-editor`.
-`docs/coverage/COVERAGE.md` is split-governed; see
+This guide's writing rules govern `docs/developer/**`, the root `README.md`,
+`AGENTS.md` and agent instruction files. The `docs` agent maintains
+`docs/content/**` under the direction of `content-editor` and the user; the
+bible and the owning rule documents own its content rules. `docs/coverage/COVERAGE.md`
+is split-governed; see
 [COVERAGE.md is split-governed](#coveragemd-is-split-governed).
 `docs/exam-specs/**` is read-only authority for course facts and outside all
 governance.
@@ -158,16 +160,19 @@ that first screen enough to act correctly, and the rest quick to scan.
 
 ## Ownership and navigation
 
-- Give each topic one owning doc. Where two docs need the same rule, keep the
-  full statement in the owner and link from the other.
+- Give each topic one owning doc: the single source of truth for that rule or
+  behaviour. Where another doc needs the rule, link to the owner. A brief summary
+  is acceptable where the reader needs the rule to act, but restate sparingly and
+  never let a summary be the only statement of a rule.
 - Amendment docs are banned: a doc that restates another doc's rules as
   deltas is rewritten so that the owning section states the behaviour
   outright.
 - Keep `docs/developer/README.md`, the agent files' documentation landscape
   and the files on disk in agreement.
-- If a rule appears in both a doc and an agent instruction file, keep one
-  authoritative statement and make the other a pointer. Check that they
-  agree.
+- Agent instruction files and `AGENTS.md` are the main places where a short
+  restatement is acceptable, because the agent must apply the rule while acting.
+  Even there, prefer a summary with a signpost to the full statement, and check
+  that it agrees with the owner.
 - The scratchpad is never the record of a settled fact: state, verdict, ID,
   flag, topic and coverage facts are written to the canonical doc that owns
   them.
@@ -176,15 +181,15 @@ that first screen enough to act correctly, and the rest quick to scan.
 
 Place a new doc by subject, matching the folders already in use:
 
-| Location                        | Content                                                                                                                               |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/developer/` (root)        | Cross-cutting standards that belong to no single subsystem: this guide, the rulebook, the toolchain contract.                         |
-| `docs/developer/<subsystem>.md` | One subsystem contract each: `application-and-ui`, `storage-schema`, `combat`, `hazards`, `hints`, `npcs`, `puzzles`, `shared-rules`. |
-| `docs/developer/README.md`      | The index; one line per doc, naming what it owns.                                                                                     |
-| root `README.md`                | Environment, toolchain and setup as a contributor meets them.                                                                         |
-| root `AGENTS.md`                | The delegation contract and routing signposts only.                                                                                   |
-| `docs/content/**`               | Authored game content; owned by `content-editor` (see [Scope of documentation audits](#scope-of-documentation-audits)).               |
-| `docs/coverage/COVERAGE.md`     | The spec → topic → room → code mapping; split-governed.                                                                               |
+| Location                        | Content                                                                                                                                                  |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/developer/` (root)        | Cross-cutting standards that belong to no single subsystem: this guide and the toolchain contract.                                                       |
+| `docs/developer/<subsystem>.md` | One subsystem contract each: `application-and-ui`, `areas`, `combat`, `hazards`, `hints`, `npcs`, `puzzles`, `shared-rules`.                             |
+| `docs/developer/README.md`      | The index; one line per doc, naming what it owns.                                                                                                        |
+| root `README.md`                | Environment, toolchain and setup as a contributor meets them.                                                                                            |
+| root `AGENTS.md`                | The delegation contract and routing signposts only.                                                                                                      |
+| `docs/content/**`               | Authored game content and content docs; maintained by the `docs` agent, with creative decisions and course facts owned by `content-editor` and the user. |
+| `docs/coverage/COVERAGE.md`     | The spec → topic → room → code mapping; split-governed.                                                                                                  |
 
 Before creating a doc, check whether an owning doc already covers the subject.
 Extend that doc rather than start a rival. Split a doc when it covers subjects
@@ -195,7 +200,7 @@ count, and keep the original as a short index.
 ## COVERAGE.md is split-governed
 
 The content editor owns the coverage _content_: topic status, evidence, room
-IDs and score budgets, written at W5 per `content-rules.md`. The `docs` agent
+IDs and score budgets, written at W5 per `content-editor.md` Gate 3. The `docs` agent
 owns the doc's _form_: structure, headings matching `## Topic: <id>`, no
 duplication with the developer docs that describe the same machinery, stale
 references corrected. A governance fix that would change a coverage state, an
@@ -226,11 +231,12 @@ the authority for all of them.
 
 ## Scope of documentation audits
 
-- In scope: `docs/developer/**`, root `AGENTS.md`, root `README.md`, the form
-  of `docs/coverage/COVERAGE.md`, and the documentation-reference duties in
-  `.opencode/agents/*.md`.
-- Out of scope: `docs/content/**` (governed by the content rulebook and the
-  bible), `docs/exam-specs/**`, both `graphify-out/` trees, working notes
+- In scope: `docs/developer/**`, `docs/content/**`, root `AGENTS.md`, root
+  `README.md`, the form of `docs/coverage/COVERAGE.md`, and the
+  documentation-reference duties in `.opencode/agents/*.md`. For
+  `docs/content/**`, judge accuracy against the bible and the owning rule
+  documents; creative decisions and course facts are not audit findings.
+- Out of scope: `docs/exam-specs/**`, both `graphify-out/` trees, working notes
   under `.opencode/scratchpad/**`, generated `src/content/authored/**`, and
   this guide — it is the standard other files are audited against, not an
   audited file.

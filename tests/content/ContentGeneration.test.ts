@@ -1,7 +1,6 @@
-// Red tests for deterministic generation (content-toolchain.md §5;
-// content-rules.md D3/D4; application-and-ui.md §3.1; shared-rules.md §11).
-// Generated text is captured through the in-memory Io fake; no file is written
-// under src/ and no timestamp, wall clock or filesystem order is consulted.
+// Red tests for deterministic generation. Generated text is captured through
+// the in-memory Io fake; no file is written under src/ and no timestamp, wall
+// clock or filesystem order is consulted.
 import { describe, expect, it } from 'vitest';
 import {
   AREA_ID,

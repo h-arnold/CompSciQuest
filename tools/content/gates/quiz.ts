@@ -1,5 +1,4 @@
-// quiz-content gate (content-rules.md §7, §4.4): marks, options, AOs and the
-// pass/fail effect contract.
+// quiz-content gate: marks, options, AOs and the pass/fail effect contract.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {

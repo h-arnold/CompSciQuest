@@ -2,8 +2,39 @@
 
 Hint ladders are a first-class mechanic: this is a revision tool, so helping a
 stuck student is part of the product. Hints escalate in levels and can be
-unlocked by evidence that the player is stuck. The
-[developer documentation index](README.md) lists the other subsystem docs.
+unlocked by evidence that the player is stuck. This document owns every hint
+authoring and runtime rule; the `hint-writer` must read it in full before
+beginning work and its agent brief is only a workflow checklist.
+Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
+[content-editor.md](../../.opencode/agents/content-editor.md).
+
+Rule map: [write the ladder first](#write-the-ladder-first),
+[card format](#6-card-format), [review checks](#7-reviewer-and-playtest-checks)
+and [acceptance](#8-agent-acceptance).
+
+## Write the ladder first
+
+A ladder helps the player work out the answer; it never supplies it. Draft the
+stalled step and the sequence of nudges before choosing unlock keys or
+cooldowns. The MUST/SHOULD/MUST NOT labels and finding severity are defined under
+[review labels](content-toolchain.md#review-labels).
+
+Apply the rules in this reading order: H2; H3; P6; N4; D1–D4.
+
+| ID  | Test               | MUST                                                                                                                         | SHOULD                                                                                                                                                                                                              | MUST NOT                                                                           | Related |
+| --- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------- |
+| H2  | Escalating ladder  | Give each sequence 2–4 levels that escalate nudge → structure → procedure. No level reveals the answer or solves the puzzle. | Restate the goal, direct attention to an observation, connect known clues, then give a procedure that still leaves the answer to the player. Name the principle before the next move; do not dictate the keystroke. | Skip a rung, hand over the final step, or repeat solved work.                      | H3, P2  |
+| H2a | Context            | Include at least one spec topic ID in `targets`, plus the puzzle or quiz ID where relevant.                                  | Name the stalled step the ladder addresses.                                                                                                                                                                         | Attach a ladder to a hazard or target only an internal ID.                         | P1      |
+| H3  | Adaptive behaviour | Use only the agreed counter keys for `unlock` and set `autoOfferAfter` only where genuine stuck evidence exists.             | Use `cooldownTurns` for repeated explicit requests.                                                                                                                                                                 | Offer help on attempt one or set a threshold the player reaches while progressing. | §4      |
+| P6  | Score integrity    | Omit `scorePenalty` unless the brief opts in; never write score yourself.                                                    | Record the penalty rationale in the brief.                                                                                                                                                                          | Award or deduct score directly in a card.                                          | §5      |
+| N4  | Voice and safety   | Write plain, textContent-safe prose in the bible voice.                                                                      | Keep the tone of a calm prompt rather than a rebuke.                                                                                                                                                                | Include HTML or engine vocabulary.                                                 | N9      |
+
+**Example — a three-rung ladder.** "What changes on each pass?" → "Write down
+the value after each iteration." → "Draw a table and fill one row." The final
+answer is still the player's work.
+
+**Non-example — an answer leak.** "The variable ends at 4 and the output is 4,
+3, 2, 1." The ladder has solved the task.
 
 ## 1. Scope
 
@@ -124,3 +155,84 @@ The default `scorePenalty` is 0. A `show-hint` effect always emits `hint-shown`
 and `hint-penalty-applied`; the delta is 0 when the level declares no penalty.
 `HintSystem` never writes score, and `ScoreTracker` applies the delta
 ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping)).
+
+## 6. Card format
+
+`hints.yaml` holds `hintSequences` per area. This is a partial excerpt;
+generation is owned by [content-toolchain.md](content-toolchain.md).
+
+```yaml
+kind: hint
+areaId: 1-1-computer-architecture
+status: draft
+topicIds: [fetch-decode-execute, data-representation]
+
+hintSequences:
+  - id: hint-fde
+    targets: [fetch-decode-execute, puzzle-unlock-cache]
+    levels:
+      - level: 1
+        text: >-
+          ... # nudge
+        unlock:
+          {
+            kind: counter-at-least,
+            key: failed-attempts:quiz-fde-cycle,
+            value: 1,
+          }
+      - level: 2
+        text: >-
+          ... # structure, then procedure; never the answer
+        unlock:
+          {
+            kind: counter-at-least,
+            key: turns-since:puzzle-unlock-cache,
+            value: 3,
+          }
+    cooldownTurns: 2
+```
+
+## 7. Reviewer and playtest checks
+
+`content-critic` applies the table above and checks that each rung is strictly
+less revealing than the next, that no level gives the answer, and that the V4
+trace names every hint target. `pck-reviewer` checks course facts, command words
+and GCSE reading load only. `play-tester` confirms in W7 that a ladder targets
+the real stalled step and that automatic help arrives only after genuine stuck
+evidence.
+
+## 8. Agent acceptance
+
+### 8.1 Definition of done
+
+- Only `hints.yaml` changed; document metadata is valid and every sequence is an
+  entry in `hintSequences`, with hint text in block scalars.
+- Each sequence has 2–4 levels in ascending order, each strictly less revealing
+  than the next, and none reveals the answer or solves the puzzle.
+- Each ladder addresses a named stalled step, follows the
+  goal/observation/connection/procedure progression within its levels, and
+  leaves the final answer to the player.
+- `targets` include at least one spec topic ID plus the puzzle or quiz ID;
+  `unlock` keys come only from `hints-shown:<hintId>`,
+  `failed-attempts:<quizId>` or `turns-since:<puzzleId>`.
+- The card or brief names the system that increments each referenced counter;
+  a counter with no producing card is flagged for the editor.
+- `cooldownTurns` is set for explicit requests; `autoOfferAfter` appears only
+  with genuine stuck evidence; `scorePenalty` is omitted unless the brief
+  authorises it; no hazard is targeted.
+- The final report names the file path, hint and target IDs, the fairness check
+  for each ladder and flagged assumptions.
+
+### 8.2 Hard constraints and escalation
+
+Return `BLOCKED: <reason> — needs <owner>` rather than guessing when the
+unlocking counter is produced by no other card, or the brief asks for an
+answer-revealing final level. After a review round, revise only your own card
+for at most two rounds; then return `BLOCKED: <finding> requires <owner>` and
+let the editor resolve it.
+
+## 9. Gates
+
+The `hint-content` authoring gate checks 2–4 ascending levels, unlock keys from
+the counter namespaces, resolving targets, non-revealing text and a zero or
+absent penalty ([content-toolchain.md §4](content-toolchain.md#4-validation)).

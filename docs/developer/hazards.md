@@ -2,8 +2,41 @@
 
 Hazards are traps and penalties: declarative rules that cost lives when a
 trigger matches. They are separate from [quiz combat](combat.md), the
-adversarial question mechanic. The
-[developer documentation index](README.md) lists the other subsystem docs.
+adversarial question mechanic. This document owns every hazard authoring and
+runtime rule; the `hazard-writer` must read it in full before beginning work and
+its agent brief is only a workflow checklist.
+Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
+[content-editor.md](../../.opencode/agents/content-editor.md).
+
+Rule map: [write the hazard first](#write-the-hazard-first),
+[card format](#7-card-format), [review checks](#8-reviewer-and-playtest-checks)
+and [acceptance](#9-agent-acceptance).
+
+## Write the hazard first
+
+A hazard is a fair warning followed by a brief, comic penalty. Draft the clue
+and the failure text before choosing the trigger, `when` and effects; the
+mechanics must deliver that warning, not replace it. The MUST/SHOULD/MUST NOT
+labels and finding severity are defined under
+[review labels](content-toolchain.md#review-labels).
+
+Apply the rules in this reading order: H1; counterplay; bounded harm; N4/N5;
+D1–D4.
+
+| ID  | Test            | MUST                                                                                                                                                 | SHOULD                                                           | MUST NOT                                                           | Related |
+| --- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ | ------- |
+| H1  | Telegraph       | Place at least one clue in room or NPC text where the player reads it before the trigger can fire, and record its location in `authoring.telegraph`. | Say what is wrong, not what to do; a warning creates a decision. | Reveal the solution or leave the only warning in the failure text. | N5, N6  |
+| H1a | Counterplay     | Give every hazard a disarm flag or an avoidable action.                                                                                              | Make the counterplay inferable from the telegraph.               | Create unavoidable repeat damage or a sham choice.                 | N6      |
+| H1b | Bounded harm    | Limit failure to `message`, `change-lives` with `delta: -1`, `move-player` to `definition.startRoomId` and level-local `set-flag` resets.            | Bound a repeatable hazard with `once` or `cooldownTurns`.        | Use a `set-puzzle-*` effect, attach a hint, or reset puzzle phase. | §4      |
+| N4  | Voice           | Write the failure text in second person, present tense, naming the cause.                                                                            | Let the clue echo in the failure text.                           | Address the reader as a failure or mention the engine.             | N5      |
+| N5  | Failure teaches | Make failure a brief comic indignity that points back to the clue; never lose topic or puzzle progress.                                              | Keep the joke in world and reversible.                           | Shame the learner or present realistic injury.                     | §4      |
+
+**Example — an entry trap.** A cracked heatsink whines beside a scorched socket;
+entry costs one life and returns the player to the start room. The clue is in the
+room before entry, and a cooling flag disarms it.
+
+**Non-example — a gotcha.** The only warning is the failure text ("The floor was
+electrified"). The player had no chance to act, so the loss teaches nothing.
 
 ## 1. Scope
 
@@ -97,3 +130,65 @@ hazard ID ([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-
 the accompanying `message` event carries the player-facing text that `OutputLog`
 renders with `textContent`. Life loss reaches `ScorePanel` through
 `lives-changed` and `GameViewData`. There is no hazard-specific panel.
+
+## 7. Card format
+
+`hazards.yaml` holds one `hazards` collection per area. This is a partial
+excerpt; generation is owned by [content-toolchain.md](content-toolchain.md).
+
+```yaml
+kind: hazard
+areaId: 1-1-computer-architecture
+status: draft
+topicIds: [cpu-components]
+
+hazards:
+  - id: hazard-overheat
+    trigger: { kind: on-room-enter, roomId: room-cpu-lab }
+    when: { kind: not, of: { kind: flag-set, flag: cooling-fitted } }
+    effects:
+      - { kind: message, text: ... }
+      - { kind: change-lives, delta: -1, reason: ... }
+      - { kind: move-player, roomId: room-cpu-lab, reason: ... }
+    once: true
+    authoring:
+      telegraph: The clue before harm. # H1
+```
+
+## 8. Reviewer and playtest checks
+
+`content-critic` applies the table above, checks that each telegraph is placed
+before the trigger and that every hazard has counterplay, and verifies the V4
+trace names the trigger and its clue. `pck-reviewer` checks course facts and GCSE
+reading load only. `play-tester` confirms in W7 that the warning is discoverable
+in ordinary play and that the penalty and retry are proportionate.
+
+## 9. Agent acceptance
+
+### 9.1 Definition of done
+
+- Only `hazards.yaml` changed; document metadata is valid and every hazard is an
+  entry in `hazards`, with prose in block scalars.
+- Each hazard has an `authoring.telegraph` clue placed where the player sees it
+  before the trigger can fire.
+- Effects are limited to `message`, `change-lives` with `delta: -1`,
+  `move-player` to `definition.startRoomId`, and level-local `set-flag` resets;
+  no `set-puzzle-*` effect and no hint reference.
+- `trigger`, `when`, `once`, `cooldownTurns` and `schedule` use only the shared
+  types; every hazard has counterplay and a bounded repeat penalty.
+- The final report names the file path, hazard IDs, triggers and flagged
+  assumptions.
+
+### 9.2 Hard constraints and escalation
+
+Return `BLOCKED: <reason> — needs <owner>` rather than guessing when no
+counterplay can be designed, `startRoomId` is missing, or repeatable damage
+cannot be bounded by a cooldown. After a review round, revise only your own card
+for at most two rounds; then return `BLOCKED: <finding> requires <owner>` and
+let the editor resolve it.
+
+## 10. Gates
+
+The `hazard-content` authoring gate checks a telegraph, effects from the shared
+union, no `set-puzzle-*`, positive `schedule.remainingTurns` and a resolving
+`startRoomId` ([content-toolchain.md §4](content-toolchain.md#4-validation)).

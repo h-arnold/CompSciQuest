@@ -71,8 +71,7 @@ function readCards(): CardSet {
 }
 
 // Spec-topic IDs come from the coverage headings at authoring time only.
-// Missing coverage is reported as an unchecked gap, never silently passed
-// (content-toolchain.md §2, content-rules.md §5/P1).
+// Missing coverage is reported as an unchecked gap, never silently passed.
 function coverageOptions(): ValidationOptions {
   if (!existsSync(COVERAGE_PATH)) {
     return {

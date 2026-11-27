@@ -99,9 +99,8 @@ export function createFromDto(dto: GameStateDto): RuntimeGameState {
 }
 
 // The start is resolved by ID from the supplied bundle, never by array
-// position (application-and-ui.md §3.3, content-rules.md §8). The no-argument
-// form uses the committed generated bundle; the parameter stays injectable.
-// The first command advances turn 0 to 1 (skeleton-decisions.md S-GAP-01).
+// position. The no-argument form uses the committed generated bundle; the
+// parameter stays injectable. The first command advances turn 0 to 1.
 export function createInitial(
   bundle: ContentBundle = loadContent(),
 ): RuntimeGameState {

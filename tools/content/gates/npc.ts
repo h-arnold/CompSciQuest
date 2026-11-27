@@ -1,5 +1,5 @@
-// npc-content gate (content-rules.md §4.3, §7, C6): actor binding, reserved
-// nodes, the silent ready state and concrete node topic resolution.
+// npc-content gate: actor binding, reserved nodes, the silent ready state and
+// concrete node topic resolution.
 
 import type {
   Finding,
@@ -167,7 +167,7 @@ export function checkNpc(
     ...nodeFindings,
     ...readyStateFindings(collection(cards, 'actorStates')),
     // C7 is opt-in so direct validateCards() callers keep the eight-gate
-    // contract; content:validate and generation enable it (content-rules.md §7).
+    // contract; content:validate and generation enable it.
     ...(options.topicOverlap === true ? checkTopicOverlap(cards) : []),
   ];
 }

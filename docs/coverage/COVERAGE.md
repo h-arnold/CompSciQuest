@@ -16,14 +16,15 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - Use one `## Topic: <id>` heading per coverage topic, including explicitly
   non-assessed onboarding topics; the id must match the entry in
   `docs/content/spec-topics.yaml`.
-- IDs and aliases follow
-  [content-rules.md §5](../developer/content-rules.md#5-id-and-alias-registry).
+- ID prefixes follow D2 in
+  [content-bible.md §9](../content/content-bible.md#9-master-id-and-alias-registry); the
+  allocated IDs and aliases are in `docs/content/content-bible.md` §9.
 - Cite the PDF section/page and the code path/symbol. An empty field means
   "not mapped yet", not "covered".
 - Status is one of `not started`, `in progress`, `covered`. Record evidence.
 - Coverage eligibility and the teaching, retrieval and application evidence
   rules belong to
-  [content-rules.md §3](../developer/content-rules.md#3-rule-catalogue) (P2, V3).
+  [content-bible.md §7](../content/content-bible.md#7-topic-index) (P2, V3).
 - Code locations name the generated modules under `src/content/authored/`;
   [content-toolchain.md §5](../developer/content-toolchain.md#5-generation) owns
   their production.

@@ -12,17 +12,17 @@ authoring:
     - >-
       Each ward topic and node carries actorId. Locality appears only in isActive as
       in-room or in-area. The AI's ward catch-all is area-scoped; each pupil's
-      catch-all is scoped to that pupil's home room (C6).
+      catch-all is scoped to that pupil's home room (T2).
     - >-
       No beat uses npc-knows or learn-topic. Progression is gated by the approved
       recovery, quiz-pass and puzzle-solve conditions, so no knowledge AltTopic is
-      required; the fixed evidence remains independently examinable (C3).
+      required; the fixed evidence remains independently examinable (T2).
     - >-
       Every actor has a free-text catch-all. Pre- and post-recovery defaults are
       complementary on their recovery flags. The pupils' object-addressed recovery
       topics do not overlap. Priya additionally has an explicit tell reason
       producer, mutually exclusive with her audit-card entry/resume topic on
-      priya-choice-taken and node-priya-choice (C2, C7).
+      priya-choice-taken and node-priya-choice (A6, T5).
     - >-
       SHOW and GIVE both transfer a carried item whenever a topic is selected,
       including a selected default. No suppression field, self-transfer effect or
@@ -37,7 +37,7 @@ authoring:
       node-priya-choice is sticky because the approved recovery deliberately needs
       a choose-then-justify exchange. There is no turn timeout; bye, leaving Records
       or another enter-node ends it safely. Re-entry resumes at the unfinished step
-      (C4).
+      (T3).
     - >-
       topic-ai-ward-quiz uses a repeatable strategy so a failed attempt can be
       retried. The approved quiz's onPass and onFail effects restore
@@ -205,8 +205,8 @@ conversationTopics:
       (You could ask the AI about the ward tour.)
     authoring:
       note: >-
-        Area-scoped free-text DefaultAskTellTopic for the AI inside the ward (C2,
-        C6). It describes the landed SHOW/GIVE transfer behaviour, including selected
+        Area-scoped free-text DefaultAskTellTopic for the AI inside the ward (A6,
+        T2). It describes the landed SHOW/GIVE transfer behaviour, including selected
         defaults, and states that the transfer is announced at the moment it happens;
         the code owner owns the announcement text. The arrival-card amendment excludes
         the ward from topic-ai-default; the landed selector then chooses this active
@@ -326,7 +326,7 @@ conversationTopics:
         Records-only special topic for the obvious question word. Its keyword set
         (records, record, paperwork) is distinct from the five sibling keyword topics.
         It gives a short weary framing of the room, board and card and signposts the
-        siblings; it grants no flag, quiz or progress (C1, C2, C6).
+        siblings; it grants no flag, quiz or progress.
 
   - id: topic-ai-ward-conversation
     actorId: npc-the-ai
@@ -350,7 +350,7 @@ conversationTopics:
       note: >-
         Carries the original conversation-verb teaching. Its keyword set (talk,
         talk-to, ask, tell, bye, conversation) is distinct from its siblings; special
-        keyword topics sit outside the C7 free-text overlap proof (C2, C6).
+        keyword topics sit outside the T5 free-text overlap proof.
 
   - id: topic-ai-ward-answers
     actorId: npc-the-ai
@@ -377,8 +377,8 @@ conversationTopics:
       note: >-
         Carries the original answer-form teaching: answer N, a bare N, exact option
         text and numbering from 1. The phrases quiz answers and how to answer are
-        addressed here, never by topic-ai-ward-quiz. No correct option is named (C2,
-        N3).
+        addressed here, never by topic-ai-ward-quiz. No correct option is named
+        (N3).
 
   - id: topic-ai-ward-hints
     actorId: npc-the-ai
@@ -405,7 +405,7 @@ conversationTopics:
       note: >-
         Carries the original hint teaching: a separate command that nudges without
         giving the answer, costs no score and has a cooldown. Distinct keywords; no
-        answer is supplied here (H2, H3, C2).
+        answer is supplied here (H2, H3).
 
   - id: topic-ai-ward-failure
     actorId: npc-the-ai
@@ -431,7 +431,7 @@ conversationTopics:
     authoring:
       note: >-
         Carries the original zero-life, no-movement and unlimited-retry teaching.
-        Distinct keywords; changes no flag, life or score (P5, C2).
+        Distinct keywords; changes no flag, life or score (P5).
 
   - id: topic-ai-ward-save
     actorId: npc-the-ai
@@ -456,7 +456,7 @@ conversationTopics:
       note: >-
         Carries the original manual browser-storage and portable-file teaching. It
         promises no undo, autosave or save slot and makes no progress depend on a
-        destructive or file-picker control (content-rules.md §8, C2).
+        destructive or file-picker control (application-and-ui.md §5).
 
   - id: topic-ai-ward-quiz
     actorId: npc-the-ai
@@ -605,7 +605,7 @@ conversationTopics:
     authoring:
       note: >-
         Intake-scoped pre-recovery DefaultAskTellTopic. Its recovery-flag negation
-        complements topic-nia-recovered-default (C2, C6, C7).
+        complements topic-nia-recovered-default (A6, T2, T5).
 
   - id: topic-nia-recovered-default
     actorId: npc-nia
@@ -632,7 +632,7 @@ conversationTopics:
     authoring:
       note: >-
         Intake-scoped post-recovery DefaultAskTellTopic. The flag condition is the
-        complement of topic-nia-default (C2, C6, C7).
+        complement of topic-nia-default (A6, T2, T5).
 
   - id: topic-nia-observation
     actorId: npc-nia
@@ -687,7 +687,7 @@ conversationTopics:
     authoring:
       note: >-
         Demonstration-scoped pre-recovery DefaultAskTellTopic. Its recovery-flag
-        negation complements topic-mateo-recovered-default (C2, C6, C7).
+        negation complements topic-mateo-recovered-default (A6, T2, T5).
 
   - id: topic-mateo-recovered-default
     actorId: npc-mateo
@@ -713,7 +713,7 @@ conversationTopics:
     authoring:
       note: >-
         Demonstration-scoped post-recovery DefaultAskTellTopic. The flag condition
-        is the complement of topic-mateo-default (C2, C6, C7).
+        is the complement of topic-mateo-default (A6, T2, T5).
 
   - id: topic-mateo-instruction
     actorId: npc-mateo
@@ -767,7 +767,7 @@ conversationTopics:
     authoring:
       note: >-
         Demonstration-scoped pre-recovery DefaultAskTellTopic. Its recovery-flag
-        negation complements topic-kofi-recovered-default (C2, C6, C7).
+        negation complements topic-kofi-recovered-default (A6, T2, T5).
 
   - id: topic-kofi-recovered-default
     actorId: npc-kofi
@@ -792,7 +792,7 @@ conversationTopics:
     authoring:
       note: >-
         Demonstration-scoped post-recovery DefaultAskTellTopic. The flag condition
-        is the complement of topic-kofi-default (C2, C6, C7).
+        is the complement of topic-kofi-default (A6, T2, T5).
 
   - id: topic-kofi-practice-cycle
     actorId: npc-kofi
@@ -862,7 +862,7 @@ conversationTopics:
         player's own words once a choice exists, without implying a fixed phrase.
         The topic grants no choice or recovery progress; topic-priya-choice-reason
         remains the sole recovery producer. It is complementary with the recovered
-        default on priya-reasoning-recovered (C2, C4, C6, C7).
+        default on priya-reasoning-recovered (A6, T3, T2, T5).
 
   - id: topic-priya-recovered-default
     actorId: npc-priya
@@ -889,7 +889,7 @@ conversationTopics:
     authoring:
       note: >-
         Records-scoped post-recovery DefaultAskTellTopic. The flag condition is the
-        complement of topic-priya-default (C2, C6, C7).
+        complement of topic-priya-default (A6, T2, T5).
 
   - id: topic-priya-choice-start
     actorId: npc-priya
@@ -935,7 +935,7 @@ conversationTopics:
         is inactive inside the node, so an ordinary tell reaches
         topic-priya-choice-reason; outside the node it remains active so asking
         about the audit card resumes the unfinished exchange. These conditions
-        make it mutually exclusive with the reason producer (C7). The fixed card
+        make it mutually exclusive with the reason producer (T5). The fixed card
         cannot be carried away.
 
   - id: topic-priya-choice-made

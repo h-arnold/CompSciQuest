@@ -1,6 +1,5 @@
-// W7F-06 — player-visible gate denial (PLAYTEST-assistance-ward.md finding 1;
-// application-and-ui.md §3.2/§8; content-rules.md N5/N6). The RuleEngine is the
-// canonical owner of exit gating; the verb handler is not tested twice here.
+// W7F-06 — player-visible gate denial. The RuleEngine is the canonical owner of
+// exit gating; the verb handler is not tested twice here.
 import { describe, expect, it } from 'vitest';
 import { createRuleEngine } from '../../src/core/rules/RuleEngine';
 import { createConditionEvaluator } from '../../src/core/rules/ConditionEvaluator';

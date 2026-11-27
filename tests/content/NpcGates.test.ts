@@ -1,6 +1,5 @@
-// Red tests for the npc-content gate and the NPC generation handoff
-// (content-rules.md §4.3 points 1–6, §7 npc-content; application-and-ui.md §3.3).
-// All artefacts are declared in-memory; no card is read from disk.
+// Red tests for the npc-content gate and the NPC generation handoff. All
+// artefacts are declared in-memory; no card is read from disk.
 import { describe, expect, it } from 'vitest';
 import {
   AREA_ID,
@@ -109,7 +108,7 @@ function npcFindings(findings: readonly Finding[]): string {
   );
 }
 
-describe('npc-content gate (content-rules.md §4.3, §7)', () => {
+describe('npc-content gate', () => {
   it('CT-NPC-01: a topic actorId must bind to a declared actor and is generated', async () => {
     const { validateCards } = await loadValidation();
     const { generateContent } = await loadGenerator();

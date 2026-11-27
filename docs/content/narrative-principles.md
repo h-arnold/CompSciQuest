@@ -9,8 +9,13 @@ story develops; only `confirmed` entries influence writing.
 
 - These principles govern voice, humour, stakes and consequences in all game
   text. They are not game content: no design cards and no TypeScript live here.
-- The rulebook `docs/developer/content-rules.md` remains authoritative for the
-  N/P/H/D rules, with `docs/developer/npcs.md` owning the A/T rules. If a principle and a rule disagree, the rulebook wins and the
+- Cross-cutting rules live with the documents that own their subject: N4, N5,
+  N9 and N10 here; N1–N3 and N6 in `content-bible.md`; P1 and P2 in the bible's
+  topic index, P6 in `application-and-ui.md` §10; D rules in
+  `content-toolchain.md`; V rules in the editor and play-tester instructions.
+  Kind-specific authoring rules live in the owning contract doc (`areas.md`,
+  `npcs.md`, `combat.md`, `puzzles.md`, `hazards.md`, `hints.md`); `npcs.md`
+  owns the A/T rules. If a principle and a rule disagree, the rule wins and the
   editor escalates rather than quietly choosing one.
 - `docs/exam-specs/wjec-unit1.md` remains the authority for every course fact.
   Humour never changes a definition, an example, a number or a spec depth
@@ -23,7 +28,17 @@ story develops; only `confirmed` entries influence writing.
   **first use** pair it with a short plain-English gloss in apposition; after
   that the term stands alone.
 - Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
-- Keep second person, present tense and one consistent register (N4). 
+- Keep second person, present tense and one consistent register (N4).
+  Failed commands, unknown topics and hint text stay in voice; the bible defines
+  the register and a card that drifts from it is a major finding.
+- Every submitted command produces text. Failure text gives new information — a
+  clue, a sensory detail, a character reaction — never a bare "you can't" or
+  "nothing happens". This includes `use` on the wrong target and `answer`
+  outside a quiz (N5).
+- A typical 14–16 year-old can identify the point of a line and its bearing on
+  the current situation without authoring vocabulary or engine knowledge.
+  Merely restating an instruction, listing global mechanics or exposing design
+  constraints is a major finding (N9).
 - Avoid repetition of sentence structures or writing effects. Especially cliches such as:
   - It's not x it y.
   - Repetitions of what something is not. This is appropriate when used sparingly.
@@ -48,17 +63,86 @@ the same empty slot."
 of the computer, if you think about it." The shorthand is imprecise, the gloss
 never names the formal term and the sentence eats space without teaching.
 
-**World richness and examinables**. The user wants a rich,
-engaging world: a room description should name several concrete things worth
-looking at, and some items may exist purely to be examined, with no puzzle or story
-work to do. Such an item earns its place through a vivid, specific description. It
-must not obscure a gate clue, use an unregistered noun, or imply that it is
-required. Every new ID and alias still needs editor allocation and user approval
-(D2, bible §9); decorative items are never scoreable and never gate progress.
-Set `portable` from real-world plausibility — fixed scenery stays put, small props
-can be carried — and expect a refused `TAKE` to answer in world (N5), never with a
-parser-style denial. The confirmed "Presence, not labels" pattern in §11 is the
-method for naming them.
+**World richness** belongs to room authoring: see
+[areas.md §World richness and examinables](../developer/areas.md#world-richness-and-examinables)
+for examinable props, `portable`, in-world refusals and the confirmed
+"Presence, not labels" pattern. Room prose length is likewise owned by
+[areas.md N8](../developer/areas.md#write-the-room-first): at most two paragraphs,
+usually 200–300 words unless extra detail is warranted.
+
+### Markdown affordance formatting (N10)
+
+Player-facing prose is rendered as constrained Markdown
+([application-and-ui.md §6.1](../developer/application-and-ui.md#61-event-to-view-mapping)).
+Emphasis describes an affordance, not a taxonomy: it gives one precedence rule
+when a noun is also a door or a person, matches the parser's command families,
+and can be taught in `help`.
+
+| Style               | Meaning                           | Commands it advertises                   |
+| ------------------- | --------------------------------- | ---------------------------------------- |
+| `**bold**`          | A thing the player can handle     | `examine`, `take`, `use`, `open`, `put`  |
+| `***bold italic***` | A person the player can address   | `talk-to`, `ask`, `tell`, `give`, `show` |
+| `*italic*`          | A way through                     | `go` or a direction                      |
+| Plain               | Scene, atmosphere, abstract nouns | None                                     |
+
+If one noun offers two affordances in one sentence, split the sentence and style
+each affordance once:
+
+```text
+The **east door** is bolted; *east* leads to the Switchyard.
+A **port label** on the east socket reads LIVE; *east* leads to the Switchyard.
+```
+
+Do not stack `***` on a door, or use both bold and italic on one mention unless
+the noun is a person.
+
+Guardrails:
+
+1. **Resolvable spans only.** A bold span must resolve through an item name or
+   alias, an actor name or alias, or a scenery entry. An italic span must name a
+   direction the room accepts, even if the exit is currently gated. Bold must
+   never promise an `EXAMINE` that fails.
+2. **First mention only.** Style a noun on its first mention in a room entry or
+   message; repeat mentions are plain.
+3. **Density budget.** At most four bold spans and four italic spans per room
+   description. Move extra detail into `EXAMINE` responses or split the room.
+4. **No rhetorical emphasis.** No `*very*`, no `**never**` and no bold for
+   shouting. Rewrite a sentence that needs stress; the three styles stay
+   unambiguous.
+5. **Formatting supplements presence.** Every styled noun still sits in a
+   physical clause; no "Items here:" lists or labels standing in for prose
+   ([§11](#11-pattern-log-living)).
+6. **No styles in titles, names, aliases, topic prompts or quoted speech.**
+   Dialogue stays in quotation marks. Inline code inside speech is allowed when
+   an NPC dictates code or a value.
+7. **No emphasis in hints, quiz prompts, quiz options or quiz explanations.**
+   Inline code, lists, tables and fences are enough; emphasis must not cue an
+   answer.
+8. **Accessibility does not depend on emphasis.** Screen readers flatten bold
+   and italic, so emphasis is an additional cue and the words carry the meaning.
+
+Where each format belongs:
+
+| Context                   | Paragraphs                                  | Bold / bold italic / italic    | Inline code              | Lists          | Tables                 | Fences                | Links                             |
+| ------------------------- | ------------------------------------------- | ------------------------------ | ------------------------ | -------------- | ---------------------- | --------------------- | --------------------------------- |
+| Room description          | Yes                                         | Yes, within the density budget | Sparingly                | No             | No                     | No                    | No                                |
+| Item or actor description | Yes                                         | Yes                            | Yes                      | Sparingly      | Reference objects only | No                    | No                                |
+| NPC dialogue or node text | Yes                                         | No                             | Yes, for code and values | Sparingly      | No                     | Machine readouts only | No                                |
+| Hint                      | Yes                                         | No                             | Yes                      | Yes, for steps | Yes, for comparisons   | Yes, for code         | No                                |
+| Quiz prompt and options   | Prompt yes; options no                      | No                             | Yes, for expressions     | No             | No                     | No                    | No                                |
+| Quiz explanation          | Yes                                         | No                             | Yes                      | Yes            | Yes                    | Yes                   | No                                |
+| Help, title and credits   | Yes                                         | Group headings and the legend  | Yes, for syntax          | Yes            | Directions if useful   | No                    | GitHub Pages only, when requested |
+| Anywhere                  | No raw HTML, no images, no decorative rules |                                |                          |                |                        |                       |                                   |
+
+**Links.** The renderer permits only the GitHub Pages site
+`https://h-arnold.github.io/CompSciQuest/` and paths beneath it. Links are
+allowed by the renderer but must not appear in content unless the user explicitly
+requests one; the default is no links. Link text is descriptive, never a bare URL
+or "click here", and a link is never required to understand or solve anything.
+Disallowed links render as plain label text.
+
+Content headings start at `###`, because `##` is reserved for the location
+heading in the transcript ([application-and-ui.md §6.1](../developer/application-and-ui.md#61-event-to-view-mapping)).
 
 ## 3. Comic mode
 
@@ -104,7 +188,7 @@ N6 forbids it.
 - `change-lives` is the only mechanical harm. The comic trimmings below are
   flavour unless a joke item is explicitly lost.
 - **Save games:** a save game may be threatened, shattered or "deleted" only as
-  an in-fiction prop. `compsciquest:save:v1` is fixed by `content-rules.md` §8 and
+  an in-fiction prop. `compsciquest:save:v1` is fixed by `storage-schema.md` §2 and
   is never touched. A "save crystal" can break; the real save cannot.
 - **Comic Sans MS:** a valid and welcome casualty, described in prose only. There
   is no HTML or CSS, so the font can be a cursed cartridge, a cursed poster or a
@@ -148,33 +232,13 @@ unregistered noun, which turns it into the guess-the-noun trap N6 forbids.
 
 ## 7. NPCs and voice
 
-- NPCs span the full temperament range: brash, rude and wittily sarcastic;
-  warm, loving and compassionate; characters who present as warm but are cruel
-  and passive-aggressive; and the exact opposite. There is no quota on inverted
-  personas.
-- Any target inside the fiction is fair game, including the player's character.
-  Wit is the only limit beyond the harm floor (§8).
-- **Assistance Ward guide voice (confirmed 2026-11-26).** The AI's usual clipped
-  bureaucracy becomes weary and passive-aggressive in this area: it resents
-  explaining actions it considers obvious, speaks of "the pupil" in the third
-  person and treats independence as an administrative inconvenience. The joke
-  targets its excessive help and self-importance. It never mocks the player's
-  intelligence, and the four former pupils remain recoverable people rather
-  than monsters.
-- The harm floor still forbids **mockery of the learner**. An NPC may be rude to
-  the player's avatar; it never sneers at the pupil's intelligence or ability.
-- Each NPC has a distinct role, voice, motivation and relationship (A1) and may
-  own **at most one recurring phrase**. There is no global catchphrase cap:
-  variety comes from the cast, not from a count.
-- Every conversational input still resolves to an in-character reply (T1), and
-  teaching beats stay diegetic (N3).
-
-**Example:** "Oh, brilliant. Another student who's read the spec. I'll just fetch
-the mop, shall I?" — brash, rude, and aimed at the situation rather than the
-learner.
-
-**Non-example:** "You wouldn't understand this if I drew you a picture." That is
-mockery of the learner and is barred by the harm floor.
+NPC voice, temperament, recurring phrases and area-specific guides are owned by
+[npcs.md §Authoring conversation rules](../developer/npcs.md#authoring-conversation-rules-a)
+and its [Voice and temperament](../developer/npcs.md#voice-and-temperament) section. The shared
+harm floor (§8) still forbids **mockery of the learner**: an NPC may be rude to
+the player's avatar, never to the pupil's intelligence or ability. Every
+conversational input resolves in character (T1) and teaching beats stay diegetic
+(N3).
 
 ## 8. Harm floor
 
@@ -184,7 +248,8 @@ mockery of the learner and is barred by the harm floor.
 - Peril falls on fictional creatures, objects and the player's cartoon avatar —
   never on the reader.
 - This floor overrides every other principle in this document, including the
-  "no limit" on NPC targets in §7.
+  full range of NPC targets recorded in
+  [npcs.md §Voice and temperament](../developer/npcs.md#voice-and-temperament).
 
 ## 9. Fourth wall
 
@@ -273,21 +338,21 @@ worth promoting.
 - Non-example: "Items here: switch gauge, foreman. You can talk to the foreman."
   That is a labelled inventory, not a world (N3, §9).
 - Use in: all three rooms briefs in the 2026-11-25 revision. Keep H1 telegraph
-  strings and N6 clue strings byte-identical. N8's ceiling is now 200 words, a
-  limit rather than a target: write as much as the place needs, not as much as it
-  will hold.
-- Formatting supplements presence (content-rules N10): a styled noun still sits
-  in a physical clause, and no "Items here:" list or styled label stands in for
+  strings and N6 clue strings byte-identical. Room length now follows N8 in
+  [areas.md](../developer/areas.md#write-the-room-first): at most two paragraphs,
+  usually 200–300 words, with extra detail where the area warrants it.
+- Formatting supplements presence
+  ([N10](#markdown-affordance-formatting-n10)): a styled noun still sits in a
+  physical clause, and no "Items here:" list or styled label stands in for
   prose. Screen readers flatten emphasis, so the words must work without it.
 
 ## 12. Change control
 
 - This document was `draft` until the user approved it on 2026-11-24. Writer briefs
   cite it as settled authority from that date.
-- Approved principles are changed only with the user's agreement. Record each
-  change as a dated note below with the reason.
-- Pattern log entries (§11) may be added by the editor between approvals; only
-  `confirmed` entries influence writing.
+- Changes are recorded as dated notes below.
+- Pattern log entries (§11) may be added by the editor as the story develops;
+  only `confirmed` entries influence writing.
 
 ### Change log
 
@@ -300,8 +365,7 @@ worth promoting.
   "Everything else is short, simple and punchy. No waffle..." instruction with the
   Pratchett/Adams line ("Short, and punchy but with a certain amount of flair") and
   added a warning against repeated "not X, but Y" constructions and other repeated
-  effects (commit 3a8478f). §12 requires each change to be logged; this note closes
-  that gap. No rule ID changed.
+  effects (commit 3a8478f). This note records the change. No rule ID changed.
 - 2026-11-25 — **Full-scope tone revision approved.** After the editor showed
   before/after examples, the user chose "Everything built so far". Ten prose-bearing
   YAML cards are re-briefed; `spec-topics.yaml` is evidence metadata and is excluded.
@@ -330,6 +394,7 @@ worth promoting.
   four former pupils are recoverable people, and cognitive decline remains
   satire rather than a course or medical claim.
 - 2026-11-27 — **Affordance formatting added to the "Presence, not labels"
-  pattern (§11).** The agreed Markdown convention (content-rules N10) supplements
-  physical presence: a styled noun stays in a physical clause and no label
+  pattern (§11).** The agreed Markdown convention
+  ([N10](#markdown-affordance-formatting-n10)) supplements physical presence: a
+  styled noun stays in a physical clause and no label
   replaces prose. No story fact, ID, alias or card changes.

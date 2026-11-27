@@ -78,7 +78,7 @@ conversationTopics:
       (You could ask what the verdict means.)
     authoring:
       note: >-
-        The verdict is keyword-addressed by `special`, so it cannot shadow the three scoped topics, the taunt or the default (C7); the node trigger and all effects are unchanged.
+        The verdict is keyword-addressed by `special`, so it cannot shadow the three scoped topics, the taunt or the default (T5); the node trigger and all effects are unchanged.
 
   - id: topic-ai-unit-two-taunt
     actorId: npc-the-ai
@@ -128,7 +128,7 @@ conversationTopics:
       (You could ask what failure means.)
     authoring:
       note: >-
-        Scoped to `room-arrival` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's arrival flavour content, flags and mechanics are unchanged. Deletion is an in-fiction cartoon threat, not realistic harm; the three lives, area-change reset and no-progress loss restate the fixed mechanics in content-rules.md §8. No save-file or fourth-wall reference, no flag, gate, quiz or course fact.
+        Scoped to `room-arrival` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's arrival flavour content, flags and mechanics are unchanged. Deletion is an in-fiction cartoon threat, not realistic harm; the three lives, area-change reset and no-progress loss restate the fixed mechanics in application-and-ui.md §3.2 and storage-schema.md §2. No save-file or fourth-wall reference, no flag, gate, quiz or course fact.
 
   - id: topic-ai-default
     actorId: npc-the-ai
@@ -152,7 +152,7 @@ conversationTopics:
       (You could ask about the attendance mark, what failure means, or the route out.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic: unmatched input lands here in voice outside the Assistance Ward (C2). Its negated `in-area` condition excludes `area-assistance-ward` within `world-wjec-gcse-computer-science-2025-spec`, leaving the separately authored `topic-ai-ward-default` to resolve there (C6, C7). The landed first-active-default selector contract picks the first active eligible catalogue default in declaration order, preserving this default elsewhere without adding a second global default.
+        Free-text DefaultAskTellTopic: unmatched input lands here in voice outside the Assistance Ward (A6). Its negated `in-area` condition excludes `area-assistance-ward` within `world-wjec-gcse-computer-science-2025-spec`, leaving the separately authored `topic-ai-ward-default` to resolve there (T2, T5). The landed first-active-default selector contract picks the first active eligible catalogue default in declaration order, preserving this default elsewhere without adding a second global default.
 
 conversationNodes:
   - id: node-ai-verdict
@@ -162,4 +162,4 @@ conversationNodes:
     defaultTopicId: topic-ai-default
     authoring:
       note: >-
-        One-turn key-node beat: the verdict and the flavour taunt land, then the actor's catch-all keeps any further input in voice. No turn timeout (C4).
+        One-turn key-node beat: the verdict and the flavour taunt land, then the actor's catch-all keeps any further input in voice. No turn timeout (T3).

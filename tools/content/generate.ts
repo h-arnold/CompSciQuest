@@ -143,8 +143,7 @@ function push(outputs: Map<string, Data[]>, name: string, data: Data): void {
 function nodeEntry(node: Data, topics: ReadonlyMap<string, Data>): Data {
   const topicIds = stringList(node['topicIds']);
   // Only the node's authoring-only actorId is dropped. An embedded
-  // ConversationTopic keeps its optional runtime actor binding
-  // (content-rules.md §4.3 point 2, §8).
+  // ConversationTopic keeps its optional runtime actor binding.
   const clean = cleanEntry(node, 'topicIds', 'actorId');
   const embedded = topicIds.flatMap((id) => {
     const topic = topics.get(id);
@@ -182,7 +181,7 @@ export function generateContent(
   options?: ValidationOptions,
 ): GenerationResult {
   // Generation runs C7 by default; an explicit caller options object still
-  // overrides this default (content-rules.md §7, content-toolchain.md §5).
+  // overrides this default.
   const settings = options ?? { topicOverlap: true };
   const normalised = normalisedCards(cards);
   const findings = validateCards(normalised, settings);
