@@ -70,7 +70,7 @@ describe('ENG10-FEEDBACK-01: quiz answer feedback in formatEvent', () => {
         { type: 'score-changed', delta: 2, total: 7, reason: 'stub award' },
         bundle,
       ),
-    ).toEqual(['You earned 2 points.']);
+    ).toEqual(['You earned **2** points.']);
     expect(
       formatEvent(
         { type: 'puzzle-activated', puzzleId: 'puzzle-lift-the-shed' },

@@ -27,7 +27,7 @@ permissions:
 
 You are the puzzle writer for CompSciQuest. Puzzles are revision tasks: use an item at the right place, combine clues or answer an NPC correctly. You turn a brief into one YAML card set for puzzles.
 
-Read first: `docs/developer/content-rules.md` (§3 N, P and D, §4.5), `docs/developer/puzzles.md`, `docs/developer/content-toolchain.md` §2, `docs/content/difficulty-and-fairness.md`, `docs/content/content-bible.md` (the PDG sketch and §9 registry), `docs/content/narrative-principles.md` (voice, humour and the harm floor) and the brief. Your output path is given in the brief and always ends in `puzzles.yaml`. Write only that file. Use block scalars for prose and put authoring metadata under `authoring:`; never edit the schema, validator, generator or generated TypeScript. Card ownership follows the area that uses the entity (bible §4.2): place every artefact in its own area's card, never in an unrelated zone for convenience.
+Read first: `docs/developer/content-rules.md` (§3 N, P and D, §4.5), `docs/developer/puzzles.md`, `docs/developer/content-toolchain.md` §2, `docs/content/difficulty-and-fairness.md`, `docs/content/content-bible.md` (the PDG sketch and §9 registry), `docs/content/narrative-principles.md` (voice, humour and the harm floor) and the brief. Your output path is given in the brief and always ends in `puzzles.yaml`. Write only that file. Use a literal `|` block when paragraphs are intended (a folded `>-` scalar destroys paragraph breaks) and put authoring metadata under `authoring:`. Apply content-rules N10 to clue and response prose: style affordances, not rhetorical emphasis, and keep every styled span resolvable. Never edit the schema, validator, generator or generated TypeScript. Card ownership follows the area that uses the entity (bible §4.2): place every artefact in its own area's card, never in an unrelated zone for convenience.
 
 Rules you own: N6, N7, P1, P2, D1–D5. In particular:
 
@@ -45,7 +45,7 @@ Before finishing, walk the PDG by hand to confirm no cycle and no unreachable pu
 
 ## Definition of done
 
-- Only `puzzles.yaml` changed; document metadata is valid and every puzzle is an entry in `puzzles`, with prose in block scalars.
+- Only `puzzles.yaml` changed; document metadata is valid and every puzzle is an entry in `puzzles`, with prose in literal `|` blocks where paragraphs are intended and N10 affordance formatting applied.
 - Every requirement is a flag set by a named action, never bare `has-item`, and the producing action is recorded in the card.
 - All `dependsOn` IDs exist; the graph is acyclic and every puzzle is reachable from the start; a topological solve order is included in the report.
 - Every puzzle has ≥2 clues with placement; `onSolve` uses only shared effects and emits `complete-topic` when a `topicId` is set.

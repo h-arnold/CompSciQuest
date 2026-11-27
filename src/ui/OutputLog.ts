@@ -1,6 +1,9 @@
-// Transcript channel (application-and-ui.md §6.1, §7.1). It appends formatted
-// lines and never interprets them; formatting lives in formatEvent.ts.
-import { appendLine } from './appendLine';
+// Transcript channel (application-and-ui.md §6.1, §7.1). It offers a plain
+// append path and a Markdown block path; formatting lives in formatEvent.ts.
+import {
+  appendMarkdownBlock,
+  appendPlain as appendPlainLine,
+} from './appendMarkdown';
 
 export class OutputLog {
   readonly element: HTMLElement;
@@ -16,8 +19,18 @@ export class OutputLog {
   }
 
   append(lines: readonly string[]): void {
+    this.appendPlain(lines);
+  }
+
+  appendPlain(lines: readonly string[]): void {
     for (const line of lines) {
-      appendLine(this.element, line);
+      appendPlainLine(this.element, line);
+    }
+  }
+
+  appendMarkdown(lines: readonly string[]): void {
+    for (const line of lines) {
+      appendMarkdownBlock(this.element, line);
     }
   }
 

@@ -7,6 +7,7 @@ import type { ContentBundle } from '../content/ContentBundle';
 import type { EventBus } from '../core/events/EventBus';
 import type { GameEvent } from '../core/events/GameEvent';
 import type { StorageAdapter } from '../storage/StorageAdapter';
+import { appendMarkdownInline } from './appendMarkdown';
 import { ConversationPanel } from './ConversationPanel';
 import { formatEvent } from './formatEvent';
 import { HintPanel } from './HintPanel';
@@ -53,7 +54,7 @@ export class GameWindow {
 
     // Batch E1: objective and controls open the transcript before any published
     // batch, so the player never sees an empty log (application-and-ui.md §2).
-    this.outputLog.append([
+    this.outputLog.appendPlain([
       DEFAULT_TITLE_COPY.objective,
       DEFAULT_TITLE_COPY.controls,
     ]);
@@ -157,7 +158,7 @@ export class GameWindow {
   private handleCommand(raw: string): void {
     const lowered = raw.trim().toLowerCase();
     const isImport = lowered === 'import' || lowered.startsWith('import ');
-    this.outputLog.append([`> ${isImport ? 'import' : raw}`]);
+    this.outputLog.appendPlain([`> ${isImport ? 'import' : raw}`]);
     if (isImport) {
       void this.actions.openImport();
       return;
@@ -192,7 +193,21 @@ export class GameWindow {
 
   private renderBatch(events: readonly GameEvent[]): void {
     for (const event of events) {
-      this.outputLog.append(formatEvent(event, this.bundle));
+      const lines = formatEvent(event, this.bundle);
+      if (event.type === 'question-asked') {
+        // The prompt is transcript prose (block channel); the numbered options
+        // are short inline lines whose literal "1. " prefix is the answer cue
+        // (application-and-ui.md §6.1, spec §4.5).
+        const prompt = lines[0];
+        if (prompt !== undefined) {
+          this.outputLog.appendMarkdown([prompt]);
+        }
+        for (const option of lines.slice(1)) {
+          appendMarkdownInline(this.outputLog.element, option);
+        }
+      } else {
+        this.outputLog.appendMarkdown(lines);
+      }
     }
     this.refreshPanels();
   }

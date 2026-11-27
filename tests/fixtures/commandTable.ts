@@ -7,10 +7,23 @@ const SPECIFIER = '../../src/core/commands/CommandTable';
 const REASON =
   'application-and-ui.md §5.2 — one canonical table must drive help text and parser aliases';
 
+// spec §6.3 — the four command groups assigned to COMMAND_TABLE verbs.
+// "Reading the room" is a legend section and "Saves" is a help section fed by
+// the separate SAVE_ACTIONS constant; neither is a group on a table entry.
+export const HELP_GROUPS = [
+  'Movement',
+  'Looking and handling',
+  'People',
+  'Progress',
+] as const;
+
+export type HelpGroup = (typeof HELP_GROUPS)[number];
+
 export interface CommandSpec {
   readonly verb: string;
   readonly syntax: string;
   readonly aliases: readonly string[];
+  readonly group?: HelpGroup;
 }
 
 export interface DirectionSpec {

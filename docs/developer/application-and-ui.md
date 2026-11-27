@@ -560,20 +560,55 @@ export function formatEvent(
 ): readonly string[];
 ```
 
-| Event(s)                                                                                                                                 | Transcript                                                                                                                                | Panel update                 |
-| ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`                                                                                  | text as given                                                                                                                             | —                            |
-| `answer-evaluated`                                                                                                                       | one line: `Correct.` or `Incorrect.` followed by a space and the event's `explanation` unchanged                                          | —                            |
-| `room-entered`                                                                                                                           | title, blank line, description, `Exits: north, west`                                                                                      | ScorePanel via view data     |
-| `question-asked`                                                                                                                         | prompt, then `1. …` / `2. …` lines                                                                                                        | QuizPanel                    |
-| `score-changed`                                                                                                                          | no line without a real gain; on a real gain, one friendly line stating the gained amount, with no internal `reason` string and no room ID | ScorePanel via view data     |
-| `topic-completed`                                                                                                                        | completion line derived from `topicId` via the bundle                                                                                     | ScorePanel via view data     |
-| `lives-changed`                                                                                                                          | terse in-voice line                                                                                                                       | ScorePanel (lives)           |
-| `hazard-triggered`, `conversation-started`, `conversation-ended`, `quiz-started`, `quiz-ended`, `hint-penalty-applied`                   | suppressed — no transcript line, no internal ID or debug string                                                                           | —                            |
-| `puzzle-activated`                                                                                                                       | suppressed — no transcript line, no internal puzzle ID or repeated activation notice                                                      | ScorePanel via view data     |
-| `puzzle-solved`                                                                                                                          | suppressed — no transcript line, no internal ID or implementation string; the single `topic-completed` line shows the completion outcome  | ScorePanel via view data     |
-| `game-over`, `game-won`                                                                                                                  | final message with score                                                                                                                  | TitleScreen offer to restart |
-| bookkeeping events (`flag-changed`, `item-moved`, `actor-state-changed`, `knowledge-gained`, `node-entered`, `node-exited`, `scheduled`) | suppressed — no transcript line                                                                                                           | —                            |
+Channels are split by whether the text may be interpreted as Markdown:
+
+| Channel                                                                                                                                                        | Mode                 |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Player command echo (`> raw input`)                                                                                                                            | Plain only           |
+| Status bar text, save status, errors                                                                                                                           | Plain                |
+| Sidebar score panel                                                                                                                                            | Plain                |
+| Formatted game events (`message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated`, `room-entered`, `question-asked`, score/lives/topic lines) | Markdown block       |
+| Quiz options                                                                                                                                                   | Markdown inline only |
+| Quiz prompt and explanation                                                                                                                                    | Markdown block       |
+| Hint text                                                                                                                                                      | Markdown block       |
+| Conversation prompt                                                                                                                                            | Markdown block       |
+
+The command echo stays plain: `> **look**` would otherwise be read as a
+blockquote and lose the `>` prompt. Status, sidebar and save text are never
+interpreted.
+
+Room entry is four transcript entries: a `##` heading, a blank line, the
+description and the exits line. The blank line is a real entry and must occupy
+height. `look` produces the same four-part shape through one shared helper in
+core, so the two paths cannot drift. Authored content headings start at `###`,
+because `##` belongs to the location.
+
+| Event(s)                                                                                                                                 | Transcript                                                                                                                               | Panel update                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`                                                                                  | Markdown block, text as given                                                                                                            | —                            |
+| `answer-evaluated`                                                                                                                       | one Markdown block line: `Correct.` or `Incorrect.` followed by a space and the event's `explanation` unchanged                          | —                            |
+| `room-entered`                                                                                                                           | `## <title>`, blank line, description, `Exits: north, west` — four entries, with the blank line occupying height                         | ScorePanel via view data     |
+| `question-asked`                                                                                                                         | prompt as Markdown block, then numbered options as Markdown inline                                                                       | QuizPanel                    |
+| `score-changed`                                                                                                                          | no line without a real gain; on a real gain, the score gain line below, with no internal `reason` string and no room ID                  | ScorePanel via view data     |
+| `topic-completed`                                                                                                                        | topic line below, with the title derived from `topicId` via the bundle                                                                   | ScorePanel via view data     |
+| `lives-changed`                                                                                                                          | lives line below                                                                                                                         | ScorePanel (lives)           |
+| `hazard-triggered`, `conversation-started`, `conversation-ended`, `quiz-started`, `quiz-ended`, `hint-penalty-applied`                   | suppressed — no transcript line, no internal ID or debug string                                                                          | —                            |
+| `puzzle-activated`                                                                                                                       | suppressed — no transcript line, no internal puzzle ID or repeated activation notice                                                     | ScorePanel via view data     |
+| `puzzle-solved`                                                                                                                          | suppressed — no transcript line, no internal ID or implementation string; the single `topic-completed` line shows the completion outcome | ScorePanel via view data     |
+| `game-over`, `game-won`                                                                                                                  | final message with score                                                                                                                 | TitleScreen offer to restart |
+| bookkeeping events (`flag-changed`, `item-moved`, `actor-state-changed`, `knowledge-gained`, `node-entered`, `node-exited`, `scheduled`) | suppressed — no transcript line                                                                                                          | —                            |
+
+The generated value lines are fixed:
+
+| Generated line   | Transcript text                             |
+| ---------------- | ------------------------------------------- |
+| Score gain       | `You earned **2** points.`                  |
+| `score` command  | `Your score is **12**.`                     |
+| Lives change     | `Lives: **2**.`                             |
+| Topic completion | `Topic completed: **Data representation**.` |
+
+Only the value is bold; the numbers are examples of the agreed copy, not
+constants.
 
 A **real gain** means a positive `delta` on `score-changed`; zero and negative
 deltas yield no line. The transcript is a player-facing view, not a complete
@@ -617,8 +652,24 @@ starts.
 
 `OutputLog`'s transcript element carries `role="log"` and `aria-live="polite"`,
 so assistive technology announces appended lines without interrupting the
-player. `OutputLog` appends the formatted lines it is given without parsing
-their content ([§6.1](#61-event-to-view-mapping)).
+player. It appends formatted events through the Markdown renderers and keeps the
+command echo plain ([§6.1](#61-event-to-view-mapping)).
+
+Formatted events pass through a `marked`-based boundary. `renderBlock` uses
+`Lexer.lex` and `renderInline` uses `Lexer.lexInline`; both return DOM nodes built
+with `createElement`, `createTextNode`, `append` and `setAttribute`. Neither
+builds an HTML string, touches `innerHTML` or emits a `style` attribute from
+content; unknown token types become text nodes. Tables are wrapped in
+`div.table-scroll` and use real `table`, `thead`, `tbody` and `th scope="col"`
+elements. Lists use real `ol` and `ul`; code uses real `pre` and `code`.
+Alignment is a class rather than an inline style, and CSS owns layout, spacing
+and contrast.
+
+Links pass an allowlist: scheme `https`, host `h-arnold.github.io`, and path
+`/CompSciQuest` or below it. Allowed links carry `target="_blank"` and
+`rel="noopener noreferrer"`; every other link, raw HTML and images render as
+plain text. Content uses no links by default; the Pages footer link in `help`
+is the exception ([content-rules.md §4.1.1](content-rules.md#411-markdown-and-affordance-formatting)).
 
 ### 7.2 View data
 

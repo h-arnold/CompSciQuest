@@ -141,7 +141,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
     }
   });
 
-  it('ENG22-SUCCESSIDS-01: room-entered and question-asked stay exactly as inherited', async () => {
+  it('ENG22-SUCCESSIDS-01: room-entered uses the level-two heading and question-asked stays as inherited', async () => {
     const formatEvent = await loadFormatEvent();
     const room: GameEvent = {
       type: 'room-entered',
@@ -161,7 +161,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
     };
 
     expect(formatEvent(room, BUNDLE)).toEqual([
-      'Pattern Bureau',
+      '## Pattern Bureau',
       '',
       'A room of ticking switches.',
       'Exits: north, west',
@@ -182,7 +182,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
       reason: 'room:room-pattern-bureau',
     };
 
-    expect(formatEvent(gain, BUNDLE)).toEqual(['You earned 2 points.']);
+    expect(formatEvent(gain, BUNDLE)).toEqual(['You earned **2** points.']);
 
     for (const delta of [0, -1]) {
       const noGain: GameEvent = {
@@ -202,7 +202,7 @@ describe('formatEvent — ENG22-SUCCESSIDS-01 (PLAYTEST_ISSUES.md §22)', () => 
     const formatEvent = await loadFormatEvent();
 
     expect(formatEvent({ type: 'lives-changed', lives: 2 }, BUNDLE)).toEqual([
-      'Lives: 2.',
+      'Lives: **2**.',
     ]);
     expect(
       formatEvent(

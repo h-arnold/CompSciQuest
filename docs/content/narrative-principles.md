@@ -272,6 +272,9 @@ worth promoting.
   strings and N6 clue strings byte-identical. N8's ceiling is now 200 words, a
   limit rather than a target: write as much as the place needs, not as much as it
   will hold.
+- Formatting supplements presence (content-rules N10): a styled noun still sits
+  in a physical clause, and no "Items here:" list or styled label stands in for
+  prose. Screen readers flatten emphasis, so the words must work without it.
 
 ## 12. Change control
 
@@ -316,3 +319,7 @@ worth promoting.
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in
   §11. Room briefs are paused pending user approval of new item IDs and aliases
   (D2, bible §9); no writer has been dispatched with unregistered nouns.
+- 2026-11-27 — **Affordance formatting added to the "Presence, not labels"
+  pattern (§11).** The agreed Markdown convention (content-rules N10) supplements
+  physical presence: a styled noun stays in a physical clause and no label
+  replaces prose. No story fact, ID, alias or card changes.

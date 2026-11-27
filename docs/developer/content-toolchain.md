@@ -25,6 +25,13 @@ unresolved `todo` placeholder. Field names come from the subsystem documents
 (D3); the schema follows them. Cross-artefact meaning belongs to the gates in
 §4, not the schema.
 
+Multi-paragraph prose uses a literal YAML block scalar (`|`). A folded scalar
+(`>-`) joins its lines into one paragraph and destroys paragraph breaks, so it
+is reserved for single-paragraph strings. Fenced code and tables inside a
+literal block are indented consistently with the rest of the block; YAML strips
+that indentation, so the Markdown reaches the transcript unchanged. No schema
+change is required: descriptions and responses are already strings.
+
 Card allocation follows [content-rules.md §1](content-rules.md#1-purpose-and-authority);
 the validator and generator merge every card into the same catalogue, so this
 layout needs no special handling.
@@ -124,7 +131,9 @@ within each file — because
 [shared-rules.md §10](shared-rules.md#10-determinism-and-ordering-rules) requires
 declaration-order evaluation. Entries are not sorted by ID: that would break the
 order `AreaDefinition.roomIds` is derived from. No timestamps are emitted, and
-each file carries a header marking it as generated.
+each file carries a header marking it as generated. `JSON.stringify` emits
+embedded newlines as `\n` escapes, so a literal block becomes one escaped line
+and each generated entry stays on one line; the 600-line cap is unaffected.
 
 The generated files are committed, so the site remains fully static; Vite never
 parses YAML at build or runtime. `src/content/index.ts` exports `loadContent()`,

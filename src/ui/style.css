@@ -65,6 +65,23 @@ body {
   .workspace {
     grid-template-columns: 1fr;
   }
+
+  /* Rich content scrolls inside its own wrapper, never inside the page. */
+  .output-log,
+  .table-scroll,
+  .output-log pre {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .output-log {
+    overflow-x: hidden;
+  }
+
+  .output-log > div {
+    max-width: 100%;
+  }
 }
 
 .output-log {
@@ -74,6 +91,170 @@ body {
   padding: 0.75rem;
   border: 1px solid #b9b2a1;
   background: #fffdf7;
+  line-height: 1.5;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Transcript typography: paragraphs breathe inside an entry while entries
+   stay close together. The documented blank entry keeps one line of height. */
+.output-log > div {
+  max-width: 100%;
+}
+
+.output-log > div:empty {
+  min-height: 1.5em;
+}
+
+.output-log > div + div {
+  margin-top: 0.25rem;
+}
+
+.output-log p {
+  margin: 0 0 0.5rem;
+}
+
+.output-log p + p {
+  margin-top: 0.5rem;
+}
+
+.output-log p:last-child {
+  margin-bottom: 0;
+}
+
+/* A restrained heading scale uses weight and a rule, not colour, to signal
+   structure without overpowering the log. */
+.output-log :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0.5rem 0 0.25rem;
+  font-weight: bold;
+  border-bottom: 1px solid #d3cdbc;
+}
+
+.output-log h1 {
+  font-size: 1.25em;
+}
+
+.output-log h2 {
+  font-size: 1.15em;
+}
+
+.output-log h3 {
+  font-size: 1.1em;
+}
+
+.output-log h4 {
+  font-size: 1.05em;
+}
+
+.output-log h5,
+.output-log h6 {
+  font-size: 1em;
+}
+
+.output-log ol,
+.output-log ul {
+  margin: 0.25rem 0;
+  padding-left: 1.75rem;
+  list-style-position: outside;
+}
+
+.output-log li + li {
+  margin-top: 0.125rem;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.output-log table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.95em;
+}
+
+.output-log th,
+.output-log td {
+  border: 1px solid #b9b2a1;
+  padding: 0.3rem 0.45rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.output-log thead th {
+  font-weight: bold;
+  background: #f0ede3;
+}
+
+.output-log .align-center {
+  text-align: center;
+}
+
+.output-log .align-right {
+  text-align: right;
+}
+
+.output-log code {
+  padding: 0.05em 0.25em;
+  border: 1px solid #d3cdbc;
+  border-radius: 0.2rem;
+  color: #1d2430;
+  background: #e9e5d8;
+  font-family:
+    ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.9em;
+}
+
+.output-log pre {
+  max-width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.75rem;
+  overflow-x: auto;
+  white-space: pre;
+  box-sizing: border-box;
+  color: #1d2430;
+  background: #f0ede3;
+  border: 1px solid #b9b2a1;
+  border-left: 3px solid #6b7f96;
+  font-family:
+    ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.output-log pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: inherit;
+}
+
+.output-log blockquote {
+  margin: 0.5rem 0;
+  padding: 0.25rem 0.75rem;
+  border-left: 3px solid #6b7f96;
+  background: #f6f3ea;
+}
+
+.output-log blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.output-log a {
+  color: #1a4f8a;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.output-log a:hover,
+.output-log a:focus-visible {
+  text-decoration-thickness: 2px;
+}
+
+.output-log a:focus-visible {
+  outline: 2px solid #1a4f8a;
+  outline-offset: 2px;
 }
 
 .conversation-panel,

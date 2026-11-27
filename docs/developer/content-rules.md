@@ -56,6 +56,7 @@ Every finding from the critic and every brief from the editor cites these IDs. R
 - **N6 — Fair gates.** Every locked exit or puzzle has an in-fiction justification and at least two discoverable clues placed in room descriptions, NPC dialogue or item text. No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the editor's alias registry.
 - **N7 — Ancestor-only references.** A puzzle's prose may mention plot points only from that puzzle's ancestor set in the PDG, as guaranteed by [puzzles.md §4](puzzles.md#4-puzzle-dependency-graph). Never assume the player solved earlier nodes in a particular order.
 - **N8 — Prose length.** Room descriptions are at most 200 words. This is a ceiling, not a target: most rooms should be shorter, and the extra room is for places where description genuinely helps the player. Longer passages are reserved for key nodes and NPC explanations. Avoid walls of text; vary rhythm between short traversal text and richer set pieces.
+- **N10 — Markdown affordance formatting.** Prose reaches the transcript as constrained Markdown, so emphasis describes the affordance on offer, not the entity's type: bold marks a thing the player can handle, bold italic a person they can address, italic a way through ([§4.1.1](#411-markdown-and-affordance-formatting)). Style only resolvable spans on first mention, stay within the density budget, and never use emphasis as rhetorical stress. Screen readers flatten emphasis, so the words must carry the meaning on their own.
 
 ### P — Pedagogy and course mapping
 
@@ -151,6 +152,80 @@ resolves in the card set.
 | puzzle | `puzzles.yaml` | `puzzles`                                                          |
 | hazard | `hazards.yaml` | `hazards`                                                          |
 | hint   | `hints.yaml`   | `hintSequences`                                                    |
+
+### 4.1.1 Markdown and affordance formatting
+
+Player-facing prose is rendered as constrained Markdown
+([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping)).
+Emphasis describes an affordance, not a taxonomy: it gives one precedence rule
+when a noun is also a door or a person, matches the parser's command families,
+and can be taught in `help`.
+
+| Style               | Meaning                           | Commands it advertises                   |
+| ------------------- | --------------------------------- | ---------------------------------------- |
+| `**bold**`          | A thing the player can handle     | `examine`, `take`, `use`, `open`, `put`  |
+| `***bold italic***` | A person the player can address   | `talk-to`, `ask`, `tell`, `give`, `show` |
+| `*italic*`          | A way through                     | `go` or a direction                      |
+| Plain               | Scene, atmosphere, abstract nouns | None                                     |
+
+If one noun offers two affordances in one sentence, split the sentence and style
+each affordance once:
+
+```text
+The **east door** is bolted; *east* leads to the Switchyard.
+A **port label** on the east socket reads LIVE; *east* leads to the Switchyard.
+```
+
+Do not stack `***` on a door, or use both bold and italic on one mention unless
+the noun is a person.
+
+Guardrails:
+
+1. **Resolvable spans only.** A bold span must resolve through an item name or
+   alias, an actor name or alias, or a scenery entry. An italic span must name a
+   direction the room accepts, even if the exit is currently gated. Bold must
+   never promise an `EXAMINE` that fails.
+2. **First mention only.** Style a noun on its first mention in a room entry or
+   message; repeat mentions are plain.
+3. **Density budget.** At most four bold spans and four italic spans per room
+   description. Move extra detail into `EXAMINE` responses or split the room.
+4. **No rhetorical emphasis.** No `*very*`, no `**never**` and no bold for
+   shouting. Rewrite a sentence that needs stress; the three styles stay
+   unambiguous.
+5. **Formatting supplements presence.** Every styled noun still sits in a
+   physical clause; no "Items here:" lists or labels standing in for prose
+   ([narrative-principles.md §11](../content/narrative-principles.md#11-pattern-log-living)).
+6. **No styles in titles, names, aliases, topic prompts or quoted speech.**
+   Dialogue stays in quotation marks. Inline code inside speech is allowed when
+   an NPC dictates code or a value.
+7. **No emphasis in hints, quiz prompts, quiz options or quiz explanations.**
+   Inline code, lists, tables and fences are enough; emphasis must not cue an
+   answer.
+8. **Accessibility does not depend on emphasis.** Screen readers flatten bold
+   and italic, so emphasis is an additional cue and the words carry the meaning.
+
+Where each format belongs:
+
+| Context                   | Paragraphs                                  | Bold / bold italic / italic    | Inline code              | Lists          | Tables                 | Fences                | Links                             |
+| ------------------------- | ------------------------------------------- | ------------------------------ | ------------------------ | -------------- | ---------------------- | --------------------- | --------------------------------- |
+| Room description          | Yes                                         | Yes, within the density budget | Sparingly                | No             | No                     | No                    | No                                |
+| Item or actor description | Yes                                         | Yes                            | Yes                      | Sparingly      | Reference objects only | No                    | No                                |
+| NPC dialogue or node text | Yes                                         | No                             | Yes, for code and values | Sparingly      | No                     | Machine readouts only | No                                |
+| Hint                      | Yes                                         | No                             | Yes                      | Yes, for steps | Yes, for comparisons   | Yes, for code         | No                                |
+| Quiz prompt and options   | Prompt yes; options no                      | No                             | Yes, for expressions     | No             | No                     | No                    | No                                |
+| Quiz explanation          | Yes                                         | No                             | Yes                      | Yes            | Yes                    | Yes                   | No                                |
+| Help, title and credits   | Yes                                         | Group headings and the legend  | Yes, for syntax          | Yes            | Directions if useful   | No                    | GitHub Pages only, when requested |
+| Anywhere                  | No raw HTML, no images, no decorative rules |                                |                          |                |                        |                       |                                   |
+
+**Links.** The renderer permits only the GitHub Pages site
+`https://h-arnold.github.io/CompSciQuest/` and paths beneath it. Links are
+allowed by the renderer but must not appear in content unless the user explicitly
+requests one; the default is no links. Link text is descriptive, never a bare URL
+or "click here", and a link is never required to understand or solve anything.
+Disallowed links render as plain label text.
+
+Content headings start at `###`, because `##` is reserved for the location
+heading in the transcript ([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping)).
 
 ### 4.2 Area and rooms card
 
@@ -478,6 +553,7 @@ It checks:
 5. **Data correctness** — IDs/aliases from the registry; exact runtime field names; optional fields omitted; authoring keys confined to `authoring:` blocks; effects/conditions only from the shared unions; action-flag requirements (D2–D4, puzzles.md §3); conversation selection per C7 — no two same-input ask/tell topics on one actor can be live together, and a trace phrase reaches the intended topic by its match, not by declaration order or an ID word.
 6. **Evidence** — claims about the spec cite a PDF section/page; nothing marked `covered` without evidence (V3).
 7. **Reachability and completability** — every declared room, exit, item, NPC topic, quiz, puzzle, hazard trigger and hint target in scope is reachable or triggerable; the walkthrough yields a valid path to `game-won`; no soft-lock or unreachable option (V4). This applies on the final whole-card-set pass, not on a partial batch.
+8. **Markdown affordances (N10)** — every bold span resolves to a parser noun, alias or scenery entry; every italic span names a direction the room accepts even when gated; at most four bold and four italic spans per room description; no rhetorical emphasis; no emphasis in hints, quiz prompts, options or explanations; no links unless explicitly requested, and then only inside the Pages allowlist. Screen readers flatten emphasis, so the prose must still work without it.
 
 It ends with a one-line verdict: `PASS`, `PASS WITH MINORS` or `FAIL`. It never edits a card, and it never proposes new course facts from memory — if a fact is not in `wjec-unit1.md`, it records that as a finding.
 

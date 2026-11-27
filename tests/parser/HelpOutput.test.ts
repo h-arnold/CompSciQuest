@@ -85,6 +85,23 @@ describe('ENG2-HELP-01 help handler output', () => {
       'the help message must be the generated static list',
     ).toBe(true);
   });
+
+  it('MD-HELP-03: the help reply shows each reading-the-room legend bullet exactly once', async () => {
+    const { helpText } = await loadCommandTable();
+    const text = await helpMessage();
+
+    expect(text).toBe(helpText());
+    for (const bullet of [
+      '- **Bold** marks something you can examine or use.',
+      '- ***Bold italic*** marks someone you can talk to.',
+      '- *Italic* marks a way out.',
+    ]) {
+      expect(
+        text.split(bullet),
+        `${bullet} must appear exactly once`,
+      ).toHaveLength(2);
+    }
+  });
 });
 
 // Follow-up (issue 9): the player-facing help reply must surface the two forms

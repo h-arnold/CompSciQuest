@@ -69,7 +69,7 @@ an update here.
 | Domain                                        | Canonical docs                                                                |
 | --------------------------------------------- | ----------------------------------------------------------------------------- |
 | Architecture and module map                   | `architecture.md` (§§3–5, §6 flows, §8 conventions)                           |
-| Application shell, UI, view model, win check  | `application-and-ui.md` (§§3–4, 7–11)                                         |
+| Application shell, UI, view model, win check  | `application-and-ui.md` (§§3–4, 6–11)                                         |
 | Persistence                                   | `storage-schema.md` (§§3, 7–9)                                                |
 | Turn pipeline, conditions, triggers, effects  | `shared-rules.md` (§§2–5, §10)                                                |
 | Subsystems                                    | `combat.md`, `hazards.md`, `hints.md`, `npcs.md`, `puzzles.md`                |
@@ -116,8 +116,9 @@ Check, in order:
    refresh, quarantine written on boot only and never overwritten, imports
    preserve `savedAt` and never touch the live save on failure.
 5. **Effects and UI** — every effect emits at least one event; the effect→event
-   mapping matches `application-and-ui.md` §9; all user text is rendered via
-   `textContent`; imported data can never become HTML.
+   mapping matches `application-and-ui.md` §9; all user text is rendered as DOM
+   text (`textContent` or `createTextNode`), never as HTML strings or
+   `innerHTML`; imported data can never become HTML.
 6. **TypeScript and prose** — strict flags obeyed (`import type`, `override`,
    explicit return types, omitted optional properties, guarded lookups), lint
    passes and `npx prettier --check` passes on the files the slice changed (the

@@ -116,6 +116,18 @@ const NO_GAIN_SCORES: readonly Extract<
 ];
 
 describe('formatEvent', () => {
+  it('MD-STATUS-01: room-entered yields exactly heading, real blank entry, description and exits', async () => {
+    const formatEvent = await loadFormatEvent();
+    const bundle = makeBundle();
+
+    expect(formatEvent(EVENTS[1]!, bundle)).toEqual([
+      '## Stub Hall',
+      '',
+      'A small hall.',
+      'Exits: north, west',
+    ]);
+  });
+
   it('P-TURN-11 (ENG5-SCOREGAIN-01): player-facing events yield lines; internal bookkeeping and non-gain scores stay silent', async () => {
     const formatEvent = await loadFormatEvent();
     const bundle = makeBundle();
