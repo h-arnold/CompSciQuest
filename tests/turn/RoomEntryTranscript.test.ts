@@ -94,8 +94,15 @@ describe('authored room-entry transcript', () => {
   });
 
   it('E2E-1: every authored entry uses its catalogue summary and a room-entry hazard follows the description in one batch', () => {
-    const { game, bus, storage } = authoredGame();
-    game.newGame();
+    const { game, bus, storage, dependencies } = authoredGame();
+    // Fixture precondition: the Assistance Ward checkpoint is complete, so the
+    // hub's gated east exit is open (walkthrough §3 gate table). No ward
+    // commands are added to this room-entry transcript.
+    game.continueGame(
+      dependencies.saveManager.buildDto(
+        authoredState({ flags: { 'tutorial-complete': true } }),
+      ),
+    );
     const boot = bus.batches.at(-1) ?? [];
     expect(boot.filter((event) => event.type === 'room-entered')).toEqual([
       { type: 'room-entered', room: summaryOf('room-arrival') },
@@ -118,7 +125,15 @@ describe('authored room-entry transcript', () => {
       room: summaryOf('room-network-hub'),
     });
     const hazardBatch = game.submit('east');
-    const hallText = transcript(hazardBatch).join('\n');
+    // The six gate flags are recorded in the Binary Hall's painted route
+    // diagram (walkthrough §3, lines 280–285), not in the Switch Floor entry
+    // text. Assert them against the catalogue description of that room.
+    const hall = authoredBundle.rooms.getById('room-binary-hall');
+    if (hall === undefined) {
+      throw new Error(
+        'The authored Binary Hall is missing from the catalogue.',
+      );
+    }
     for (const flag of [
       'switches-set',
       'hex-read',
@@ -127,7 +142,7 @@ describe('authored room-entry transcript', () => {
       'sound-sampled',
       'stacks-sorted',
     ]) {
-      expect(hallText).toContain(flag);
+      expect(hall.description).toContain(flag);
     }
     const enteredIndex = hazardBatch.findIndex(
       (event) => event.type === 'room-entered',
@@ -170,12 +185,6 @@ describe('authored room-entry transcript', () => {
     game.continueGame(disarmed);
     bus.batches.length = 0;
 
-    const hall = authoredBundle.rooms.getById('room-binary-hall');
-    if (hall === undefined) {
-      throw new Error(
-        'The authored Binary Hall is missing from the catalogue.',
-      );
-    }
     const gatedExits = hall.exits.filter(
       (exit) => exit.preconditions.length > 0,
     );

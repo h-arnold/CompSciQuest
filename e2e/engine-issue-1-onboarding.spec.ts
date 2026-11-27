@@ -16,8 +16,10 @@ import {
 
 const APP_URL = process.env['CSQ_E2E_URL'];
 
-const OBJECTIVE = 'Objective copy to follow.';
-const CONTROLS = 'Controls copy to follow.';
+const OBJECTIVE =
+  'The register marks your attention not satisfied. Pass the Assistance Ward orientation and the mark can be cleared.';
+const CONTROLS =
+  'Use plain commands: look, examine, take and a direction such as east. Ask someone about what you can see, or type help for the full list.';
 const HELP_PROMPT = 'Type help to see available commands.';
 
 const noConsoleErrors: () => readonly string[] = () => [];

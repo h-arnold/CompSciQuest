@@ -67,7 +67,7 @@ method for naming them.
 ## 3. Comic mode
 
 - The world is whimsical and slightly absurd. Monty Python, Terry Pratchett and
-  *Futurama* are the compass for timing, staging and tone.
+  _Futurama_ are the compass for timing, staging and tone.
 - Ridiculous, over-the-top cartoon violence is encouraged and expected. The
   ceiling is a Looney Tunes gag: improbable, elastic and consequence-free beyond
   the joke itself. Nothing approaches realistic injury or suffering.
@@ -158,6 +158,13 @@ unregistered noun, which turns it into the guess-the-noun trap N6 forbids.
   personas.
 - Any target inside the fiction is fair game, including the player's character.
   Wit is the only limit beyond the harm floor (§8).
+- **Assistance Ward guide voice (confirmed 2026-11-26).** The AI's usual clipped
+  bureaucracy becomes weary and passive-aggressive in this area: it resents
+  explaining actions it considers obvious, speaks of "the pupil" in the third
+  person and treats independence as an administrative inconvenience. The joke
+  targets its excessive help and self-importance. It never mocks the player's
+  intelligence, and the four former pupils remain recoverable people rather
+  than monsters.
 - The harm floor still forbids **mockery of the learner**. An NPC may be rude to
   the player's avatar; it never sneers at the pupil's intelligence or ability.
 - Each NPC has a distinct role, voice, motivation and relationship (C1) and may
@@ -223,6 +230,7 @@ a non-example and the briefs it should inform:
 
 ```md
 ### <pattern name>
+
 - Status: provisional | confirmed
 - First noticed in: <card path or batch>
 - Why it works: <one or two sentences>
@@ -316,3 +324,9 @@ worth promoting.
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in
   §11. Room briefs are paused pending user approval of new item IDs and aliases
   (D2, bible §9); no writer has been dispatched with unregistered nouns.
+- 2026-11-26 — **Assistance Ward guide voice approved.** The user chose a weary,
+  passive-aggressive AI for the mandatory onboarding area. Added the area-specific
+  voice to §7 and the bible tone guide. The AI remains clipped, bureaucratic and
+  third-person; the humour targets its excessive help, never the learner. The
+  four former pupils are recoverable people, and cognitive decline remains
+  satire rather than a course or medical claim.

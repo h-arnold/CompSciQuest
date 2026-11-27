@@ -14,7 +14,12 @@ import {
   validateContent,
 } from '../../src/content/validateContent.ts';
 import type { Finding, ParsedCardSet, ValidationOptions } from './contracts.ts';
-import { auditedAreaLikes, asText, coverageIds } from './gates/common.ts';
+import {
+  asRecord,
+  auditedAreaLikes,
+  asText,
+  coverageIds,
+} from './gates/common.ts';
 
 function strings(value: unknown): readonly string[] {
   return Array.isArray(value)
@@ -38,6 +43,18 @@ function number(value: unknown): number {
 
 function isTrue(value: unknown): boolean {
   return value === true;
+}
+
+function useTextOf(value: unknown): ItemDefinition['useText'] {
+  const record = asRecord(value);
+  if (record === undefined || typeof record['success'] !== 'string') {
+    return undefined;
+  }
+  const blocked = record['blocked'];
+  return {
+    success: record['success'],
+    ...(typeof blocked === 'string' && { blocked }),
+  };
 }
 
 function unpack(value: unknown): readonly Record<string, unknown>[] {
@@ -131,6 +148,12 @@ export function bundleOf(cards: ParsedCardSet): ContentBundle {
           direction: text(exit['direction']),
           targetRoomId: text(exit['targetRoomId']),
           preconditions: unpack(exit['conditions']),
+          // Preserve authored in-world denial prose only when the card supplies
+          // a non-empty string; never materialise undefined or null.
+          ...(typeof exit['blockedText'] === 'string' &&
+            exit['blockedText'].trim().length > 0 && {
+              blockedText: exit['blockedText'],
+            }),
         })) as unknown as RoomDefinition['exits'],
         entryEffects: unpack(
           room['entryEffects'],
@@ -139,19 +162,23 @@ export function bundleOf(cards: ParsedCardSet): ContentBundle {
       })) as unknown as readonly RoomDefinition[],
     ),
     items: catalogueOf(
-      of('items').map((item) => ({
-        id: text(item['id']),
-        name: text(item['name']),
-        aliases: strings(item['aliases']),
-        portable: isTrue(item['portable']),
-        description: text(item['description']),
-        initialRoom: text(item['initialRoom']),
-        // Preserve the optional §5.2 refusal only when the card supplies one;
-        // never materialise an explicit `undefined` under exactOptionalPropertyTypes.
-        ...(typeof item['refusalText'] === 'string' && {
-          refusalText: item['refusalText'],
-        }),
-      })) as unknown as readonly ItemDefinition[],
+      of('items').map((item) => {
+        const useText = useTextOf(item['useText']);
+        return {
+          id: text(item['id']),
+          name: text(item['name']),
+          aliases: strings(item['aliases']),
+          portable: isTrue(item['portable']),
+          description: text(item['description']),
+          initialRoom: text(item['initialRoom']),
+          // Preserve the optional §5.2 refusal only when the card supplies one;
+          // never materialise an explicit `undefined` under exactOptionalPropertyTypes.
+          ...(typeof item['refusalText'] === 'string' && {
+            refusalText: item['refusalText'],
+          }),
+          ...(useText && { useText }),
+        };
+      }) as unknown as readonly ItemDefinition[],
     ),
     actors: catalogueOf(
       of('actors').map((actor) => ({

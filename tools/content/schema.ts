@@ -25,6 +25,21 @@ const KINDS = [
 
 const entryShape = z.object({ id: z.string() }).passthrough();
 const entriesShape = z.array(entryShape).optional();
+const useTextShape = z.object({
+  success: z.string(),
+  blocked: z.string().optional(),
+});
+const itemShape = entryShape.extend({ useText: useTextShape.optional() });
+const itemsShape = z.array(itemShape).optional();
+// Authored exits may supply optional in-world denial prose (content-rules.md
+// D3/V1). Every other exit key stays permitted via passthrough.
+const exitShape = z
+  .object({ blockedText: z.string().optional() })
+  .passthrough();
+const roomShape = entryShape.extend({
+  exits: z.array(exitShape).optional(),
+});
+const roomsShape = z.array(roomShape).optional();
 
 // One envelope covers every kind; the kind-specific collections are optional
 // because a card holds only the collections its kind owns.
@@ -36,8 +51,8 @@ const cardShape = z
     topicIds: z.array(z.string()).optional(),
     definition: entryShape.optional(),
     worlds: entriesShape,
-    rooms: entriesShape,
-    items: entriesShape,
+    rooms: roomsShape,
+    items: itemsShape,
     actors: entriesShape,
     actorStates: entriesShape,
     conversationTopics: entriesShape,
@@ -154,6 +169,53 @@ function refusalTextFindings(
   return found;
 }
 
+// Mirrors refusalTextFindings(): an authored exit denial is optional, but a
+// supplied one must be non-empty prose, never a blank or non-string placeholder.
+function blockedTextFinding(
+  path: string,
+  label: string,
+  value: unknown,
+): readonly Finding[] {
+  if (value === undefined || value === null) return [];
+  if (typeof value !== 'string') {
+    return [
+      shapeFinding(
+        path,
+        label,
+        'blockedText must be a string when present; omit the field or provide non-empty prose',
+      ),
+    ];
+  }
+  return value.trim().length === 0
+    ? [
+        shapeFinding(
+          path,
+          label,
+          'blockedText is blank; omit the field or provide non-empty prose',
+        ),
+      ]
+    : [];
+}
+
+function blockedTextFindings(
+  path: string,
+  rooms: readonly unknown[],
+): readonly Finding[] {
+  const found: Finding[] = [];
+  for (const room of rooms) {
+    const record = asRecord(room);
+    if (record === undefined) continue;
+    const label = String(record['id'] ?? path);
+    const exits = asArray(record['exits']);
+    for (const candidate of exits) {
+      const exit = asRecord(candidate);
+      if (exit === undefined) continue;
+      found.push(...blockedTextFinding(path, label, exit['blockedText']));
+    }
+  }
+  return found;
+}
+
 function todoFindings(
   value: unknown,
   path: string,
@@ -257,6 +319,7 @@ export function parseCardSet(cards: CardSet): ParseResult {
       ...todoFindings(record, file.path, file.path, new Set()),
       ...strayFindings(file.path, record),
       ...refusalTextFindings(file.path, asArray(record['items'])),
+      ...blockedTextFindings(file.path, asArray(record['rooms'])),
     );
     parsed[file.path] = record;
   }

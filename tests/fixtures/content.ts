@@ -15,7 +15,7 @@ import { catalogueOf, importModule, makeBundle } from './persistence';
 
 export { makeBundle } from './persistence';
 
-// The coverage index is an injected representation of all eleven
+// The coverage index is an injected representation of all twelve
 // `## Topic: <name>` headings in COVERAGE.md (already converted to topic IDs).
 // Static-first means the runtime cannot read that Markdown file, so validation
 // takes the index as data (application-and-ui.md §3.3; content-rules.md §7).
@@ -37,6 +37,7 @@ export const COVERAGE_TOPIC_IDS: CoverageTopicIds = [
   'sound-representation',
   'data-storage-units',
   'data-compression',
+  'tutorial-mechanics',
   'ai-ethics-and-implications',
   'algorithms-and-pseudocode',
   'programming-constructs',

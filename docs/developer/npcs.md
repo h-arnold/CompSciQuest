@@ -11,8 +11,7 @@ other subsystem docs.
 
 Conversation is authored as actors, actor states, topics and nodes.
 `DialogueSystem` reacts in phase 4, applies topic effects through
-`EffectApplier` and returns the resulting events. Free-text input always
-resolves to a topic or a default reply, never a parser error.
+`EffectApplier` and returns the resulting events.
 
 ## 2. Model
 
@@ -109,18 +108,28 @@ Resolution order:
    (a node's own specials are excluded here so they cannot steal its turn);
 3. a visible object alias from room, inventory or known objects → `object`;
 4. a phrase naming exactly one declared `ask`/`tell` object ID → `object`;
-5. otherwise → `free-text`, which uses the authored default reply. **Unknown
-   topics never crash or say "parser error".**
+5. otherwise → `free-text` for topic/default selection. **Unknown topics never
+   crash or say "parser error".**
 
-The resolver reads state only; selection owns every gate. On an object match,
-several authored topics may declare the same phrase; the one bound to the
-speaking actor is the exact topic and wins even while `isActive` is false.
-Actor binding, not a topic-ID word, is the tie-break. A command-incompatible
-exact topic (`ask` versus `tell`) lets no other concrete topic answer: the
+The resolver reads state only; selection owns every gate. A resolved `special`
+keyword identifies a candidate, not proof of eligibility. If that candidate is
+inactive, selection considers the remaining matching keyword topics in
+node-then-actor declaration order, with speaking-actor binding preserved, and
+returns the first active eligible topic. While active, the resolved candidate
+keeps exact-ID priority over keyword phrase matches.
+
+An exact topic for a declared object phrase wins only while `isActive` is true.
+When several topics declare the phrase, a unique actor-bound topic is the exact
+match; actor binding, not a topic-ID word, is the tie-break. An inactive,
+command-compatible exact topic falls through to normal concrete/default
+selection; its effects and use count are untouched. A command-incompatible exact
+topic (`ask` versus `tell`) still blocks other concrete topics; an available
 default catch-all replies through `speakIdleTopic()` without counting a topic
-use. Object resolution requires exactly one declared object ID, so ambiguous
-phrases never become object matches. A conversation topic ID is never player
-vocabulary.
+use. Object resolution requires exactly one declared object ID. Conversation
+topic IDs are never player vocabulary: after normalisation, a whole phrase equal
+to a catalogue conversation-topic ID is excluded from free-text keyword token
+matching and falls through to normal concrete/default selection. It must not
+select, rank or promote a topic by ID.
 
 With no resolved target, the **first** active, command-compatible non-default
 `ask`/`tell` topic wins in declaration order — node topics before actor topics
@@ -146,15 +155,27 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
    node topics, then actor topics (bound to this actor or global), then defaults.
    `isActive` gates topics on world state, including `in-room`/`in-area` checks
    against the player's current `Position` for room-scoped dialogue. A `once`
-   topic already used by this actor is not selected again; an exhausted `once`
-   default is excluded from the fallback, so a second pass produces no reply,
-   no use-count increment and no effects.
-3. The response is emitted as `npc-spoke`; the topic's effects are applied
-   through the injected `EffectApplier` and the resulting events are returned
-   for the turn's buffer
+   topic already used by this actor is not selected again, and an exhausted
+   `once` default is excluded from the fallback.
+3. Only the selected topic reaches response, effect and use-count dispatch. It
+   emits its response as `npc-spoke`; its effects are applied through the injected
+   `EffectApplier` and the resulting events are returned for the turn's buffer
    ([application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures)).
    `topic-suggested` events carry prompt strings so the UI can show "(You could
-   ask why.)".
+   ask why.)". Inactive and unselected topics do not respond, apply effects or
+   increment use counts.
+
+   When no topic or default can answer, absence requires unmet mandatory
+   positive `in-room` evidence on an actor-bound topic and no matching mandatory
+   positive room evidence on any actor-bound topic. `any` alternatives,
+   negations and node-only conditions provide no evidence. The flow returns
+   `You cannot see that here.` through the canonical `message` effect path.
+   `DialogueSystem` may already have applied the actor state's `onEnter` effects
+   and set the actor to `talking` during conversation start (step 1); the absence
+   branch itself adds no lesson response, topic effects, topic-use increment or
+   lesson-state mutation. Actor location is inferred rather than stored on
+   `NpcStateDto`.
+
 4. `bye` emits `conversation-ended` and returns the actor to its declared
    `initialStateId`. Leaving the room in phase 4 also ends the conversation.
    There is deliberately **no turn timeout** — no implicit "you drifted away"
@@ -165,7 +186,8 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
    thing independently, define a second topic with a negated `npc-knows`/
    `has-item` condition (the TADS `AltTopic` pattern).
 6. `give` and `show` use the `transfer-item` effect so player and NPC
-   inventories update atomically.
+   inventories update atomically, and emit a short in-world transfer message at
+   the moment of that effect.
 
 ## 5. Conversation nodes
 

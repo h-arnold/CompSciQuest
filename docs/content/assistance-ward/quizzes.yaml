@@ -1,0 +1,147 @@
+# quizzes card for assistance-ward
+# Non-assessed game orientation; no WJEC assessment claim.
+# Applicable rules: N3, N4, N5, P1, P3, P4, P5, P6, D1, D2, D3, D4
+kind: quiz
+areaId: assistance-ward
+status: approved
+topicIds: [tutorial-mechanics]
+
+quizzes:
+  - id: quiz-assistance-orientation
+    actorId: npc-the-ai
+    topicId: tutorial-mechanics
+    score: 0
+    questionIds: [q-ao-01, q-ao-02, q-ao-03, q-ao-04]
+    passMark: 3
+    onPass:
+      - kind: set-flag
+        flag: quiz-passed:quiz-assistance-orientation
+        value: true
+      - kind: complete-topic
+        topicId: tutorial-mechanics
+      - kind: set-actor-state
+        actorId: npc-the-ai
+        stateId: actorstate-ai-reluctant-guide
+      - kind: message
+        text: >-
+          The AI closes the orientation record with a tired click. 'There. The
+          pupil's orientation record is complete.' It taps the blank score column.
+          'It carries no score, and final calibration still stands between the
+          pupil and the teaching-zone ports.' It folds its hands with the weary
+          patience of a machine asked to repeat itself.
+    onFail:
+      - kind: change-lives
+        delta: 0
+        reason: >-
+          No life is lost during an orientation attempt.
+      - kind: set-actor-state
+        actorId: npc-the-ai
+        stateId: actorstate-ai-reluctant-guide
+      - kind: message
+        text: >-
+          The AI leaves the orientation record open and straightens the blank form
+          with great reluctance. 'The record stays open, and the pupil is not moved.
+          A failed attempt costs no life; explanations and the hint command are
+          available.' It sets the pen down. 'Another attempt may begin when the pupil
+          is ready.'
+    hintSequenceId: hint-assistance-orientation
+
+questions:
+  - id: q-ao-01
+    prompt: >-
+      Which set contains all three accepted ways to answer a quiz question?
+    options:
+      - answer N; choose N; the exact option text
+      - answer N; a bare N; the exact option text
+      - answer N; a bare N; an option letter
+      - choose N; an option letter; the exact option text
+    correctOptionIds: [1]
+    explanation: >-
+      The second option is correct. A quiz accepts answer N, a bare N, or the exact
+      option text; N is the number shown beside the option, starting at 1. choose N
+      is not an accepted answer form, and an option letter is not a shortcut. The
+      other options each include at least one unsupported form.
+    authoring:
+      assessmentObjective: AO1
+      difficulty: easy
+      misconception: >-
+        Learners may assume choose N works because choose fits other choice menus,
+        or that option letters work because multiple-choice papers label answers
+        A-D. They may also forget that a bare number and exact option text are
+        accepted, so an otherwise correct set can be rejected.
+
+  - id: q-ao-02
+    prompt: >-
+      A practice cabinet is locked. You want to unlock it without opening it yet.
+      Which command fits?
+    options:
+      - open <target>
+      - use <item> <target>
+      - unlock <item> <target>
+      - examine <target>
+    correctOptionIds: [2]
+    explanation: >-
+      The third option is correct, naturally. unlock <item> <target> is the form
+      shown in help, and it uses a key-like item to change the lock without opening
+      the cabinet. The same item-first command also works when the preposition with
+      is added: unlock practice key with practice cabinet. Both forms turn the lock;
+      the AI could have mentioned that sooner. open <target> is for a container already
+      unlocked, so it never turns a key; use <item> <target> is the general
+      interaction and not the dedicated lock command; examine <target> only describes
+      the cabinet and leaves the lock exactly as it found it.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Learners may treat open as a synonym for unlock, expect the general use
+        verb to stand in for the dedicated key command, or think examining a locked
+        object operates it. They may also assume only one item-first form is accepted
+        — taking the with form as the sole command, or the no-with form as the sole
+        command — and so fail to recognise that both forms unlock the cabinet.
+
+  - id: q-ao-03
+    prompt: >-
+      You finish an orientation attempt below the pass mark. Which statement
+      correctly describes the failure and the help available?
+    options:
+      - One life is lost, you return to Intake, and hints give the correct option.
+      - No life is lost, you are not moved, and hints nudge without giving the answer.
+      - No life is lost, you return to Intake, and hints cost one life.
+      - One life is lost, you stay in Records, and further attempts are blocked.
+    correctOptionIds: [1]
+    explanation: >-
+      The second option is correct. A failed orientation attempt costs no life and
+      does not force the pupil to move, so the current room is preserved. No attempt
+      limit is set, so retries are unlimited. Hints nudge the next step without
+      giving the correct option. The other options incorrectly add life loss, forced
+      movement, a hint cost or an attempt limit.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: medium
+      misconception: >-
+        Learners may carry over the usual quiz rule that failure costs a life and
+        returns them to the area start, assume hints spend a life or reveal the key,
+        or think a failed practice attempt uses up future tries.
+
+  - id: q-ao-04
+    prompt: >-
+      You want a portable save file and a control that restores it later. Which
+      pair matches those jobs?
+    options:
+      - save, then restart
+      - load, then download
+      - restart, then save
+      - download, then import
+    correctOptionIds: [3]
+    explanation: >-
+      The fourth option is correct. download creates a portable saved-game data file
+      in JSON format, and import restores a game from that file later. save writes to
+      browser storage and load restores that browser save; neither creates a portable
+      file. restart replaces the current game instead of restoring an earlier one.
+    authoring:
+      assessmentObjective: AO2
+      difficulty: easy
+      misconception: >-
+        Learners may use save for any backup, treat load as the command that selects
+        a downloaded file, or confuse restart with restoring a previous game. These
+        options mix up browser storage, portable save files and starting a new game.

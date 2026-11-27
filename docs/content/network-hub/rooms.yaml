@@ -23,11 +23,13 @@ rooms:
     description: >-
       Around you, brass sockets crowd the hub, each with a little label, all
       humming one low note. A yellowed card reads 'since the 1990s' in fading
-      ink. The hub copies every packet to every port, so all routes show at
-      once: two bright, the rest dark. The AI calls it 'on the record'; nobody
-      unplugged it. A port label on the east socket reads LIVE; that route goes
-      to the Switchyard. A fresh paper label on the north socket reads THE RULE
-      MACHINE; north goes to the rule quarters and the mill beyond them. West
+      ink. The hub copies every packet to every port, so every route shows at
+      once. The AI calls it 'on the record'; nobody unplugged it. South opens
+      into the Assistance Ward. The east and north teaching sockets are dark
+      until the ward's calibration mark is on record, and carry traffic once
+      it is; their labels carry the same notice. A port label clings to the
+      east socket. A fresh paper label on the north socket reads THE RULE
+      MACHINE; north leads to the rule quarters and the mill beyond them. West
       leads to arrival; in, to the interface.
     topicIds: []
     exits:
@@ -35,16 +37,29 @@ rooms:
         to: room-arrival
       - direction: east
         to: room-switch-floor
+        conditions:
+          - { kind: flag-set, flag: tutorial-complete }
+        blockedText: >-
+          The east socket gives no signal. Its label names the ward mark that
+          must be recorded before this route carries traffic.
       - direction: in
         to: room-entry-interface
       - direction: north
         to: room-1-4-concourse
+        conditions:
+          - { kind: flag-set, flag: tutorial-complete }
+        blockedText: >-
+          The north socket gives no signal. It carries traffic once the ward's
+          calibration mark is on record.
+      - direction: south
+        to: room-assistance-intake
     score: 0
     authoring:
       interesting: >-
-        A bank of humming sockets under worn little labels; every route shows
-        at once, yet two ports carry a signal: the east socket labelled LIVE
-        and the north socket under a fresh paper label. The rest sit dark.
+        A worn bank of labelled sockets hums beneath the AI's 'on the record'
+        boast. The north label points to the Rule Machine, the south route
+        stands open, and the east and north teaching sockets wait for the
+        Assistance Ward's calibration mark.
       note: Navigation-only zone-choice starting point; no teaching topic is scoped here (P1).
 
 # items: id, name, aliases, portable, description, initialRoom (D2, D3)
@@ -56,11 +71,13 @@ items:
     description: >-
       A small port label fixed to the east socket, its paper yellowed at the
       corners. LIVE is stamped across it in block capitals, the ink rubbed pale
-      by old fingers. The AI has initialled one corner in blue pen, the way it
-      signs a verdict. It will not come away.
+      by old fingers. Below it, a newer line reads TEACHING PORTS: LIVE AFTER
+      ASSISTANCE WARD CALIBRATION. The AI has initialled one corner in blue pen,
+      the way it signs a verdict. It will not come away.
     initialRoom: room-network-hub
     authoring:
       useNotes: >-
         Purely decorative and examinable only. EXAMINING the port label sets no
-        flag and opens no gate; it simply lets you read the worn LIVE stamp. The
-        label is fixed to its socket, so it is never a required item.
+        flag and opens no gate; it simply lets you read the worn LIVE stamp and
+        the Assistance Ward calibration notice. The label is fixed to its
+        socket, so it is never a required item.

@@ -1,7 +1,10 @@
 # Walkthrough trace — V4
 
-**Status:** extended draft for final `content-critic` verification (W4/V4). Areas:
-`area-entry-interface`, `area-network-hub`,
+**Status:** W4/V4 reviewed — Assistance Ward extension PASS WITH MINORS
+(2026-11-27); focused minor closure complete, and the W7 fix round's final V4
+trace pass returned PASS WITH MINORS with its three trace-count minors closed.
+Areas:
+`area-entry-interface`, `area-network-hub`, `area-assistance-ward`,
 `area-1-2-1-data-representation` (The Switchyard) and
 `area-1-4-programming-constructs` (The Pattern Mill, §8), all in the single world
 `world-wjec-gcse-computer-science-2025-spec`.
@@ -12,9 +15,10 @@ in-world, that every declared room, exit, item, NPC topic, quiz, puzzle, hazard 
 and hint target is reachable or triggerable, and that no dependency creates a
 soft-lock. It is built from the accepted cards only: the opening cards
 `entry-interface/rooms.yaml`, `network-hub/rooms.yaml` and the revised Switchyard
-`rooms.yaml` and `npcs.yaml`, plus the six approved Switchyard card kinds and the
-approved bible and topic file. `content-critic` verifies it read-only on the final
-pass (content-rules.md V4, W4).
+`rooms.yaml` and `npcs.yaml`, plus the six approved Switchyard card kinds, the six
+Assistance Ward card kinds and five owning-card amendments, and the approved
+bible and topic files. `content-critic` verifies it read-only on the final pass
+(content-rules.md V4, W4).
 
 **Boot chain.** The single world declares `startAreaId: area-entry-interface`; that
 area declares `startRoomId: room-arrival`. `GameState.createInitial()` resolves
@@ -36,24 +40,29 @@ status and evidence is completed. This zone contributes the eight topics below; 
 has at least one `complete-topic` source on the path in §2 (puzzle `onSolve` or quiz
 `onPass`). `switch-to-bit` is `maxScore 0` but still needs its completion source.
 
-| Spec topic ID | Completion source(s) on the path |
-| --- | --- |
-| `switch-to-bit` | `quiz-switchyard` onPass → `complete-topic switch-to-bit` (step 3) |
-| `data-types` | `quiz-data-types` onPass and `puzzle-sort-the-data-types` onSolve (steps 3, 5) |
-| `number-conversion` | `quiz-number-systems` onPass plus five puzzles (steps 3, 7) |
-| `character-representation` | `quiz-character-representation` onPass, `puzzle-match-characters`, `puzzle-make-room-for-the-welsh-letter` (step 9) |
-| `graphics-representation` | `quiz-graphics-representation` onPass, `puzzle-build-mosaic`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge` (step 11) |
-| `sound-representation` | `quiz-sound-representation` onPass (step 15, gated on `bit-rate-counted`), `puzzle-tune-sampling` (step 13), `puzzle-count-the-bit-rate` (step 15) |
-| `data-storage-units` | `quiz-storage-units` onPass, `puzzle-stack-the-bytes`, `puzzle-label-the-capacity` (step 15) |
-| `data-compression` | `quiz-data-compression` onPass, `puzzle-pack-the-archive`, `puzzle-choose-the-compression` (step 17) |
-| `algorithms-and-pseudocode` (Zone A, W5) | `quiz-pattern-bureau` onPass and `quiz-finished-rail` onPass (§8 steps 21, 30) |
-| `programming-constructs` (Zone A, W5) | the four construct quizzes' onPass and all six puzzles' onSolve (§8 steps 23–28) |
+| Spec topic ID                            | Completion source(s) on the path                                                                                                                   |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `switch-to-bit`                          | `quiz-switchyard` onPass → `complete-topic switch-to-bit` (step 3)                                                                                 |
+| `data-types`                             | `quiz-data-types` onPass and `puzzle-sort-the-data-types` onSolve (steps 3, 5)                                                                     |
+| `number-conversion`                      | `quiz-number-systems` onPass plus five puzzles (steps 3, 7)                                                                                        |
+| `character-representation`               | `quiz-character-representation` onPass, `puzzle-match-characters`, `puzzle-make-room-for-the-welsh-letter` (step 9)                                |
+| `graphics-representation`                | `quiz-graphics-representation` onPass, `puzzle-build-mosaic`, `puzzle-weigh-the-pixels`, `puzzle-scale-the-badge` (step 11)                        |
+| `sound-representation`                   | `quiz-sound-representation` onPass (step 15, gated on `bit-rate-counted`), `puzzle-tune-sampling` (step 13), `puzzle-count-the-bit-rate` (step 15) |
+| `data-storage-units`                     | `quiz-storage-units` onPass, `puzzle-stack-the-bytes`, `puzzle-label-the-capacity` (step 15)                                                       |
+| `data-compression`                       | `quiz-data-compression` onPass, `puzzle-pack-the-archive`, `puzzle-choose-the-compression` (step 17)                                               |
+| `algorithms-and-pseudocode` (Zone A, W5) | `quiz-pattern-bureau` onPass and `quiz-finished-rail` onPass (§8 steps 21, 30)                                                                     |
+| `programming-constructs` (Zone A, W5)    | the four construct quizzes' onPass and all six puzzles' onSolve (§8 steps 23–28)                                                                   |
 
 With the Zone A rows the authored win set is **ten `covered` topics**; the end state
 itself moves to §8 step 30 (the rail quiz's pass), because `areQuizzesPassed`
 (`Session.ts`) also requires every quiz with questions to have been passed — Zone A's
 six quizzes join that set. Zone-1's step 18 was the end state when only the
 Switchyard's topics were `covered`; the annotation there records the move.
+
+`tutorial-mechanics` is non-assessed onboarding, not a win-set topic. It remains
+`in progress` with `maxScore 0`, outside the ten-topic win set, and supplies no
+WJEC evidence. Its quiz and puzzle are mandatory practice before the teaching
+ports open, but they do not change the score or the §8 step 30 end state.
 
 ## 2. Ordered path from the world start to `game-won`
 
@@ -63,7 +72,7 @@ hazard and quiz-failure returns. Starting lives are 3. Within the Switchyard, ro
 are entered from the Binary Hall unless stated; every spoke exits back to the Binary
 Hall (N2). Hazards are noted where they can fire.
 
-**Opening beats (new, ungated):**
+**Opening beats and mandatory ward checkpoint:**
 
 - **A — `room-arrival`.** The classroom mark is read, the room folds into switches
   and you land in the cable bay. The AI is present and states the verdict. **Ask it
@@ -80,17 +89,82 @@ Hall (N2). Hazards are noted where they can fire.
   in the arrival room; the verdict is already on record, so neither is shadowed by
   it. `topic-ai-unit-two-taunt` stays global and keyword-addressed, and
   `topic-ai-default` keeps the AI in voice in every room (C2).
-- **C — East → `room-network-hub`.** The hub shows every route at once with two
-  ports live: the east socket, labelled LIVE, to the Switchyard, and the north
-  socket, under a fresh paper label, to the Rule Machine Concourse. The walkthrough
-  takes east first because the Switchyard is the first zone; it returns for north
-  at §8 step 20. Ask `npc-the-ai` about "escape", "route" or "door":
-  `topic-ai-escape` carries `isActive: { kind: in-room, roomId: room-network-hub }`
-  and says the doors stay sealed until mastery and to follow the routes provided.
-  The hub itself is navigation-only and owns no teaching topic or score.
-- **D — Optional `in` → `room-entry-interface` → `out` → `room-network-hub`.** The
-  older interface room remains reachable: its east arrow goes to the Switch Floor
-  and its `out` exit returns to the hub. This detour gates nothing.
+- **C — East → `room-network-hub`.** The hub shows every route at once. South
+  opens into the Assistance Ward; the east Switchyard socket and north Rule
+  Machine socket stay dark until the ward's calibration mark is entered. Ask
+  `npc-the-ai` about "escape", "route" or "door": `topic-ai-escape` is scoped to
+  this room and directs the player south. The hub itself is navigation-only and
+  owns no teaching topic or score.
+- **C2.1 — South → `room-assistance-intake`.** Ungated hub south exit. Starting
+  lives remain 3. Use `look`, `examine observation card`, `take` the tally token,
+  `drop` it, check `inventory`, `score` and `help`. Every ward score is 0; no
+  hazard or life-loss trigger exists.
+- **C2.2 — Nia recovery.** `ask nia about observation card` selects
+  `topic-nia-observation`. Nia identifies the fixed card's chipped corner and
+  records it herself; the topic sets `nia-observation-recovered` and
+  `actorstate-nia-observant`. The card cannot be lost.
+- **C2.3 — East → `room-assistance-demonstration`.** Examine the fixed
+  instruction card and practice crank. The lock accepts the documented
+  item-first form and the same command with `with`; OPEN/CLOSE and PUT (or the
+  taught word PLACE) give reversible practice. The room names the block as part
+  of the bench set and the cabinet's chalk outline as its place, so it makes no
+  claim about the block's current location; the placement result stays visible
+  in-game. `use practice bell` belongs
+  here, where the bell is screwed to the bench, and reuses the item description
+  with no flag or score change. After unlocking, optional SHOW/GIVE may hand the
+  key to an NPC and the hand-over is announced; reserve the block for PUT. Both
+  conversation verbs transfer any carried item, including the tally token, so
+  no hand-over is a required step.
+- **C2.4 — Mateo and Kofi recoveries.** `ask mateo about instruction card` sets
+  `mateo-reading-recovered`; `ask kofi about practice crank` sets
+  `kofi-operation-recovered`. The recoveries are order-independent.
+- **C2.5 — North → `room-assistance-records`.** Examine the fixed audit card,
+  recovery board and calibration dial. The board names OBSERVE/READ/REASON/
+  OPERATE/ORIENTATION PASS and is described as initialled as each record is
+  entered; the dial repeats those five labels and a socket rule that stays true
+  as sockets light.
+- **C2.6 — Priya recovery.** `ask priya about audit card` enters sticky
+  `node-priya-choice`. Use `ask priya checked` or `ask priya assumed`;
+  `topic-priya-choice-made` sets `priya-choice-taken`. Follow the prompt and
+  `tell` Priya in your own words what you checked and what it showed;
+  `topic-priya-choice-reason` sets `priya-reasoning-recovered`, applies
+  `actorstate-priya-reasoning` and exits the node. `talk-to priya` or repeating
+  the retired choice with `ask` reaches the non-producing default and grants no
+  recovery.
+- **C2.7 — Conversation and help practice.** Six keyword-addressed Records
+  topics answer the obvious question word for records, conversation verbs,
+  answer forms, hints, failure/lives and manual save controls (including
+  `saving`). `hint` may be
+  used explicitly; one three-level ladder resolves per ward room, names the
+  stalled step without giving the answer, has a two-turn cooldown, no score
+  penalty and no automatic offer.
+- **C2.8 — Orientation quiz.** Ask the AI about the orientation/audit/test.
+  `topic-ai-ward-quiz` is active only with all four recovery flags and starts
+  `quiz-assistance-orientation`; an answer-format question routes to
+  `topic-ai-ward-answers` instead, and another AI question cannot silently
+  restart a live attempt. All three taught answer forms work: `answer N`, a
+  bare `N`, and a displayed option copied verbatim. Pass 3 of 4. A fail costs 0
+  lives, does not move the pupil and permits unlimited retries from the current
+  room. Pass sets `quiz-passed:quiz-assistance-orientation`.
+- **C2.9 — Final calibration.** With all five prerequisites recorded, including
+  the quiz pass, `use assistance dial` sets `assistance-dial-calibrated`; early
+  use changes nothing and gives the approved blocked feedback, which now refers
+  to lit and dark sockets so it stays accurate after four records are entered.
+  The conditional
+  `use` seam has landed and the dial's strings come from the card's `useText`
+  field.
+- **C2.10 — Puzzle solve.** The one composite `all` requirement becomes true.
+  `puzzle-calibrate-assistance` sets `tutorial-complete`, reports that the
+  teaching-zone ports brighten and completes `tutorial-mechanics`.
+- **C2.11 — West → `room-network-hub`.** The hub's east and north exits now
+  satisfy their `tutorial-complete` preconditions. Before that, each blocked
+  attempt gives its authored in-world `blockedText` rather than a technical
+  token, and the room prose stays true after the gates open.
+- **C2.12 — Optional `in` → `room-entry-interface`.** Its `out` exit remains
+  ungated; its east exit now also requires `tutorial-complete` and carries the
+  same in-world blocked feedback. Its prose stays true once the arrow is live.
+  Return `out` to the hub, then take east to `room-switch-floor` at beat E.
+
 - **E — East → `room-switch-floor` (first entry).** The heat-haze telegraph is read,
   then `hazard-switch-overheat` fires on entry (`switch-cooled` is unset, `once: true`),
   costing one life and ejecting you to `room-binary-hall`. The verified Switchyard
@@ -98,7 +172,7 @@ Hall (N2). Hazards are noted where they can fire.
 
 **Life budget (Switchyard, steps E–18):** the only unavoidable losses in this zone
 are the two first-entry hazard firings (step E and step 6), leaving one life at
-step 18. Beats A–D cost no life; step E costs the first of the two. `bit-rot` is
+step 18. Beats A–C2 cost no life; step E costs the first of the two. `bit-rot` is
 disarmed before the Storage Stacks are entered (`stacks-sealed`, step 3);
 `glyph-corruption` is disarmed in the room (`tiles-verified`, step 9) before the
 stamp is used; the cartridge is left unused; and all eight quizzes are passed.
@@ -117,7 +191,7 @@ the mill resets lives to 3, and the dye pad's scripted loss is the only Zone A l
    together (item useNotes). This solves `puzzle-set-the-switches` →
    `complete-topic number-conversion` and opens the north arch. Talk to the foreman:
    `topic-foreman-switches` → `quiz-switchyard` (onPass → `complete-topic
-   switch-to-bit`; score 0, no life loss). That beat stays askable until the test
+switch-to-bit`; score 0, no life loss). That beat stays askable until the test
    passes, so a failed attempt is retried on the spot. **Pass `quiz-switchyard`**,
    which opens `topic-foreman-lift`; it sets `stacks-sealed` and → `quiz-data-types`
    (onPass → `complete-topic data-types`).
@@ -194,66 +268,74 @@ the mill resets lives to 3, and the dye pad's scripted loss is the only Zone A l
     `puzzle-pack-the-archive`. **USE the compression die on the ASCII stamp** →
     `compression-chosen` (`puzzle-choose-the-compression`). Then
     `topic-operator-ratio` → `quiz-data-compression` → `complete-topic
-    data-compression`; the ratio beat stays askable until that test passes.
+data-compression`; the ratio beat stays askable until that test passes.
 18. **All eight Switchyard `covered` topics are complete** — the zone-1 milestone.
     The whole-game win is §8 step 30, once Zone A's two topics and six quizzes are
     also complete; continue at step 19. No zone-1 gate remains.
-    *(End-state annotation, 2026-11-25: once Zone A's two topics flip `covered`
+    _(End-state annotation, 2026-11-25: once Zone A's two topics flip `covered`
     at W5 (§8), the win set is ten topics and the end state moves to §8 step 30 —
     the rail quiz's pass — because `areQuizzesPassed` then also requires Zone A's
-    six quizzes. Zone-1's steps 1–18 remain exactly as verified.)*
+    six quizzes. Zone-1's steps 1–18 remain exactly as verified.)_
 
 ## 3. Gate conditions and their in-world satisfaction
 
-The opening exits are ungated and need no completion source: `room-arrival` east →
-`room-network-hub` (signposted by "An east route glows"); the hub's
-east → `room-switch-floor` and north → `room-1-4-concourse` (both live and named in
-the description: east is labelled LIVE, north carries THE RULE MACHINE paper label;
-the ordered path takes east first and returns for north at §8 step 20); the hub's
-`in` → `room-entry-interface` and that room's `out` → the hub (both named in their
-descriptions); `room-switch-floor` west → the hub (named in its description).
-The three room-scoped AI conversation topics set no flag and gate no exit:
-`topic-ai-why-here` and `topic-ai-failure` are active only in `room-arrival` (step
-B) and `topic-ai-escape` only in `room-network-hub` (step C), each via `in-room` in
-`isActive`; the three older AI topics and `topic-ai-default` stay global. None of
-this changes
-the win set or the eight scored topics.
+`room-arrival` east → `room-network-hub` is ungated. Hub south →
+`room-assistance-intake` is also ungated and starts the mandatory ward loop.
+Hub east → `room-switch-floor`, hub north → `room-1-4-concourse` and the older
+interface's east → `room-switch-floor` all require `tutorial-complete`; the
+hub `in` → `room-entry-interface`, interface `out` → hub and Switch Floor west →
+hub remain ungated. The three room-scoped opening AI topics set no flag and gate
+no exit. The global `topic-ai-default` excludes the ward, where
+`topic-ai-ward-default` provides the complementary catch-all. None of this
+changes the ten-topic win set or the score budget.
 
-| Room exit / gate | Condition | Satisfied by | Two discoverable clues (N6) |
-| --- | --- | --- | --- |
-| Binary Hall north → `room-hex-deck` | `switches-set` | step 3 gauge-use | route diagram "north switches-set"; north arch "switches" |
-| Binary Hall east → `room-character-tiles` | `hex-read` | step 7 nibble-use | route diagram "east hex-read"; east arch "nibbles" |
-| Binary Hall south → `room-picture-mosaic` | `characters-matched` | step 9 stamp-use | route diagram "south characters-matched"; south arch "tiles" |
-| Binary Hall up → `room-sound-choir` | `picture-built` | step 11 lens-use | route diagram "up picture-built"; up arch "image" |
-| Binary Hall in → `room-storage-stacks` | `sound-sampled` | step 13 fork-use | route diagram "in sound-sampled"; in arch "sound" |
-| Binary Hall out → `room-compression-press` | `stacks-sorted` | step 15 ladder-use | route diagram "out stacks-sorted"; out arch "stacks" |
+| Room exit / gate                           | Condition                                | Satisfied by       | Two discoverable clues (N6)                                  |
+| ------------------------------------------ | ---------------------------------------- | ------------------ | ------------------------------------------------------------ |
+| Hub south → Intake                         | none                                     | C2.1               | Hub room prose; `topic-ai-escape`                            |
+| Hub east → Switch Floor                    | `tutorial-complete`                      | C2.10 puzzle solve | Hub room prose; `item-port-label`                            |
+| Hub north → Concourse                      | `tutorial-complete`                      | C2.10 puzzle solve | Hub room prose; THE RULE MACHINE label                       |
+| Older-interface east → Switch Floor        | `tutorial-complete`                      | C2.10 puzzle solve | Interface room prose; `item-assistance-interface-plaque`     |
+| Orientation quiz start                     | four recovery flags                      | C2.2, C2.4, C2.6   | Recovery board; AI quiz topic                                |
+| Dial success                               | four recoveries + quiz pass              | C2.2–C2.8          | Recovery board; dial labels; early-use blocker               |
+| Final ward puzzle                          | all six flags including dial calibration | C2.9               | Recovery board; dial labels                                  |
+| Binary Hall north → `room-hex-deck`        | `switches-set`                           | step 3 gauge-use   | route diagram "north switches-set"; north arch "switches"    |
+| Binary Hall east → `room-character-tiles`  | `hex-read`                               | step 7 nibble-use  | route diagram "east hex-read"; east arch "nibbles"           |
+| Binary Hall south → `room-picture-mosaic`  | `characters-matched`                     | step 9 stamp-use   | route diagram "south characters-matched"; south arch "tiles" |
+| Binary Hall up → `room-sound-choir`        | `picture-built`                          | step 11 lens-use   | route diagram "up picture-built"; up arch "image"            |
+| Binary Hall in → `room-storage-stacks`     | `sound-sampled`                          | step 13 fork-use   | route diagram "in sound-sampled"; in arch "sound"            |
+| Binary Hall out → `room-compression-press` | `stacks-sorted`                          | step 15 ladder-use | route diagram "out stacks-sorted"; out arch "stacks"         |
 
 The Binary Hall's `down` and `west` exits are ungated; the six gated exits form the PDG chain
 with no cycle (topic file §5).
 
-## 4. Reachability table (Switchyard and the two opening areas)
+## 4. Reachability table (opening areas, Assistance Ward and Switchyard)
 
-This table covers the Switchyard and the two opening area cards; Zone A's table is
-§8.4. Totals below are for this slice, not the whole bundle.
+This table covers the two opening area cards, the Assistance Ward and the
+Switchyard; Zone A's table is §8.4. Totals below are for this slice, not the whole
+bundle.
 
-| Kind | Declarations | Reached / triggered at |
-| --- | --- | --- |
-| Rooms | 11 in this slice (arrival, network hub, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press) | `room-arrival` is the world boot start; `room-network-hub` via its east exit; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east; `room-binary-hall` via switch floor `up`; all others via the six gated exits in §3; every spoke exits back to the Binary Hall, whose `west` exit returns to the hub |
-| Exits | all declared in the three in-scope rooms cards (`entry-interface`, `network-hub`, `1-2-1-data-representation`) | opening exits in §3; hub exits in §3; each spoke's single return exit (N2) |
-| Items | 19 in this slice: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` records that `takeHandler()` currently ignores `portable`, so W7 must not assert fixed props stay put until `code-lead` lands that fix |
-| NPC topics | 41 in this slice: AI (6), predecessor (4), foreman (7), clerk (6), typesetter (4), critic (4), choirmaster (4), keeper (3), operator (3) | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; each middle beat records a `*-heard` flag (`clerk-carry-heard`, `critic-depth-heard`, `conductor-depth-heard`) that the next beat requires, and the predecessor's cartridge beat records `predecessor-cartridge-heard` for the duck-as-bit beat (`topic-predecessor-geese` is a keyword topic); every quiz handoff gates on `not quiz-passed <its quiz>` and stays askable, re-issuing the test, until that pass (P5), which makes steps 3, 7, 9, 11, 15 and 17 retryable; `topic-foreman-lift` requires `quiz-passed quiz-switchyard`, `topic-setter-string` requires `quiz-passed quiz-character-representation`, and `topic-operator-ratio` requires the lossy beat plus `archive-packed`; `topic-clerk-shifts-known` is reachable on the add-carries-first branch and `topic-clerk-bases-known` between the carry beat and the token; four foreman `show` topics are always active |
-| Quizzes | 8 (`quiz-switchyard` … `quiz-data-compression`) | each has a `start-quiz` owner topic on the path (§1) |
-| Puzzles | 17 (10 chain + 7 leaves) | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity) |
-| Hazard triggers | 5 | overheat at step E (first entry) and carry-overflow at step 6 (first entry) fire; detention-bell is optional on cartridge use at step 1 (`once: true`). bit-rot is disarmed at step 3 (`stacks-sealed`) before the Stacks are entered, and glyph-corruption is disarmed at step 9 (`tiles-verified`) in the room before the stamp is used; both remain triggerable in an alternate pre-disarm state. |
-| Hint targets | 6 ladders (`hint-switchyard` … `hint-compression-ratio`) | every target topic/quiz/puzzle ID exists on the path; unlock counters use the approved keys only |
+| Kind               | Declarations                                                                                                                                                                                                                                                                                                                                                  | Reached / triggered at                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rooms              | 14 in this slice (arrival, network hub, three ward rooms, entry interface, switch floor, binary hall, hex deck, character tiles, picture mosaic, sound choir, storage stacks, compression press)                                                                                                                                                              | `room-arrival` is the world boot start; `room-network-hub` via its east exit; all three ward rooms via C2.1–C2.5; `room-entry-interface` via hub `in`; `room-switch-floor` via hub east after C2.10; `room-binary-hall` via switch floor `up`; all other Switchyard rooms via the six gated exits in §3; every spoke exits back to the Binary Hall, whose `west` exit returns to the hub                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Exits              | all declared in the four in-scope area cards (`entry-interface`, `network-hub`, `assistance-ward`, `1-2-1-data-representation`)                                                                                                                                                                                                                               | opening exits and ward gates in §3; the ward has six intra-ward exits plus hub south; each Switchyard spoke has its single return exit (N2)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Items              | 31 in this slice: 8 gameplay (switch gauge, nibble card, ASCII stamp, pixel lens, sample fork, compression die, comic sans cartridge, decimal sample) and 11 examinable-only props from the 2026-11-25 revision (before label, oil can, rule card, overflow tray, spare drawer, mosaic ruler, vector sheet, patch lead, brass plate, sample tray, port label) | every `initialRoom` is a room on the path: `room-binary-hall` (step 1), `room-switch-floor` (beats E/2), `room-hex-deck` (6), `room-character-tiles` (8), `room-picture-mosaic` (10), `room-sound-choir` (12), `room-storage-stacks` (14), `room-compression-press` (16) and `room-network-hub` (beat C). The eight gameplay items are portable; step 5 puts the decimal sample on the real bin, and each SHOW follows the item's last USE. Of the props, five are portable by plausibility (oil can, rule card, mosaic ruler, vector sheet, patch lead) and six are fixed scenery (before label, overflow tray, spare drawer, brass plate, sample tray, port label). The props carry no flag, gate or completion source. `P-TAKE-01` is landed: `takeHandler()` refuses `portable: false` items and uses the item's `refusalText` or the approved in-voice fallback, so W7 can assert that fixed props stay put. Ward additions: 11 items in `assistance-ward/rooms.yaml` plus the fixed `item-assistance-interface-plaque` in the Switchyard card. Ward fixtures are fixed; tally token, key and block are optional portable props, and no essential item can be lost through the taught sequence.                                                                                                                                                                                                                                                                                                                                                                                                          |
+| NPC topics         | 67 in this slice: 41 opening/Switchyard (AI 6, predecessor 4, foreman 7, clerk 6, typesetter 4, critic 4, choirmaster 4, keeper 3, operator 3) plus 26 ward                                                                                                                                                                                                   | `topic-ai-why-here` and `topic-ai-failure` are reachable in `room-arrival` (step B) and `topic-ai-escape` in `room-network-hub` (step C) via their `special` keywords and matching `in-room` scopes; actors stay globally addressable and the AI catch-all stays global (C2); primary topics gate on `not npc-knows`; each middle beat records a `*-heard` flag (`clerk-carry-heard`, `critic-depth-heard`, `conductor-depth-heard`) that the next beat requires, and the predecessor's cartridge beat records `predecessor-cartridge-heard` for the duck-as-bit beat (`topic-predecessor-geese` is a keyword topic); every quiz handoff gates on `not quiz-passed <its quiz>` and stays askable, re-issuing the test, until that pass (P5), which makes steps 3, 7, 9, 11, 15 and 17 retryable; `topic-foreman-lift` requires `quiz-passed quiz-switchyard`, `topic-setter-string` requires `quiz-passed quiz-character-representation`, and `topic-operator-ratio` requires the lossy beat plus `archive-packed`; `topic-clerk-shifts-known` is reachable on the add-carries-first branch and `topic-clerk-bases-known` between the carry beat and the token; four foreman `show` topics are always active. Ward additions: 26 topics and `node-priya-choice` at C2.2–C2.10. The arrival default excludes the ward and the ward default is complementary. Each pupil recovery has one local producer; inactive exact topics cannot fire remotely, out-of-room pupil input returns the canonical absence response, and Priya uses a non-producing node default plus an explicit post-choice `tell` producer. |
+| Quizzes            | 9 (`quiz-switchyard` … `quiz-data-compression`)                                                                                                                                                                                                                                                                                                               | each has a `start-quiz` owner topic on the path (§1). Ward addition: `quiz-assistance-orientation` starts at C2.8 after four recoveries, passes 3 of 4, costs no life, does not move the pupil and permits unlimited retries.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Puzzles            | 18 (10 chain + 7 leaves, plus the ward root)                                                                                                                                                                                                                                                                                                                  | roots at steps 3 and 5; every `dependsOn` ancestor precedes its node; leaves at steps 7, 9, 11, 15, 17 (two at 11: weigh pixels, scale badge; two at 15: bit rate, capacity). Ward addition: `puzzle-calibrate-assistance` is a root with no `dependsOn` and one composite `all` requirement; C2.9 supplies the deferred dial flag contract and C2.10 solves it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Hazard triggers    | 5                                                                                                                                                                                                                                                                                                                                                             | overheat at step E (first entry) and carry-overflow at step 6 (first entry) fire; detention-bell is optional on cartridge use at step 1 (`once: true`). bit-rot is disarmed at step 3 (`stacks-sealed`) before the Stacks are entered, and glyph-corruption is disarmed at step 9 (`tiles-verified`) in the room before the stamp is used; both remain triggerable in an alternate pre-disarm state. Ward addition: zero hazards, zero life loss and zero forced movement; lives remain 3 through C2.12.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Hint targets       | 6 Switchyard ladders (`hint-switchyard` … `hint-compression-ratio`); 9 in this slice with the ward's three                                                                                                                                                                                                                                                    | every target topic/quiz/puzzle ID exists on the path; unlock counters use the approved keys only. Ward addition: three explicit-only ladders — `hint-assistance-intake` targets `room-assistance-intake`, `hint-assistance-demonstration` targets `room-assistance-demonstration`, and `hint-assistance-orientation` targets `room-assistance-records`, the quiz, the puzzle and `tutorial-mechanics`. Each has three levels, `cooldownTurns: 2`, no score penalty and no automatic offer; level state is per sequence, so each room starts at level 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Conversation nodes | 1 ward node (`node-priya-choice`)                                                                                                                                                                                                                                                                                                                             | entered at C2.6, sticky with a non-producing default, no timeout and no `onEnterEffects`; choice sets only `priya-choice-taken`; a natural post-choice `tell` sets the recovery, applies the recovered state and exits; `bye`/leave/resume are safe                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Flags              | four ward recoveries, `priya-choice-taken`, quiz pass, dial calibration and `tutorial-complete`                                                                                                                                                                                                                                                               | each has its approved single producer on C2.2–C2.10; `priya-choice-taken` also gates choice-start activity/resume                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ## 5. Per-topic evidence completion
 
-The two new areas add no teaching, retrieval or application evidence: `room-arrival`
-is the verdict beat, the three new AI topics are flavour only and the Network Hub is
-navigation-only with `topicIds: []`. `ai-ethics-and-implications` remains `in progress`
-and outside the win set (COVERAGE.md L187–197). The eight zone-1 `covered` topics
-below are unchanged by this amendment; Zone A's two topics and their evidence are
+The opening areas add no teaching, retrieval or application evidence:
+`room-arrival` is the verdict beat, the opening AI topics are flavour only and the
+Network Hub is navigation-only with `topicIds: []`. The Assistance Ward supplies
+real command, quiz, puzzle and hint practice only for `tutorial-mechanics`; that
+topic is non-assessed, `in progress`, `maxScore 0`, outside the win set and not
+evidence for `ai-ethics-and-implications` or any WJEC topic. The eight zone-1
+`covered` topics below are unchanged; Zone A's two topics and their evidence are
 §8.1.
 
 Each `covered` topic has a teaching beat (room fixture or NPC), a retrieval beat
@@ -313,9 +395,10 @@ verdicts are recorded in §7.
    gauge in step 7, lens in step 11, fork and nibble card in step 15.
 4. **AI / predecessor placement — confirmed.** Game-wide actors appear in the
    arrival, hub and switch areas; topics are flavour or the duck-as-bit teaching
-   beat and gate no flag, quiz, puzzle or exit. Three AI topics now carry `in-room`
-   locality (two in arrival, escape in the hub); the AI catch-all stays global so
-   the actor remains answerable in every room (C6).
+   beat and gate no flag, quiz, puzzle or exit. Three AI topics carry `in-room`
+   locality (two in arrival, escape in the hub). The AI catch-all stays global
+   outside the ward; inside the ward the global default is inactive and
+   `topic-ai-ward-default` provides the complementary reply (C2, C6).
 5. **SHOW item transfer — RESOLVED.** The second pass noted that `show` uses
    `transfer-item` (npcs.md §4/§9), so showing an item could move it into the actor's
    inventory and strand a later USE. Every SHOW in the trace now follows that item's
@@ -323,27 +406,50 @@ verdicts are recorded in §7.
    USE step 15 → SHOW step 15; nibble card USEs step 7/11 → SHOW step 15. This holds
    whether `show` is display-only or transfers ownership.
 
+6. **Ward hint context — RESOLVED.** Each ward room has its own ladder targeted
+   directly at its room ID, so bare `hint` resolves in Intake, Demonstration and
+   Records, and the quiz keeps `hint-assistance-orientation`. All ladders are
+   explicit-only, start at level 1 in their own room and are non-revealing.
+7. **Exact-topic locality — RESOLVED.** Active exact-object pupil topics work in
+   their home rooms. Inactive exact matches cannot apply remote effects or use
+   accounting; out-of-room pupil input returns `You cannot see that here.` through
+   the canonical message path. Node-default priority, first-active catalogue
+   defaults, global AI selection and exhausted-once behaviour remain intact.
+8. **Priya choose-then-reason — RESOLVED.** `topic-priya-default` is the
+   non-producing node default before and after the choice. `ask` selects CHECKED
+   or ASSUMED; a natural post-choice `tell` reaches the explicit empty-object
+   `tell` producer, sets only the recovery effects and exits. `talk-to` and retired
+   `ask` choices grant no recovery. The selector now treats only empty-object
+   `askTell` topics as defaults, so the reason producer is reachable.
+9. **Fixed-fixture evidence — RESOLVED.** Nia independently identifies the
+   observation card's chipped corner; the tally token alone retains three
+   scratches and the peeled-label shadow. Mateo and Kofi use their fixed fixtures.
+10. **Safe object teaching — RESOLVED.** Concrete unlock examples are item-first;
+    SHOW/GIVE are optional after unlocking and transfer any carried item. The
+    block is reserved for PUT, and no required dependency relies on hand-over.
+11. **Quiz failure and retry — RESOLVED.** The 3-of-4 quiz costs zero lives, does
+    not move the pupil, preserves the current room and permits unlimited retries.
+    Hints nudge without revealing an answer.
+12. **Mandatory gate and use seam — RESOLVED.** Hub south is open; hub east/north
+    and older-interface east require `tutorial-complete`. The approved conditional
+    dial `use` producer and verbatim bell-description reuse landed in W6; the dial
+    sets `assistance-dial-calibrated` only after the five recorded prerequisites and
+    uses the card's `useText` strings. The ward W7 playtest is unblocked.
+
 The first-pass majors about trace ordering (hex-deck actions after the move to the
 character-tiles), quiz ownership (`topic-setter-unicode`, not `-ascii`), and the
 "six puzzles" miscount have all been corrected in §1, §2, §3, §4 and §5. The second
 pass also corrected the stale leaf-step list in §4.
 
-**Code follow-up (not a content finding).** `src/core/npcs/TopicSelection.ts` prefers
-a topic whose ID words appear in the free-text phrase (`isIdMatchingPhrase`). That
-contradicts `npcs.md` §3 ("content must not rely on a keyword or an ID word as a
-tie-break") and would let the phrase in a trace step reach a topic its conditions do
-not select. The win path no longer depends on it — every actor's ask/tell pair is
-provably exclusive on `isActive` after the 2026-11-25 repairs; the AI verdict and the
-three Pattern Mill demonstrations are keyword-addressed, so no live askTell absorbs
-them; and the trace's required phrases reach their topics by keyword. A few flavour specials — the Bobbin Lad's `bell`/`prediction`/`paned` (shadowed by
-`average`), the Weft Tally's `tuesdays` (shadowed by `mended`), the Shed Opener's
-`urgent` (shadowed by `mended` after the puzzle), the Selvedge Warden's
-`signal`/`whist` (shadowed by `mended` after the puzzle), and the predecessor's
-`geese` in the pre-cartridge state — can still be shadowed by a live askTell until
-`code-lead` adds keyword priority or a later content pass converts those beats. The
-slop cousin has only the catch-all, so its room beats are not affected. The runtime
-preference must be removed and the trace phrases re-audited before the W7 browser
-pass, so a green walkthrough cannot be won by an ID word.
+**Code follow-up (not a content finding).** The former ID-word preference
+`TopicSelection.isIdMatchingPhrase` has been removed and keyword priority for
+`special`/`command` topics has landed. Every actor's ask/tell pair is exclusive on
+`isActive` after the 2026-11-25 repairs; the AI verdict and three Pattern Mill
+demonstrations are keyword-addressed. The ward extension additionally closes
+exact-topic locality and empty-object `tell` selection with independent code PASS.
+The remaining W7 prerequisites are regeneration of the authored bundle and the
+outstanding runtime fixes recorded in `status.md`; no walkthrough step may depend
+on an ID word.
 
 ## 7. Verdict
 
@@ -351,6 +457,15 @@ pass, so a green walkthrough cannot be won by an ID word.
 N7, D3 — over the two opening area cards, the Switchyard's six cards, Zone A's six
 cards, the two amendment rooms cards and this trace).** No blocker and no major
 remains.
+
+**Assistance Ward extension verdict:** **PASS WITH MINORS (2026-11-27, final
+whole-set `content-critic` V4/N2/N6/N7/D3 pass over the six ward cards, five
+owning-card amendments, `spec-topics.yaml` and this trace).** No blocker or major
+remains. AW-V4-01 was the deferred dial producer at V4 and is closed in W6; AW-V4-02/03/04 are
+closed editor-side in this trace; AW-V4-05 is closed in code by
+`ward-keyword-activity` and AW-CC04-CR-04 is closed in content. Focused closure
+returned content-critic PASS WITH MINORS (no blocker or major) and PCK PASS with no
+findings; the accepted AW-V4-01 dial-producer deferral was subsequently closed in W6.
 
 The pass follows four earlier acceptances: the zone-1 fourth pass (PASS,
 2026-11-24), the opening extension (PASS WITH MINORS, 2026-11-25), the Switchyard NPC
@@ -366,19 +481,28 @@ counts and exit wording match the declarations. The four minors left by the pass
 run (the shadowed-flavour-special record, the ratified-ID notes, the §8.4 exit/item
 coverage wording and the spent-verdict default lines) were closed the same day.
 
-The ordered path from `room-arrival` to `game-won` at §8 step 30 is complete; all ten
-`covered` topics have a `complete-topic` source; 40 exits, 51 items, 97 NPC topics,
-14 quizzes, 23 puzzles, 8 hazards and 13 hint ladders are reachable; the score budget
-is 43 (24 + 19); and no soft-lock remains. Two pre-existing `quizzes.yaml` PCK minors
-(q-dr-28's untaught format lists and q-dr-02's effects clause) are accepted for a
-future quiz round and are not blockers.
+At that 2026-11-25 verdict, the ordered path from `room-arrival` to `game-won` at
+§8 step 30 was complete; all ten `covered` topics had a `complete-topic` source;
+40 exits, 51 items, 97 NPC topics, 14 quizzes, 23 puzzles, 8 hazards and 13 hint
+ladders were reachable; the score budget was 43 (24 + 19); and no soft-lock
+remained. Two pre-existing `quizzes.yaml` PCK minors (q-dr-28's untaught format
+lists and q-dr-02's effects clause) are accepted for a future quiz round and are
+not blockers.
 
-**Code prerequisites before W7.** `code-lead` must remove
-`TopicSelection.isIdMatchingPhrase` and add the keyword-priority step for
-`special`/`command` topics that npcs.md §3 implies; the remaining shadowed flavour
-specials are recorded in §6. The authored bundle must then be regenerated
-(`src/content/authored/*.ts` still carries the pre-repair conversation topics) before
-`browser-tester` walks this trace.
+With the Assistance Ward inserted and the 2026-11-27 W7 fix round landed, the
+current authored totals are **47 exits, 63 items, 123 NPC topics, 15 quizzes,
+24 puzzles, 8 hazards and 16 hint ladders**. The five extra ward topics are the
+keyword-addressed Records lessons; the two extra ladders are the room-scoped
+Intake and Demonstration ladders. The ten-topic win set, score budget 43 and
+§8 step 30 end state are unchanged.
+
+**Code prerequisites before W7.** The ID-word preference is removed and keyword
+priority has landed. AW-V4-01, the deferred conditional dial producer, closed in
+W6: `code-lead` regenerated the authored bundle with `useText` verbatim and the
+ward W7 playtest was unblocked. The focused V4 minor closure is complete. The
+2026-11-27 W7 fix round added parser aliases, authored exit feedback, quiz-start
+idempotence and transfer messages; its regeneration and re-test are recorded in
+`status.md`.
 
 ## 8. Zone A — The Pattern Mill (1.4.1 programming constructs): the trace extension
 
@@ -528,14 +652,14 @@ lives.**
 
 ### 8.3 Gate conditions and their in-world satisfaction
 
-| Gate | Condition | Satisfied at |
-| --- | --- | --- |
-| Bureau east door | `demo-on-record` | step 21 (`quiz-pattern-bureau` onPass) |
-| Warp Walk spoke doors | none | steps 23–28 walk in and out freely |
-| Warp Walk east rail door | `threading-ordered` AND `colours-lifted` AND `weft-counted` AND `condition-plate-set` AND `rogue-thread-filed` | steps 23, 27, 25, 28, 28 — door opens for step 29 |
-| Hub north → concourse | none (area change: lives reset) | step 20 |
-| Concourse east → Bureau | none (area change; the area's `startRoomId`) | step 21 |
-| Rail quiz | `topic-loomwright-audit` is `in-room: room-finished-rail` | step 30 (bible §11 item 12: presence without a placement field; the rail description carries the attendance) |
+| Gate                     | Condition                                                                                                      | Satisfied at                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Bureau east door         | `demo-on-record`                                                                                               | step 21 (`quiz-pattern-bureau` onPass)                                                                       |
+| Warp Walk spoke doors    | none                                                                                                           | steps 23–28 walk in and out freely                                                                           |
+| Warp Walk east rail door | `threading-ordered` AND `colours-lifted` AND `weft-counted` AND `condition-plate-set` AND `rogue-thread-filed` | steps 23, 27, 25, 28, 28 — door opens for step 29                                                            |
+| Hub north → concourse    | `tutorial-complete` (area change: lives reset)                                                                 | C2.10; traversed at step 20                                                                                  |
+| Concourse east → Bureau  | none (area change; the area's `startRoomId`)                                                                   | step 21                                                                                                      |
+| Rail quiz                | `topic-loomwright-audit` is `in-room: room-finished-rail`                                                      | step 30 (bible §11 item 12: presence without a placement field; the rail description carries the attendance) |
 
 The three hazards against the route: `hazard-dye-pad` fires once, scripted, at step
 25's first entry (predicted −1); `hazard-pick-avalanche` arms on `quiz-passed:
@@ -549,37 +673,37 @@ workbook is read as the trap it is and left shut).
 Every declared entity is reachable or triggerable on the path; the covering step is
 shown.
 
-| Entity | Covered at |
-| --- | --- |
-| `room-pattern-bureau` (+8 items: the four pattern cards — granted on the quizzes, filed on the gives — carthen, paned mug, leaflet, Demonstration Book) | step 21 (startRoomId; the leaflet, mug and book read at 21; the four pattern cards are granted at 23/25/27/28 and filed by their gives) |
-| `room-1-4-concourse` | step 20 |
-| `room-warp-walk` (+ mill clock, woven label, mill board) | step 22 |
-| `room-threading-order` (+ else plate, slop worksheet) | step 23 |
-| `room-bobbin-window` (+ shed plate, addressing plate, postmark album + pad) | step 24 |
-| `room-weft-counter` (+ counting ratchet, slip tooth, bell wire, dye pad, mill duck) | step 25 (first entry fires the dye pad); the ratchet and slip tooth are used at 25–26, the bell wire is taken at 25, and the dye pad and mill duck are examined at 25 |
-| `room-colour-court` (+ pick trolley, quality book) | step 27 |
-| `room-endless-selvedge` (+ condition plate, rogue thread, whist cards, weft kettle, counterfoil drawer, signing board, dye vat) | step 28 |
-| `room-finished-rail` (+ rota board) | steps 29–30 |
-| All 40 exits in the bundle (the zone-1/opening 23 are covered in §4 and steps 1–18; Zone A's 15 mill exits and the concourse's 2 at steps 19–29; both concourse/hub pairs cross-file, per §8.3) | steps 19–29 (Zone A) |
-| `npc-the-loomwright` (7 topics: welcome, pseudocode, shapes, demonstration→`quiz-pattern-bureau`, cousin, audit→`quiz-finished-rail`, default) | steps 21, 29–30 (audit at the rail) |
-| `npc-the-warp-dresser` (7 topics: order, order-known, demonstration→`quiz-threading-order`, mended, give→`item-pattern-card-sequence`, stray, default) | step 23 |
-| `npc-the-shed-opener` (8 topics: selection, selection-known, demonstration→`quiz-colour-court`, mended, urgent, give→`item-pattern-card-selection`, stray, default) | step 27 |
-| `npc-the-weft-tally` (10 topics: count, count-known, demonstration→`quiz-weft-tally`, mended, pad (the crackle-test → `pad-checked`), tuesdays, prediction→`pass-count-predicted`, give→`item-pattern-card-count-iteration`, stray, default) | step 25 (pad at re-entry) |
-| `npc-the-selvedge-warden` (9 topics: until, until-known, demonstration→`quiz-selvedge`, mended, signal, whist, give→`item-pattern-card-condition-iteration`, stray, default) | step 28 |
-| `npc-the-bobbin-lad` (6 topics: trade, average, bell (reads `bell-mended`), prediction, paned, default — no give topic; the lad files nothing) | steps 24, 26 |
-| `npc-the-slop-cousin` (8 topics: seven per-room vandal beats — bureau, bobbin-window, warp-walk, threading-order, colour-court, weft-counter, selvedge — + default; flavour only) | encountered in any room; not a required step |
-| `npc-the-ai` (1 topic: `topic-ai-licence`, flavour-only, no flags/quiz — the Bureau cameo) | step 21 (optional) |
-| Six quizzes | steps 21, 23, 25, 27, 28, 30 |
-| Six puzzles | steps 23 (dress), 25 (ratchet), 26 (bell), 27 (shed), 28 (selvedge + rogue) |
-| Three hazard triggers | step 25 (dye pad, fires); 27 (avalanche, never armed-and-entered); 23 (worksheet, never used) |
-| Seven hint ladders (`hintSequences`) | every ladder's `targets` resolve to step-covered entities: bureau (21), threading (23), colour (27), tally (25), selvedge (28), rail (29–30), bobbin/bell (26) |
+| Entity                                                                                                                                                                                                                                       | Covered at                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `room-pattern-bureau` (+8 items: the four pattern cards — granted on the quizzes, filed on the gives — carthen, paned mug, leaflet, Demonstration Book)                                                                                      | step 21 (startRoomId; the leaflet, mug and book read at 21; the four pattern cards are granted at 23/25/27/28 and filed by their gives)                               |
+| `room-1-4-concourse`                                                                                                                                                                                                                         | step 20                                                                                                                                                               |
+| `room-warp-walk` (+ mill clock, woven label, mill board)                                                                                                                                                                                     | step 22                                                                                                                                                               |
+| `room-threading-order` (+ else plate, slop worksheet)                                                                                                                                                                                        | step 23                                                                                                                                                               |
+| `room-bobbin-window` (+ shed plate, addressing plate, postmark album + pad)                                                                                                                                                                  | step 24                                                                                                                                                               |
+| `room-weft-counter` (+ counting ratchet, slip tooth, bell wire, dye pad, mill duck)                                                                                                                                                          | step 25 (first entry fires the dye pad); the ratchet and slip tooth are used at 25–26, the bell wire is taken at 25, and the dye pad and mill duck are examined at 25 |
+| `room-colour-court` (+ pick trolley, quality book)                                                                                                                                                                                           | step 27                                                                                                                                                               |
+| `room-endless-selvedge` (+ condition plate, rogue thread, whist cards, weft kettle, counterfoil drawer, signing board, dye vat)                                                                                                              | step 28                                                                                                                                                               |
+| `room-finished-rail` (+ rota board)                                                                                                                                                                                                          | steps 29–30                                                                                                                                                           |
+| All 47 exits in the bundle (30 opening/ward/Switchyard exits are covered in §4 and steps 1–18; Zone A's 15 mill exits and the concourse's 2 at steps 19–29; both concourse/hub pairs cross-file, per §8.3)                                   | steps 19–29 (Zone A)                                                                                                                                                  |
+| `npc-the-loomwright` (7 topics: welcome, pseudocode, shapes, demonstration→`quiz-pattern-bureau`, cousin, audit→`quiz-finished-rail`, default)                                                                                               | steps 21, 29–30 (audit at the rail)                                                                                                                                   |
+| `npc-the-warp-dresser` (7 topics: order, order-known, demonstration→`quiz-threading-order`, mended, give→`item-pattern-card-sequence`, stray, default)                                                                                       | step 23                                                                                                                                                               |
+| `npc-the-shed-opener` (8 topics: selection, selection-known, demonstration→`quiz-colour-court`, mended, urgent, give→`item-pattern-card-selection`, stray, default)                                                                          | step 27                                                                                                                                                               |
+| `npc-the-weft-tally` (10 topics: count, count-known, demonstration→`quiz-weft-tally`, mended, pad (the crackle-test → `pad-checked`), tuesdays, prediction→`pass-count-predicted`, give→`item-pattern-card-count-iteration`, stray, default) | step 25 (pad at re-entry)                                                                                                                                             |
+| `npc-the-selvedge-warden` (9 topics: until, until-known, demonstration→`quiz-selvedge`, mended, signal, whist, give→`item-pattern-card-condition-iteration`, stray, default)                                                                 | step 28                                                                                                                                                               |
+| `npc-the-bobbin-lad` (6 topics: trade, average, bell (reads `bell-mended`), prediction, paned, default — no give topic; the lad files nothing)                                                                                               | steps 24, 26                                                                                                                                                          |
+| `npc-the-slop-cousin` (8 topics: seven per-room vandal beats — bureau, bobbin-window, warp-walk, threading-order, colour-court, weft-counter, selvedge — + default; flavour only)                                                            | encountered in any room; not a required step                                                                                                                          |
+| `npc-the-ai` (1 topic: `topic-ai-licence`, flavour-only, no flags/quiz — the Bureau cameo)                                                                                                                                                   | step 21 (optional)                                                                                                                                                    |
+| Six quizzes                                                                                                                                                                                                                                  | steps 21, 23, 25, 27, 28, 30                                                                                                                                          |
+| Six puzzles                                                                                                                                                                                                                                  | steps 23 (dress), 25 (ratchet), 26 (bell), 27 (shed), 28 (selvedge + rogue)                                                                                           |
+| Three hazard triggers                                                                                                                                                                                                                        | step 25 (dye pad, fires); 27 (avalanche, never armed-and-entered); 23 (worksheet, never used)                                                                         |
+| Seven hint ladders (`hintSequences`)                                                                                                                                                                                                         | every ladder's `targets` resolve to step-covered entities: bureau (21), threading (23), colour (27), tally (25), selvedge (28), rail (29–30), bobbin/bell (26)        |
 
 ### 8.5 Per-topic evidence completion (Zone A)
 
-| Spec topic | References | Evidence on the path |
-| --- | --- | --- |
+| Spec topic                                              | References                                                                                                                                                                             | Evidence on the path                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `programming-constructs` (1.4.1 constructs; L1161–1516) | the four constructs as the mill's four rank doors: sequence (L1253), selection (L1255), count-controlled (L1259), condition-controlled (L1218–1221); DIV/MOD bailing beat (L1292–1293) | taught in four rooms (dress/shed/tally/selvedge — learn-topic each), demonstrated in four quizzes (steps 23, 27, 25, 28), applied in six puzzles (the flags ARE the constructs' working steps), completed by the quizzes' `complete-topic` (steps 23, 25, 27, 28) and the puzzles' onSolve; the retrieval beats are the quizzes (P5 retries; the trace passes first-try) |
-| `algorithms-and-pseudocode` (1.4.1 algorithms; L1169) | the Bureau's five shapes (terminator, input, output, decision, process, flow lines); PREDICT. THEN WEAVE. | taught by the Loomwright (learn-topic, step 21), retrieved in `quiz-pattern-bureau` (step 21), synthesised in `quiz-finished-rail` (step 30 — the construct chosen for a fresh problem; master-demonstrated set), completed by both onPass sources |
+| `algorithms-and-pseudocode` (1.4.1 algorithms; L1169)   | the Bureau's five shapes (terminator, input, output, decision, process, flow lines); PREDICT. THEN WEAVE.                                                                              | taught by the Loomwright (learn-topic, step 21), retrieved in `quiz-pattern-bureau` (step 21), synthesised in `quiz-finished-rail` (step 30 — the construct chosen for a fresh problem; master-demonstrated set), completed by both onPass sources                                                                                                                       |
 
 Arrays (L1261's strand) are prose-taught in the zone without a quiz or puzzle
 retrieval beat in Zone A — the W5 evidence note records the deferral to a later
@@ -596,18 +720,18 @@ room-bobbin-window; `scenery-plate-frame` in room-colour-court's two-slot frame;
 `scenery-exit-frame` in room-endless-selvedge). Until W6 wires them, the actions are
 authored route the hints and useNotes teach — no card rewrite is needed either way.
 
-| # | Verb | itemId | targetId | roomId | flags | row text (suggested) |
-| --- | --- | --- | --- | --- | --- | --- |
-| P1 | PUT | `scenery-shade-cards` (W6 scenery) | `scenery-step-hangers` (W6 scenery) | `room-threading-order` | `dressing-re-ordered` | The shade cards go back on the hangers in the card's order: ground, first stripe, cross-stripe, border, hem. |
-| P2 | USE | `item-addressing-plate` | — (self) | `room-bobbin-window` | `addressing-plate-re-lettered` | You work the letter rack and the slopped addresses read true again. |
-| P3 | USE | `item-bell-wire` | `scenery-intake-bell` (W6 scenery) | `room-bobbin-window` | `bell-wire-seated` | The wire seats on the intake bell and the bell rings round. |
-| P4 | PUT | `item-shed-plate` | `scenery-plate-frame` (W6 scenery) | `room-colour-court` | `shed-plate-returned` | The shed plate seats into the diamond slot it was cut for. |
-| P5 | PUT | `item-else-plate` | `scenery-plate-frame` | `room-colour-court` | `else-plate-restored` | The else plate finds its plain rectangular slot beside the diamond. |
-| P6 | USE | `item-pick-trolley` | — (self) | `room-colour-court` | `tray-routed-by-condition` | The tray routes by the plate's condition: if the count is twelve or more, the pick lifts; else it posts routine — nine posts, twelve itself lifts, fifteen lifts. |
-| P7 | USE | `item-slip-tooth` | `item-counting-ratchet` | `room-weft-counter` | `slip-tooth-pried` | The slip tooth comes out of the ratchet. The chalk line reads count = count + 1. |
-| P8 | USE | `item-counting-ratchet` | — (self) | `room-weft-counter` | `counting-ratchet-reseated` | The ratchet seats true: one tooth, one pass. |
-| P9 | PUT | `item-condition-plate` | `scenery-exit-frame` (W6 scenery) | `room-endless-selvedge` | `until-clause-restored` | The until plate goes up on the exit frame and the selvedge can want an ending again. |
-| P10 | PUT | `item-rogue-thread` | `item-counterfoil-drawer` | `room-endless-selvedge` | `rogue-thread-in-drawer` | The rogue thread files in the counterfoil drawer, initialled W. |
+| #   | Verb | itemId                             | targetId                            | roomId                  | flags                          | row text (suggested)                                                                                                                                              |
+| --- | ---- | ---------------------------------- | ----------------------------------- | ----------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1  | PUT  | `scenery-shade-cards` (W6 scenery) | `scenery-step-hangers` (W6 scenery) | `room-threading-order`  | `dressing-re-ordered`          | The shade cards go back on the hangers in the card's order: ground, first stripe, cross-stripe, border, hem.                                                      |
+| P2  | USE  | `item-addressing-plate`            | — (self)                            | `room-bobbin-window`    | `addressing-plate-re-lettered` | You work the letter rack and the slopped addresses read true again.                                                                                               |
+| P3  | USE  | `item-bell-wire`                   | `scenery-intake-bell` (W6 scenery)  | `room-bobbin-window`    | `bell-wire-seated`             | The wire seats on the intake bell and the bell rings round.                                                                                                       |
+| P4  | PUT  | `item-shed-plate`                  | `scenery-plate-frame` (W6 scenery)  | `room-colour-court`     | `shed-plate-returned`          | The shed plate seats into the diamond slot it was cut for.                                                                                                        |
+| P5  | PUT  | `item-else-plate`                  | `scenery-plate-frame`               | `room-colour-court`     | `else-plate-restored`          | The else plate finds its plain rectangular slot beside the diamond.                                                                                               |
+| P6  | USE  | `item-pick-trolley`                | — (self)                            | `room-colour-court`     | `tray-routed-by-condition`     | The tray routes by the plate's condition: if the count is twelve or more, the pick lifts; else it posts routine — nine posts, twelve itself lifts, fifteen lifts. |
+| P7  | USE  | `item-slip-tooth`                  | `item-counting-ratchet`             | `room-weft-counter`     | `slip-tooth-pried`             | The slip tooth comes out of the ratchet. The chalk line reads count = count + 1.                                                                                  |
+| P8  | USE  | `item-counting-ratchet`            | — (self)                            | `room-weft-counter`     | `counting-ratchet-reseated`    | The ratchet seats true: one tooth, one pass.                                                                                                                      |
+| P9  | PUT  | `item-condition-plate`             | `scenery-exit-frame` (W6 scenery)   | `room-endless-selvedge` | `until-clause-restored`        | The until plate goes up on the exit frame and the selvedge can want an ending again.                                                                              |
+| P10 | PUT  | `item-rogue-thread`                | `item-counterfoil-drawer`           | `room-endless-selvedge` | `rogue-thread-in-drawer`       | The rogue thread files in the counterfoil drawer, initialled W.                                                                                                   |
 
 Solve coupling (engine-side, already the puzzle contract): a puzzle's onSolve fires
 when its requirement flags all hold — P1+step 23's give solve `puzzle-dress-the-warp`;

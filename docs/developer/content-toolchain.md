@@ -23,7 +23,8 @@ document metadata, the shapes of the collections a card may hold and the
 `status` values. It rejects a stray authoring key outside `authoring:` and any
 unresolved `todo` placeholder. Field names come from the subsystem documents
 (D3); the schema follows them. Cross-artefact meaning belongs to the gates in
-§4, not the schema.
+§4, not the schema. An item may declare a top-level `useText` with required
+`success` and optional `blocked` prose; the Zod item shape enforces that.
 
 Card allocation follows [content-rules.md §1](content-rules.md#1-purpose-and-authority);
 the validator and generator merge every card into the same catalogue, so this
@@ -89,7 +90,11 @@ TypeScript: `content-ids`, `quiz-content`, `puzzle-graph`, `world-graph`,
 what each gate checks and which of them also run against the generated bundle.
 
 ID prefixes follow [content-rules.md §5](content-rules.md#5-id-and-alias-registry),
-including `area-` and `world-`; `content-ids` enforces them.
+including `area-` and `world-`; `content-ids` enforces them. An exit in a rooms
+card may carry an optional `blockedText` plain string beside `direction`, `to`
+and `conditions`; §5 covers its handoff to the runtime. Both `content-ids` and
+`hint-content` accept declared room IDs as hint-sequence targets
+([hints.md §2](hints.md#2-model), [§3](hints.md#3-commands-and-delivery)).
 
 Findings print as `path/to/file.yaml:entry — what is wrong — gate ID`. A single
 finding fails the command with a non-zero exit code. Shape checks — stray
@@ -137,10 +142,17 @@ calls `normaliseExit()` in `tools/content/gates/common.ts` to rename an exit's
 `tools/content/adapt.ts` then maps the normalised cards onto the canonical world,
 area, room and item shapes: it derives `AreaDefinition.roomIds` from the order of
 `rooms`, renames exit `conditions` to `preconditions`, and copies only fields the
-runtime types declare. The generator strips the `authoring:` block from every
-entry, resolves a node's `topicIds` into embedded `topics` in declared order, and
-drops the node's authoring-only `actorId` while keeping a topic's optional
-binding. Generation is a mechanical handoff, not a second authoring pass.
+runtime types declare. For exits that declare it, `bundleOf()` copies the optional
+`blockedText` string into `RoomDefinition.exits`, emitted in
+`src/content/authored/rooms.ts` and omitted when the card has no value. For items
+that includes `useText`: `bundleOf()` maps the
+card's `success` and any `blocked` prose into `ItemDefinition.useText`, omitting
+the field when the card has none, and `items.ts` is emitted from that canonical
+output. `authoring.useNotes` is not copied: the generator strips the `authoring:`
+block from every entry, resolves a node's `topicIds` into embedded `topics` in
+declared order, and drops the node's authoring-only `actorId` while keeping a
+topic's optional binding. Generation is a mechanical handoff, not a second
+authoring pass.
 
 `GameState.createInitial()` boots from the first declared world
 (`worlds.all[0]`), then resolves the area by `world.startAreaId` and the room by

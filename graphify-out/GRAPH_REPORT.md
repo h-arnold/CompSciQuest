@@ -1,86 +1,84 @@
-# Graph Report - CompSciQuest  (2026-11-26)
+# Graph Report - assistance-ward  (2026-11-27)
 
 ## Corpus Check
-- 422 files · ~203,065 words
+- 489 files · ~258,833 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 7 file(s) not represented in the graph (top: (none) 5, .jsonc 1, .css 1)
+- Unclassified: 8 file(s) not represented in the graph (top: (none) 6, .jsonc 1, .css 1)
 
 ## Summary
-- 2964 nodes · 7955 edges · 222 communities (217 shown, 5 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 453 edges (avg confidence: 0.93)
+- 3543 nodes · 9300 edges · 263 communities (256 shown, 7 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 457 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2bc6c732`
+- Built from commit: `3b22b405`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Game.ts
-- npcTopicOverlap.ts
-- npcs.ts
-- authored.ts
+- NpcGates.test.ts
+- collection
+- w7-opening-walkthrough.spec.ts
+- GameState.ts
 - helpers.ts
-- ContentBundle.ts
-- mechanics.ts
+- content/index.ts
+- Issues
 - persistence.ts
-- ui.ts
+- wardKeywordActivity.ts
 - SaveManager.ts
 - verbs/index.ts
-- transcript
-- GameState.ts
-- turn.ts
+- wardTopicLocality.ts
 - content.ts
-- zone1.ts
-- collection
-- ScoreTracker.ts
-- topicOverlap.ts
+- hint.ts
+- npcTopicOverlap.ts
+- GameViewData.ts
 - asText
-- application-and-ui.md
+- ContentBundle
+- topicOverlap.ts
+- mechanics.ts
 - compilerOptions
-- HintQuizViews.test.ts
-- TopicSelection.ts
-- common.ts
-- RoomDefinition
-- GameEvent
-- PuzzleGraph.test.ts
-- QuizFlow.test.ts
-- scenery-validation.test.ts
-- W7 non-quiz runtime handoff
-- submit
+- GameViewData
+- engine-issue-28-activation.test.ts
+- W7 round-5 re-test — Assistance Ward (2026-11-27)
 - isActive
+- findDefaultTopic
+- contentToolchain.ts
+- Seven final-review fixes still to apply
+- common.ts
+- validateContent.ts
+- Q: Which SaveManager reference validation quarantines a fixture-owned item inventory key, and what is the smallest canonical fix?
+- zone1.ts
 - Documentation style guide
-- domain.ts
-- area-progress.test.ts
-- SaveDto
+- commandResolution.ts
+- parser.ts
+- LoadResult
 - scripts
-- ContentBundle.ts
-- FakeElement
+- Game.ts
+- Onboarding.test.ts
 - ConversationFlow.ts
 - opencode.json
-- AuthoredRun
-- asRecord
-- validateContent.ts
-- hint.ts
-- GameEvent
-- save-import.spec.ts
-- NpcTypes.test.ts
-- Game
-- package.json
+- Q: After the SaveManager fix, does a save written with the practice block placed in the fixture cabinet reload with Continue enabled, and is the invalid-json quarantine path still intact?
+- generate.ts
+- content/schema.ts
+- npcState
+- Quiz combat
+- 2. Functional defects
+- wardW7Fixes.ts
+- StorageAdapter
+- ward-round3-fixes.spec.ts
 - devDependencies
-- adapt.ts
-- engine-issue-15-life-gate.spec.ts
-- .makeActions
-- LoadResult
-- EffectApplier.ts
-- eslint.config.js
-- engine-issue-11.spec.ts
-- CommandTable.test.ts
-- Favicon.test.ts
+- vitest
+- ScoreTracker
+- TopicSelection.ts
+- deploy.yml
+- Parser.ts
+- W7 round-4 re-test — Assistance Ward (2026-11-27)
 - engine-issue-13-inventory.test.ts
-- reactionFor
-- MemoryContentIo
-- SeededRandom
+- EffectApplier.ts
+- Favicon.test.ts
+- Game
+- engine-issue-11.spec.ts
+- Q: Where are the area-change life reset and the ten Zone A InteractionRules rows owned?
 - Q: Where are the ESLint flat config, NPM scripts, strict compilerOptions and Vite base configured?
 - Q: Did adding typescript-eslint introduce duplicate canonical configs or cross-layer edges?
 - Q: Where are the persistence contracts canonical: SaveManager, StorageAdapter, GameStateDto, LoadResult and LoadFailureReason, Save quarantine, ScoreTracker?
@@ -155,31 +153,27 @@
 - Q: How should a quiz retry re-set emit while ScoreTracker awards once, and which object owns the injected initial state?
 - Q: C7 npc topic overlap gate: where do checkNpc, validateCards, ValidationOptions and Condition exclusivity live and is there an existing overlap owner?
 - .prettierrc.json
-- Command
 - Q: Where is P-TAKE-01 takeHandler and what governs portable items?
 - Q: Find a document heading node named Room entry text
 - node-shims.d.ts
-- TopicResolver.ts
-- QuizRevision.test.ts
-- ScoreTracker
-- npcHandlers.ts
-- GameEvent.ts
-- MemoryStorage
+- Q: Where are the W7 walkthrough harness, authored win path, area progress and life reset defined?
+- SeededRandom
 - W7 non-quiz runtime handoff
-- Content authoring rules
-- TopicPhrase.ts
+- Q: Why did 'ask loomwright about welcome' answer with the pseudo-code text in the Bureau?
+- W7 re-test — Assistance Ward, round 2 (2026-11-27)
+- Q: Where is the area-entry life reset implemented and which node owns the issue 15 quiz and puzzle gate?
+- Q: W7F-01..14: which canonical owners implement parser aliases, unlock splitting, gate denial, blockedText shape/adapt, quiz idempotence, transfer announcement, title copy and room hint targets?
+- NpcTypes.test.ts
 - Q: Where are canonical card sets, coverage topic IDs and quiz/hint wiring defined and consumed by tests?
 - Q: How does the generator aggregate card collections and validate coverage headings, and which fixture helpers mirror that order?
 - Q: Where is the canonical authored win path command sequence and whole-game V4 trace that owns quiz handoffs, hazard lives, teaching ladders and game-won?
-- GameWindow
-- 9. Agent acceptance contract
-- NPCs and conversation
-- vitest
+- TopicSelection.test.ts
+- ContentBundle.ts
 - Q: Where does the area-entry life reset live, and how are quizzes/puzzles mapped to the departed area for the issue-15 gate?
-- TopicResolver
-- interactionShapeProblems
-- PuzzleGraph.ts
-- w7-accessibility.spec.ts
+- npc-topic-resolution.test.ts
+- HintSystem.ts
+- package.json
+- playwright
 - Q: Where does the progress panel render the spec topic title, specReference and status that the citation removal must change?
 - Q: Where is the sidebar progress-panel spec topic line rendered, and who owns it?
 - Q: Which canonical nodes own TitleScreen copy slots, GameWindow first-batch transcript seeding and overlay dismissal for onboarding?
@@ -233,292 +227,334 @@
 - Q: ENG28-ACTIVATION-01: which canonical node owns formatEvent transcript rendering for puzzle-activated, and is render-time suppression the only compliant change?
 - Q: Can the Playwright MCP browser tools drive the app in this engine-issue-28 session?
 - Q: ENG28-ACTIVATION-01 which nodes own puzzle-activated suppression and the effect pipeline?
-- area-score-attribution.test.ts
+- W7 round-3 re-test — Assistance Ward (2026-11-27)
 - Q: graphify section '6.1' — which document owns the event to view mapping?
+- eslint.config.js
+- Q: Which authored question prompt should enterSwitchFloorQuiz() wait for in the merged app (q-dr-01 or another)?
+- Q: Can the Playwright MCP browser tools drive the app in this browser-tester session?
+- Q: Does any second node implement a conditional use effect or authored useText mapping outside the canonical producer?
+- Q: Where is the conditional use producer, authored useText mapping and condition gate owned for W6S-01..04?
+- Q: ward-w7-fixes: canonical owners for parser aliases, unlock denial, quiz starts, hint targets
+- Q: Which canonical nodes supply the approved title copy, help aliases and gate fallback that the four stale e2e assertions must re-anchor?
+- Q: Why do four W7 browser tests still fail after the string re-anchor, and is it caused by this slice?
+- Q: Which canonical nodes own browser save seeding and continuation for gated later-area e2e traces?
+- Q: Which accepted sources own the hub escape reply and interface room prose re-anchored in W7 Beat C, and the 23-room bundle count?
+- Q: Which coverage-graph nodes document the tutorial-complete gate for hub east/north?
+- HintSequence
+- submit
+- ScoreTracker
+- MemoryContentIo
+- Q: Where is the approved dial blocked string pinned in tests, and which authority superseded it in round 2?
+- Q: Do the record and mark aliases in the room-arrival SCENERY entry make resolveScenery ambiguous?
+- makeBundle
+- Q: Why did eleven e2e tests fail after the round-2 ward card regeneration, and how were stale expectations re-anchored?
+- Q: Why does a crafted v1 save with empty room inventories make 'unlock practice cabinet with practice key' return 'I don't understand that.'?
+- Q: After the W6 handoff regeneration, which accepted sources own the revised hub and interface room prose asserted by W7 Beat C?
+- Q: Which code paths own wrong-order unlock refusal and arrival scenery examine
+- Q: Which canonical nodes own the WR2-B1 wrong-order unlock refusal, WR2-B2 item-first unlock preservation and WR2-E1 arrival scenery examine contracts?
+- Q: Who owns arrival register/record/mark scenery prose for WR2-E1?
+- Q: Can the coverage graph supply the round-2 dial blocked string, the saving keyword and the state-true hub/Interface prose?
+- Q: Who owns wrong-order unlock refusal for a non-portable item offered as the key-like item (WR2-B1)?
+- Q: Bypass check on WR2-B1 refusal literal and WR2-E1 arrival scenery prose: any reimplementation outside the canonical hub?
+- Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, the existing answer paths and the outside-quiz unknown path?
+- Q: Which canonical node owns exact displayed quiz option text as an answer, and where should the WR3-A1 fix and shared option-text normalisation live?
+- Q: Can a Playwright e2e test retry quiz starts until a target option is not the final question?
+- Q: Does a wrong free-text quiz answer receive the quiz's out-of-range string?
+- Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, answer N/bare N and the outside-quiz unknown path?
+- Q: WR4-B1/B2/C1: which canonical nodes own put/take placement feedback, transfer-item ownership and out-of-room give feedback?
+- Q: Where are item ownership and current-room visibility owned, and can a block placed in a visible fixture stay nameable?
+- Q: Can out-of-room give/show with an unresolvable item emit the canonical absence line without a new Command variant or content card?
+- Q: Who owns the fallback source owner for a take when no visible open container branch applies (WR4-B1 closed-cabinet retrieval)?
+- GameEvent
+- isActive
 - zod
+- engine-issue-15-life-gate.spec.ts
+- TopicPhrase.ts
+- Content authoring rules
+- PuzzleGraph.ts
+- Q: Where do putHandler(), takeHandler(), describeTarget(), ItemVisibility, formatEvent(), GameEvent, TitleScreen, SaveControls and GameViewData live, and what real event names and view fields should browser assertions use?
+- Q: Does the assistance orientation quiz always present questions in the authored questionIds order?
+- Q: Why does a save written immediately after 'place practice block in practice cabinet' get quarantined as invalid-content on reload?
+- Q: WR4 persistence blocker: which canonical SaveManager nodes reject a state.rooms key that is a fixture item ID holding a placed item?
 
 ## God Nodes (most connected - your core abstractions)
-1. `ContentBundle` - 117 edges
-2. `vitest` - 105 edges
-3. `GameEvent` - 99 edges
-4. `GameState` - 82 edges
-5. `asText()` - 62 edges
-6. `finding()` - 58 edges
-7. `Effect` - 54 edges
-8. `Command` - 53 edges
-9. `Random` - 47 edges
-10. `FakeRandom` - 47 edges
+1. `ContentBundle` - 127 edges
+2. `vitest` - 123 edges
+3. `GameEvent` - 107 edges
+4. `GameState` - 97 edges
+5. `Effect` - 62 edges
+6. `asText()` - 62 edges
+7. `Command` - 60 edges
+8. `FakeRandom` - 58 edges
+9. `finding()` - 58 edges
+10. `makeBundle()` - 49 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Graph trace from the handoff round` --references--> `MultiwordAlias`  [INFERRED]
-  W7-HANDOFF.md → src/core/commands/Parser.ts
-- `Batch E2 — Engine fixes and removals (single implementation batch)` --references--> `formatEvent()`  [INFERRED]
-  ENGINE_ISSUES.md → src/ui/formatEvent.ts
-- `6.1 Event to view mapping` --references--> `GameViewData`  [INFERRED]
-  docs/developer/application-and-ui.md → src/application/GameViewData.ts
-- `6.5 Losing a life and winning` --references--> `Session`  [INFERRED]
-  docs/developer/architecture.md → src/core/lifecycle/Session.ts
+- `6. Integration points` --references--> `Command`  [INFERRED]
+  docs/developer/puzzles.md → src/core/commands/Command.ts
+- `4. Trigger` --references--> `Command`  [INFERRED]
+  docs/developer/shared-rules.md → src/core/commands/Command.ts
+- `4. Counters and stuckness` --references--> `PuzzleSystem`  [INFERRED]
+  docs/developer/storage-schema.md → src/core/puzzles/PuzzleSystem.ts
+- `11. Flow` --references--> `Game`  [INFERRED]
+  docs/developer/storage-schema.md → src/application/Game.ts
 - `1. Scope` --references--> `ConversationNode`  [INFERRED]
   docs/developer/combat.md → src/core/npcs/ConversationNode.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (222 total, 5 thin omitted)
+## Communities (263 total, 7 thin omitted)
 
-### Community 0 - "Game.ts"
-Cohesion: 0.11
-Nodes (18): 2. Model, 2. Model, 2. Model, 5. Quiz attempts, AreaProgress, GameStateDto, RuntimeGameState, stateToDto() (+10 more)
+### Community 0 - "NpcGates.test.ts"
+Cohesion: 0.10
+Nodes (21): CardData, cleanParsedSet(), definition(), roomData(), actor(), Data, EmittedNode, EmittedTopic (+13 more)
 
-### Community 1 - "npcTopicOverlap.ts"
-Cohesion: 0.11
-Nodes (67): gNpc06(), gNpc07(), gNpc08(), gNpc09(), gNpc10(), gNpc11(), gNpc12(), gNpc13() (+59 more)
+### Community 1 - "collection"
+Cohesion: 0.18
+Nodes (24): collection(), coverageIds(), DIRECTIONS, entriesWith(), knownTopicIds(), aliasFindings(), badPrefix(), checkContentIds() (+16 more)
 
-### Community 2 - "npcs.ts"
+### Community 2 - "w7-opening-walkthrough.spec.ts"
 Cohesion: 0.16
 Nodes (22): expectHazardOutcome(), hazardAnnouncement(), HazardStep, command(), enter(), expectEntry(), expectFlags(), expectOwners() (+14 more)
 
-### Community 3 - "authored.ts"
-Cohesion: 0.07
-Nodes (36): createFromDto(), createInitial(), createConditionEvaluator(), finishWithWrongAnswers(), questionFor(), wrongAnswer(), authoredBundle, authoredGame() (+28 more)
+### Community 3 - "GameState.ts"
+Cohesion: 0.05
+Nodes (64): 2. Model, 2. Model, Catalogue, catalogueOf(), RoomSummary, GameStateDto, RuntimeGameState, HazardStateDto (+56 more)
 
 ### Community 4 - "helpers.ts"
-Cohesion: 0.09
-Nodes (17): boot(), openSession(), PROMISED, authoredArea, authoredStartRoom, authoredWorld, makeSave(), makeState() (+9 more)
+Cohesion: 0.07
+Nodes (26): boot(), openSession(), PROMISED, ROOM_TITLES, authoredArea, authoredStartRoom, authoredWorld, DOWNLOAD_NAME (+18 more)
 
-### Community 5 - "ContentBundle.ts"
-Cohesion: 0.08
-Nodes (24): 2. Authoring format, area, START_POSITION, startRoom, ActorDefinition, AreaDefinition, actorStates, actors (+16 more)
+### Community 5 - "content/index.ts"
+Cohesion: 0.10
+Nodes (20): area, START_POSITION, startRoom, ActorDefinition, actorStates, actors, areas, conversationTopics (+12 more)
 
-### Community 6 - "mechanics.ts"
+### Community 6 - "Issues"
 Cohesion: 0.04
-Nodes (46): Batch E1 — Onboarding and intuitive commands (planning-led), Batch E2 — Engine fixes and removals (single implementation batch), Batches, Definition of done, Engine issues — batched hand-off, Issues in scope, Out of scope — deferred to the content session, Parallel execution (+38 more)
+Nodes (45): Batch E1 — Onboarding and intuitive commands (planning-led), Batch E2 — Engine fixes and removals (single implementation batch), Batches, Definition of done, Engine issues — batched hand-off, Issues in scope, Out of scope — deferred to the content session, Parallel execution (+37 more)
 
 ### Community 7 - "persistence.ts"
-Cohesion: 0.09
-Nodes (28): gatedState(), asRuntime(), EffectApplierDependencies, envelopeText(), FIXED_ISO, FixedClock, IMPORTED_ISO, loadEffectApplier() (+20 more)
+Cohesion: 0.08
+Nodes (33): gatedState(), asRuntime(), EffectApplierDependencies, envelopeText(), FIXED_ISO, FixedClock, IMPORTED_ISO, importModule() (+25 more)
 
-### Community 8 - "ui.ts"
-Cohesion: 0.37
-Nodes (12): applyLevel(), applyMessage(), autoCandidates(), automaticHints(), explicitHint(), nextLevel(), resolveContext(), sequenceForPuzzle() (+4 more)
+### Community 8 - "wardKeywordActivity.ts"
+Cohesion: 0.06
+Nodes (63): actorBindingScenario(), actorOrderScenario(), actorScenario(), ActorScenarioInput, AI_ID, AI_INITIAL_STATE_ID, AI_STATES, ARRIVAL_AREA_ID (+55 more)
 
 ### Community 9 - "SaveManager.ts"
 Cohesion: 0.15
 Nodes (30): createSaveManager(), ENTITY_RECORD_KEYS, hasOptionalNumber(), hasUniqueItemOwnership(), hasUniqueProgress(), hasValidFlagReferences(), hasValidHazards(), hasValidHints() (+22 more)
 
 ### Community 10 - "verbs/index.ts"
-Cohesion: 0.10
-Nodes (36): describeScenery(), examineInteraction(), flagEffects(), FlagInteraction, hasMatchingName(), isSceneryVisible(), matchingInteraction(), normalise() (+28 more)
+Cohesion: 0.07
+Nodes (50): AUTHORED_USES, authoredUseEffects(), AuthoredUseInteraction, describeScenery(), examineInteraction(), flagEffects(), FlagInteraction, hasMatchingName() (+42 more)
 
-### Community 11 - "transcript"
-Cohesion: 0.11
-Nodes (15): command(), DEBUG_FRAGMENTS, command(), IMPLEMENTATION_PATTERNS, ROOM_TITLES, command(), INTERNAL_LINE_PATTERNS, watchAppConsole() (+7 more)
-
-### Community 12 - "GameState.ts"
-Cohesion: 0.11
-Nodes (35): makeEnvelope(), QUARANTINE_KEY, SAVE_KEY, allText(), Bootstrap, BootstrapDependencies, descendants(), documentState (+27 more)
-
-### Community 13 - "turn.ts"
+### Community 11 - "wardTopicLocality.ts"
 Cohesion: 0.06
-Nodes (50): 5. Conversation nodes, ParsedCommand, CHEST_ID, DOOR_ID, KEY_A, KEY_B, loadNameResolver(), loadParser() (+42 more)
+Nodes (44): AI_ID, ARRIVAL_AREA_ID, ARRIVAL_ROOM_ID, DECOY_REPLY, DEMONSTRATION_ROOM_ID, GLOBAL_AI_DEFAULT, GLOBAL_AI_KEYWORD, INTAKE_ROOM_ID (+36 more)
 
-### Community 14 - "content.ts"
-Cohesion: 0.12
-Nodes (36): CreateInitial, runtimeBundle(), BASE_AREA, BASE_ITEM, BASE_ROOM, BASE_WORLD, bundleWithTopic(), COVERAGE_TOPIC_IDS (+28 more)
+### Community 12 - "content.ts"
+Cohesion: 0.09
+Nodes (38): vitest, CreateInitial, BASE_AREA, BASE_ITEM, BASE_ROOM, BASE_WORLD, bundleWithTopic(), COVERAGE_TOPIC_IDS (+30 more)
 
-### Community 15 - "zone1.ts"
-Cohesion: 0.10
-Nodes (33): acceptedCards(), generatedRoomIds(), zone1Cards(), zone1Cards(), zone1Generation(), CONTENT_SOURCES, RETIRED_STUB_PATH, SRC_SOURCES (+25 more)
+### Community 13 - "hint.ts"
+Cohesion: 0.18
+Nodes (15): ROOM_TARGETS, asNumber(), CardEntry, checkHint(), ladderFindings(), levelFindings(), penaltyFindings(), targetFindings() (+7 more)
 
-### Community 16 - "collection"
-Cohesion: 0.17
-Nodes (27): asArray(), asObjectArray(), collection(), coverageIds(), DIRECTIONS, effectList(), entriesWith(), knownTopicIds() (+19 more)
+### Community 14 - "npcTopicOverlap.ts"
+Cohesion: 0.11
+Nodes (66): gNpc06(), gNpc07(), gNpc08(), gNpc09(), gNpc10(), gNpc11(), gNpc12(), gNpc13() (+58 more)
 
-### Community 17 - "ScoreTracker.ts"
-Cohesion: 0.19
-Nodes (20): areaPairForRoom(), areaPairForTopic(), ensureProgressRow(), maxScoreOf(), MutableAreaProgress, applyStateEffect(), Announce, AreaPair (+12 more)
+### Community 15 - "GameViewData.ts"
+Cohesion: 0.27
+Nodes (7): AreaProgressView, ConversationView, HintView, QuizView, SpecTopicView, SpecStatus, SessionStatus
+
+### Community 16 - "asText"
+Cohesion: 0.15
+Nodes (43): allEffects(), areaLikes(), asObjectArray(), asText(), auditedAreaLikes(), authoringOf(), EFFECT_KINDS, effectList() (+35 more)
+
+### Community 17 - "ContentBundle"
+Cohesion: 0.07
+Nodes (54): 5.1 Door and container verbs, 5.2 Verb table and handler signature, 5. Canonical command union and verbs, 6.1 Bootstrap (`src/main.ts`), 3. Flow, 5. ID and alias registry, 9. Content registration, GameDependencies (+46 more)
 
 ### Community 18 - "topicOverlap.ts"
 Cohesion: 0.14
 Nodes (33): ALWAYS_TRUE, areKeywordsOverlapping(), areLiteralsExclusive(), ASK_TELL_KINDS, checkTopicOverlap(), childrenOf(), conditionOf(), DataRecord (+25 more)
 
-### Community 19 - "asText"
-Cohesion: 0.21
-Nodes (29): allEffects(), areaLikes(), asText(), auditedAreaLikes(), authoringOf(), EFFECT_KINDS, finding(), idsOf() (+21 more)
-
-### Community 20 - "application-and-ui.md"
-Cohesion: 0.09
-Nodes (54): createEffectApplier(), puzzleDefinition(), applierFor(), ComposedReaction, ComposedReactionDependencies, ComposedReactionFactory, ConditionEvaluatorFactory, DOOR_FLAG (+46 more)
+### Community 20 - "mechanics.ts"
+Cohesion: 0.08
+Nodes (58): createEffectApplier(), puzzleDefinition(), applierFor(), ComposedReaction, ComposedReactionDependencies, ComposedReactionFactory, ConditionEvaluatorFactory, DOOR_FLAG (+50 more)
 
 ### Community 21 - "compilerOptions"
-Cohesion: 0.08
-Nodes (31): 4. Failure consequences, 5. Content, Hazards, compilerOptions, allowImportingTsExtensions, allowUnreachableCode, allowUnusedLabels, erasableSyntaxOnly (+23 more)
-
-### Community 22 - "HintQuizViews.test.ts"
-Cohesion: 0.13
-Nodes (15): 7.2 View data, AreaProgressView, ConversationView, GameViewData, HintView, QuizView, SpecTopicView, SpecStatus (+7 more)
-
-### Community 23 - "TopicSelection.ts"
-Cohesion: 0.21
-Nodes (20): AskTellMatch, chooseCandidate(), exactDeclaredTopic(), findDefaultTopic(), GiveShowMatch, hasKeyword(), hasObjectMatch(), hasResolvedMatch() (+12 more)
-
-### Community 24 - "common.ts"
-Cohesion: 0.12
-Nodes (28): bundleOf(), gateOf(), isTrue(), number(), numbers(), sharedFindings(), strings(), text() (+20 more)
-
-### Community 25 - "RoomDefinition"
-Cohesion: 0.29
-Nodes (7): 3. Rule catalogue, C — Conversation and NPCs, D — Data and cards, H — Hazards and hints, N — Narrative, P — Pedagogy and course mapping, V — Validation
-
-### Community 26 - "GameEvent"
-Cohesion: 0.09
-Nodes (7): absentElement(), FakeDocument, FakeElement, makeFakeDocument(), press(), statusText(), press()
-
-### Community 27 - "PuzzleGraph.test.ts"
-Cohesion: 0.08
-Nodes (30): CardData, cleanParsedSet(), definition(), roomData(), PER_AREA_PATHS, topicsCard(), CardFile, expectSameMembers() (+22 more)
-
-### Community 28 - "QuizFlow.test.ts"
-Cohesion: 0.12
-Nodes (15): 10. Commit / push note, 1. One-paragraph summary, 2. Read these first (in order), 3. What is accepted (content, do not re-litigate), 5. Ordered next steps, 6. Ownership boundaries (non-negotiable), 7. Deep state: the approved content in numbers, 8. Traps and gotchas (learned the hard way) (+7 more)
-
-### Community 29 - "scenery-validation.test.ts"
-Cohesion: 0.08
-Nodes (24): Data, gateFindings(), cardsWithRefusalText(), expectOneShapeFinding(), ParsedRoom, refusalFindings(), npcFindings(), CardSet (+16 more)
-
-### Community 30 - "W7 non-quiz runtime handoff"
-Cohesion: 0.11
-Nodes (18): 1. Multi-ID topic resolution, 3. Exhausted `once` defaults, 4. Empty-progress completion, 5. Malformed interaction containers, 6. Strict EXAMINE item fields, 7. Named signature contract, Constraints and pitfalls, Critical rebase requirement (+10 more)
-
-### Community 31 - "submit"
-Cohesion: 0.18
-Nodes (15): liveSave(), command(), continueFromCraftedSave(), savedState(), State, ConsoleWatch, enterSwitchFloorQuiz(), QuizState (+7 more)
-
-### Community 32 - "isActive"
 Cohesion: 0.07
-Nodes (34): 3. Execution, 1. Scope, 2. Model, 3. Commands and delivery, 4. Adaptive behaviour, 5. Score interaction, Hints, 1. Scope (+26 more)
+Nodes (28): compilerOptions, allowImportingTsExtensions, allowUnreachableCode, allowUnusedLabels, erasableSyntaxOnly, exactOptionalPropertyTypes, forceConsistentCasingInFileNames, isolatedModules (+20 more)
+
+### Community 22 - "GameViewData"
+Cohesion: 0.08
+Nodes (28): 7.1 DOM layout, 7.2 View data, 7. UI structure and view-model, Persistence and UI, 6. Events and UI, 7. State, events and UI, 5. Effect and EffectApplier, Batch E1 — onboarding and intuitive commands (+20 more)
+
+### Community 23 - "engine-issue-28-activation.test.ts"
+Cohesion: 0.08
+Nodes (21): loadFormatEvent(), BUNDLE, COMPLETED, SOLVED_WITH_TOPIC, SOLVED_WITHOUT_TOPIC, ACTIVATED_PUZZLE_IDS, INTERNAL_STATE_EVENTS, NO_GAIN_SCORES (+13 more)
+
+### Community 24 - "W7 round-5 re-test — Assistance Ward (2026-11-27)"
+Cohesion: 0.20
+Nodes (9): 1. Expected path claims — checked against play, 2. R4-1 closure claim — verified carefully, 3. Gate table check, 4. Status of the original thirteen findings, 5. Status of round-2 A–E, round-3's two findings and round-4's findings, 6. Difficulty and fairness record, Additional observation (not a finding), Priority list from the player's point of view (+1 more)
+
+### Community 25 - "isActive"
+Cohesion: 0.10
+Nodes (18): 10. Commit / push note, 1. One-paragraph summary, 2. Read these first (in order), 3. What is accepted (content, do not re-litigate), 4.1 Failure inventory, 4.2 The generated bundle is stale — verify this first, 4. Current verification state (measured 2026-11-26), 5. Ordered next steps (+10 more)
+
+### Community 26 - "findDefaultTopic"
+Cohesion: 0.33
+Nodes (7): fallBackAfterOnce(), findDefaultTopic(), isDefaultTopic(), isExhaustedOnce(), usesOf(), expectSelectionWithoutMutation(), 3. Exhausted `once` defaults
+
+### Community 27 - "contentToolchain.ts"
+Cohesion: 0.06
+Nodes (44): Data, gateFindings(), PER_AREA_PATHS, cardsWithRefusalText(), expectOneShapeFinding(), ParsedRoom, refusalFindings(), npcFindings() (+36 more)
+
+### Community 28 - "Seven final-review fixes still to apply"
+Cohesion: 0.33
+Nodes (6): 1. Multi-ID topic resolution, 4. Empty-progress completion, 5. Malformed interaction containers, 6. Strict EXAMINE item fields, 7. Named signature contract, Seven final-review fixes still to apply
+
+### Community 29 - "common.ts"
+Cohesion: 0.11
+Nodes (39): 5. Generation, bundleOf(), gateOf(), isTrue(), number(), numbers(), sharedFindings(), strings() (+31 more)
+
+### Community 30 - "validateContent.ts"
+Cohesion: 0.15
+Nodes (24): 7.1 Free-text topic-overlap proof, 7. Structural validation gates, aliasProblems(), aliasProblemsOf(), asRecord(), budgetProblems(), catalogueIds(), coverageProblems() (+16 more)
+
+### Community 31 - "Q: Which SaveManager reference validation quarantines a fixture-owned item inventory key, and what is the smallest canonical fix?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which SaveManager reference validation quarantines a fixture-owned item inventory key, and what is the smallest canonical fix?, Source Nodes
+
+### Community 32 - "zone1.ts"
+Cohesion: 0.11
+Nodes (30): acceptedCards(), generatedRoomIds(), zone1Cards(), zone1Cards(), zone1Generation(), CONTENT_SOURCES, RETIRED_STUB_PATH, SRC_SOURCES (+22 more)
 
 ### Community 33 - "Documentation style guide"
 Cohesion: 0.11
 Nodes (18): Audience and writing style, Choose where a doc lives, COVERAGE.md is split-governed, Decisions, Documentation style guide, Don't duplicate the code, Formatting, Keep changes proportional (+10 more)
 
-### Community 34 - "domain.ts"
-Cohesion: 0.05
-Nodes (54): 3. Condition, actorAndRemainder(), answerCommand(), bareAnswerCommand(), conversationCommand(), DIRECTION_BY_TOKEN, directionCommand(), fallbackPair() (+46 more)
+### Community 34 - "commandResolution.ts"
+Cohesion: 0.14
+Nodes (27): actorAndRemainder(), answerCommand(), bareAnswerCommand(), conversationCommand(), DIRECTION_BY_TOKEN, directionCommand(), exactOptionAnswerCommand(), fallbackPair() (+19 more)
 
-### Community 35 - "area-progress.test.ts"
-Cohesion: 0.23
-Nodes (7): QuarantineDto, LoadFailureReason, loadFailureMessage(), MESSAGES, Terminal, DEFAULT_TITLE_COPY, TitleCopy
+### Community 35 - "parser.ts"
+Cohesion: 0.04
+Nodes (67): CommandHandler, ParsedCommand, CommandSpec, CommandTableModule, DirectionSpec, hasCommandToken(), loadCommandTable(), CHEST_ID (+59 more)
 
-### Community 36 - "SaveDto"
-Cohesion: 0.11
-Nodes (6): LoadResult, SaveDto, RecordingGame, RecordingGameOptions, BootSetupOptions, FakeSaveManager
+### Community 36 - "LoadResult"
+Cohesion: 0.10
+Nodes (9): QuarantineDto, LoadFailureReason, LoadResult, SaveDto, MESSAGES, RecordingGame, RecordingGameOptions, BootSetupOptions (+1 more)
 
 ### Community 37 - "scripts"
 Cohesion: 0.12
 Nodes (17): scripts, build, content:generate, content:scaffold, content:validate, dev, format, format:check (+9 more)
 
-### Community 38 - "ContentBundle.ts"
-Cohesion: 0.10
-Nodes (33): 1. Purpose and authority, 3.1 Catalogue shape, 7. Core contracts, 4.3 NPC card, 1. Scope, 1. Purpose, 3.2 Entity and system state, rooms (+25 more)
+### Community 38 - "Game.ts"
+Cohesion: 0.08
+Nodes (27): 8. Fixed contracts content must use, 3. Execution, 4. Failure consequences, 5. Content, Hazards, 3. Completion detection, ComposedReaction, ComposedReactionDependencies (+19 more)
 
-### Community 39 - "FakeElement"
-Cohesion: 0.21
-Nodes (9): actor(), Data, EmittedNode, EmittedTopic, node(), NOT_KNOWN, npcCards(), npcData() (+1 more)
+### Community 39 - "Onboarding.test.ts"
+Cohesion: 0.06
+Nodes (41): makeEnvelope(), SAVE_KEY, absentElement(), allText(), Bootstrap, BootstrapDependencies, descendants(), documentState (+33 more)
 
 ### Community 40 - "ConversationFlow.ts"
-Cohesion: 0.26
-Nodes (18): activeNode(), applyAll(), applyTopicEffects(), conversationTransfer(), endConversation(), expireNode(), fallBackAfterOnce(), handleConversationTopic() (+10 more)
+Cohesion: 0.20
+Nodes (23): activeNode(), announceHandover(), applyAll(), applyTopicEffects(), conversationTransfer(), createNpcTopicResolver(), endConversation(), expireNode() (+15 more)
 
 ### Community 41 - "opencode.json"
 Cohesion: 0.12
 Nodes (16): command, type, default_agent, experimental, subagent_depth, command, type, mcp (+8 more)
 
-### Community 42 - "AuthoredRun"
-Cohesion: 0.20
-Nodes (3): AuthoredRun, gateFlag(), lastQuestion()
+### Community 42 - "Q: After the SaveManager fix, does a save written with the practice block placed in the fixture cabinet reload with Continue enabled, and is the invalid-json quarantine path still intact?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: After the SaveManager fix, does a save written with the practice block placed in the fixture cabinet reload with Continue enabled, and is the invalid-json quarantine path still intact?, Source Nodes
 
-### Community 43 - "asRecord"
-Cohesion: 0.07
-Nodes (42): 3. Scaffolds, CONTENT_ROOT, COVERAGE_PATH, coverageOptions(), diskIo(), main(), printFindings(), readCards() (+34 more)
+### Community 43 - "generate.ts"
+Cohesion: 0.08
+Nodes (31): 1. Purpose, 3. Scaffolds, 4. Validation, 6. Ownership, 7. Coverage-graph extraction, Content toolchain, CONTENT_ROOT, COVERAGE_PATH (+23 more)
 
-### Community 44 - "validateContent.ts"
-Cohesion: 0.21
-Nodes (15): aliasProblems(), budgetProblems(), catalogueIds(), coverageProblems(), DEFERRED_GATES, DIRECTIONS, Identified, ownerProblems() (+7 more)
-
-### Community 45 - "hint.ts"
-Cohesion: 0.13
-Nodes (31): Finding, ParsedCardSet, asNumber(), CardEntry, stringList(), checkHint(), ladderFindings(), levelFindings() (+23 more)
-
-### Community 46 - "GameEvent"
+### Community 44 - "content/schema.ts"
 Cohesion: 0.16
-Nodes (6): GameEvent, AuthoredGameFixture, SchedulerContract, EffectApplierLike, RecordingBus, MemoryBus
+Nodes (23): ParseResult, asArray(), asRecord(), AUTHORING_KEYS, blockedTextFinding(), blockedTextFindings(), cardShape, COLLECTION_KEYS (+15 more)
 
-### Community 47 - "save-import.spec.ts"
-Cohesion: 0.15
-Nodes (8): DOWNLOAD_NAME, makeQuarantine(), QUARANTINE_DOWNLOAD_NAME, QUARANTINE_KEY, statusText(), countLines(), DownloadedSave, persistedTurn()
+### Community 45 - "npcState"
+Cohesion: 0.20
+Nodes (19): createFromDto(), stateToDto(), CountingRandom, npcDto(), npcGameDependencies(), npcState(), submitNpc(), loadGame() (+11 more)
 
-### Community 48 - "NpcTypes.test.ts"
-Cohesion: 0.14
-Nodes (14): actorKeywordTopic(), createTopicResolver(), hasKeyword(), isBoundToActor(), createNpcTopicResolver(), hasHandledNpcTurn(), isLeavingRoom(), speakingActorIds() (+6 more)
+### Community 46 - "Quiz combat"
+Cohesion: 0.50
+Nodes (4): 1. Scope, 4. Commands and events, 5. Hints, Quiz combat
 
-### Community 49 - "Game"
+### Community 47 - "2. Functional defects"
+Cohesion: 0.10
+Nodes (20): 10. Placeholder objective and controls copy is shown to the player, 11. SHOW silently hands over a carried item, 12. Hints are graded correctly but too generic to resolve the stalled step, 13. Quiz teaches a command form the game rejects, 1. Expected ward path — claim-by-claim outcome, 1. Internal flag token shown at the teaching-port gates, 2. Functional defects, 2. `talk to <npc>` rejected although the command list advertises `talk-to` (+12 more)
+
+### Community 48 - "wardW7Fixes.ts"
 Cohesion: 0.06
-Nodes (50): 2. Boot, title screen and session start, 3.3 Loading and validation, 4.1 Meta actions, 4. Game façade and meta actions, 10. Out of scope, 1. Scope and goals, 2. Design principles, 3. Layers and dependency direction (+42 more)
+Nodes (46): createRuleEngine(), START, startEvents(), Condition, keywordTopic(), stateSnapshot(), W7_AI_ALIAS, W7_AI_ID (+38 more)
 
-### Community 50 - "package.json"
-Cohesion: 0.17
-Nodes (11): description, markdownlint-cli2@^0.24.2, @types/node@^26.6.10, yaml@^2.9.1, name, private, type, version (+3 more)
+### Community 49 - "StorageAdapter"
+Cohesion: 0.08
+Nodes (35): 2. Boot, title screen and session start, 4.1 Meta actions, 4. Game façade and meta actions, 10. Out of scope, 1. Scope and goals, 2. Design principles, 3. Layers and dependency direction, 4. Source layout (+27 more)
+
+### Community 50 - "ward-round3-fixes.spec.ts"
+Cohesion: 0.20
+Nodes (16): answerCorrectly(), authoredPassMessage(), AuthoredQuestion, authoredQuestion(), authoredQuiz(), correctIndex(), currentQuestion(), liveState() (+8 more)
 
 ### Community 51 - "devDependencies"
 Cohesion: 0.15
 Nodes (13): devDependencies, eslint@^10.15.0, playwright@1.65.1, prettier@^3.10.1, typescript@npm:@typescript/typescript6@^6.0.2, typescript-7@npm:typescript@^7.0.2, vite@^8.3.8, vitest@^5.1.1 (+5 more)
 
-### Community 52 - "adapt.ts"
-Cohesion: 0.07
-Nodes (58): ACTOR_ALIAS, ACTOR_ID, actorState(), always, askRing, byeCommand, ConditionEvaluatorCondition, CountingRandom (+50 more)
+### Community 52 - "vitest"
+Cohesion: 0.09
+Nodes (27): ACTOR_ALIAS, askRing, byeCommand, ConditionEvaluatorCondition, DEFAULT_REPLY, DialogueSystemContract, DialogueSystemFactory, ENTER_NODE_TOPIC_ID (+19 more)
 
-### Community 53 - "engine-issue-15-life-gate.spec.ts"
-Cohesion: 0.18
-Nodes (11): command(), continueFrom(), firstId(), GATE_IDS, gateIds(), GateOverrides, savedState(), SaveState (+3 more)
+### Community 53 - "ScoreTracker"
+Cohesion: 0.14
+Nodes (17): 8. Behavioural signatures, 6.3 Room entry, score and spec-topic mapping, Core, 2. Authoring format, 3. Condition, 7. Restore-time derivation, AreaProgress, Exit (+9 more)
 
-### Community 54 - ".makeActions"
-Cohesion: 0.13
-Nodes (5): 8.1 Strictness, 8.2 Result type, 8. Validation contract, SaveActions, SaveControls
+### Community 54 - "TopicSelection.ts"
+Cohesion: 0.35
+Nodes (11): chooseCandidate(), exactDeclaredTopic(), hasKeyword(), hasObjectMatch(), hasResolvedMatch(), isAskTellMatch(), isCommandCompatible(), isGiveShowMatch() (+3 more)
 
-### Community 55 - "LoadResult"
+### Community 55 - "deploy.yml"
 Cohesion: 0.07
 Nodes (31): runs-on, steps, concurrency, cancel-in-progress, group, environment, needs, runs-on (+23 more)
 
-### Community 56 - "EffectApplier.ts"
-Cohesion: 0.18
-Nodes (17): applyBookkeepingEffect(), applyEffect(), applyEntityEffect(), applyItemEffect(), applySystemEffect(), endQuiz(), evaluateAnswer(), firstQuestionEvent() (+9 more)
+### Community 56 - "Parser.ts"
+Cohesion: 0.12
+Nodes (20): aliasSuffix(), COMMAND_TABLE, CommandSpec, detailSuffix(), DIRECTIONS, DirectionSpec, helpText(), DIRECTION_NAMES (+12 more)
 
-### Community 57 - "eslint.config.js"
-Cohesion: 0.18
-Nodes (10): @eslint/js@^10.0.1, eslint-plugin-sonarjs@^4.2.2, eslint-plugin-unicorn@^80.0.0, globals@^17.14.0, typescript-eslint@^8.74.0, @eslint/js, eslint-plugin-sonarjs, eslint-plugin-unicorn (+2 more)
+### Community 57 - "W7 round-4 re-test — Assistance Ward (2026-11-27)"
+Cohesion: 0.14
+Nodes (13): 1. Expected path claims — checked against play, 2. Status of the original thirteen findings, 3. Status of the five round-2 findings A–E, 4. Round-3 findings and round-4 closure claims, 5. Findings from this round, 6. Difficulty and fairness record, Additional observation (not a blocker), Content finding 1. The placed block stays “on top” in the room prose and cannot be found again (+5 more)
 
-### Community 58 - "engine-issue-11.spec.ts"
-Cohesion: 0.21
-Nodes (7): areaHeaders(), authoredArea(), expectCurrentCard(), headerFor(), panelLines(), PROGRESS, TOTAL_SCORE
-
-### Community 59 - "CommandTable.test.ts"
-Cohesion: 0.25
-Nodes (9): CommandSpec, CommandTableModule, DirectionSpec, hasCommandToken(), loadCommandTable(), CANONICAL_COMMANDS, CANONICAL_DIRECTIONS, normalise() (+1 more)
-
-### Community 60 - "Favicon.test.ts"
-Cohesion: 0.28
-Nodes (5): attributes(), FAVICON_PATH, iconLinks(), INDEX_PATH, linkElements()
-
-### Community 61 - "engine-issue-13-inventory.test.ts"
+### Community 58 - "engine-issue-13-inventory.test.ts"
 Cohesion: 0.36
 Nodes (8): getCommandHandler, CARTRIDGE, contextFor(), handlerFor(), inventoryReply(), LAMP, messagesOf(), stateSnapshot()
 
-### Community 62 - "reactionFor"
-Cohesion: 0.29
-Nodes (8): 1. Purpose, 4. Validation, 5. Generation, 6. Ownership, 7. Coverage-graph extraction, Content toolchain, normalisedCards(), normaliseExit()
+### Community 59 - "EffectApplier.ts"
+Cohesion: 0.06
+Nodes (45): 2. Model, 5. Quiz attempts, areaPairForRoom(), areaPairForTopic(), ensureProgressRow(), maxScoreOf(), MutableAreaProgress, applyBookkeepingEffect() (+37 more)
 
-### Community 64 - "SeededRandom"
+### Community 60 - "Favicon.test.ts"
+Cohesion: 0.24
+Nodes (5): attributes(), FAVICON_PATH, iconLinks(), INDEX_PATH, linkElements()
+
+### Community 61 - "Game"
+Cohesion: 0.07
+Nodes (21): 6.2 One command turn, 6.4 Save, load, download and import, 6.5 Losing a life and winning, 6. Key flows, 10. API contracts, 11. Flow, 12. Invariants the implementation must keep, 13. Out of scope (+13 more)
+
+### Community 62 - "engine-issue-11.spec.ts"
+Cohesion: 0.21
+Nodes (7): areaHeaders(), authoredArea(), expectCurrentCard(), headerFor(), panelLines(), PROGRESS, TOTAL_SCORE
+
+### Community 64 - "Q: Where are the area-change life reset and the ten Zone A InteractionRules rows owned?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where are the area-change life reset and the ten Zone A InteractionRules rows owned?, Source Nodes
 
@@ -818,10 +854,6 @@ Nodes (4): Answer, Outcome, Q: C7 npc topic overlap gate: where do checkNpc, val
 Cohesion: 0.40
 Nodes (4): printWidth, proseWrap, singleQuote, trailingComma
 
-### Community 139 - "Command"
-Cohesion: 0.10
-Nodes (42): 5.2 Verb table and handler signature, 5. Canonical command union and verbs, 8. Behavioural signatures, 6.1 Bootstrap (`src/main.ts`), GameDependencies, ContentBundle, QuizSystemDependencies, Command (+34 more)
-
 ### Community 140 - "Q: Where is P-TAKE-01 takeHandler and what governs portable items?"
 Cohesion: 0.50
 Nodes (3): Answer, Outcome, Q: Where is P-TAKE-01 takeHandler and what governs portable items?
@@ -830,41 +862,33 @@ Nodes (3): Answer, Outcome, Q: Where is P-TAKE-01 takeHandler and what governs p
 Cohesion: 0.50
 Nodes (3): Answer, Outcome, Q: Find a document heading node named Room entry text
 
-### Community 143 - "TopicResolver.ts"
+### Community 143 - "Q: Where are the W7 walkthrough harness, authored win path, area progress and life reset defined?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where are the W7 walkthrough harness, authored win path, area progress and life reset defined?, Source Nodes
 
-### Community 144 - "QuizRevision.test.ts"
-Cohesion: 0.19
-Nodes (7): activeQuiz(), answerCorrectly(), quizDispatch(), quizState(), SeededRandom, SeededRandomPort, startEffect()
+### Community 147 - "W7 non-quiz runtime handoff"
+Cohesion: 0.14
+Nodes (13): progress(), Constraints and pitfalls, Critical rebase requirement, Definition of done, Final red contracts already in main, Graph trace from the handoff round, Integration workspace, Interrupted agents (+5 more)
 
-### Community 146 - "ScoreTracker"
-Cohesion: 0.07
-Nodes (33): 10. Scoring with many puzzles per topic, 11. Win check owner, 12. Behavioural guarantees, 3.2 World, area, room and item definitions, 3. Content bundle and registration, 5.1 Door and container verbs, 6.1 Event to view mapping, 6. Canonical event union and rendering (+25 more)
-
-### Community 147 - "npcHandlers.ts"
-Cohesion: 0.31
-Nodes (6): CommandHandler, hasItem(), isTalking(), message(), npcHandler(), VerbTableLike
-
-### Community 148 - "GameEvent.ts"
+### Community 148 - "Q: Why did 'ask loomwright about welcome' answer with the pseudo-code text in the Bureau?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Why did 'ask loomwright about welcome' answer with the pseudo-code text in the Bureau?, Source Nodes
 
-### Community 149 - "MemoryStorage"
-Cohesion: 0.19
-Nodes (8): Catalogue, catalogueOf(), areaOf(), BundleOptions, gatedBundle(), roomOf(), makeTopic(), TopicIndexEntry
+### Community 149 - "W7 re-test — Assistance Ward, round 2 (2026-11-27)"
+Cohesion: 0.13
+Nodes (14): 1. Expected path claims — checked against play, 2. Status of the thirteen earlier findings, 3. Findings from this round, 4. Difficulty and fairness record, A. Room and item prose does not follow the completed state, B (minor). Wrong-order unlock invites carrying a bolted-down fixture, C. The approved dial block text describes five empty sockets after four are filled, Content-quality findings (route to `content-editor`) (+6 more)
 
-### Community 150 - "W7 non-quiz runtime handoff"
+### Community 150 - "Q: Where is the area-entry life reset implemented and which node owns the issue 15 quiz and puzzle gate?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where is the area-entry life reset implemented and which node owns the issue 15 quiz and puzzle gate?, Source Nodes
 
-### Community 151 - "Content authoring rules"
-Cohesion: 0.29
-Nodes (7): 4.1 Common conventions, 4.2 Area and rooms card, 4.4 Quiz card, 4.5 Puzzle card, 4.6 Hazard card, 4.7 Hint card, 4. Design card format
+### Community 151 - "Q: W7F-01..14: which canonical owners implement parser aliases, unlock splitting, gate denial, blockedText shape/adapt, quiz idempotence, transfer announcement, title copy and room hint targets?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: W7F-01..14: which canonical owners implement parser aliases, unlock splitting, gate denial, blockedText shape/adapt, quiz idempotence, transfer announcement, title copy and room hint targets?, Source Nodes
 
-### Community 152 - "TopicPhrase.ts"
-Cohesion: 0.39
-Nodes (8): AskTellMatch, collectMatches(), DeclaredObjectPhrase, findDeclaredObjectPhrase(), isAskTellMatch(), isBoundToActor(), isObjectName(), normalise()
+### Community 152 - "NpcTypes.test.ts"
+Cohesion: 0.16
+Nodes (7): 4.3 NPC card, ResolvedTopic, ResponseStrategy, ACTOR_ID, TopicResolverContract, ConversationParameters, ResolveParameters
 
 ### Community 153 - "Q: Where are canonical card sets, coverage topic IDs and quiz/hint wiring defined and consumed by tests?"
 Cohesion: 0.40
@@ -878,39 +902,31 @@ Nodes (4): Answer, Outcome, Q: How does the generator aggregate card collections
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where is the canonical authored win path command sequence and whole-game V4 trace that owns quiz handoffs, hazard lives, teaching ladders and game-won?, Source Nodes
 
-### Community 156 - "GameWindow"
-Cohesion: 0.12
-Nodes (16): 7.1 DOM layout, 7. UI structure and view-model, Persistence and UI, 6. Events and UI, 7. State, events and UI, 5. Effect and EffectApplier, Batch E1 — onboarding and intuitive commands, Batch E2 — engine fixes and removals (+8 more)
+### Community 157 - "TopicSelection.test.ts"
+Cohesion: 0.21
+Nodes (16): actorState(), always, defaultTopic(), NEVER_FLAG, node(), npcBundle(), npcContext(), aiBundle() (+8 more)
 
-### Community 157 - "9. Agent acceptance contract"
-Cohesion: 0.15
-Nodes (13): 1. Purpose and authority, 2. Workflow gates, 5. ID and alias registry, 6.1 Content critic, 6.2 PCK reviewer, 6. Reviewer rubrics, 7.1 Free-text topic-overlap proof, 7. Structural validation gates (+5 more)
-
-### Community 158 - "NPCs and conversation"
-Cohesion: 0.29
-Nodes (7): 1. Scope, 2. Model, 4. Conversation flow, 6. Link to quiz combat, NPCs and conversation, DialogueSystem, TopicEntry
-
-### Community 159 - "vitest"
+### Community 158 - "ContentBundle.ts"
 Cohesion: 0.07
-Nodes (28): 6.3 Room entry, score and spec-topic mapping, vitest, RoomSummary, createSession(), loadFormatEvent(), lastWinningBatch(), MILL_FLAGS, TRACE_FLAGS (+20 more)
+Nodes (46): 1. Purpose and authority, 3.1 Catalogue shape, 7. Core contracts, 1. Scope, 1. Purpose, 3.2 Entity and system state, AreaDefinition, ExitDefinition (+38 more)
 
 ### Community 160 - "Q: Where does the area-entry life reset live, and how are quizzes/puzzles mapped to the departed area for the issue-15 gate?"
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: Where does the area-entry life reset live, and how are quizzes/puzzles mapped to the departed area for the issue-15 gate?, Source Nodes
 
-### Community 161 - "TopicResolver"
-Cohesion: 0.25
-Nodes (7): 3. Commands and topic resolution, 4.1 Failure inventory, 4.2 The generated bundle is stale — verify this first, 4. Current verification state (measured 2026-11-26), TopicResolver, progress(), Graph trace from the handoff round
+### Community 161 - "npc-topic-resolution.test.ts"
+Cohesion: 0.15
+Nodes (9): DEFAULT_TOPIC_ID, ITEM_ID, READY, spokenTexts(), topic(), whySpecialTopic(), decoy(), HandoffCase (+1 more)
 
-### Community 162 - "interactionShapeProblems"
-Cohesion: 0.48
-Nodes (7): aliasProblemsOf(), asRecord(), interactionProblems(), interactionShapeProblems(), isNonBlank(), sceneryEntryProblems(), sceneryProblems()
+### Community 162 - "HintSystem.ts"
+Cohesion: 0.34
+Nodes (12): applyLevel(), applyMessage(), autoCandidates(), automaticHints(), explicitHint(), nextLevel(), resolveContext(), sequenceForPuzzle() (+4 more)
 
-### Community 163 - "PuzzleGraph.ts"
-Cohesion: 0.48
-Nodes (6): cycleIds(), firstReady(), puzzleGraphFindings(), repeatedIds(), solveOrder(), unreachableIds()
+### Community 163 - "package.json"
+Cohesion: 0.17
+Nodes (11): description, markdownlint-cli2@^0.24.2, @types/node@^26.6.10, yaml@^2.9.1, name, private, type, version (+3 more)
 
-### Community 164 - "w7-accessibility.spec.ts"
+### Community 164 - "playwright"
 Cohesion: 0.47
 Nodes (4): contrastRatio(), CONTROL_ORDER, luminance(), parseColour()
 
@@ -1126,30 +1142,210 @@ Nodes (4): Answer, Outcome, Q: Can the Playwright MCP browser tools drive the ap
 Cohesion: 0.40
 Nodes (4): Answer, Outcome, Q: ENG28-ACTIVATION-01 which nodes own puzzle-activated suppression and the effect pipeline?, Source Nodes
 
-### Community 218 - "area-score-attribution.test.ts"
-Cohesion: 0.70
-Nodes (4): areaFor(), ejectionFixture(), progressRow(), scoredBinaryHallBundle()
+### Community 218 - "W7 round-3 re-test — Assistance Ward (2026-11-27)"
+Cohesion: 0.17
+Nodes (11): 1. Expected path claims — ward beats A–C2.12, 3. Closure of the thirteen earlier findings, 4. Closure of the five round-2 findings A–E, 5. Findings from this round, 6. Difficulty and fairness record, Content-quality finding 1. Demonstration prose keeps the practice block on top after it is put away, Context only, out of scope, Functional defect 1. The taught “exact option text” quiz answer form does not work (+3 more)
 
 ### Community 219 - "Q: graphify section '6.1' — which document owns the event to view mapping?"
 Cohesion: 0.50
 Nodes (3): Answer, Outcome, Q: graphify section '6.1' — which document owns the event to view mapping?
 
+### Community 220 - "eslint.config.js"
+Cohesion: 0.18
+Nodes (10): @eslint/js@^10.0.1, eslint-plugin-sonarjs@^4.2.2, eslint-plugin-unicorn@^80.0.0, globals@^17.14.0, typescript-eslint@^8.74.0, @eslint/js, eslint-plugin-sonarjs, eslint-plugin-unicorn (+2 more)
+
+### Community 223 - "Q: Which authored question prompt should enterSwitchFloorQuiz() wait for in the merged app (q-dr-01 or another)?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which authored question prompt should enterSwitchFloorQuiz() wait for in the merged app (q-dr-01 or another)?, Source Nodes
+
+### Community 224 - "Q: Can the Playwright MCP browser tools drive the app in this browser-tester session?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Can the Playwright MCP browser tools drive the app in this browser-tester session?, Source Nodes
+
+### Community 225 - "Q: Does any second node implement a conditional use effect or authored useText mapping outside the canonical producer?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Does any second node implement a conditional use effect or authored useText mapping outside the canonical producer?, Source Nodes
+
+### Community 226 - "Q: Where is the conditional use producer, authored useText mapping and condition gate owned for W6S-01..04?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Where is the conditional use producer, authored useText mapping and condition gate owned for W6S-01..04?, Source Nodes
+
+### Community 227 - "Q: ward-w7-fixes: canonical owners for parser aliases, unlock denial, quiz starts, hint targets"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: ward-w7-fixes: canonical owners for parser aliases, unlock denial, quiz starts, hint targets, Source Nodes
+
+### Community 228 - "Q: Which canonical nodes supply the approved title copy, help aliases and gate fallback that the four stale e2e assertions must re-anchor?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which canonical nodes supply the approved title copy, help aliases and gate fallback that the four stale e2e assertions must re-anchor?, Source Nodes
+
+### Community 229 - "Q: Why do four W7 browser tests still fail after the string re-anchor, and is it caused by this slice?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Why do four W7 browser tests still fail after the string re-anchor, and is it caused by this slice?, Source Nodes
+
+### Community 230 - "Q: Which canonical nodes own browser save seeding and continuation for gated later-area e2e traces?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which canonical nodes own browser save seeding and continuation for gated later-area e2e traces?, Source Nodes
+
+### Community 231 - "Q: Which accepted sources own the hub escape reply and interface room prose re-anchored in W7 Beat C, and the 23-room bundle count?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which accepted sources own the hub escape reply and interface room prose re-anchored in W7 Beat C, and the 23-room bundle count?, Source Nodes
+
+### Community 232 - "Q: Which coverage-graph nodes document the tutorial-complete gate for hub east/north?"
+Cohesion: 0.50
+Nodes (3): Answer, Outcome, Q: Which coverage-graph nodes document the tutorial-complete gate for hub east/north?
+
+### Community 233 - "HintSequence"
+Cohesion: 0.17
+Nodes (14): 3. Rule catalogue, C — Conversation and NPCs, D — Data and cards, H — Hazards and hints, N — Narrative, P — Pedagogy and course mapping, V — Validation, 1. Scope (+6 more)
+
+### Community 234 - "submit"
+Cohesion: 0.07
+Nodes (49): command(), DEBUG_FRAGMENTS, continueFrom(), liveSave(), command(), IMPLEMENTATION_PATTERNS, command(), continueFromCraftedSave() (+41 more)
+
+### Community 236 - "ScoreTracker"
+Cohesion: 0.10
+Nodes (23): 10. Scoring with many puzzles per topic, 11. Win check owner, 12. Behavioural guarantees, 3.2 World, area, room and item definitions, 3.3 Loading and validation, 3. Content bundle and registration, 6.1 Event to view mapping, 6. Canonical event union and rendering (+15 more)
+
+### Community 238 - "Q: Where is the approved dial blocked string pinned in tests, and which authority superseded it in round 2?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Where is the approved dial blocked string pinned in tests, and which authority superseded it in round 2?, Source Nodes
+
+### Community 240 - "Q: Do the record and mark aliases in the room-arrival SCENERY entry make resolveScenery ambiguous?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Do the record and mark aliases in the room-arrival SCENERY entry make resolveScenery ambiguous?, Source Nodes
+
+### Community 241 - "makeBundle"
+Cohesion: 0.16
+Nodes (19): createScoreTracker(), totalOf(), runtimeBundle(), areaOf(), gatedBundle(), roomOf(), catalogueOf(), makeBundle() (+11 more)
+
+### Community 242 - "Q: Why did eleven e2e tests fail after the round-2 ward card regeneration, and how were stale expectations re-anchored?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Why did eleven e2e tests fail after the round-2 ward card regeneration, and how were stale expectations re-anchored?, Source Nodes
+
+### Community 243 - "Q: Why does a crafted v1 save with empty room inventories make 'unlock practice cabinet with practice key' return 'I don't understand that.'?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Why does a crafted v1 save with empty room inventories make 'unlock practice cabinet with practice key' return 'I don't understand that.'?, Source Nodes
+
+### Community 244 - "Q: After the W6 handoff regeneration, which accepted sources own the revised hub and interface room prose asserted by W7 Beat C?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: After the W6 handoff regeneration, which accepted sources own the revised hub and interface room prose asserted by W7 Beat C?, Source Nodes
+
+### Community 245 - "Q: Which code paths own wrong-order unlock refusal and arrival scenery examine"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which code paths own wrong-order unlock refusal and arrival scenery examine, Source Nodes
+
+### Community 246 - "Q: Which canonical nodes own the WR2-B1 wrong-order unlock refusal, WR2-B2 item-first unlock preservation and WR2-E1 arrival scenery examine contracts?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which canonical nodes own the WR2-B1 wrong-order unlock refusal, WR2-B2 item-first unlock preservation and WR2-E1 arrival scenery examine contracts?, Source Nodes
+
+### Community 247 - "Q: Who owns arrival register/record/mark scenery prose for WR2-E1?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Who owns arrival register/record/mark scenery prose for WR2-E1?, Source Nodes
+
+### Community 248 - "Q: Can the coverage graph supply the round-2 dial blocked string, the saving keyword and the state-true hub/Interface prose?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Can the coverage graph supply the round-2 dial blocked string, the saving keyword and the state-true hub/Interface prose?, Source Nodes
+
+### Community 249 - "Q: Who owns wrong-order unlock refusal for a non-portable item offered as the key-like item (WR2-B1)?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Who owns wrong-order unlock refusal for a non-portable item offered as the key-like item (WR2-B1)?, Source Nodes
+
+### Community 250 - "Q: Bypass check on WR2-B1 refusal literal and WR2-E1 arrival scenery prose: any reimplementation outside the canonical hub?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Bypass check on WR2-B1 refusal literal and WR2-E1 arrival scenery prose: any reimplementation outside the canonical hub?, Source Nodes
+
+### Community 251 - "Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, the existing answer paths and the outside-quiz unknown path?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, the existing answer paths and the outside-quiz unknown path?, Source Nodes
+
+### Community 252 - "Q: Which canonical node owns exact displayed quiz option text as an answer, and where should the WR3-A1 fix and shared option-text normalisation live?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Which canonical node owns exact displayed quiz option text as an answer, and where should the WR3-A1 fix and shared option-text normalisation live?, Source Nodes
+
+### Community 253 - "Q: Can a Playwright e2e test retry quiz starts until a target option is not the final question?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Can a Playwright e2e test retry quiz starts until a target option is not the final question?, Source Nodes
+
+### Community 254 - "Q: Does a wrong free-text quiz answer receive the quiz's out-of-range string?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Does a wrong free-text quiz answer receive the quiz's out-of-range string?, Source Nodes
+
+### Community 255 - "Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, answer N/bare N and the outside-quiz unknown path?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: ward-round3-fixes: which canonical nodes own exact quiz option text resolution, answer N/bare N and the outside-quiz unknown path?, Source Nodes
+
+### Community 256 - "Q: WR4-B1/B2/C1: which canonical nodes own put/take placement feedback, transfer-item ownership and out-of-room give feedback?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: WR4-B1/B2/C1: which canonical nodes own put/take placement feedback, transfer-item ownership and out-of-room give feedback?, Source Nodes
+
+### Community 257 - "Q: Where are item ownership and current-room visibility owned, and can a block placed in a visible fixture stay nameable?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Where are item ownership and current-room visibility owned, and can a block placed in a visible fixture stay nameable?, Source Nodes
+
+### Community 258 - "Q: Can out-of-room give/show with an unresolvable item emit the canonical absence line without a new Command variant or content card?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Can out-of-room give/show with an unresolvable item emit the canonical absence line without a new Command variant or content card?, Source Nodes
+
+### Community 259 - "Q: Who owns the fallback source owner for a take when no visible open container branch applies (WR4-B1 closed-cabinet retrieval)?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Who owns the fallback source owner for a take when no visible open container branch applies (WR4-B1 closed-cabinet retrieval)?, Source Nodes
+
+### Community 261 - "GameEvent"
+Cohesion: 0.23
+Nodes (4): GameEvent, SchedulerContract, RecordingBus, MemoryBus
+
+### Community 262 - "isActive"
+Cohesion: 0.23
+Nodes (12): 1. Scope, 2. Model, 3. Commands and topic resolution, 4. Conversation flow, 5. Conversation nodes, 6. Link to quiz combat, NPCs and conversation, TopicResolver (+4 more)
+
+### Community 264 - "engine-issue-15-life-gate.spec.ts"
+Cohesion: 0.19
+Nodes (10): command(), firstId(), GATE_IDS, gateIds(), GateOverrides, savedState(), SaveState, secondId() (+2 more)
+
+### Community 269 - "TopicPhrase.ts"
+Cohesion: 0.33
+Nodes (9): createTopicResolver(), AskTellMatch, collectMatches(), DeclaredObjectPhrase, findDeclaredObjectPhrase(), isAskTellMatch(), isBoundToActor(), isObjectName() (+1 more)
+
+### Community 270 - "Content authoring rules"
+Cohesion: 0.12
+Nodes (17): 1. Purpose and authority, 2. Workflow gates, 4.1 Common conventions, 4.2 Area and rooms card, 4.4 Quiz card, 4.5 Puzzle card, 4.6 Hazard card, 4.7 Hint card (+9 more)
+
+### Community 271 - "PuzzleGraph.ts"
+Cohesion: 0.23
+Nodes (11): 1. Scope, 4. Puzzle Dependency Graph, 5. Hints, 6. Integration points, Puzzles, cycleIds(), firstReady(), puzzleGraphFindings() (+3 more)
+
+### Community 273 - "Q: Where do putHandler(), takeHandler(), describeTarget(), ItemVisibility, formatEvent(), GameEvent, TitleScreen, SaveControls and GameViewData live, and what real event names and view fields should browser assertions use?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Where do putHandler(), takeHandler(), describeTarget(), ItemVisibility, formatEvent(), GameEvent, TitleScreen, SaveControls and GameViewData live, and what real event names and view fields should browser assertions use?, Source Nodes
+
+### Community 274 - "Q: Does the assistance orientation quiz always present questions in the authored questionIds order?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Does the assistance orientation quiz always present questions in the authored questionIds order?, Source Nodes
+
+### Community 275 - "Q: Why does a save written immediately after 'place practice block in practice cabinet' get quarantined as invalid-content on reload?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: Why does a save written immediately after 'place practice block in practice cabinet' get quarantined as invalid-content on reload?, Source Nodes
+
+### Community 276 - "Q: WR4 persistence blocker: which canonical SaveManager nodes reject a state.rooms key that is a fixture item ID holding a placed item?"
+Cohesion: 0.40
+Nodes (4): Answer, Outcome, Q: WR4 persistence blocker: which canonical SaveManager nodes reject a state.rooms key that is a fixture item ID holding a placed item?, Source Nodes
+
 ## Knowledge Gaps
-- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Work-memory lessons
 
 **Preferred sources** — corroborated by past sessions; start here.
-- `ContentBundle` (5× useful, score=4.852852417)
-- `EffectApplier` (4× useful, score=3.907536281) _(code changed — re-verify)_
-- `validateContent()` (4× useful, score=3.869178691)
-- `TopicResolver` (3× useful, score=2.947447379)
-- `ScoreTracker` (3× useful, score=2.929637557)
-- `putHandler()` (3× useful, score=2.922117304) _(code changed — re-verify)_
-- `SaveControls` (3× useful, score=2.917181661)
-- `TitleScreen` (3× useful, score=2.917181661) _(code changed — re-verify)_
-- `QuizSystem` (2× useful, score=1.970073627)
-- `DialogueSystem` (2× useful, score=1.953964361)
+- `OutputLog` (12× useful, score=11.696791258)
+- `EffectApplier` (9× useful, score=8.716045926)
+- `ContentBundle` (8× useful, score=7.6778165)
+- `putHandler()` (7× useful, score=6.849920671) _(code changed — re-verify)_
+- `resolveGameCommand()` (7× useful, score=6.834232628) _(code changed — re-verify)_
+- `transferItem()` (6× useful, score=5.946892008)
+- `TopicResolver` (6× useful, score=5.833193291)
+- `takeHandler()` (5× useful, score=4.92872955) _(code changed — re-verify)_
+- `renderArea()` (5× useful, score=4.891504089)
+- `NameResolver` (5× useful, score=4.874447537)
 
 **Known dead ends** — questions that led nowhere; don't re-derive.
 - "Find a document heading node named Room entry text"
@@ -1157,21 +1353,24 @@ Nodes (3): Answer, Outcome, Q: graphify section '6.1' — which document owns th
 - "graphify section '6.1' — which document owns the event to view mapping?"
 - "Can the Playwright MCP browser drive the app in this session?" -> `playwright.config.ts`, `helpers.ts`
 - "Can the Playwright MCP browser tools drive the app in this engine-issue-28 session?" -> `playwright.config.ts`, `helpers.ts`
+- "Can the Playwright MCP browser tools drive the app in this browser-tester session?" -> `playwright.config.ts,helpers.ts`
+- "Which coverage-graph nodes document the tutorial-complete gate for hub east/north?"
+- "Can the coverage graph supply the round-2 dial blocked string, the saving keyword and the state-true hub/Interface prose?" -> `Room: The Interface (room_entry_interface)`, `GameStateDto`
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `vitest` connect `vitest` to `npcTopicOverlap.ts`, `authored.ts`, `ContentBundle.ts`, `persistence.ts`, `GameState.ts`, `turn.ts`, `content.ts`, `zone1.ts`, `QuizRevision.test.ts`, `application-and-ui.md`, `MemoryStorage`, `HintQuizViews.test.ts`, `PuzzleGraph.test.ts`, `scenery-validation.test.ts`, `area-progress.test.ts`, `FakeElement`, `NpcTypes.test.ts`, `package.json`, `devDependencies`, `adapt.ts`, `CommandTable.test.ts`, `Favicon.test.ts`, `engine-issue-13-inventory.test.ts`, `area-score-attribution.test.ts`, `ToolchainEsmImport.test.ts`?**
-  _High betweenness centrality (0.103) - this node is a cross-community bridge._
+- **Why does `vitest` connect `content.ts` to `NpcGates.test.ts`, `GameState.ts`, `GameEvent`, `persistence.ts`, `wardKeywordActivity.ts`, `wardTopicLocality.ts`, `hint.ts`, `npcTopicOverlap.ts`, `ContentBundle`, `mechanics.ts`, `GameViewData`, `engine-issue-28-activation.test.ts`, `NpcTypes.test.ts`, `contentToolchain.ts`, `TopicSelection.test.ts`, `ContentBundle.ts`, `zone1.ts`, `npc-topic-resolution.test.ts`, `package.json`, `parser.ts`, `LoadResult`, `Onboarding.test.ts`, `npcState`, `wardW7Fixes.ts`, `devDependencies`, `vitest`, `engine-issue-13-inventory.test.ts`, `EffectApplier.ts`, `Favicon.test.ts`, `ToolchainEsmImport.test.ts`, `makeBundle`?**
+  _High betweenness centrality (0.108) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `ContentBundle` (e.g. with `11. Win check owner` and `2. Boot, title screen and session start`) actually correct?**
   _`ContentBundle` has 10 INFERRED edges - model-reasoned connections that need verification._
-- **Should `Game.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.1103448275862069 - nodes in this community are weakly interconnected._
-- **Why does `ContentBundle` connect `Command` to `Game.ts`, `authored.ts`, `ContentBundle.ts`, `persistence.ts`, `ui.ts`, `SaveManager.ts`, `verbs/index.ts`, `GameState.ts`, `turn.ts`, `content.ts`, `zone1.ts`, `ScoreTracker.ts`, `ScoreTracker`, `application-and-ui.md`, `MemoryStorage`, `TopicSelection.ts`, `TopicPhrase.ts`, `common.ts`, `GameWindow`, `9. Agent acceptance contract`, `scenery-validation.test.ts`, `vitest`, `isActive`, `domain.ts`, `PuzzleGraph.ts`, `area-progress.test.ts`, `SaveDto`, `ContentBundle.ts`, `validateContent.ts`, `NpcTypes.test.ts`, `Game`, `adapt.ts`, `EffectApplier.ts`, `engine-issue-13-inventory.test.ts`, `reactionFor`, `area-score-attribution.test.ts`?**
-  _High betweenness centrality (0.079) - this node is a cross-community bridge._
+- **Should `NpcGates.test.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.1028225806451613 - nodes in this community are weakly interconnected._
+- **Why does `ContentBundle` connect `ContentBundle` to `GameState.ts`, `content/index.ts`, `GameEvent`, `persistence.ts`, `wardKeywordActivity.ts`, `SaveManager.ts`, `verbs/index.ts`, `wardTopicLocality.ts`, `content.ts`, `TopicPhrase.ts`, `PuzzleGraph.ts`, `mechanics.ts`, `GameViewData`, `common.ts`, `ContentBundle.ts`, `validateContent.ts`, `zone1.ts`, `npc-topic-resolution.test.ts`, `commandResolution.ts`, `HintSystem.ts`, `parser.ts`, `LoadResult`, `Game.ts`, `Onboarding.test.ts`, `generate.ts`, `npcState`, `wardW7Fixes.ts`, `StorageAdapter`, `vitest`, `ScoreTracker`, `engine-issue-13-inventory.test.ts`, `EffectApplier.ts`, `ScoreTracker`, `makeBundle`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `GameEvent` (e.g. with `1. Purpose and authority` and `6. Canonical event union and rendering`) actually correct?**
   _`GameEvent` has 5 INFERRED edges - model-reasoned connections that need verification._
-- **Should `npcTopicOverlap.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10915492957746478 - nodes in this community are weakly interconnected._
-- **Why does `Engine issues — batched hand-off` connect `mechanics.ts` to `GameWindow`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **Should `GameState.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.045372645372645376 - nodes in this community are weakly interconnected._
+- **Why does `GameEvent` connect `GameEvent` to `GameState.ts`, `isActive`, `persistence.ts`, `wardKeywordActivity.ts`, `wardTopicLocality.ts`, `ContentBundle`, `mechanics.ts`, `GameViewData`, `engine-issue-28-activation.test.ts`, `NpcTypes.test.ts`, `ContentBundle.ts`, `npc-topic-resolution.test.ts`, `HintSystem.ts`, `parser.ts`, `LoadResult`, `Game.ts`, `Onboarding.test.ts`, `ConversationFlow.ts`, `npcState`, `wardW7Fixes.ts`, `StorageAdapter`, `vitest`, `ScoreTracker`, `engine-issue-13-inventory.test.ts`, `EffectApplier.ts`, `Game`, `HintSequence`, `ScoreTracker`, `makeBundle`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._

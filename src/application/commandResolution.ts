@@ -200,7 +200,13 @@ function conversationCommand(
     return { kind, actorId, topic: topic.join(' ') };
   }
   const itemId = resolve(remainder.join(' '));
-  return itemId === undefined ? unknown() : { kind, actorId, itemId };
+  if (itemId !== undefined) return { kind, actorId, itemId };
+  // An unresolved item for give/show still names an actor. Keep the actor so
+  // the handler can give the canonical out-of-room absence line (WR4-C1-FIX);
+  // every other unresolved path keeps the fixed unknown line.
+  return kind === 'give' || kind === 'show'
+    ? { kind: 'unseen-actor', actorId }
+    : unknown();
 }
 
 function useCommand(
@@ -246,19 +252,32 @@ function fallbackPair(
   return split > 0 ? [tokens.slice(0, split), tokens.slice(split)] : undefined;
 }
 
+function resolveTokenPair(
+  pair: readonly [readonly string[], readonly string[]],
+  resolve: (phrase: string) => string | undefined,
+): readonly [string, string] | undefined {
+  const itemId = resolve(pair[0].join(' '));
+  const targetId = resolve(pair[1].join(' '));
+  return itemId === undefined || targetId === undefined
+    ? undefined
+    : [itemId, targetId];
+}
+
 function unlockCommand(
   tokens: readonly string[],
   resolve: (phrase: string) => string | undefined,
   unknown: () => Command,
 ): Command {
   const separated = splitAt(tokens, UNLOCK_PREPOSITIONS);
-  const pair = separated ?? fallbackPair(tokens);
-  if (pair === undefined) return unknown();
-  const itemId = resolve(pair[0].join(' '));
-  const targetId = resolve(pair[1].join(' '));
-  return itemId === undefined || targetId === undefined
+  // With a preposition the item comes first; in the bare form both names may
+  // be multi-word, so split on resolvable halves instead of the last token.
+  const pair =
+    separated === undefined
+      ? resolvePair(tokens, resolve)
+      : resolveTokenPair(separated, resolve);
+  return pair === undefined
     ? unknown()
-    : { kind: 'unlock', itemId, targetId };
+    : { kind: 'unlock', itemId: pair[0], targetId: pair[1] };
 }
 
 function targetedCommand(
@@ -294,6 +313,12 @@ function targetedCommand(
   }
 }
 
+// Shared comparison of option text (combat.md §4): only the outer whitespace
+// is ignored; case is folded and internal punctuation/spacing is preserved.
+function normaliseOptionText(value: string): string {
+  return value.trim().toLocaleLowerCase('en-GB');
+}
+
 // A bare number is the documented bare form of `answer N` (combat.md §4),
 // but only while a quiz is active; elsewhere it stays a friendly unknown.
 function bareAnswerCommand(
@@ -324,12 +349,12 @@ function answerCommand(
   const questionId = state.quiz.questionIds[state.quiz.index];
   const question =
     questionId === undefined ? undefined : bundle.questions.getById(questionId);
-  const phrase = tokens.join(' ').trim().toLocaleLowerCase('en-GB');
+  const phrase = normaliseOptionText(tokens.join(' '));
   const index =
     question === undefined
       ? -1
       : question.options.findIndex(
-          (option) => option.trim().toLocaleLowerCase('en-GB') === phrase,
+          (option) => normaliseOptionText(option) === phrase,
         );
   // Resolve to the 0-based option index, expressed as the seam's 1-based value.
   // An unmatched phrase stays inside the quiz so it gets the quiz's friendly
@@ -337,11 +362,35 @@ function answerCommand(
   return { kind: 'answer', option: index === -1 ? 0 : index + 1 };
 }
 
+// The whole command, exactly as displayed, is also an accepted answer form
+// (combat.md §4). Only a live quiz with a resolvable current question can
+// match, and only against the options shown for that question; otherwise normal
+// verb resolution proceeds. The seam stays 1-based, as for `answer N`.
+function exactOptionAnswerCommand(
+  raw: string,
+  state: GameState,
+  bundle: ContentBundle,
+): Command | undefined {
+  if (state.quiz.activeQuizId === undefined) return undefined;
+  const questionId = state.quiz.questionIds[state.quiz.index];
+  const question =
+    questionId === undefined ? undefined : bundle.questions.getById(questionId);
+  if (question === undefined) return undefined;
+  const phrase = normaliseOptionText(raw);
+  const index = question.options.findIndex(
+    (option) => normaliseOptionText(option) === phrase,
+  );
+  return index === -1 ? undefined : { kind: 'answer', option: index + 1 };
+}
+
 export function resolveGameCommand(
   raw: string,
   state: GameState,
   bundle: ContentBundle,
 ): Command {
+  const exactOption = exactOptionAnswerCommand(raw, state, bundle);
+  if (exactOption !== undefined) return exactOption;
+
   const parsed = parse(raw);
   const resolver = createNameResolver();
   const tokens = parsed.nounPhrases;

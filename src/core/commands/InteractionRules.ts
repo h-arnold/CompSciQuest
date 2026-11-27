@@ -20,7 +20,36 @@ interface FlagInteraction {
   readonly text: string;
 }
 
+// Conditional item uses whose prose comes from the authored item itself, not
+// from this table. `requires` lists flags that must all be set before `setsFlag`
+// is applied; `useText` supplies the success/blocked wording (or, when absent,
+// the item's description is the whole harmless response).
+interface AuthoredUseInteraction {
+  readonly itemId: string;
+  readonly roomId: string;
+  readonly requires?: readonly string[];
+  readonly setsFlag?: string;
+}
+
 const SCENERY: readonly SceneryDefinition[] = [
+  {
+    // content-bible.md §12 (round-2 findings): code-owned scenery reusing the
+    // accepted room-arrival prose, with no new item ID or authored card edit.
+    id: 'scenery-arrival-register',
+    roomId: 'room-arrival',
+    // The parser keeps articles in the noun phrase, so the two definite forms
+    // are listed as well; the four bare names remain the primary aliases.
+    aliases: [
+      'register',
+      'attendance record',
+      'record',
+      'mark',
+      'the record',
+      'the mark',
+    ],
+    description:
+      'The register lies open, a mark beside your name. The AI reads it in the flat voice of a machine that has read it a thousand times: attention not satisfied.',
+  },
   {
     id: 'scenery-belt',
     roomId: 'room-switch-floor',
@@ -243,6 +272,25 @@ const USE_INTERACTIONS: readonly FlagInteraction[] = [
   },
 ];
 
+const AUTHORED_USES: readonly AuthoredUseInteraction[] = [
+  {
+    itemId: 'item-assistance-calibration-dial',
+    roomId: 'room-assistance-records',
+    requires: [
+      'nia-observation-recovered',
+      'mateo-reading-recovered',
+      'priya-reasoning-recovered',
+      'kofi-operation-recovered',
+      'quiz-passed:quiz-assistance-orientation',
+    ],
+    setsFlag: 'assistance-dial-calibrated',
+  },
+  {
+    itemId: 'item-assistance-practice-bell',
+    roomId: 'room-assistance-demonstration',
+  },
+];
+
 const PUT_INTERACTIONS: readonly FlagInteraction[] = [
   {
     itemId: 'item-decimal-sample',
@@ -356,10 +404,47 @@ function matchingInteraction(
   );
 }
 
+function authoredUseEffects(
+  interaction: AuthoredUseInteraction,
+  context: TurnContext,
+): readonly Effect[] | undefined {
+  const item = context.bundle.items.getById(interaction.itemId);
+  if (item === undefined) return undefined;
+  const allFlagsSet = (interaction.requires ?? []).every(
+    (flag) => context.state.flags[flag] === true,
+  );
+  const useText = item.useText;
+  if (useText === undefined) {
+    return allFlagsSet
+      ? [{ kind: 'message', text: item.description }]
+      : undefined;
+  }
+  if (!allFlagsSet) {
+    return useText.blocked === undefined
+      ? undefined
+      : [{ kind: 'message', text: useText.blocked }];
+  }
+  const effects: Effect[] = [];
+  if (interaction.setsFlag !== undefined) {
+    effects.push({ kind: 'set-flag', flag: interaction.setsFlag, value: true });
+  }
+  effects.push({ kind: 'message', text: useText.success });
+  return effects;
+}
+
 export function useInteraction(
   command: Extract<TurnContext['command'], { kind: 'use' }>,
   context: TurnContext,
 ): readonly Effect[] | undefined {
+  const authored =
+    command.targetId === undefined
+      ? AUTHORED_USES.find(
+          (entry) =>
+            entry.itemId === command.itemId &&
+            entry.roomId === context.state.player.position.roomId,
+        )
+      : undefined;
+  if (authored !== undefined) return authoredUseEffects(authored, context);
   const interaction = matchingInteraction(
     USE_INTERACTIONS,
     context,

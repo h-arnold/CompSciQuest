@@ -6,6 +6,7 @@ import { rooms } from '../src/content/authored/rooms';
 import {
   scorePanel,
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -85,7 +86,8 @@ test.describe('ENG5-SCOREGAIN-01 — score lines in the transcript', () => {
   test('a real gain adds exactly one friendly line with no internal ID', async ({
     page,
   }) => {
-    await startNewGame(page);
+    // The Switchyard route is gated by the ward mark in the accepted hub card.
+    await startFromLiveSave(page, { 'tutorial-complete': true });
 
     // Ordinary commands reach the switch floor. The first entry may trigger
     // the scripted heat hazard, which returns the player to the Binary Hall;

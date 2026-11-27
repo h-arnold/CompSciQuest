@@ -29,6 +29,7 @@ export type Command =
   | { readonly kind: 'tell'; readonly actorId: string; readonly topic: string }
   | { readonly kind: 'give'; readonly actorId: string; readonly itemId: string }
   | { readonly kind: 'show'; readonly actorId: string; readonly itemId: string }
+  | { readonly kind: 'unseen-actor'; readonly actorId: string }
   | { readonly kind: 'bye' }
   | { readonly kind: 'answer'; readonly option: number }
   | { readonly kind: 'hint'; readonly targetId?: string };

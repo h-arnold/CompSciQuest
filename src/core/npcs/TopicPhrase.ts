@@ -11,7 +11,7 @@ export interface DeclaredObjectPhrase {
   readonly topics: readonly ConversationTopic[];
 }
 
-function normalise(value: string): string {
+export function normalise(value: string): string {
   return value.trim().toLowerCase().replaceAll(/[-_]/gu, ' ');
 }
 

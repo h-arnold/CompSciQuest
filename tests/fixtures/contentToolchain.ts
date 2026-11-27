@@ -173,6 +173,23 @@ export interface GeneratorModule {
   ): GenerationResult;
 }
 
+export interface AdaptModule {
+  bundleOf(
+    cards: ParsedCardSet,
+  ): import('../../src/content/ContentBundle').ContentBundle;
+}
+
+export async function loadAdapt(): Promise<AdaptModule> {
+  const module = await loadTool(
+    '../../tools/content/adapt',
+    ['bundleOf'],
+    'content-toolchain.md §5 — the canonical YAML-to-bundle adapter',
+  );
+  return {
+    bundleOf: module['bundleOf'] as AdaptModule['bundleOf'],
+  };
+}
+
 export async function loadSchema(): Promise<SchemaModule> {
   const module = await loadTool(
     '../../tools/content/schema',

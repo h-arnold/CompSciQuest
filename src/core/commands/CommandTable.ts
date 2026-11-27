@@ -42,12 +42,14 @@ export const COMMAND_TABLE: readonly CommandSpec[] = [
   { verb: 'open', syntax: 'open <target>', aliases: [] },
   { verb: 'close', syntax: 'close <target>', aliases: ['shut'] },
   { verb: 'unlock', syntax: 'unlock <item> <target>', aliases: [] },
-  { verb: 'put', syntax: 'put <item> <target>', aliases: [] },
+  { verb: 'put', syntax: 'put <item> <target>', aliases: ['place'] },
   { verb: 'look', syntax: 'look', aliases: [] },
   { verb: 'inventory', syntax: 'inventory', aliases: ['i', 'inv'] },
   { verb: 'score', syntax: 'score', aliases: [] },
   { verb: 'help', syntax: 'help', aliases: ['?'] },
-  { verb: 'talk-to', syntax: 'talk-to <npc>', aliases: ['talk'] },
+  // content-bible.md §12 (2026-11-27 W7 fix round): both the documented
+  // hyphenated form and the natural spacing are player-facing aliases here.
+  { verb: 'talk-to', syntax: 'talk-to <npc>', aliases: ['talk', 'talk to'] },
   {
     verb: 'ask',
     syntax: 'ask <npc> about <topic>',

@@ -270,7 +270,14 @@ test('ENG15-LIFEGATE-01 — the hub satisfies the gate vacuously when heading no
 }) => {
   const errors = watchConsole(page);
   const template = await liveSave(page);
-  await continueFrom(page, saveAt(template, HUB_ROOM, 'area-network-hub'));
+  // The accepted hub card gates north on the ward calibration mark; seed that
+  // single precondition while keeping the life-gate assertions unchanged.
+  await continueFrom(
+    page,
+    saveAt(template, HUB_ROOM, 'area-network-hub', {
+      flags: { 'tutorial-complete': true },
+    }),
+  );
 
   const lines = await command(page, 'north');
   expect(lines).toContain('> north');
