@@ -11,6 +11,7 @@ import {
   SAVE_KEY,
   readStorage,
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -98,7 +99,9 @@ function switchyardPrompts(): readonly string[] {
 }
 
 async function enterSwitchFloorQuiz(page: Page): Promise<void> {
-  await startNewGame(page);
+  // The accepted hub card gates east on the ward mark; seed it so the quiz
+  // route and every answer assertion below still run on the Switch Floor.
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await submit(page, 'east');
   await waitForLine(page, '> east');
   await submit(page, 'east');
@@ -281,7 +284,8 @@ test.describe('engine issue 9 — quick quiz answers and inferred ask', () => {
     page,
   }) => {
     expect(candidateActors('room-pattern-bureau').length).toBeGreaterThan(1);
-    await startNewGame(page);
+    // The hub's north socket needs the ward mark before the Bureau route works.
+    await startFromLiveSave(page, { 'tutorial-complete': true });
     for (const raw of ['east', 'north', 'east']) {
       await submit(page, raw);
       await waitForLine(page, `> ${raw}`);

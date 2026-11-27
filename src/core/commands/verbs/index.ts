@@ -6,6 +6,9 @@ import type { Effect } from '../../effects/Effect';
 import type { Command } from '../Command';
 import type { CommandHandler } from '../CommandHandler';
 import { helpText } from '../CommandTable';
+import { itemVisibility } from '../ItemVisibility';
+import { isActorOutOfRoom } from '../../npcs/TopicSelection';
+import { createConditionEvaluator } from '../../rules/ConditionEvaluator';
 import { npcHandler } from './npcHandlers';
 import {
   describeScenery,
@@ -20,9 +23,38 @@ function message(text: string): Effect {
 }
 
 function visibleOwners(context: TurnContext): ReadonlySet<string> {
-  const roomId = context.state.player.position.roomId;
-  const inRoom = context.state.rooms[roomId]?.inventory ?? [];
-  return new Set<string>([...context.state.player.inventory, ...inRoom]);
+  return itemVisibility.visibleInRoom(context.state, context.bundle);
+}
+
+// A visible, open, non-portable item is a fixture holding other items. The
+// open flag is the canonical container state (§5.1); a closed or scenery
+// target still gets the generic put line. Its bundle name is the only source
+// for player-facing wording (§5.1/§5.2).
+function visibleContainerName(
+  context: TurnContext,
+  targetId: string,
+): string | undefined {
+  const item = context.bundle.items.getById(targetId);
+  return item?.portable === false &&
+    context.state.flags[`container-open:${targetId}`] === true &&
+    visibleOwners(context).has(targetId)
+    ? item.name
+    : undefined;
+}
+
+interface ContainerOwner {
+  readonly ownerId: string;
+  readonly name: string;
+}
+
+function visibleContainerOwner(
+  context: TurnContext,
+  itemId: string,
+): ContainerOwner | undefined {
+  const ownerId = itemVisibility.ownerOf(context.state, itemId);
+  if (ownerId === undefined) return;
+  const name = visibleContainerName(context, ownerId);
+  return name === undefined ? undefined : { ownerId, name };
 }
 
 function isVisible(context: TurnContext, targetId: string): boolean {
@@ -72,7 +104,11 @@ function describeTarget(context: TurnContext, targetId: string): Effect {
     item?.description ??
     actor?.aliases[0] ??
     describeScenery(context, targetId);
-  return message(description ?? 'You see nothing special.');
+  const text = description ?? 'You see nothing special.';
+  const container = visibleContainerOwner(context, targetId);
+  return message(
+    container === undefined ? text : `${text} It is in the ${container.name}.`,
+  );
 }
 
 function openOrClose(
@@ -110,8 +146,35 @@ function unlockHandler(
   context: TurnContext,
 ): readonly Effect[] {
   if (command.kind !== 'unlock') return [];
+  // content-bible.md §12 (round-2 findings): a fixed fixture offered as the
+  // key-like item cannot be carried. Point at the portable tool instead of
+  // claiming it is missing, and leave the whole state untouched.
+  const itemDefinition = context.bundle.items.getById(command.itemId);
+  const targetDefinition = context.bundle.items.getById(command.targetId);
+  if (
+    itemDefinition?.portable === false &&
+    targetDefinition?.portable === true
+  ) {
+    const item = itemDefinition?.name ?? command.itemId;
+    const target = targetDefinition?.name ?? command.targetId;
+    return [
+      message(
+        `The ${item} stays in place; turn its lock with the ${target} instead.`,
+      ),
+    ];
+  }
   if (!hasItem(context, command.itemId)) {
-    return [message('You are not carrying that.')];
+    // content-bible.md §12 (W7 fix round): name the missing key and its lock
+    // rather than falsely claiming the carried object is absent.
+    const item =
+      context.bundle.items.getById(command.itemId)?.name ?? command.itemId;
+    const target =
+      context.bundle.items.getById(command.targetId)?.name ?? command.targetId;
+    return [
+      message(
+        `You need the ${item} in hand before it will turn in the ${target}.`,
+      ),
+    ];
   }
   if (!isVisible(context, command.targetId)) {
     return [message('You cannot see that here.')];
@@ -125,6 +188,15 @@ function unlockHandler(
     },
     message('You unlock it.'),
   ];
+}
+
+function putResultText(
+  itemName: string | undefined,
+  containerName: string | undefined,
+): string {
+  return itemName === undefined || containerName === undefined
+    ? 'You put it down.'
+    : `You put the ${itemName} in the ${containerName}.`;
 }
 
 function putHandler(command: Command, context: TurnContext): readonly Effect[] {
@@ -157,6 +229,8 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
     isSceneryVisible(context, command.targetId) || putFlags.length > 0
       ? context.state.player.position.roomId
       : command.targetId;
+  const containerName = visibleContainerName(context, command.targetId);
+  const itemName = item?.name;
   return [
     {
       kind: 'transfer-item',
@@ -165,7 +239,7 @@ function putHandler(command: Command, context: TurnContext): readonly Effect[] {
       toOwnerId,
     },
     ...putFlags,
-    message('You put it down.'),
+    message(putResultText(itemName, containerName)),
   ];
 }
 
@@ -232,8 +306,33 @@ function takeHandler(
       ];
     }
   }
+  // A block placed in a fixture is owned by that fixture, not by the room.
+  // Name the real source so the transfer removes it from the one owner it has.
+  const container =
+    command.kind === 'take'
+      ? visibleContainerOwner(context, command.itemId)
+      : undefined;
+  if (container !== undefined) {
+    const name =
+      context.bundle.items.getById(command.itemId)?.name ?? command.itemId;
+    return [
+      {
+        kind: 'transfer-item',
+        itemId: command.itemId,
+        fromOwnerId: container.ownerId,
+        toOwnerId: 'player',
+      },
+      message(`You take the ${name} from the ${container.name}.`),
+    ];
+  }
+  // A closed fixture's contents are still owned by that fixture in state;
+  // fall back to the room only when no owner is recorded. `drop` keeps its
+  // player -> room transfer unchanged.
   const from =
-    command.kind === 'take' ? context.state.player.position.roomId : 'player';
+    command.kind === 'take'
+      ? (itemVisibility.ownerOf(context.state, command.itemId) ??
+        context.state.player.position.roomId)
+      : 'player';
   const to =
     command.kind === 'take' ? 'player' : context.state.player.position.roomId;
   return [
@@ -281,6 +380,22 @@ function scoreHandler(
     : [];
 }
 
+// WR4-C1-FIX: an actor named by give/show but an item the resolver cannot see.
+// Reuse the canonical room-absence test; emit one message and change no state.
+function unseenActorHandler(
+  command: Command,
+  context: TurnContext,
+): readonly Effect[] {
+  if (command.kind !== 'unseen-actor') return [];
+  return [
+    message(
+      isActorOutOfRoom(context, createConditionEvaluator(), command.actorId)
+        ? 'You cannot see that here.'
+        : "I don't understand that.",
+    ),
+  ];
+}
+
 const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
   go: goHandler,
   take: takeHandler,
@@ -301,6 +416,7 @@ const HANDLERS: { readonly [K in Command['kind']]: CommandHandler } = {
   tell: npcHandler,
   give: npcHandler,
   show: npcHandler,
+  'unseen-actor': unseenActorHandler,
   bye: npcHandler,
   // Quiz answers and hint requests are delivered by their domain systems
   // (`QuizSystem.handle` in phase 3 and `HintSystem.react` in phase 4).

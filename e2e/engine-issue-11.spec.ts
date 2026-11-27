@@ -7,6 +7,7 @@ import { expect, test, type Page } from 'playwright/test';
 import { areas } from '../src/content/authored/areas';
 import { specTopics } from '../src/content/authored/spec-topics';
 import { worlds } from '../src/content/authored/worlds';
+import { makeSave } from './helpers';
 
 const csqUrl = process.env['CSQ_E2E_URL'];
 if (csqUrl !== undefined) test.use({ baseURL: csqUrl });
@@ -259,10 +260,13 @@ test('ENG11-SIDEBAR-STATE-01: ordinary play across four areas keeps only the cur
   page,
 }) => {
   const errors = consoleErrors(page);
-  await seed(page);
+  // The accepted hub card gates its east and north teaching sockets on the
+  // ward calibration mark. Seed that one precondition in a valid v1 save so
+  // the ordinary four-area command sequence below can still be exercised.
+  await seed(page, makeSave({ flags: { 'tutorial-complete': true } }));
   await page.goto('./');
-  await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
-  await page.getByRole('button', { name: 'New Game' }).click();
+  await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.locator('.workspace')).toBeVisible();
 
   const arrival = authoredArea('area-entry-interface');

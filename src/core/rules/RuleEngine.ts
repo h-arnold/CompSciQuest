@@ -38,11 +38,17 @@ export function createRuleEngine(
         random,
         command,
       };
-      return exit.preconditions
-        .filter(
-          (precondition) => !evaluator.evaluate(precondition, state, context),
-        )
-        .map((precondition) => `That way is blocked: ${precondition.kind}.`);
+      // application-and-ui.md §3.2/§8: a denial is one in-world line, authored
+      // verbatim when supplied, never the failing precondition's technical name.
+      const blocked = exit.preconditions.some(
+        (precondition) => !evaluator.evaluate(precondition, state, context),
+      );
+      if (!blocked) return [];
+      return [
+        exit.blockedText !== undefined && exit.blockedText.trim().length > 0
+          ? exit.blockedText
+          : 'That way is closed for now.',
+      ];
     },
   };
 }

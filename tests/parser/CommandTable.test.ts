@@ -9,7 +9,14 @@ import {
   hasCommandToken,
   loadCommandTable,
 } from '../fixtures/commandTable';
-import { loadParser } from '../fixtures/parser';
+import { resolveGameCommand } from '../../src/application/commandResolution';
+import {
+  KEY_A,
+  CHEST_ID,
+  loadParser,
+  makePutFixture,
+} from '../fixtures/parser';
+import { npcBundle, npcState } from '../fixtures/npcs';
 
 const OLD_HELP_LINE =
   'Try a direction, take, drop, examine, open, close, unlock, put, look, inventory, score or help.';
@@ -50,12 +57,20 @@ const CANONICAL_COMMANDS: readonly CommandSpec[] = [
   { verb: 'open', syntax: 'open <target>', aliases: [] },
   { verb: 'close', syntax: 'close <target>', aliases: ['shut'] },
   { verb: 'unlock', syntax: 'unlock <item> <target>', aliases: [] },
-  { verb: 'put', syntax: 'put <item> <target>', aliases: [] },
+  // content-bible.md §12 (2026-11-27 W7 ward findings fix round): the
+  // instruction card teaches PLACE, so it is an authorised alias of put.
+  { verb: 'put', syntax: 'put <item> <target>', aliases: ['place'] },
   { verb: 'look', syntax: 'look', aliases: [] },
   { verb: 'inventory', syntax: 'inventory', aliases: ['i', 'inv'] },
   { verb: 'score', syntax: 'score', aliases: [] },
   { verb: 'help', syntax: 'help', aliases: ['?'] },
-  { verb: 'talk-to', syntax: 'talk-to <npc>', aliases: ['talk'] },
+  // content-bible.md §12 authorises the natural spacing alongside the
+  // documented hyphenated form; both aliases come from this canonical table.
+  {
+    verb: 'talk-to',
+    syntax: 'talk-to <npc>',
+    aliases: ['talk', 'talk to'],
+  },
   {
     verb: 'ask',
     syntax: 'ask <npc> about <topic>',
@@ -291,5 +306,63 @@ describe('issue 9 forms in the generated help text', () => {
       'ask <npc> about <topic>',
     );
     expect(text, 'the answer N form must remain in help').toContain('answer N');
+  });
+});
+
+// content-bible.md §12 (2026-11-27 W7 ward findings fix round) authorises two
+// aliases that the instruction card and the player already use. The canonical
+// table above was updated deliberately; these rows pin the player-visible
+// result of that change, not a hidden parser constant.
+describe('W7 ward fixes — command aliases (content-bible.md §12)', () => {
+  it('W7F-01: talk to <npc> is a declared alias and resolves like talk-to <npc>', async () => {
+    const { COMMAND_TABLE, helpText } = await loadCommandTable();
+    const parser = await loadParser();
+    const spec = COMMAND_TABLE.find((entry) => entry.verb === 'talk-to');
+
+    expect(
+      spec?.aliases,
+      'content-bible.md §12 adds natural spacing alongside talk',
+    ).toEqual(expect.arrayContaining(['talk', 'talk to']));
+    expect(parser.parse('talk to nia')).toEqual({
+      verb: 'talk-to',
+      nounPhrases: ['nia'],
+      raw: 'talk to nia',
+    });
+    expect(parser.parse('talk-to nia')).toEqual({
+      verb: 'talk-to',
+      nounPhrases: ['nia'],
+      raw: 'talk-to nia',
+    });
+
+    const bundle = npcBundle();
+    const state = npcState();
+    expect(resolveGameCommand('talk to guide', state, bundle)).toEqual({
+      kind: 'talk-to',
+      actorId: 'npc-1',
+    });
+    expect(resolveGameCommand('talk-to guide', state, bundle)).toEqual({
+      kind: 'talk-to',
+      actorId: 'npc-1',
+    });
+    expect(hasCommandToken(helpText(), 'talk to')).toBe(true);
+  });
+
+  it('W7F-02: place <item> in <target> is a declared alias for put', async () => {
+    const { COMMAND_TABLE, helpText } = await loadCommandTable();
+    const parser = await loadParser();
+    const spec = COMMAND_TABLE.find((entry) => entry.verb === 'put');
+
+    expect(spec?.aliases).toEqual(expect.arrayContaining(['place']));
+    expect(parser.parse('place brass key in chest').verb).toBe('put');
+
+    const { bundle, state } = makePutFixture();
+    const expected = { kind: 'put', itemId: KEY_A, targetId: CHEST_ID };
+    expect(
+      resolveGameCommand('place brass key in chest', state, bundle),
+    ).toEqual(expected);
+    expect(resolveGameCommand('put brass key in chest', state, bundle)).toEqual(
+      expected,
+    );
+    expect(hasCommandToken(helpText(), 'place')).toBe(true);
   });
 });

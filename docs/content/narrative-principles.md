@@ -10,7 +10,7 @@ story develops; only `confirmed` entries influence writing.
 - These principles govern voice, humour, stakes and consequences in all game
   text. They are not game content: no design cards and no TypeScript live here.
 - The rulebook `docs/developer/content-rules.md` remains authoritative for the
-  N/P/C/H/D rules. If a principle and a rule disagree, the rulebook wins and the
+  N/P/H/D rules, with `docs/developer/npcs.md` owning the A/T rules. If a principle and a rule disagree, the rulebook wins and the
   editor escalates rather than quietly choosing one.
 - `docs/exam-specs/wjec-unit1.md` remains the authority for every course fact.
   Humour never changes a definition, an example, a number or a spec depth
@@ -23,10 +23,7 @@ story develops; only `confirmed` entries influence writing.
   **first use** pair it with a short plain-English gloss in apposition; after
   that the term stands alone.
 - Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
-- Keep second person, present tense and one consistent register (N4). Room
-  descriptions stay at or under 200 words (N8) — a ceiling, not a target. Most
-  rooms should be shorter; longer passages are for key nodes and NPC teaching
-  beats only.
+- Keep second person, present tense and one consistent register (N4). 
 - Avoid repetition of sentence structures or writing effects. Especially cliches such as:
   - It's not x it y.
   - Repetitions of what something is not. This is appropriate when used sparingly.
@@ -37,8 +34,7 @@ story develops; only `confirmed` entries influence writing.
   "the rogue thread — the **rogue value**, the mill's name for it — reads −1". After the
   pairing, either may lead, but quizzes, hint targets and coverage evidence always use
   the formal term, so the world never becomes the only route to the marks.
-- **Craft and cultural vocabulary is explained in passing (added by user instruction,
-  2026-11-25).** Where a pupil may reasonably not know the word — warp, weft, shed,
+- **Craft and cultural vocabulary is explained in passing**. Where a pupil may reasonably not know the word — warp, weft, shed,
   selvedge, heddle, carthen, paned — the area, the items and the NPC conversations
   give a short in-voice explanation on first use: one clause, deadpan, never a lesson
   (N8 discipline still applies). The explanation never displaces a technical term and
@@ -52,7 +48,7 @@ the same empty slot."
 of the computer, if you think about it." The shorthand is imprecise, the gloss
 never names the formal term and the sentence eats space without teaching.
 
-**World richness and examinables (confirmed 2026-11-25).** The user wants a rich,
+**World richness and examinables**. The user wants a rich,
 engaging world: a room description should name several concrete things worth
 looking at, and some items may exist purely to be examined, with no puzzle or story
 work to do. Such an item earns its place through a vivid, specific description. It
@@ -67,7 +63,7 @@ method for naming them.
 ## 3. Comic mode
 
 - The world is whimsical and slightly absurd. Monty Python, Terry Pratchett and
-  *Futurama* are the compass for timing, staging and tone.
+  _Futurama_ are the compass for timing, staging and tone.
 - Ridiculous, over-the-top cartoon violence is encouraged and expected. The
   ceiling is a Looney Tunes gag: improbable, elastic and consequence-free beyond
   the joke itself. Nothing approaches realistic injury or suffering.
@@ -158,12 +154,19 @@ unregistered noun, which turns it into the guess-the-noun trap N6 forbids.
   personas.
 - Any target inside the fiction is fair game, including the player's character.
   Wit is the only limit beyond the harm floor (§8).
+- **Assistance Ward guide voice (confirmed 2026-11-26).** The AI's usual clipped
+  bureaucracy becomes weary and passive-aggressive in this area: it resents
+  explaining actions it considers obvious, speaks of "the pupil" in the third
+  person and treats independence as an administrative inconvenience. The joke
+  targets its excessive help and self-importance. It never mocks the player's
+  intelligence, and the four former pupils remain recoverable people rather
+  than monsters.
 - The harm floor still forbids **mockery of the learner**. An NPC may be rude to
   the player's avatar; it never sneers at the pupil's intelligence or ability.
-- Each NPC has a distinct role, voice, motivation and relationship (C1) and may
+- Each NPC has a distinct role, voice, motivation and relationship (A1) and may
   own **at most one recurring phrase**. There is no global catchphrase cap:
   variety comes from the cast, not from a count.
-- Every conversational input still resolves to an in-character reply (C2), and
+- Every conversational input still resolves to an in-character reply (T1), and
   teaching beats stay diegetic (N3).
 
 **Example:** "Oh, brilliant. Another student who's read the spec. I'll just fetch
@@ -190,7 +193,7 @@ mockery of the learner and is barred by the harm floor.
   game.
 - Even absurd-option punishments stay in-world (§6). A character may be
   humiliated by the situation; the reader is never addressed.
-- This sits alongside C2: no "parser error" phrasing and no out-of-character
+- This sits alongside T1 and A5: no "parser error" phrasing and no out-of-character
   defaults.
 
 **Non-example:** "Nice try — the author never planned for that." Fun in a
@@ -223,6 +226,7 @@ a non-example and the briefs it should inform:
 
 ```md
 ### <pattern name>
+
 - Status: provisional | confirmed
 - First noticed in: <card path or batch>
 - Why it works: <one or two sentences>
@@ -319,6 +323,12 @@ worth promoting.
   story function. Added to §2 and the confirmed "Presence, not labels" pattern in
   §11. Room briefs are paused pending user approval of new item IDs and aliases
   (D2, bible §9); no writer has been dispatched with unregistered nouns.
+- 2026-11-26 — **Assistance Ward guide voice approved.** The user chose a weary,
+  passive-aggressive AI for the mandatory onboarding area. Added the area-specific
+  voice to §7 and the bible tone guide. The AI remains clipped, bureaucratic and
+  third-person; the humour targets its excessive help, never the learner. The
+  four former pupils are recoverable people, and cognitive decline remains
+  satire rather than a course or medical claim.
 - 2026-11-27 — **Affordance formatting added to the "Presence, not labels"
   pattern (§11).** The agreed Markdown convention (content-rules N10) supplements
   physical presence: a styled noun stays in a physical clause and no label

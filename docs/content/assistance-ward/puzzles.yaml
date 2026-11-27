@@ -1,0 +1,70 @@
+# puzzles card for assistance-ward
+# Logic-only Gate 1 card; the approved dial `use` producer landed in W6.
+# Applicable rules: N4, N5, N6, N7, P1, P2, P6, D1, D2, D3, D4, V1, V4
+kind: puzzle
+areaId: assistance-ward
+status: approved
+topicIds: [tutorial-mechanics]
+
+puzzles:
+  - id: puzzle-calibrate-assistance
+    requirements:
+      - kind: all
+        of:
+          - { kind: flag-set, flag: nia-observation-recovered }
+          - { kind: flag-set, flag: mateo-reading-recovered }
+          - { kind: flag-set, flag: priya-reasoning-recovered }
+          - { kind: flag-set, flag: kofi-operation-recovered }
+          - { kind: flag-set, flag: quiz-passed:quiz-assistance-orientation }
+          - { kind: flag-set, flag: assistance-dial-calibrated }
+    onSolve:
+      - { kind: set-flag, flag: tutorial-complete, value: true }
+      - kind: message
+        text: >-
+          The teaching-zone ports brighten. Your mandatory Assistance Ward
+          orientation checkpoint is complete.
+      - { kind: complete-topic, topicId: tutorial-mechanics }
+    topicId: tutorial-mechanics
+    score: 0
+    hintSequenceId: hint-assistance-orientation
+    dependsOn: []
+    authoring:
+      task: >-
+        You complete the mandatory Assistance Ward orientation by recovering the
+        four pupil records, passing the AI's practice audit and using the
+        assistance dial. The teaching-zone ports stay dark until all five records
+        are present and the dial is calibrated. You work from the recovery board,
+        the dial labels, the pupils' fixed practice fixtures and the AI's audit.
+      producedBy: >-
+        Examining `item-assistance-observation-card` and then asking Nia about the
+        observation card completes `topic-nia-observation`, which sets
+        `nia-observation-recovered`. Examining
+        `item-assistance-instruction-card` and then asking Mateo about the
+        instruction card completes `topic-mateo-instruction`, which sets
+        `mateo-reading-recovered`. Completing Priya's choose-then-justify exchange
+        through `topic-priya-choice-start`, `topic-priya-choice-made` and
+        `topic-priya-choice-reason` sets `priya-reasoning-recovered` at the final
+        topic. Examining `item-assistance-practice-crank` and then asking Kofi
+        about the practice crank completes `topic-kofi-practice-cycle`, which sets
+        `kofi-operation-recovered`. The `onPass` effects of
+        `quiz-assistance-orientation` set
+        `quiz-passed:quiz-assistance-orientation`. The approved conditional
+        `use assistance dial` producer is implemented in code and sets this
+        card's ratified `assistance-dial-calibrated` flag.
+      notes: >-
+        The composite `all` prevents premature activation and keeps
+        `turns-since:puzzle-calibrate-assistance` from starting during unrelated
+        tour turns; all six child flags must hold before the puzzle can solve. The
+        successful `use assistance dial` producer landed in W6 as an approved
+        content-declared action. This card does not author an interaction or claim
+        to implement the runtime itself.
+      clues:
+        - >-
+          `room-assistance-records`, `item-assistance-recovery-board` text:
+          "OBSERVE — Nia. READ — Mateo. REASON — Priya. OPERATE — Kofi.
+          ORIENTATION PASS — the AI's practice audit. All five records are
+          required."
+        - >-
+          `room-assistance-records`, `item-assistance-calibration-dial` labels:
+          "OBSERVE, READ, REASON, OPERATE, ORIENTATION PASS. Empty sockets keep
+          the teaching ports dark."

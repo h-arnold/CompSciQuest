@@ -14,7 +14,7 @@ import {
   makeState,
   SAVED_AT,
   seedStorage,
-  startNewGame,
+  startFromLiveSave,
   submit,
   waitForLine,
   watchConsole,
@@ -93,7 +93,7 @@ function wrongAnswer(question: AuthoredQuestion): string {
 }
 
 async function enterSwitchFloorQuiz(page: Page): Promise<void> {
-  await startNewGame(page);
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await submit(page, 'east');
   await waitForLine(page, 'The Network Hub');
   await submit(page, 'east');

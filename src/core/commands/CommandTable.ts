@@ -85,7 +85,7 @@ export const COMMAND_TABLE: readonly CommandSpec[] = [
   {
     verb: 'put',
     syntax: 'put <item> <target>',
-    aliases: [],
+    aliases: ['place'],
     group: 'Looking and handling',
   },
   { verb: 'look', syntax: 'look', aliases: [], group: 'Looking and handling' },
@@ -97,10 +97,12 @@ export const COMMAND_TABLE: readonly CommandSpec[] = [
   },
   { verb: 'score', syntax: 'score', aliases: [], group: 'Progress' },
   { verb: 'help', syntax: 'help', aliases: ['?'], group: 'Progress' },
+  // content-bible.md §12 (2026-11-27 W7 fix): both the documented hyphenated
+  // form and natural spacing are player-facing aliases for talk-to.
   {
     verb: 'talk-to',
     syntax: 'talk-to <npc>',
-    aliases: ['talk'],
+    aliases: ['talk', 'talk to'],
     group: 'People',
   },
   {

@@ -1,4 +1,4 @@
-// W6 content handoff: the accepted card set, its approved counts, the eleven
+// W6 content handoff: the accepted card set, its approved counts, the twelve
 // canonical coverage headings and the authored quiz/hint wiring. The contract
 // basis is docs/content/status.md, docs/coverage/COVERAGE.md,
 // docs/developer/content-toolchain.md §5, docs/developer/application-and-ui.md
@@ -31,7 +31,7 @@ function acceptedCards(): ParsedCardSet {
 }
 
 describe('accepted content handoff (HANDOFF §3, §7)', () => {
-  it('W6H-CARDS-01: the handoff declares all eighteen accepted card files', () => {
+  it('W6H-CARDS-01: the handoff declares all twenty-four accepted card files', () => {
     expect(zone1CardSet().files.map((file) => file.path)).toEqual([
       `${AREA_ID}/hazards.yaml`,
       `${AREA_ID}/hints.yaml`,
@@ -46,6 +46,12 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
       '1-4-programming-constructs/puzzles.yaml',
       '1-4-programming-constructs/quizzes.yaml',
       '1-4-programming-constructs/rooms.yaml',
+      'assistance-ward/hazards.yaml',
+      'assistance-ward/hints.yaml',
+      'assistance-ward/npcs.yaml',
+      'assistance-ward/puzzles.yaml',
+      'assistance-ward/quizzes.yaml',
+      'assistance-ward/rooms.yaml',
       'entry-interface/npcs.yaml',
       'entry-interface/rooms.yaml',
       'network-hub/npcs.yaml',
@@ -55,25 +61,27 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
   });
 
   it('W6H-COUNTS-01: card-derived counts equal the approved whole-game totals', () => {
+    // Accepted-card authority: docs/content/status.md, walkthrough.md §8.4 and
+    // the accepted YAML cards themselves — never the generated bundle.
     expect(expectedZone1Counts(acceptedCards())).toEqual({
-      rooms: 20,
-      items: 51,
-      areas: 5,
+      rooms: 23,
+      items: 63,
+      areas: 6,
       worlds: 1,
-      actors: 16,
-      actorStates: 17,
-      conversationTopics: 97,
-      nodes: 6,
-      quizzes: 14,
-      questions: 56,
-      puzzles: 23,
+      actors: 20,
+      actorStates: 22,
+      conversationTopics: 123,
+      nodes: 7,
+      quizzes: 15,
+      questions: 60,
+      puzzles: 24,
       hazards: 8,
-      hints: 13,
-      specTopics: 10,
+      hints: 16,
+      specTopics: 11,
     });
   });
 
-  it('W6H-COVERAGE-01: all eleven canonical headings are injected, and the local fixture only extends them', () => {
+  it('W6H-COVERAGE-01: all twelve canonical headings are injected, and the local fixture only extends them', () => {
     const canonicalIds = [
       'switch-to-bit',
       'data-types',
@@ -83,6 +91,7 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
       'sound-representation',
       'data-storage-units',
       'data-compression',
+      'tutorial-mechanics',
       'ai-ethics-and-implications',
       'algorithms-and-pseudocode',
       'programming-constructs',
@@ -95,8 +104,10 @@ describe('accepted content handoff (HANDOFF §3, §7)', () => {
   });
 
   it('W6H-QUIZWIRE-01: every accepted quiz and hint ladder resolves by ID', () => {
-    expect(authoredBundle.quizzes.all).toHaveLength(14);
-    expect(authoredBundle.hints.all).toHaveLength(13);
+    // Regenerated from the accepted cards, not invented: see
+    // docs/content/assistance-ward/hints.yaml and walkthrough.md §8.4.
+    expect(authoredBundle.quizzes.all).toHaveLength(15);
+    expect(authoredBundle.hints.all).toHaveLength(16);
     for (const quiz of authoredBundle.quizzes.all) {
       expect(authoredBundle.quizzes.getById(quiz.id)).toBe(quiz);
     }

@@ -10,4 +10,7 @@ export interface ExitDefinition {
   // Authored exits may declare composite conditions (`all`, `any`, `not`);
   // the runtime RuleEngine evaluates them with the shared ConditionEvaluator.
   readonly preconditions: readonly Condition[];
+  // Optional authored in-world denial shown by RuleEngine when a gate is shut.
+  // Omitted when the author supplies no feedback; never an explicit undefined.
+  readonly blockedText?: string;
 }

@@ -24,18 +24,18 @@ and writing rules.
 
 | Doc                                          | Owns                                                                                                                  |
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [content-rules.md](content-rules.md)         | The authoring rulebook: W1–W7 workflow, N/P/C/H/D/V rules, the shared agent contract.                                 |
+| [content-rules.md](content-rules.md)         | The cross-cutting authoring rulebook: W1–W7 workflow, N/P/H/D/V rules and the shared agent contract.                  |
 | [content-toolchain.md](content-toolchain.md) | YAML scaffolds, Zod shapes, validator, generator, committed generated TypeScript and the authoring-to-bundle handoff. |
 
 ## Subsystems
 
-| Doc                      | Owns                                                                                            |
-| ------------------------ | ----------------------------------------------------------------------------------------------- |
-| [combat.md](combat.md)   | Adversarial quiz combat: questions, grading, pass/fail effects, retries, seeded question order. |
-| [hazards.md](hazards.md) | Declarative, scheduled life-loss rules.                                                         |
-| [hints.md](hints.md)     | Escalating hint ladders, cooldowns and score penalties.                                         |
-| [npcs.md](npcs.md)       | Actors, actor states, conversation topics, `ConvNode`, knowledge gating, `TopicResolver`.       |
-| [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation.                  |
+| Doc                      | Owns                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| [combat.md](combat.md)   | Adversarial quiz combat: questions, grading, pass/fail effects, retries, seeded question order.             |
+| [hazards.md](hazards.md) | Declarative, scheduled life-loss rules.                                                                     |
+| [hints.md](hints.md)     | Escalating hint ladders, cooldowns and score penalties.                                                     |
+| [npcs.md](npcs.md)       | NPC authoring (A1–A6, T1–T6, D6), actors, states, topics, `ConvNode`, knowledge gating and `TopicResolver`. |
+| [puzzles.md](puzzles.md) | Action-flag puzzle completion, rewards and Puzzle Dependency Graph validation.                              |
 
 ## Documentation outside this folder
 

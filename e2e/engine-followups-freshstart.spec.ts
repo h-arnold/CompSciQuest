@@ -16,6 +16,7 @@ import {
   seedStorage,
   START_POSITION,
   START_ROOM_TITLE,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -117,7 +118,7 @@ async function answerNumber(
 
 async function enterSwitchFloorQuiz(page: Page): Promise<Quiz> {
   const quiz = authoredQuiz('quiz-switchyard');
-  await startNewGame(page);
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await submit(page, 'east');
   await waitForLine(page, 'The Network Hub');
   await submit(page, 'east');
@@ -240,6 +241,19 @@ test.describe('engine follow-ups — fresh start and live allowance', () => {
     await submit(page, last);
     await expect(quizPanel(page)).toBeHidden();
     const nextQuiz = authoredQuiz('quiz-data-types');
+    // Accepted in-world route (walkthrough.md §2 steps 2–4): the foreman's
+    // data-types handoff needs switches-set. The overheat has already fired,
+    // so this re-entry is safe and no gameplay flag is seeded.
+    await submit(page, 'down');
+    await waitForLine(page, '> down');
+    await waitForLine(page, 'The Switch Floor');
+    await submit(page, 'take switch gauge');
+    await waitForLine(page, 'Taken.');
+    await submit(page, 'use switch gauge on belt');
+    await waitForLine(page, 'Topic completed: Number conversion.');
+    await submit(page, 'up');
+    await waitForLine(page, '> up');
+    await waitForLine(page, 'The Binary Hall');
     await submit(page, 'ask foreman about data-types');
     await expect(quizPanel(page)).toBeVisible();
     await expect(requirementNode(page)).toHaveText(requirementLine(nextQuiz));

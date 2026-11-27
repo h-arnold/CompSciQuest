@@ -27,9 +27,10 @@ function activeQuiz(quizId: string): GameStateDto['quiz'] {
 
 describe('production quiz and hint wiring', () => {
   it('QUIZ-HINT-01: all authored quizzes and hints resolve, phase 4 solves before hinting and quiz answers stay in the command batch', () => {
-    // Whole-game accepted totals: HANDOFF §7, walkthrough §8.4.
-    expect(authoredBundle.quizzes.all).toHaveLength(14);
-    expect(authoredBundle.hints.all).toHaveLength(13);
+    // Regenerated from the accepted cards, not invented: see
+    // docs/content/assistance-ward/hints.yaml and walkthrough.md §8.4.
+    expect(authoredBundle.quizzes.all).toHaveLength(15);
+    expect(authoredBundle.hints.all).toHaveLength(16);
     for (const quiz of authoredBundle.quizzes.all) {
       expect(authoredBundle.quizzes.getById(quiz.id)).toBe(quiz);
     }

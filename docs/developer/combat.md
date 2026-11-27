@@ -57,7 +57,11 @@ the marks and options) reject a quiz with `passMark < 1`, a `passMark` above
    `start-quiz` compares `quizAttempts[quizId]` with `attemptsAllowed`: when the
    attempts are exhausted it emits a friendly message and starts nothing, and
    otherwise it increments the count
-   ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)).
+   ([storage-schema.md §5](storage-schema.md#5-quiz-attempts)). A `start-quiz`
+   effect begins an attempt only when no quiz is active: a repeated or mid-quiz
+   `start-quiz` neither replaces the active attempt nor increments
+   `quizAttempts`. After `end-quiz` clears the active attempt, the same quiz may
+   be started again.
 2. `start-quiz` creates `QuizStateDto`, shuffles `questionIds` with the injected
    `Random`, and emits `quiz-started`. Question order is fixed for the attempt;
    [shared-rules.md §7](shared-rules.md#7-random-port) owns the seed contract.

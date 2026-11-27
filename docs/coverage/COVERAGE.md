@@ -1,7 +1,8 @@
 # Coverage map
 
 This file is the authoritative mapping from the GCSE Computer Science Unit 1
-specification to game content. The separate coverage graph built from `docs/`
+specification to game content, together with explicitly non-assessed onboarding
+entries. The separate coverage graph built from `docs/`
 (indexed at `docs/graphify-out/graph.json`) includes this file and the source
 PDF; it is **evidence** for these mappings, not proof that a topic is covered.
 See [Two separate graphs](../../AGENTS.md#two-separate-graphs) in the root
@@ -12,19 +13,20 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 
 ## Conventions
 
-- Use one `## Topic: <id>` heading per specification topic; the id must match the
-  entry in `docs/content/spec-topics.yaml`.
+- Use one `## Topic: <id>` heading per coverage topic, including explicitly
+  non-assessed onboarding topics; the id must match the entry in
+  `docs/content/spec-topics.yaml`.
 - IDs and aliases follow
   [content-rules.md §5](../developer/content-rules.md#5-id-and-alias-registry).
 - Cite the PDF section/page and the code path/symbol. An empty field means
   "not mapped yet", not "covered".
 - Status is one of `not started`, `in progress`, `covered`. Record evidence.
-- A topic is `covered` only when accepted cards supply real teaching (an actor or
-  in-world label), retrieval (a quiz question) and — where the spec calls for it —
-  application (a puzzle) evidence (content-rules.md V3). Code locations are the
-  generated modules under `src/content/authored/`, produced by
-  `tools/content/generate.ts`
-  ([content-toolchain.md §5](../developer/content-toolchain.md#5-generation)).
+- Coverage eligibility and the teaching, retrieval and application evidence
+  rules belong to
+  [content-rules.md §3](../developer/content-rules.md#3-rule-catalogue) (P2, V3).
+- Code locations name the generated modules under `src/content/authored/`;
+  [content-toolchain.md §5](../developer/content-toolchain.md#5-generation) owns
+  their production.
 - Topic entries follow the `SpecTopic` contract in
   [content-toolchain.md §2](../developer/content-toolchain.md#2-authoring-format).
 
@@ -184,6 +186,40 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   Application — `puzzle-pack-the-archive` and `puzzle-choose-the-compression`.
   Spec compression examples only; no codec internals.
 
+## Topic: tutorial-mechanics
+
+- Spec reference: none — non-assessed game orientation. Boundary note: the
+  ward's AI hand-holding satire makes no WJEC or medical claim. WJEC 1.2.3 covers
+  ethical, social and legal implications of automated systems and effects on
+  human interaction (`wjec-unit1.md` L760–816), with an AI-impact discussion
+  activity at L2052–2059; this topic does not teach or complete that material.
+- Game content / room ID: authored and validated `room-assistance-intake`,
+  `room-assistance-demonstration`, `room-assistance-records`,
+  `quiz-assistance-orientation`, `puzzle-calibrate-assistance` and
+  `hint-assistance-orientation` in `area-assistance-ward`; focused CC-04
+  content-critic re-review returned FAIL on a runtime selector blocker; the
+  code repair and both final focused content/PCK re-reviews are PASS.
+- Code location: planned `src/content/authored/rooms.ts`,
+  `src/content/authored/quizzes.ts`, `src/content/authored/puzzles.ts` and
+  `src/content/authored/hints.ts` after W6 generation.
+- Status: in progress
+- Evidence / notes: Gate 0 curated Assistance Ward set approved 2026-11-26;
+  all cards returned and passed `content:validate` after W4 revision round 1.
+  Both independent reviewers returned FAIL on 2026-11-26; their content
+  findings are revised and CC-01 closed in code on 2026-11-27. PCK re-review
+  returned PASS with no findings on 2026-11-27; content-critic returned PASS WITH
+  MINORS. The CC-04 NPC revision validates, but focused content-critic re-review
+  returned FAIL because the runtime could not then reach its empty-object `tell`
+  reason producer; `code-lead` closed the blocker with independent PASS and both
+  final focused content/PCK re-reviews returned PASS with no findings. The final
+  whole-set V4 review returned PASS WITH MINORS with no blocker or major; focused
+  minor closure is complete at W5 (content-critic PASS WITH MINORS, PCK PASS, no
+  blocker or major). This entry exists so the practice systems have a valid topic
+  reference (P1, H2).
+  `maxScore 0`; all ward activities score 0; excluded from the win set because it
+  is not `covered` with evidence. It must never be cited as evidence for
+  `ai-ethics-and-implications` or any other specification topic.
+
 ## Topic: ai-ethics-and-implications
 
 - Spec reference: game-wide framing for the AI's "mastery of the whole of Unit 1"
@@ -205,7 +241,7 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   `quiz-pattern-bureau`, `quiz-finished-rail`, `hint-pattern-bureau`,
   `hint-finished-rail`. The Mill Board (`room-warp-walk`) and the rota board
   (`room-finished-rail`) carry the dual-representation beats.
-- Code location: *planned* `src/content/authored/rooms.ts`
+- Code location: _planned_ `src/content/authored/rooms.ts`
   (`room-pattern-bureau`, `room-finished-rail`); `src/content/authored/quizzes.ts`
   (`quiz-pattern-bureau`, `quiz-finished-rail`). Not yet generated (W6). The
   ten trace-pinned verb-action rows (walkthrough §8.6) land in
@@ -241,7 +277,7 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   `quiz-selvedge`) and six puzzles, the pattern cards (`item-pattern-card-*`),
   `hint-threading-order`, `hint-colour-court`, `hint-weft-tally`,
   `hint-selvedge`, `hint-bobbin-window`.
-- Code location: *planned* `src/content/authored/rooms.ts` (construct rooms);
+- Code location: _planned_ `src/content/authored/rooms.ts` (construct rooms);
   `src/content/authored/puzzles.ts`; `src/content/authored/quizzes.ts`. Not yet
   generated (W6). The ten trace-pinned verb-action rows (walkthrough §8.6)
   land in `src/core/commands/InteractionRules.ts` (seam already there; W6
@@ -270,28 +306,31 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 
 ## Room index
 
-| Room ID | Purpose | Exits | Spec topics |
-| --- | --- | --- | --- |
-| `room-arrival` | World boot start: classroom scan, AI meeting and three in-character AI topics | east: `room-network-hub` | ai-ethics-and-implications (framing) |
-| `room-network-hub` | Zone-choice starting point; one live port, others dark | west: `room-arrival`, east: `room-switch-floor`, in: `room-entry-interface` | none (navigation-only) |
-| `room-entry-interface` | Older interface; AI's verdict strip | east: `room-switch-floor`, out: `room-network-hub` | ai-ethics-and-implications (framing) |
-| `room-switch-floor` | Prologue: transistor as a tiny switch | west: `room-network-hub`, up: `room-binary-hall` | switch-to-bit |
-| `room-binary-hall` | Switchyard hub and `startRoomId` of `area-1-2-1-data-representation`; type bins and route diagram | down: `room-switch-floor`, west: `room-network-hub`, north: `room-hex-deck` (switches-set), east: `room-character-tiles` (hex-read), south: `room-picture-mosaic` (characters-matched), up: `room-sound-choir` (picture-built), in: `room-storage-stacks` (sound-sampled), out: `room-compression-press` (stacks-sorted) | data-types, number-conversion |
-| `room-hex-deck` | Hexadecimal nibbles; denary ↔ binary ↔ hex | south: `room-binary-hall` | number-conversion |
-| `room-character-tiles` | ASCII, Unicode, characters and strings | west: `room-binary-hall` | character-representation |
-| `room-picture-mosaic` | Vector/raster, resolution, bit and colour depth | north: `room-binary-hall` | graphics-representation |
-| `room-sound-choir` | Sampling rate, bit depth, channels | down: `room-binary-hall` | sound-representation |
-| `room-storage-stacks` | Base-2 units and capacity | out: `room-binary-hall` | data-storage-units |
-| `room-compression-press` | Lossy, lossless, compression ratios | in: `room-binary-hall` | data-compression |
-| `room-1-4-concourse` | Zone A threshold: cold concourse under THE PATTERN MILL sign (Y Felin painted beneath) | south: `room-network-hub`, east: `room-pattern-bureau` | none (navigation-only) |
-| `room-pattern-bureau` | The Pattern Mill's start: the Loomwright, five flowchart symbols stencilled in the wood, the Demonstration Book | west: `room-1-4-concourse`, east: `room-warp-walk` | algorithms-and-pseudocode, programming-constructs (input/output beat) |
-| `room-warp-walk` | Junction corridor: the Mill Board (global-variable beat), all mill doors visible, the rail door under four glass section lights | west: `room-pattern-bureau`, north: `room-threading-order`, south: `room-weft-counter`, in: `room-colour-court`, out: `room-bobbin-window`, down: `room-endless-selvedge`, east: `room-finished-rail` (gated — the five flags) | programming-constructs (Mill Board, L1304–1306) |
-| `room-threading-order` | The warp dress: sequence | south: `room-warp-walk` | programming-constructs |
-| `room-colour-court` | The shed and selection: pick trolley routed by the plate's condition | out: `room-warp-walk` | programming-constructs |
-| `room-weft-counter` | Count-controlled iteration: the ratchet and slip tooth | north: `room-warp-walk` | programming-constructs |
-| `room-bobbin-window` | Input/output: mend the intake bell; the addressing plate's find-and-replace beat (string handling, in spirit) | in: `room-warp-walk` | programming-constructs |
-| `room-endless-selvedge` | Condition-controlled iteration: the until plate and the rogue thread | up: `room-warp-walk` | programming-constructs |
-| `room-finished-rail` | Capstone: the master cloth, the rota board (the 6×5 2D array), PREDICT. THEN WEAVE., the Loomwright's despatch audit | west: `room-warp-walk` | algorithms-and-pseudocode, programming-constructs |
+| Room ID                         | Purpose                                                                                                                         | Exits                                                                                                                                                                                                                                                                                                                    | Spec topics                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `room-arrival`                  | World boot start: classroom scan, AI meeting and three in-character AI topics                                                   | east: `room-network-hub`                                                                                                                                                                                                                                                                                                 | ai-ethics-and-implications (framing)                                  |
+| `room-network-hub`              | Zone-choice hub; south ward route open, east/north teaching ports dark until calibration                                        | west: `room-arrival`, east: `room-switch-floor` (`tutorial-complete`), in: `room-entry-interface`, north: `room-1-4-concourse` (`tutorial-complete`), south: `room-assistance-intake`                                                                                                                                    | none (navigation-only)                                                |
+| `room-assistance-intake`        | Ward command tour: looking, examining, carrying and Nia's observation recovery                                                  | north: `room-network-hub`, east: `room-assistance-demonstration`                                                                                                                                                                                                                                                         | tutorial-mechanics (non-assessed practice)                            |
+| `room-assistance-demonstration` | Ward object/door practice and Mateo/Kofi recoveries                                                                             | west: `room-assistance-intake`, north: `room-assistance-records`                                                                                                                                                                                                                                                         | tutorial-mechanics (non-assessed practice)                            |
+| `room-assistance-records`       | Ward conversation, quiz, hint, records and final calibration practice                                                           | south: `room-assistance-demonstration`, west: `room-network-hub`                                                                                                                                                                                                                                                         | tutorial-mechanics (non-assessed practice)                            |
+| `room-entry-interface`          | Older interface; AI's verdict strip and ward-calibration plaque                                                                 | east: `room-switch-floor` (`tutorial-complete`), out: `room-network-hub`                                                                                                                                                                                                                                                 | ai-ethics-and-implications (framing)                                  |
+| `room-switch-floor`             | Prologue: transistor as a tiny switch                                                                                           | west: `room-network-hub`, up: `room-binary-hall`                                                                                                                                                                                                                                                                         | switch-to-bit                                                         |
+| `room-binary-hall`              | Switchyard hub and `startRoomId` of `area-1-2-1-data-representation`; type bins and route diagram                               | down: `room-switch-floor`, west: `room-network-hub`, north: `room-hex-deck` (switches-set), east: `room-character-tiles` (hex-read), south: `room-picture-mosaic` (characters-matched), up: `room-sound-choir` (picture-built), in: `room-storage-stacks` (sound-sampled), out: `room-compression-press` (stacks-sorted) | data-types, number-conversion                                         |
+| `room-hex-deck`                 | Hexadecimal nibbles; denary ↔ binary ↔ hex                                                                                      | south: `room-binary-hall`                                                                                                                                                                                                                                                                                                | number-conversion                                                     |
+| `room-character-tiles`          | ASCII, Unicode, characters and strings                                                                                          | west: `room-binary-hall`                                                                                                                                                                                                                                                                                                 | character-representation                                              |
+| `room-picture-mosaic`           | Vector/raster, resolution, bit and colour depth                                                                                 | north: `room-binary-hall`                                                                                                                                                                                                                                                                                                | graphics-representation                                               |
+| `room-sound-choir`              | Sampling rate, bit depth, channels                                                                                              | down: `room-binary-hall`                                                                                                                                                                                                                                                                                                 | sound-representation                                                  |
+| `room-storage-stacks`           | Base-2 units and capacity                                                                                                       | out: `room-binary-hall`                                                                                                                                                                                                                                                                                                  | data-storage-units                                                    |
+| `room-compression-press`        | Lossy, lossless, compression ratios                                                                                             | in: `room-binary-hall`                                                                                                                                                                                                                                                                                                   | data-compression                                                      |
+| `room-1-4-concourse`            | Zone A threshold: cold concourse under THE PATTERN MILL sign (Y Felin painted beneath)                                          | south: `room-network-hub`, east: `room-pattern-bureau`                                                                                                                                                                                                                                                                   | none (navigation-only)                                                |
+| `room-pattern-bureau`           | The Pattern Mill's start: the Loomwright, five flowchart symbols stencilled in the wood, the Demonstration Book                 | west: `room-1-4-concourse`, east: `room-warp-walk`                                                                                                                                                                                                                                                                       | algorithms-and-pseudocode, programming-constructs (input/output beat) |
+| `room-warp-walk`                | Junction corridor: the Mill Board (global-variable beat), all mill doors visible, the rail door under four glass section lights | west: `room-pattern-bureau`, north: `room-threading-order`, south: `room-weft-counter`, in: `room-colour-court`, out: `room-bobbin-window`, down: `room-endless-selvedge`, east: `room-finished-rail` (gated — the five flags)                                                                                           | programming-constructs (Mill Board, L1304–1306)                       |
+| `room-threading-order`          | The warp dress: sequence                                                                                                        | south: `room-warp-walk`                                                                                                                                                                                                                                                                                                  | programming-constructs                                                |
+| `room-colour-court`             | The shed and selection: pick trolley routed by the plate's condition                                                            | out: `room-warp-walk`                                                                                                                                                                                                                                                                                                    | programming-constructs                                                |
+| `room-weft-counter`             | Count-controlled iteration: the ratchet and slip tooth                                                                          | north: `room-warp-walk`                                                                                                                                                                                                                                                                                                  | programming-constructs                                                |
+| `room-bobbin-window`            | Input/output: mend the intake bell; the addressing plate's find-and-replace beat (string handling, in spirit)                   | in: `room-warp-walk`                                                                                                                                                                                                                                                                                                     | programming-constructs                                                |
+| `room-endless-selvedge`         | Condition-controlled iteration: the until plate and the rogue thread                                                            | up: `room-warp-walk`                                                                                                                                                                                                                                                                                                     | programming-constructs                                                |
+| `room-finished-rail`            | Capstone: the master cloth, the rota board (the 6×5 2D array), PREDICT. THEN WEAVE., the Loomwright's despatch audit            | west: `room-warp-walk`                                                                                                                                                                                                                                                                                                   | algorithms-and-pseudocode, programming-constructs                     |
 
 ## Integration verdict
 
@@ -305,7 +344,7 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
 - **Opening amendment PASS (2026-11-25).** The arrival and Network Hub rooms and
   the AI topics are validated with no findings. Code-lead landed the
   `in-room`/`in-area` seam; why-here and failure are active in `room-arrival`,
-  escape in `room-network-hub`, with the catch-all global (C2/C6). The AI artefacts
+  escape in `room-network-hub`, with the catch-all global (T1, T2). The AI artefacts
   live in the arrival and hub NPC cards under the user-directed area ownership rule
   (bible §4.2). Both reviewers returned PASS on the moved cards after one stale-prompt
   minor was closed. The final whole-set `content-critic` pass (V4, N2, N6, N7, D3)
@@ -319,8 +358,8 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   USE/SHOW/PUT are non-functional in the running app, so the six gated exits
   never open and the authored path cannot reach `game-won`. The four blockers
   (E2E-1..4) are code findings routed to `code-lead`; the V4 content audit is
-  unaffected. A W7 re-run is owed after those fixes land and the in-flight card
-  amendments are regenerated. Evidence:
+  unaffected. A W7 re-run follows once those fixes land and the in-flight card amendments
+  are regenerated. Evidence:
   `.opencode/scratchpad/slices/w7-opening-walkthrough/qa-report.md`.
 - **Zone A PASS (2026-11-25).** The Pattern Mill's six cards (rooms including
   the concourse and the hub exit amendment, npcs, puzzles, quizzes, hazards,
@@ -335,9 +374,9 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   (recorded sums, topic file §11); the win set is ten topics and the end
   state is the rail quiz pass (trace §8 step 30). The ten verb-action rows
   (trace §8.6) and four scenery declarations are the W6 contract;
-  `src/content/authored/*` for this area is still *planned* until code-lead
-  generates them, and a W7 browser walkthrough is owed after that wiring and
-  zone-1's runtime blockers are fixed.
+  `src/content/authored/*` for this area is still _planned_ until code-lead
+  generates them, and a W7 browser walkthrough follows that wiring and the zone-1 runtime
+  fixes.
 
 ## Open questions
 
@@ -348,12 +387,23 @@ extraction at `docs/exam-specs/wjec-unit1.md` (line numbers cited below).
   it contributes nothing to this zone's win set. `network-hardware` (1.3.1) is a
   separate, unscoped zone. As new topics are created in this map, new zones and the
   routes between them must be created in the bible, their topic files, cards and the
-  V4 walkthrough; only The Switchyard is currently authored. See
+  V4 walkthrough; The Switchyard and the opening areas are authored, while The
+  Pattern Mill's accepted cards await W6 generation. See
   `docs/content/content-bible.md` §4.1 and §5.
-- All "code location" entries are planned paths under `src/content/authored/`: the
-  code-lead must confirm the actual generated module names when validated YAML is
-  generated to TypeScript (W6).
+- Code locations marked _planned_ remain targets under
+  `src/content/authored/`; code-lead must confirm the generated module names when
+  validated YAML is generated to TypeScript (W6).
+- **Assistance Ward (2026-11-26/27, Gate 0 approved; W4 PASS).**
+  `tutorial-mechanics` is a non-assessed onboarding topic, `in progress`,
+  `maxScore 0`, and outside the win set. All six ward cards and five owning-card
+  amendments are content-accepted; batch and final focused content/PCK reviews
+  are green, CC-01–CC-07 and AW-PCK-01–AW-PCK-10 are closed, and all six cards now
+  carry `status: approved` and revalidate cleanly. The three approved room IDs are
+  populated so the explicit hint ladder resolves in every ward room. The V4
+  insertion routes through the ward and proves `tutorial-complete` before the three
+  teaching-zone gates. The final whole-set V4 review returned PASS WITH MINORS with
+  no blocker or major; the minor ledger records the accepted dial-seam deferral and
+  focused closure confirmation is complete; the approved conditional `use` seam
+  landed in W6 with 92 files / 652 tests green, so the ward W7 playtest is unblocked.
 - `ai-ethics-and-implications` remains `in progress` (framing only) and needs a
   future zone before it can be marked `covered`.
-- `docs/content/narrative-principles.md` was approved by the user on 2026-11-24
-  (see `status.md`); it is settled authority for writer briefs, not an open item.

@@ -132,7 +132,7 @@ the author expected.
   than assuming a new tutorial system.
 - Give every submitted command meaningful in-voice feedback. Unknown verbs and
   nouns degrade to a friendly response, never a parser error or a bare refusal
-  (N5, C2).
+  (N5, A5).
 - During a quiz, show a clear prompt and numbered options. The supported answer
   forms are `answer N`, a bare `N`, and exact option text; do not invent letter
   shortcuts ([combat.md §4](../developer/combat.md#4-commands-and-events)).

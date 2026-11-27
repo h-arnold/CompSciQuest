@@ -129,6 +129,14 @@ export interface RoomDefinition {
   readonly score: number; // first-visit award, 0 when not scoreable
 }
 
+// src/content/ExitDefinition.ts
+export interface ExitDefinition {
+  readonly direction: Direction;
+  readonly targetRoomId: string;
+  readonly preconditions: readonly Condition[];
+  readonly blockedText?: string; // in-world response when preconditions fail; omit when absent (§8)
+}
+
 // src/content/ItemDefinition.ts
 export interface ItemDefinition {
   readonly id: string;
@@ -136,9 +144,26 @@ export interface ItemDefinition {
   readonly aliases: readonly string[];
   readonly portable: boolean;
   readonly refusalText?: string; // in-world take refusal for a non-portable item; omit when absent (§5.2)
+  readonly useText?: {
+    readonly success: string;
+    readonly blocked?: string;
+  }; // authored prose for a conditional `use` producer; omit when absent (§5.2)
   readonly description: string;
   readonly initialRoom: string; // starting owner; ownership lives in state
 }
+```
+
+An exit in a rooms card carries `blockedText` as a plain string beside its other
+keys, omitted when absent. The card keys `direction`, `to` and `conditions`
+become `direction`, `targetRoomId` and `preconditions` in the generated
+definition ([content-toolchain.md §5](content-toolchain.md#5-generation)):
+
+```yaml
+exits:
+  - direction: <direction>
+    to: <room-id>
+    conditions: [<condition>]
+    blockedText: <in-world message when the conditions fail>
 ```
 
 `startRoomId` is the runtime level start for hazards and quiz-failure teleports;
@@ -187,10 +212,11 @@ the interaction and scenery shape checks shared with authoring:
   Target-reference checks stay with `content-ids`.
 
 NPC actor binding is checked at authoring time: every authored topic and node
-carries an `actorId` that resolves to one actor, and the `npc-content` gate
-enforces it ([content-rules.md §4.3 "Actor binding"](content-rules.md#43-npc-card),
-[§8](content-rules.md#8-fixed-contracts-content-must-use)). That gate is
-authoring-only, so boot does not re-check it. The remaining shape checks (stray
+carries an `actorId` that resolves to one actor, except for a brief-approved
+global topic, and the `npc-content` gate enforces it
+([npcs.md §8 "Actor binding"](npcs.md#8-npc-card-format),
+[content-rules.md §8](content-rules.md#8-fixed-contracts-content-must-use)). That
+gate is authoring-only, so boot does not re-check it. The remaining shape checks (stray
 keys outside `authoring:`, document `status`, unresolved `todo` placeholders)
 run only in `npm run content:validate` on the YAML. The four
 runtime-mirrored gates share one check function across authoring, test and boot;
@@ -306,6 +332,7 @@ export type Command =
   | { readonly kind: 'tell'; readonly actorId: string; readonly topic: string }
   | { readonly kind: 'give'; readonly actorId: string; readonly itemId: string }
   | { readonly kind: 'show'; readonly actorId: string; readonly itemId: string }
+  | { readonly kind: 'unseen-actor'; readonly actorId: string }
   | { readonly kind: 'bye' }
   // quiz combat
   | { readonly kind: 'answer'; readonly option: number }
@@ -318,12 +345,12 @@ export type Command =
 Doors and containers have dedicated verbs in v1 rather than relying solely on
 `use`:
 
-| Command                  | Meaning                                                     | Flag effect                                                       |
-| ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------- |
-| `open <target>`          | Open an unlocked door or container                          | `door-open:<itemId>` / `container-open:<itemId>` = `true`         |
-| `close <target>`         | Close an open door or container                             | the same flag = `false`                                           |
-| `unlock <item> <target>` | Use a key-like item; sets the action flag but does not open | `door-unlocked:<itemId>` / `container-unlocked:<itemId>` = `true` |
-| `put <item> <target>`    | Place a visible item or scenery on a visible target         | `transfer-item` to the target owner (the room for scenery)        |
+| Command                                                  | Meaning                                                     | Flag effect                                                       |
+| -------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| `open <target>`                                          | Open an unlocked door or container                          | `door-open:<itemId>` / `container-open:<itemId>` = `true`         |
+| `close <target>`                                         | Close an open door or container                             | the same flag = `false`                                           |
+| `unlock <item> <target>` / `unlock <item> with <target>` | Use a key-like item; sets the action flag but does not open | `door-unlocked:<itemId>` / `container-unlocked:<itemId>` = `true` |
+| `put <item> <target>` / `place <item> <target>`          | Place a visible item or scenery on a visible target         | `transfer-item` to the target owner (the room for scenery)        |
 
 The `flags` convention and the one-owner-per-item rule are owned by
 [storage-schema.md §3.3](storage-schema.md#33-invariants). Handlers check their
@@ -345,13 +372,13 @@ v1 recognises the canonical verbs with these aliases:
 | `examine`       | `x`, `look at`                                                                     |
 | `open`          | —                                                                                  |
 | `close`         | `shut`                                                                             |
-| `unlock`        | —                                                                                  |
-| `put`           | —                                                                                  |
+| `unlock`        | both word orders (§5.1)                                                            |
+| `put`           | `place`                                                                            |
 | `look`          | —                                                                                  |
 | `inventory`     | `i`, `inv`                                                                         |
 | `score`         | —                                                                                  |
 | `help`          | `?`                                                                                |
-| `talk-to`       | `talk`                                                                             |
+| `talk-to`       | `talk`, `talk to`                                                                  |
 | `ask` / `tell`  | —                                                                                  |
 | `give` / `show` | —                                                                                  |
 | `bye`           | `goodbye`                                                                          |
@@ -363,6 +390,11 @@ bound to it by `actorId` has an `isActive` location scope matching the player's
 `Position` ([npcs.md §2](npcs.md#2-model), [shared-rules.md §3](shared-rules.md#3-condition)).
 Inference applies only when exactly one actor qualifies; `ask <npc> about <topic>`
 names the actor, and zero or several candidates take the `unknown` path.
+
+`give`/`show` with a resolvable actor but an unresolvable item resolve to
+`unseen-actor` (§5). `unseenActorHandler()` emits exactly one `message` effect:
+`You cannot see that here.` when `isActorOutOfRoom()` reports the actor outside
+the room, otherwise `I don't understand that.`.
 
 A bare `N` during a quiz is accepted in place of `answer N` with the same
 1-based option ([combat.md §4](combat.md#4-commands-and-events)).
@@ -401,6 +433,19 @@ scenery target's transfer to that room. An unreachable source still emits
 "You are not carrying that.". This is the runtime allowance for the authored
 trace, whose rows act on room items and scenery without an intervening `take`
 ([walkthrough.md §8.6](../content/walkthrough.md#86-trace-pinned-verb-action-rows-the-w6-contract)).
+
+A small authored-use table handles bare `use <item>` with no target: the
+calibration dial in `room-assistance-records` and the practice bell in
+`room-assistance-demonstration`. The approved prose is signed off in
+[content-bible.md §12](../content/content-bible.md#12-approval-record).
+For these rows the table holds IDs, prerequisites and the flag to set; all
+player-facing text comes from the item (§3.2). With all five dial prerequisites
+set, the producer emits one `message` from `useText.success` and one
+`set-flag assistance-dial-calibrated: true`; with any missing, it emits only
+`useText.blocked` and leaves state unchanged. The bell has no prerequisites
+or flag and emits one `message` with its authored `description`. A producer
+without `useText` replies with its `description`; a blocked producer without
+`blocked` prose emits nothing.
 
 ## 6. Canonical event union and rendering
 
@@ -575,7 +620,9 @@ Channels are split by whether the text may be interpreted as Markdown:
 
 The command echo stays plain: `> **look**` would otherwise be read as a
 blockquote and lose the `>` prompt. Status, sidebar and save text are never
-interpreted.
+interpreted. The authored `blockedText` exit fallback, item `useText` replies and
+`unseen-actor` replies are Markdown block text through the same `message`
+channel; no new channel is needed.
 
 Room entry is four transcript entries: a `##` heading, a blank line, the
 description and the exits line. The blank line is a real entry and must occupy
@@ -926,6 +973,12 @@ export function createComposedReaction(
 ): ComposedReaction;
 ```
 
+`RuleEngine.check` gates `go` through exit preconditions only (§5.1). When a
+precondition fails it emits one player-facing string: the exit's authored
+`blockedText` when present, otherwise the exact fallback `That way is closed for
+now.`. It never emits a precondition kind or an internal ID. An empty array
+allows the move.
+
 `EventBus`, `Random` and `EffectApplier.apply(effect): GameEvent[]` are defined in
 [`src/core/events/EventBus.ts`](../../src/core/events/EventBus.ts),
 [`src/core/Random.ts`](../../src/core/Random.ts) and
@@ -1010,8 +1063,9 @@ buffered event per effect. The complete mapping is:
 | `show-hint`                                  | `hint-shown`, `hint-penalty-applied`                                    |
 | `announce-hazard`                            | `hazard-triggered`                                                      |
 
-`start-quiz` emits `quiz-started` and the first `question-asked`; `end-quiz`
-emits `quiz-ended`, plus `actor-state-changed` when the quiz names a known
+`start-quiz` emits `quiz-started` and the first `question-asked` when it starts
+an attempt ([combat.md §3](combat.md#3-flow)); `end-quiz` emits `quiz-ended`,
+plus `actor-state-changed` when the quiz names a known
 actor and its NPC returns to the actor's initial state; `show-hint` emits
 `hint-shown` and `hint-penalty-applied` (the level's `scorePenalty`, or `0` when
 omitted). Every other row is one event per effect. An effect that legitimately

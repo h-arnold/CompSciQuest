@@ -21,11 +21,12 @@ const CARD_PREFIX = '../../docs/content/';
 export const GENERATED_HEADER =
   '// GENERATED FILE — do not edit. Regenerate with npm run content:generate.';
 
-// Injected representation of all eleven `## Topic:` headings in COVERAGE.md
+// Injected representation of all twelve `## Topic:` headings in COVERAGE.md
 // (content-toolchain.md §2). A fixed list keeps the tests independent of the
 // Markdown file while still supplying every heading the accepted cards declare.
 // `ai-ethics-and-implications` remains `in progress` but is still canonical;
-// the final two headings record the accepted W5 coverage flip for Zone A.
+// `tutorial-mechanics` is the approved non-assessed onboarding heading; the
+// final two headings record the accepted W5 coverage flip for Zone A.
 export const ZONE1_COVERAGE_HEADINGS: readonly string[] = [
   '## Topic: switch-to-bit',
   '## Topic: data-types',
@@ -35,6 +36,7 @@ export const ZONE1_COVERAGE_HEADINGS: readonly string[] = [
   '## Topic: sound-representation',
   '## Topic: data-storage-units',
   '## Topic: data-compression',
+  '## Topic: tutorial-mechanics',
   '## Topic: ai-ethics-and-implications',
   '## Topic: algorithms-and-pseudocode',
   '## Topic: programming-constructs',
@@ -76,9 +78,11 @@ export const ZONE1_CATALOGUES: readonly {
   },
 ];
 
-// The ten `covered` topics declared by docs/content/spec-topics.yaml (HANDOFF
-// §7); `ai-ethics-and-implications` is a canonical heading but `in progress`,
-// so it has no spec topic and is deliberately absent here.
+// The eleven spec topics declared by docs/content/spec-topics.yaml, in card
+// declaration order. `ai-ethics-and-implications` is a canonical heading but
+// `in progress`, so it has no spec topic and is deliberately absent here.
+// `tutorial-mechanics` is the approved non-assessed onboarding topic
+// (`maxScore 0`, outside the win set; docs/content/status.md).
 export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
   'switch-to-bit',
   'data-types',
@@ -90,6 +94,7 @@ export const ZONE1_SPEC_TOPIC_IDS: readonly string[] = [
   'data-compression',
   'algorithms-and-pseudocode',
   'programming-constructs',
+  'tutorial-mechanics',
 ];
 
 export function zone1CardSet(): CardSet {
@@ -117,6 +122,12 @@ export function zone1CardSet(): CardSet {
     '1-4-programming-constructs/puzzles.yaml',
     '1-4-programming-constructs/quizzes.yaml',
     '1-4-programming-constructs/rooms.yaml',
+    'assistance-ward/hazards.yaml',
+    'assistance-ward/hints.yaml',
+    'assistance-ward/npcs.yaml',
+    'assistance-ward/puzzles.yaml',
+    'assistance-ward/quizzes.yaml',
+    'assistance-ward/rooms.yaml',
     'entry-interface/npcs.yaml',
     'entry-interface/rooms.yaml',
     'network-hub/npcs.yaml',

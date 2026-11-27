@@ -3,7 +3,7 @@
 // comes from the content session (ENGINE_ISSUES.md, Batch E1 decisions).
 // Canonical layout: application-and-ui.md §2 and §7.1.
 import { afterEach, describe, expect, it } from 'vitest';
-import { TitleScreen } from '../../src/ui/TitleScreen';
+import { DEFAULT_TITLE_COPY, TitleScreen } from '../../src/ui/TitleScreen';
 import { makeEnvelope } from '../fixtures/persistence';
 import {
   findButton,
@@ -21,8 +21,14 @@ import { makeBootSetup } from '../fixtures/uiSetup';
 
 afterEach(restoreDocument);
 
-const OBJECTIVE_PLACEHOLDER = 'Objective copy to follow.';
-const CONTROLS_PLACEHOLDER = 'Controls copy to follow.';
+// PLAYTEST-assistance-ward.md finding 10: the scaffolding lines are replaced
+// by code-owned orientation copy. The wording is fixed by the W7 fix brief.
+const OBJECTIVE_PLACEHOLDER =
+  'The register marks your attention not satisfied. Pass the Assistance Ward orientation and the mark can be cleared.';
+const CONTROLS_PLACEHOLDER =
+  'Use plain commands: look, examine, take and a direction such as east. Ask someone about what you can see, or type help for the full list.';
+const OLD_OBJECTIVE = 'Objective copy to follow.';
+const OLD_CONTROLS = 'Controls copy to follow.';
 const HELP_PROMPT = /type\s+help/i;
 
 async function boot(bootstrap: Bootstrap, dependencies: BootstrapDependencies) {
@@ -34,6 +40,15 @@ function transcriptLines(log: FakeElement): readonly string[] {
 }
 
 describe('onboarding copy slots and first log batch (ENGINE_ISSUES.md Batch E1)', () => {
+  it('W7F-11: DEFAULT_TITLE_COPY holds the approved objective and controls wording', () => {
+    expect(DEFAULT_TITLE_COPY.objective).toBe(OBJECTIVE_PLACEHOLDER);
+    expect(DEFAULT_TITLE_COPY.controls).toBe(CONTROLS_PLACEHOLDER);
+    for (const placeholder of [OLD_OBJECTIVE, OLD_CONTROLS]) {
+      expect(OBJECTIVE_PLACEHOLDER).not.toContain(placeholder);
+      expect(CONTROLS_PLACEHOLDER).not.toContain(placeholder);
+    }
+  });
+
   it('ENG1-ONBOARD-01: title overlay renders objective, controls and a type help prompt with unchanged chrome', () => {
     const page = installFakeDocument();
     let continueClicks = 0;

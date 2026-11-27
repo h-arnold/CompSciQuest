@@ -11,7 +11,7 @@ import { questions } from '../src/content/authored/questions';
 import { quizzes } from '../src/content/authored/quizzes';
 import {
   seedStorage,
-  startNewGame,
+  startFromLiveSave,
   submit,
   transcript,
   waitForLine,
@@ -78,7 +78,7 @@ function optionNumber(
 }
 
 async function enterSwitchFloorQuiz(page: Page): Promise<void> {
-  await startNewGame(page);
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await submit(page, 'east');
   await waitForLine(page, 'The Network Hub');
   await submit(page, 'east');

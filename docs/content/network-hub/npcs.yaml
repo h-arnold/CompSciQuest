@@ -6,15 +6,16 @@ topicIds: []
 conversationTopics:
   - id: topic-ai-escape
     actorId: npc-the-ai
-    match: { kind: special, keywords: [escape, exit, leave, get out, route, door] }
+    match:
+      { kind: special, keywords: [escape, exit, leave, get out, route, door] }
     isActive: { kind: in-room, roomId: room-network-hub }
     responses:
       - >-
-        Two ports on the patch bay glow; the rest sit dark. The east socket wears the record's LIVE; the north one wears a fresh paper label the record did not issue. The record keeps the doors sealed until mastery of the whole of Unit 1 is entered against your name. Follow the routes, and let the work write the entry. The entry stands until then.
+        The south route is always open. It leads into the Assistance Ward, a safe checkpoint where the pupil may leave and re-enter without losing a life. The east and north teaching ports wait for the ward's completion mark. Take south. Let the ward write the mark.
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask for the route out.)
+      (You could ask which route is open.)
     authoring:
       note: >-
-        Scoped to `room-network-hub` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's flavour content, flags and mechanics are unchanged. Two ports are live since the north exit to the concourse was added; the line no longer asserts a single live port. No zone is named and no route beyond the visible labels is promised, so nothing is asserted that the cards do not contain. No flag, gate, quiz or course fact.
+        Amended to explain the Assistance Ward gate: east and north wait for the ward's completion mark, while south stays open to a checkpoint the pupil can leave and re-enter without losing a life. The `in-room` scope, keywords, `once` strategy, empty effects and all mechanics are unchanged; the gate itself is owned by the rooms amendment. The hub AI stays clipped and bureaucratic, with no route beyond the visible ports promised and no flag, quiz, puzzle, hazard or course claim added.

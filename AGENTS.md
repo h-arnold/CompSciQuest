@@ -204,6 +204,7 @@ each accepted area by `content-rules.md` V5, not a §12 requirement.
   - Delve/delveing/delves
   - Tapestry/tapestries
   - "The thing nobody..." (and variations on that)
+  - "Needs to be owed" / "owed" (unless it literally refers to a debt the player must repay; otherwise it is unclear)
 
 ## Host gotchas
 

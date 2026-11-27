@@ -56,7 +56,7 @@ export interface GameStateDto {
     readonly inventory: readonly string[]; // item IDs carried by the player
     readonly lives: number;
   };
-  readonly rooms: Readonly<Record<string, RoomStateDto>>; // keyed by room ID
+  readonly rooms: Readonly<Record<string, RoomStateDto>>; // room or fixture item ID
   readonly npcs: Readonly<Record<string, NpcStateDto>>; // keyed by actor ID
   readonly hazards: Readonly<Record<string, HazardStateDto>>;
   readonly puzzles: Readonly<Record<string, PuzzleStateDto>>;
@@ -140,7 +140,11 @@ export interface AreaProgress {
 1. Every item ID occurs in **exactly one** owner list: `player.inventory`, an
    `NpcStateDto.inventory`, or a `RoomStateDto.inventory`. `transfer-item` uses
    the reserved owner ID `'player'`, actor IDs for NPCs and room IDs for rooms,
-   and updates both lists atomically.
+   and updates both lists atomically. An item held by a fixture is keyed in
+   `state.rooms` by that fixture's declared item ID, while the player's
+   `position.roomId` must be a room ID. A key naming neither a declared room
+   nor a declared item fails validation as `invalid-content` (§8) and is
+   quarantined when it is the live save at boot (§9).
 2. Mutable door/container/item state uses a kebab-case `flags` convention:
    `door-open:<itemId>`, `container-open:<itemId>`, `door-unlocked:<itemId>`,
    `container-unlocked:<itemId>` and `item-used:<itemId>`. There is no separate

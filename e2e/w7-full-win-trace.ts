@@ -7,10 +7,17 @@ import { quizzes } from '../src/content/authored/quizzes';
 import { specTopics } from '../src/content/authored/spec-topics';
 import type { Position } from '../src/types/domain';
 import { expectWorkspace } from './helpers';
+import { hazardAnnouncement } from './w7-hazard-assertions';
 import {
-  expectHazardOutcome,
-  hazardAnnouncement,
-} from './w7-hazard-assertions';
+  playWardCheckpoint,
+  runStep,
+  savedGame,
+  type StepObservation,
+  type StepOptions,
+  type WardObservation,
+} from './w7-full-win/ward-checkpoint';
+
+export { ownersOf } from './w7-full-win/ward-checkpoint';
 
 export interface SavedState {
   readonly player: {
@@ -49,11 +56,6 @@ export interface SavedState {
 interface SaveEnvelope {
   readonly version: number;
   readonly savedAt: string;
-  readonly state: SavedState;
-}
-
-export interface StepObservation {
-  readonly lines: readonly string[];
   readonly state: SavedState;
 }
 
@@ -98,6 +100,7 @@ export interface FullWinRecord {
   readonly arrivalScorePanel: string;
   readonly boot: SavedState;
   readonly steps: Readonly<Record<string, StepObservation>>;
+  readonly ward: WardObservation;
   readonly gates: readonly GateObservation[];
   readonly quizzes: readonly QuizObservation[];
   readonly hints: readonly HintObservation[];
@@ -142,19 +145,7 @@ export function joined(lines: readonly string[]): string {
   return lines.join('\n');
 }
 
-export function ownersOf(state: SavedState, itemId: string): string[] {
-  return [
-    ...(state.player.inventory.includes(itemId) ? ['player'] : []),
-    ...Object.entries(state.rooms)
-      .filter(([, room]) => room.inventory.includes(itemId))
-      .map(([id]) => id),
-    ...Object.entries(state.npcs)
-      .filter(([, npc]) => npc.inventory.includes(itemId))
-      .map(([id]) => id),
-  ];
-}
-
-async function envelope(page: Page): Promise<SaveEnvelope> {
+export async function envelope(page: Page): Promise<SaveEnvelope> {
   const raw = await page.evaluate(
     (key) => localStorage.getItem(key),
     'compsciquest:save:v1',
@@ -178,12 +169,6 @@ export async function command(page: Page, raw: string): Promise<string[]> {
   return contents.slice(before);
 }
 
-async function savedGame(page: Page): Promise<SavedState> {
-  await command(page, 'save');
-  const saved = await envelope(page);
-  return saved.state;
-}
-
 function numberedOptions(lines: readonly string[]): readonly string[] {
   return lines.map((line) => {
     const match = /^\d+\. (.+)$/u.exec(line.trim());
@@ -195,7 +180,7 @@ function numberedOptions(lines: readonly string[]): readonly string[] {
 
 // A quiz is driven by its displayed prompt, never by a seeded answer. The
 // authored correct option index is read from the generated question catalogue.
-async function playQuiz(
+export async function playQuiz(
   page: Page,
   raw: string,
   quizId: string,
@@ -250,19 +235,6 @@ async function playQuiz(
     prompts,
     lines,
   };
-}
-
-interface StepOptions {
-  readonly flags?: readonly string[];
-  readonly puzzles?: readonly string[];
-  readonly solvedPuzzles?: readonly string[];
-  readonly item?: string;
-  readonly owner?: readonly [string, readonly string[]];
-  readonly singleOwner?: string;
-  readonly position?: readonly [string, number];
-  readonly hazard?: string;
-  readonly noHazard?: string;
-  readonly blocked?: string;
 }
 
 type ScriptItem = readonly [label: string, raw: string, options?: StepOptions];
@@ -334,11 +306,11 @@ const MAIN: readonly ScriptItem[] = [
   ['milestone','save'],
   ['hall-return','in',{position:['room-binary-hall',1]}], ['hub-return','west',{position:['room-network-hub',3]}],
   ['concourse','north',{position:['room-1-4-concourse',3]}], ['bureau','east',{position:['room-pattern-bureau',3]}],
-  ['bureau-gate','east',{blocked:'That way is blocked',position:['room-pattern-bureau',3]}],
+  ['bureau-gate','east',{blocked:'That way is closed for now.',position:['room-pattern-bureau',3]}],
   ['welcome','ask loomwright about hello'], ['pseudocode','ask loomwright about pseudocode'],
   ['shapes','ask loomwright about shapes'], quiz('quiz-pattern-bureau','ask loomwright about demonstration'),
   ['warp-walk','east',{position:['room-warp-walk',3]}],
-  ['rail-closed','east',{blocked:'That way is blocked',position:['room-warp-walk',3]}],
+  ['rail-closed','east',{blocked:'That way is closed for now.',position:['room-warp-walk',3]}],
   ['threading-room','north',{position:['room-threading-order',3]}],
   ['constructs-dresser','ask warp dresser about constructs'], ['order','ask warp dresser about order'],
   quiz('quiz-threading-order','ask warp dresser about demonstration'),
@@ -380,68 +352,27 @@ const MAIN: readonly ScriptItem[] = [
   quiz('quiz-finished-rail','ask loomwright about audit'),
 ];
 
-// prettier-ignore
-function expectHazardIfRequested(lines: readonly string[], hazard: string | undefined, position: StepOptions['position']): void {
-  if (hazard === undefined) return;
-  expectHazardOutcome(lines, position === undefined ? { hazard } : { hazard, position });
-}
-
-async function assertOutcome(
-  lines: readonly string[],
-  options: StepOptions,
-): Promise<void> {
-  const hazard = options.hazard;
-  expectHazardIfRequested(lines, hazard, options.position);
-  if (options.noHazard !== undefined)
-    expect(joined(lines)).not.toContain(options.noHazard);
-  if (options.blocked !== undefined)
-    expect(joined(lines)).toContain(options.blocked);
-  const puzzles = options.puzzles ?? [];
-  for (const puzzleId of puzzles) {
-    expect(
-      lines.some((line) => line.startsWith(`Puzzle ${puzzleId} solved`)),
-    ).toBe(false);
-    expect(lines.some((line) => line.startsWith('Topic completed: '))).toBe(
-      true,
+async function runOpening(
+  page: Page,
+  steps: Record<string, StepObservation>,
+  quizzesPlayed: QuizObservation[],
+): Promise<WardObservation> {
+  let ward: WardObservation | undefined;
+  for (const [label, raw, options] of OPENING) {
+    const observation = await runStep(page, raw, options ?? {});
+    steps[label] = observation;
+    if (label === 'interface-out')
+      ward = await playWardCheckpoint(page, quizzesPlayed);
+    if (label !== 'overheat') continue;
+    const announcement = hazardAnnouncement('hazard-switch-overheat');
+    expect(observation.lines).toContain(announcement);
+    expect(observation.lines.indexOf(announcement)).toBeLessThan(
+      observation.lines.indexOf('The Binary Hall'),
     );
   }
-}
-
-async function assertState(page: Page, options: StepOptions): Promise<void> {
-  const state = await savedGame(page);
-  const flags = options.flags ?? [];
-  for (const flag of flags) expect(state.flags[flag]).toBe(true);
-  const solved = options.solvedPuzzles ?? [];
-  for (const puzzleId of solved)
-    expect(state.puzzles[puzzleId]?.phase).toBe('solved');
-  const item = options.item;
-  if (item !== undefined) expect(state.player.inventory).toContain(item);
-  const owner = options.owner;
-  if (owner !== undefined)
-    expect(ownersOf(state, owner[0])).toEqual([...owner[1]]);
-  const single = options.singleOwner;
-  if (single !== undefined) {
-    const owners = ownersOf(state, single);
-    expect(owners).toHaveLength(1);
-    expect(owners[0]).not.toBe('player');
-  }
-  const position = options.position;
-  if (position === undefined || options.hazard !== undefined) return;
-  expect(state.player.position.roomId).toBe(position[0]);
-  expect(state.player.lives).toBe(position[1]);
-}
-
-// The single command seam: submit, observe added transcript, then a read-only
-// `save` snapshot. Options assert flags, owners, items, lives and hazards.
-async function runStep(
-  page: Page,
-  raw: string,
-  options: StepOptions,
-): Promise<StepObservation> {
-  const lines = await command(page, raw);
-  await assertOutcome(lines, options);
-  await assertState(page, options);
-  return { lines, state: await savedGame(page) };
+  if (ward === undefined)
+    throw new Error('Ward checkpoint observation is missing');
+  return ward;
 }
 
 export async function playFullWin(page: Page): Promise<FullWinRecord> {
@@ -467,16 +398,7 @@ export async function playFullWin(page: Page): Promise<FullWinRecord> {
     (await page.locator('.score-panel').textContent()) ?? '';
   const boot = await savedGame(page);
 
-  for (const [label, raw, options] of OPENING) {
-    const observation = await runStep(page, raw, options ?? {});
-    steps[label] = observation;
-    if (label !== 'overheat') continue;
-    const announcement = hazardAnnouncement('hazard-switch-overheat');
-    expect(observation.lines).toContain(announcement);
-    expect(observation.lines.indexOf(announcement)).toBeLessThan(
-      observation.lines.indexOf('The Binary Hall'),
-    );
-  }
+  const ward = await runOpening(page, steps, quizzesPlayed);
   for (const direction of [
     'north',
     'east',
@@ -572,6 +494,7 @@ export async function playFullWin(page: Page): Promise<FullWinRecord> {
     arrivalScorePanel,
     boot,
     steps,
+    ward,
     gates,
     quizzes: quizzesPlayed,
     hints: hintViews,

@@ -121,6 +121,7 @@ export function checkHint(cards: ParsedCardSet): readonly Finding[] {
     ...idsOf(collection(cards, 'puzzles')),
     ...idsOf(collection(cards, 'quizzes')),
     ...idsOf(collection(cards, 'topics')),
+    ...idsOf(collection(cards, 'rooms')),
   ]);
   return collection(cards, 'hintSequences').flatMap((hint) => [
     ...ladderFindings(hint),

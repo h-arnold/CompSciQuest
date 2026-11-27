@@ -117,7 +117,7 @@ card must require the conversion in its task and clues.
 
 - **Foreman's round.** `npc-the-foreman` may appear in spoke rooms using
   `actorstate-foreman-helpful`, so teaching beats (P2) land where puzzles happen.
-  Owned by the NPC card; no new exit (C1, C3, N3).
+  Owned by the NPC card; no new exit (A1, T2, N3).
 - **Floor diagram.** A painted route diagram in `room-binary-hall` names each spoke
   direction and the gate flag that opens it (hex → characters → picture → sound →
   storage → compression). Pure text; an extra navigation clue (N2, N5, N6, N8).
@@ -129,14 +129,14 @@ floor. Brisk, practical, quietly fond of the machinery; greets you with a cheerf
 "Bore da" then gets on with the job. Wants the floor running and the pupil learning
 the switches — a previous pupil once shorted the whole floor. Knows the predecessor:
 exasperated but protective; calls the AI's audits "paperwork". Motivations oppose the
-AI's (C1). Reserved states: `actorstate-foreman-busy`,
+AI's (A1). Reserved states: `actorstate-foreman-busy`,
 `actorstate-foreman-helpful`. Reserved conversation topics:
 `topic-foreman-switches`, `topic-foreman-lift`, `topic-foreman-predecessor`, plus the
 four V4 fix topics `topic-foreman-show-gauge`, `topic-foreman-show-lens`,
 `topic-foreman-show-fork`, `topic-foreman-show-nibble` (always-active `show`-matched
 topics producing the four SHOW-leaf flags; editor-allocated 2026-11-24, bible §9).
 Reserved node: `node-foreman-switch-lesson` (a deliberate forced teaching beat only,
-C4). **Editor decision 2026-11-24:** it stays defined but **reserved/unused** in the
+T3). **Editor decision 2026-11-24:** it stays defined but **reserved/unused** in the
 first batch — entering it from `topic-foreman-switches` would exit it before a
 conversational turn because that topic also starts `quiz-switchyard`. The foreman
 teaches through ordinary topic responses; no new conversation topic ID is allocated.
@@ -144,7 +144,7 @@ The duck-as-bit teaching hook is `topic-predecessor-duck-as-bit`.
 
 **Six layer actors** (user-approved; one per remaining abstraction layer). Each has
 a distinct voice, motivation and at least one relationship with opposing motivations
-(C1); at most one recurring phrase each (narrative-principles.md §7); no mockery of
+(A1); at most one recurring phrase each (narrative-principles.md §7); no mockery of
 the learner or Welsh culture as a joke target (§8). Formal spec terms always appear
 beside any plain gloss (`PCK-TERM`).
 
@@ -158,26 +158,26 @@ beside any plain gloss (`PCK-TERM`).
 | `npc-press-operator` | press / compression | Breezy, euphemistic ("Nobody will miss it.") | Smaller files by an honest method; regards lossy compression as a kindness; opposes critic and choirmaster | `topic-operator-lossy`, `topic-operator-ratio`, `topic-operator-default`; forced node `node-operator-choose` |
 
 **Conversation shape.** Every teaching topic carries a `prompt` hint and teaches
-method or structure only — never a worked result or a quiz key (N4, C2). The first
+method or structure only — never a worked result or a quiz key (N4, T6). The first
 beat on each teaching actor gates on `not npc-knows`. Each middle beat records its
 own evidence in a content-internal flag — `clerk-carry-heard` (carries and the
 post-carry alt), `critic-depth-heard` (bit depth) and `conductor-depth-heard`
 (sample depth) — and the final beat requires that flag, so the ladder is provable
-under C7 without relying on declaration order. The predecessor's cartridge beat records
+under T5 without relying on declaration order. The predecessor's cartridge beat records
 `predecessor-cartridge-heard` for the duck-as-bit beat the same way. Every quiz
 handoff gates on `not quiz-passed <its quiz>` and repeats its single response, so a
 failed attempt can re-issue the test and the beat retires on the pass (P5);
 `topic-foreman-lift` requires `quiz-passed quiz-switchyard` and `topic-setter-string`
 requires `quiz-passed quiz-character-representation`, so each ladder stays exclusive
-under C7. AltTopics keep a complement condition when the
-fact is independently discoverable via an item or puzzle flag (C3); the clerk's
+under T5. AltTopics keep a complement condition when the
+fact is independently discoverable via an item or puzzle flag (T2); the clerk's
 `topic-clerk-bases-known` sits between the carry beat and the token, and
 `topic-clerk-shifts-known` covers the post-carry, pre-shift state. Free-text input
-resolves to the actor's `*-default` topic in character, never a parser error (C2).
+resolves to the actor's `*-default` topic in character, never a parser error (T1, A5).
 Each actor hands off to its reserved quiz with `start-quiz` and returns to `ready`
 on `quiz-ended` (npcs.md §6). `node-operator-choose` is the only forced beat beyond
 the foreman's: `isSticky: true` is justified because the climax puzzle depends on
-telling lossy from lossless before committing a file; no turn timeout (C4).
+telling lossy from lossless before committing a file; no turn timeout (T3).
 
 **Reconciliation.** The first ideation sweep's `topic-foreman-unicode-choice` and
 alias `unicode` are **rejected**: the Welsh-letter puzzle runs through the

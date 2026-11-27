@@ -44,13 +44,26 @@ conversationTopics:
   - id: topic-ai-verdict
     actorId: npc-the-ai
     match: { kind: special, keywords: [verdict, mastery] }
-    isActive: { kind: not, of: { kind: npc-knows, actorId: npc-the-ai, topicId: ai-ethics-and-implications } }
+    isActive:
+      {
+        kind: not,
+        of:
+          {
+            kind: npc-knows,
+            actorId: npc-the-ai,
+            topicId: ai-ethics-and-implications,
+          },
+      }
     responses:
       - >-
         The mark beside your name is tapped twice, the way a clerk taps a form left on the desk too long. The pupil was marked inattentive. The entry stands until mastery of the whole of Unit 1 is demonstrated. You will demonstrate it here.
     strategy: { kind: once }
     effects:
-      - { kind: learn-topic, actorId: npc-the-ai, topicId: ai-ethics-and-implications }
+      - {
+          kind: learn-topic,
+          actorId: npc-the-ai,
+          topicId: ai-ethics-and-implications,
+        }
       - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-verdict }
     prompt: >-
       (You could ask what the verdict means.)
@@ -75,7 +88,11 @@ conversationTopics:
 
   - id: topic-ai-why-here
     actorId: npc-the-ai
-    match: { kind: special, keywords: [why here, why am i here, reason, attendance, mark] }
+    match:
+      {
+        kind: special,
+        keywords: [why here, why am i here, reason, attendance, mark],
+      }
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
@@ -90,7 +107,8 @@ conversationTopics:
 
   - id: topic-ai-failure
     actorId: npc-the-ai
-    match: { kind: special, keywords: [fail, failure, deletion, delete, die, lives] }
+    match:
+      { kind: special, keywords: [fail, failure, deletion, delete, die, lives] }
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
@@ -106,7 +124,12 @@ conversationTopics:
   - id: topic-ai-default
     actorId: npc-the-ai
     match: { kind: askTell, objectIds: [] }
-    isActive: { kind: all, of: [] }
+    isActive:
+      kind: not
+      of:
+        kind: in-area
+        worldId: world-wjec-gcse-computer-science-2025-spec
+        areaId: area-assistance-ward
     responses:
       - >-
         The pointer rests on the record. Attendance is all it holds. Ask about the attendance mark, what failure means, or programming.
@@ -120,7 +143,7 @@ conversationTopics:
       (You could ask about the attendance mark, what failure means, or the route out.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic: any unmatched input lands here in voice (C2).
+        Free-text DefaultAskTellTopic: unmatched input lands here in voice outside the Assistance Ward (C2). Its negated `in-area` condition excludes `area-assistance-ward` within `world-wjec-gcse-computer-science-2025-spec`, leaving the separately authored `topic-ai-ward-default` to resolve there (C6, C7). The landed first-active-default selector contract picks the first active eligible catalogue default in declaration order, preserving this default elsewhere without adding a second global default.
 
 conversationNodes:
   - id: node-ai-verdict

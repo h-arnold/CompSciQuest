@@ -81,6 +81,48 @@ function stepOf(
   return observation;
 }
 
+function expectWardCheckpoint(record: FullWinRecord): void {
+  // Mandatory ward checkpoint: earned in the world before the gated east,
+  // with all four recoveries, the orientation quiz and the dial calibration.
+  const ward = record.ward;
+  const wardDial = ward.steps['ward-dial'];
+  if (wardDial === undefined)
+    throw new Error('Ward dial observation is missing');
+  expect(ward.quiz.quizId).toBe('quiz-assistance-orientation');
+  expect(joined(ward.quiz.lines)).toContain(
+    'Topic completed: Game orientation.',
+  );
+  expect(
+    ward.steps['ward-quiz']?.state.flags[
+      'quiz-passed:quiz-assistance-orientation'
+    ],
+  ).toBe(true);
+  for (const flag of [
+    'nia-observation-recovered',
+    'mateo-reading-recovered',
+    'kofi-operation-recovered',
+    'priya-reasoning-recovered',
+    'assistance-dial-calibrated',
+    'tutorial-complete',
+  ]) {
+    expect(wardDial.state.flags[flag], `ward flag ${flag}`).toBe(true);
+  }
+  for (const step of Object.values(ward.steps)) {
+    expect(step.state.player.lives).toBe(3);
+    expect(step.state.progress.every((row) => row.earnedScore === 0)).toBe(
+      true,
+    );
+  }
+  for (const hazard of hazards)
+    expect(joined(ward.lines)).not.toContain(hazardAnnouncement(hazard.id));
+  expect(ward.scorePanel).toContain('Score: 0');
+  expect(ward.scorePanel).toContain('Lives: 3');
+  expect(joined(ward.lines)).toContain('The teaching-zone ports brighten');
+  expect(ward.steps['ward-hub-return']?.state.player.position.roomId).toBe(
+    'room-network-hub',
+  );
+}
+
 const noConsoleErrors: () => readonly string[] = () => [];
 
 test.describe('W7 full authored win', () => {
@@ -95,7 +137,7 @@ test.describe('W7 full authored win', () => {
     expect(errors(), 'no console or page errors').toEqual([]);
   });
 
-  test('plays all 30 steps, fourteen quizzes, the mill and the final reload in the browser', async ({
+  test('plays the ward checkpoint, all 30 steps, fifteen quizzes, the mill and the final reload in the browser', async ({
     page,
   }) => {
     test.setTimeout(15 * 60 * 1000);
@@ -131,11 +173,16 @@ test.describe('W7 full authored win', () => {
     expect(joined(stepOf(record, 'failure').lines)).toContain(
       'The pupil has three lives',
     );
+    // The merged ward content keeps both teaching sockets dark until the ward
+    // mark is recorded; this is the pre-checkpoint hub state.
     expect(joined(stepOf(record, 'hub').lines)).toContain(
-      'A port label on the east socket reads LIVE',
+      "The east and north teaching sockets are dark until the ward's calibration mark is on record",
     );
     expect(joined(stepOf(record, 'escape').lines)).toContain(
-      'Two ports on the patch bay glow',
+      'The south route is always open',
+    );
+    expect(joined(stepOf(record, 'escape').lines)).toContain(
+      "The east and north teaching ports wait for the ward's completion mark",
     );
     expect(joined(stepOf(record, 'why-hub').lines)).toContain(
       'The pointer rests on the record',
@@ -149,6 +196,8 @@ test.describe('W7 full authored win', () => {
     expect(joined(stepOf(record, 'interface-out').lines)).toContain(
       'The Network Hub',
     );
+
+    expectWardCheckpoint(record);
 
     // W7WIN-08…12, W7WIN-15, W7WIN-S08: three scripted hazards and lives.
     expect(stepOf(record, 'overheat').state.player.lives).toBe(2);
@@ -169,17 +218,17 @@ test.describe('W7 full authored win', () => {
     // W7WIN-09, W7WIN-32, W7WIN-40: every closed gate is friendly and inert.
     expect(record.gates).toHaveLength(6);
     for (const gate of record.gates) {
-      expect(joined(gate.added)).toContain('That way is blocked');
+      expect(joined(gate.added)).toContain('That way is closed for now.');
       expect(gate.after.player.position).toEqual(gate.before.player.position);
       expect(gate.after.player.lives).toBe(gate.before.player.lives);
       expect(gate.after.player.inventory).toEqual(gate.before.player.inventory);
       expect(gate.after.turn).toBe(gate.before.turn + 1);
     }
     expect(joined(stepOf(record, 'bureau-gate').lines)).toContain(
-      'That way is blocked',
+      'That way is closed for now.',
     );
     expect(joined(stepOf(record, 'rail-closed').lines)).toContain(
-      'That way is blocked',
+      'That way is closed for now.',
     );
     expect(stepOf(record, 'rail-open').state.player.position.roomId).toBe(
       'room-finished-rail',
@@ -194,12 +243,14 @@ test.describe('W7 full authored win', () => {
     const at18 = record.milestone.state;
     expect(at18.player.lives).toBe(1);
     expect(at18.status).toBe('playing');
+    // The ward's orientation quiz and `tutorial-mechanics` topic were earned
+    // before the Switchyard, so both milestone counts include those two extras.
     expect(
       Object.keys(at18.flags).filter((flag) => flag.startsWith('quiz-passed:')),
-    ).toHaveLength(8);
+    ).toHaveLength(9);
     expect(
       new Set(at18.progress.flatMap((row) => row.completedTopics)).size,
-    ).toBe(8);
+    ).toBe(9);
     expect(joined(record.milestoneLines)).not.toContain('You have won!');
     const [concourse, bureau] = record.areaChanges;
     if (concourse === undefined || bureau === undefined)
@@ -226,8 +277,9 @@ test.describe('W7 full authored win', () => {
       'room-endless-selvedge',
     ]);
 
-    // W7WIN-Q01…Q16, W7WIN-U03: fourteen real quiz handoffs with authored data.
-    expect(record.quizzes).toHaveLength(14);
+    // W7WIN-Q01…Q16, W7WIN-U03: fifteen real quiz handoffs with authored data
+    // (the ward orientation quiz is played before the fourteen main quizzes).
+    expect(record.quizzes).toHaveLength(15);
     for (const quiz of record.quizzes) {
       const authored = authoredQuiz(quiz.quizId);
       expect(quiz.requirement).toBe(
@@ -253,11 +305,15 @@ test.describe('W7 full authored win', () => {
     ).toEqual(new Set(quizzes.map((quiz) => `quiz-passed:${quiz.id}`)));
 
     // W7WIN-S01/S02/S03/S10: derived score, unique rows and one victory.
+    // The ward's `tutorial-mechanics` is an in-progress onboarding topic, not a
+    // WJEC evidence topic: it is the one completion outside the covered set.
     const completed = new Set(
       state.progress.flatMap((row) => row.completedTopics),
     );
-    expect(completed).toEqual(coveredTopics);
-    expect(completed.size).toBe(10);
+    expect(completed).toEqual(
+      new Set([...coveredTopics, 'tutorial-mechanics']),
+    );
+    expect(completed.size).toBe(11);
     expect(
       state.progress.reduce((total, row) => total + row.earnedScore, 0),
     ).toBe(43);
