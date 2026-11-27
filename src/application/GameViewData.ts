@@ -30,6 +30,11 @@ export interface QuizView {
   readonly options: readonly string[];
   readonly questionNumber: number;
   readonly questionCount: number;
+  // Derived at view-build time: passMark is the authored count, while the
+  // allowance also reflects the live attempt (wrong answers so far, floored at
+  // zero).
+  readonly passMark: number;
+  readonly remainingWrong: number;
 }
 
 export interface ConversationView {

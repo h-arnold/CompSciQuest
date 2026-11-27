@@ -212,13 +212,12 @@ function authoredDialText(): {
   readonly blocked: string;
   readonly success: string;
 } {
-  return (
-    items.find((item) => item.id === 'item-assistance-calibration-dial')
-      ?.useText ??
-    (() => {
-      throw new Error('No authored calibration dial useText');
-    })()
-  );
+  const useText = items.find(
+    (item) => item.id === 'item-assistance-calibration-dial',
+  )?.useText;
+  if (useText === undefined || useText.blocked === undefined)
+    throw new Error('No authored calibration dial useText');
+  return { blocked: useText.blocked, success: useText.success };
 }
 
 const DIAL_TEXT = authoredDialText();
@@ -254,7 +253,13 @@ async function answerAttempt(page: Page, mode: 'fail' | 'pass'): Promise<void> {
     }
     await submit(page, raw);
     await waitForLine(page, `> ${raw}`);
-    expect(await transcript(page)).toContain(question.explanation);
+    // The first two answers of a failing attempt are wrong; all later ones
+    // (and every answer of a passing attempt) are correct. §6.1 prefixes the
+    // verbatim explanation with the canonical verdict.
+    const verdict = mode === 'fail' && step < 2 ? 'Incorrect. ' : 'Correct. ';
+    expect(await transcript(page)).toContain(
+      `${verdict}${question.explanation}`,
+    );
   }
 }
 

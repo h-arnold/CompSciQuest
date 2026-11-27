@@ -1,6 +1,5 @@
 // W7 browser evidence for the accepted V4 trace in docs/content/walkthrough.md.
-// Quiz and hint integration is deferred by the user, so the complete authored
-// win remains skipped. Non-quiz expectations are never weakened to match broken output.
+// Non-quiz expectations are never weakened to match broken output.
 import { expect, test, type Page } from 'playwright/test';
 import { areas } from '../src/content/authored/areas';
 import { rooms } from '../src/content/authored/rooms';
@@ -529,19 +528,4 @@ test('W7 non-quiz trace — room text, item actions and all six Binary Hall gate
   await page.getByRole('button', { name: 'Continue' }).click();
   await expectPosition(page, 'room-compression-press', 1);
   expect(errors()).toEqual([]);
-});
-
-// prettier-ignore
-test('W7 full authored win — DEFERRED by the user: quiz doors and hints are not integrated', async ({ page }, testInfo) => {
-  // Retained V4 steps 1–18: clean authored commands; two hazard life losses;
-  // six Binary Hall gates opened by switches-set, hex-read, characters-matched,
-  // picture-built, sound-sampled and stacks-sorted; all USE/PUT/SHOW flags and
-  // puzzles; one transfer per SHOW; passes for quiz-switchyard, quiz-data-types,
-  // quiz-number-systems, quiz-character-representation, quiz-graphics-representation,
-  // quiz-sound-representation, quiz-storage-units and quiz-data-compression;
-  // all six hint ladders; eight covered topics; one life; one game-won with the
-  // final score; no victory re-announcement after reload. Quiz, hint and win
-  // behaviour is not implemented or claimed in this slice.
-  testInfo.skip(true, 'Quiz and hint integration is deferred by the user.');
-  await page.goto('./');
 });

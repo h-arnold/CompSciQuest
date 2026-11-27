@@ -7,7 +7,6 @@ export interface SaveActions {
   download(): void;
   openImport(): Promise<void>;
   restart(): void;
-  downloadQuarantine(): void;
   setStatus(message: string): void;
 }
 
@@ -31,9 +30,6 @@ export class SaveControls {
     });
     this.addButton('Restart', () => {
       actions.restart();
-    });
-    this.addButton('Download quarantined save', () => {
-      actions.downloadQuarantine();
     });
   }
 

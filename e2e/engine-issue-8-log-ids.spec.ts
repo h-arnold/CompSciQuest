@@ -102,9 +102,11 @@ test('ENG8-LOGID-01 — hazard, conversation and quiz-pass flows keep the log pl
   for (let index = 0; index < 3; index += 1) {
     answers.push(...(await command(page, 'answer 1')));
   }
+  // Issue 10 / application-and-ui.md §6.1: answer-evaluated renders one line
+  // prefixed with the fixed 'Correct. ' copy, followed by the verbatim text.
   expect(
     answers.some((line) =>
-      line.startsWith('The foreman flips the black switch'),
+      line.startsWith('Correct. The foreman flips the black switch'),
     ),
     'explanation text still renders',
   ).toBe(true);

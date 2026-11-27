@@ -77,7 +77,23 @@ function applyItemEffect(
   const player = state.player as unknown as { inventory: string[] };
   const index = player.inventory.indexOf(effect.itemId);
   if (effect.kind === 'grant-item') {
-    if (index === -1) player.inventory.push(effect.itemId);
+    // storage-schema.md §3.3(1): a grant makes the player the sole owner, so
+    // the authored initialRoom copy and every other owner copy must be removed
+    // before the player receives the item. inventoryOf() is the shared lookup.
+    for (const ownerId of [
+      'player',
+      ...Object.keys(state.npcs),
+      ...Object.keys(state.rooms),
+    ]) {
+      const inventory = inventoryOf(state, ownerId);
+      if (inventory === undefined) continue;
+      let at = inventory.indexOf(effect.itemId);
+      while (at !== -1) {
+        inventory.splice(at, 1);
+        at = inventory.indexOf(effect.itemId);
+      }
+    }
+    player.inventory.push(effect.itemId);
   } else if (index !== -1) {
     player.inventory.splice(index, 1);
   }

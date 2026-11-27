@@ -194,6 +194,21 @@ the files changed, plus a browser check of the affected flow. Keep the graph
 current with `graphify update .` after code changes, and record the work in the
 usual scratchpad slice paths.
 
+## Open follow-up — zone-1 hint ladders (content-owned)
+
+Found during the W7 full authored win browser slice (`engine/w7-full-win`,
+merged at `bb86df4`; matrix row `W7WIN-C02`). Six zone-1 ladders unlock on
+`turns-since:<puzzleId> >= 3`, but those puzzles have a single requirement and
+activate and solve in the same turn, so the counter never advances and the
+ladders cannot appear on the canonical route. The browser evidence is
+`There is nothing more to suggest just now.` with all zone-1 `turns-since`
+counters at zero. The full-win test covers the one ladder reachable by ordinary
+commands (`hint-threading-order`); the other zone-1 ladders remain unverified.
+The content editor proposed four options (threshold `3 → 0`, quiz counters,
+mill puzzles, or puzzle redesign), but the user chose on 27 November 2026 to
+leave this open. No content cards or walkthrough wording have been changed.
+Owner: `content-editor` if the decision is revisited.
+
 ## Out of scope — deferred to the content session
 
 Issues 3, 4, 7, 12, 14, 17, 18, 19, 20, 21, 23, 26, 27 and 29 remain with the

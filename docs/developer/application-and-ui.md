@@ -48,7 +48,8 @@ Boot sequence (`src/main.ts`):
    `restart` meta action (§4.1).
 
 A corrupt or quarantined save disables Continue; the player starts fresh. The
-quarantined text stays downloadable through `SaveControls`.
+quarantined text stays in storage for manual inspection by a developer;
+`SaveControls` has no action to download it.
 
 ## 3. Content bundle and registration
 
@@ -251,9 +252,16 @@ through the `EventBus`. It increments `GameStateDto.turn` once per submitted gam
 command, whether or not the command succeeded. It never throws on bad input;
 unparseable text becomes an `unknown` command and a friendly message.
 
+After each core command that advances the turn, `submit` autosaves the final
+state through the `saveGame()` → `SaveManager.save()` seam
+([storage-schema.md §10](storage-schema.md#10-api-contracts)). Meta actions and
+commands rejected while `status !== 'playing'` do not trigger that autosave.
+
 `newGame`, `continueGame` and `restart` replace the current `GameState`, clear
-the views' transient state and emit the initial room batch. A reloaded end state
-does not re-emit `game-won` or `game-over` ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
+the views' transient state and emit the initial room batch. `newGame` and
+`restart` also write the freshly created state through the same seam, so
+Continue after a reload starts the new game. A reloaded end state does not
+re-emit `game-won` or `game-over` ([storage-schema.md §7](storage-schema.md#7-restore-time-derivation)).
 
 While `status !== 'playing'`, `submit` accepts only `look`, `examine`,
 `inventory`, `score` and `help`; every other command returns a friendly "the
@@ -276,11 +284,16 @@ export type MetaAction =
 
 `Game` owns interception so the behaviour is identical whether the action came
 from a button or the terminal. Meta actions never enter the core `Command`
-union and never advance `turn`. `openSaveFile` is injected from `src/main.ts`;
-`GameWindow` owns the download and import controls, and import from a button
-supplies `text` from `openSaveFile`. Typed `import` opens the same file picker
-rather than expecting pasted JSON. `load` rebinds the restored `GameState` and
-refreshes the views without re-emitting an end event.
+union and never advance `turn`. Typed `restart` starts a new game and writes
+that fresh state through the `saveGame()` → `SaveManager.save()` seam (§4);
+`download`, `load` and `import` do not autosave. `openSaveFile` is injected from
+`src/main.ts` and `GameWindow` owns the download and import controls; import
+from a button supplies `text` from `openSaveFile`. Typed `import` opens the same
+file picker rather than expecting pasted JSON. `load` rebinds the restored
+`GameState`, refreshes the views without re-emitting an end event, and
+publishes one canonical `message` event with the engine-authored line
+`Game loaded.` alongside the initial room batch. A failed load publishes only
+`No saved game could be loaded.`
 
 ## 5. Canonical command union and verbs
 
@@ -593,7 +606,8 @@ export function formatEvent(
 
 | Event(s)                                                                                                                                 | Transcript                                                                                                                                | Panel update                 |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`, `answer-evaluated`                                                              | text as given                                                                                                                             | —                            |
+| `message`, `npc-spoke`, `topic-suggested`, `hint-shown`                                                                                  | text as given                                                                                                                             | —                            |
+| `answer-evaluated`                                                                                                                       | one line: `Correct.` or `Incorrect.` followed by a space and the event's `explanation` unchanged                                          | —                            |
 | `room-entered`                                                                                                                           | title, blank line, description, `Exits: north, west`                                                                                      | ScorePanel via view data     |
 | `question-asked`                                                                                                                         | prompt, then `1. …` / `2. …` lines                                                                                                        | QuizPanel                    |
 | `score-changed`                                                                                                                          | no line without a real gain; on a real gain, one friendly line stating the gained amount, with no internal `reason` string and no room ID | ScorePanel via view data     |
@@ -633,14 +647,22 @@ The app uses plain DOM and one stylesheet (`src/ui/style.css`); no UI framework.
    │  │  └─ Terminal               (prompt + input + history)
    │  └─ aside
    │     ├─ ScorePanel             (worlds/areas, score, spec area)
-   │     └─ SaveControls           (Save, Load, Download, Import, Restart,
-   │                                Download quarantined save)
+   │     └─ SaveControls           (Save, Load, Download, Import, Restart)
    └─ .title-overlay               (TitleScreen: Continue / New Game)
 ```
 
 Panels are mounted once at bootstrap and toggled from the view model or event
 stream; they are never destroyed and recreated mid-turn. `index.html` keeps
 only `#app`; all markup is created by `GameWindow` and its children.
+
+`QuizPanel`'s pass requirement `<p>` is a polite live region
+(`aria-live="polite"`), so assistive technology announces it when a quiz
+starts.
+
+`OutputLog`'s transcript element carries `role="log"` and `aria-live="polite"`,
+so assistive technology announces appended lines without interrupting the
+player. `OutputLog` appends the formatted lines it is given without parsing
+their content ([§6.1](#61-event-to-view-mapping)).
 
 ### 7.2 View data
 
@@ -675,6 +697,8 @@ export interface QuizView {
   readonly options: readonly string[];
   readonly questionNumber: number;
   readonly questionCount: number;
+  readonly passMark: number;
+  readonly remainingWrong: number;
 }
 
 export interface ConversationView {
@@ -709,11 +733,32 @@ linked spec topics using `SpecTopicCatalogue` labels. `Game.getViewData()` caps
 `visitedRoomCount` at the area's declared `roomIds.length`, so the panel never
 shows more visits than the area has rooms.
 
+`QuizView.passMark` is the authored `quiz.passMark` count.
+`QuizView.remainingWrong` is the wrong answers still affordable in the active
+attempt: `questionCount - quiz.passMark`, minus `answers.length - correctCount`
+from the live attempt (`questionCount` is `QuizStateDto.questionIds.length`),
+clamped at zero. `Game.getViewData()` derives both at view-build time; a correct
+answer leaves the allowance unchanged, a wrong answer reduces it by one and a
+new quiz resets it. Attempts, lives, score and flags are ignored, and panels
+present the values as supplied.
+
+The two values appear in one childless `<p>` reading `Pass mark: N correct of
+M. Wrong answers allowed: W.`; that paragraph is the live region described in
+§7.1 and is absent when no quiz is active.
+
+`GameViewData.hints` lists hint levels shown in the persisted state. A new quiz
+attempt suppresses that list in the view: `quiz-started` makes `hints` empty,
+and the next `hint-shown` restores it. The suppression is view-only: persisted
+hint records, penalties and cooldown counters are unchanged
+([hints.md §3](hints.md#3-commands-and-delivery),
+[combat.md §3](combat.md#3-flow)). State replacement through `newGame`,
+`continueGame`, `restart`, `load` or an import clears it with the other
+transient view state.
+
 `Terminal` owns a bounded in-memory command history with no persistence and no
 duplicate suppression, navigated with the up/down arrows. It calls
 `Game.submit(raw)` on Enter and renders the returned batch after echoing the
-command. During a quiz, `answer N` is typed into the same input; `QuizPanel`
-only displays the question and options.
+command. During a quiz, `answer N` is typed into the same input.
 
 `SaveControls` renders one button per meta action and maps each
 `LoadFailureReason` to a distinct friendly message using its own copy table.

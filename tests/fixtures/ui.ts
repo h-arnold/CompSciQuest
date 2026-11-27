@@ -317,6 +317,9 @@ export interface RecordingGameOptions {
   readonly onNewGame?: () => void;
   readonly onRestart?: () => void;
   readonly importResult?: LoadResult;
+  // Optional seam: the real Game.submit publishes its batch on the injected
+  // EventBus. Tests that need bus-render evidence may mirror that here.
+  readonly onSubmit?: (raw: string, events: readonly GameEvent[]) => void;
 }
 
 export class RecordingGame implements Game {
@@ -325,8 +328,12 @@ export class RecordingGame implements Game {
   private readonly onNewGame: (() => void) | undefined;
   private readonly onRestart: (() => void) | undefined;
   private readonly importResult: LoadResult;
+  private readonly onSubmit:
+    ((raw: string, events: readonly GameEvent[]) => void) | undefined;
 
   readonly submits: string[] = [];
+  readonly saveCalls: number[] = [];
+  readonly downloadCalls: number[] = [];
   readonly continueCalls: SaveDto[] = [];
   readonly newGameCalls: number[] = [];
   readonly restartCalls: number[] = [];
@@ -338,6 +345,7 @@ export class RecordingGame implements Game {
     this.viewData = options.viewData ?? makeViewData();
     this.onNewGame = options.onNewGame;
     this.onRestart = options.onRestart;
+    this.onSubmit = options.onSubmit;
     this.importResult = options.importResult ?? {
       ok: false,
       reason: 'invalid-json',
@@ -346,6 +354,7 @@ export class RecordingGame implements Game {
 
   submit(raw: string): readonly GameEvent[] {
     this.submits.push(raw);
+    this.onSubmit?.(raw, this.submitResult);
     return this.submitResult;
   }
 
@@ -369,10 +378,12 @@ export class RecordingGame implements Game {
   }
 
   save(): void {
-    // Recorded through the facade's submit alias in the UI contract.
+    this.saveCalls.push(this.saveCalls.length + 1);
+    // Recorded separately from the facade's submit alias in the UI contract.
   }
 
   download(): void {
+    this.downloadCalls.push(this.downloadCalls.length + 1);
     // The UI records the injected downloadFile seam instead.
   }
 

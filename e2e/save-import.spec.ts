@@ -6,7 +6,6 @@ import {
   DOWNLOAD_NAME,
   makeQuarantine,
   makeSave,
-  QUARANTINE_DOWNLOAD_NAME,
   QUARANTINE_KEY,
   readStorage,
   SAVE_KEY,
@@ -96,7 +95,7 @@ test.describe('save, import and quarantine', () => {
     await expect(scorePanel(page)).toContainText('Score: 5');
   });
 
-  test('E2E-BOOT-07 — a corrupt live save is quarantined, disables Continue and stays downloadable', async ({
+  test('E2E-BOOT-07 — a corrupt live save is quarantined, disables Continue and keeps the raw text in storage', async ({
     page,
   }) => {
     const raw = '{ not json';
@@ -116,46 +115,41 @@ test.describe('save, import and quarantine', () => {
     expect(record.raw).toBe(raw);
     expect(record.quarantinedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
 
-    // SaveControls sits inside .workspace, which is hidden until a session
-    // starts (§7.1); §2 keeps the recovery button in SaveControls, not on the
-    // title overlay. Continue-disabled was asserted at boot above.
+    // Issue 31 removes the UI download action but not the recovery record.
+    // Start a session so SaveControls is visible, then check the stored raw
+    // text survives and no quarantine download action is offered (§9).
     await page.getByRole('button', { name: 'New Game' }).click();
     await expect(page.locator('.workspace')).toBeVisible();
-
-    const pending = page.waitForEvent('download');
-    await page
-      .getByRole('button', { name: 'Download quarantined save' })
-      .click();
-    const download = await pending;
-    expect(download.suggestedFilename()).toMatch(QUARANTINE_DOWNLOAD_NAME);
-    expect(await downloadText(download)).toBe(raw);
-    expect(await statusText(page)).toBe('Quarantined save downloaded.');
+    expect(await readStorage(page, QUARANTINE_KEY)).toBe(quarantine);
+    expect(JSON.parse(quarantine as string).raw).toBe(raw);
+    await expect(
+      page.getByRole('button', { name: 'Download quarantined save' }),
+    ).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /quarantine/i })).toHaveCount(
+      0,
+    );
   });
 
-  test('UI-BOOT-10 — a quarantined save alone disables Continue and is downloadable', async ({
+  test('UI-BOOT-10 — a quarantined save alone disables Continue and keeps its raw text in storage', async ({
     page,
   }) => {
     const raw = makeSave({ earnedScore: 2 });
-    await seedStorage(page, {
-      quarantine: makeQuarantine(raw, 'invalid-content'),
-    });
+    const quarantine = makeQuarantine(raw, 'invalid-content');
+    await seedStorage(page, { quarantine });
     await page.goto('./');
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled();
     expect(await readStorage(page, SAVE_KEY)).toBeNull();
 
-    // The recovery button is in SaveControls inside the workspace (§7.1), so
-    // start a session to reveal it; the boot-time Continue assertion stands.
+    // SaveControls sits in the workspace (§7.1). Reveal it to confirm the
+    // button is gone while the stored recovery copy is untouched (§9).
     await page.getByRole('button', { name: 'New Game' }).click();
     await expect(page.locator('.workspace')).toBeVisible();
-
-    const pending = page.waitForEvent('download');
-    await page
-      .getByRole('button', { name: 'Download quarantined save' })
-      .click();
-    expect(await downloadText(await pending)).toBe(raw);
-    expect(await readStorage(page, QUARANTINE_KEY)).toContain(
-      'invalid-content',
+    expect(await readStorage(page, QUARANTINE_KEY)).toBe(quarantine);
+    expect(JSON.parse(quarantine).raw).toBe(raw);
+    expect(JSON.parse(quarantine).reason).toBe('invalid-content');
+    await expect(page.getByRole('button', { name: /quarantine/i })).toHaveCount(
+      0,
     );
   });
 

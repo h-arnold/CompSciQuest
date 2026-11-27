@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  loadSaveManager,
   makeEnvelope,
   QUARANTINE_KEY,
   SAVE_KEY,
 } from '../fixtures/persistence';
 import {
   allText,
+  descendants,
   findButton,
   flush,
   loadBootstrap,
@@ -16,6 +18,7 @@ import {
   type FakeElement,
 } from '../fixtures/ui';
 import { makeBootSetup } from '../fixtures/uiSetup';
+import type { QuarantineDto } from '../../src/application/QuarantineDto';
 import type { LoadFailureReason } from '../../src/application/SaveDto';
 
 afterEach(() => {
@@ -31,44 +34,58 @@ function statusText(root: FakeElement): string {
 }
 
 describe('SaveControls and the import facade (application-and-ui.md §4.1, §7.1)', () => {
-  it('UI-BOOT-15: every meta action and the quarantine download have a button', async () => {
+  it('UI-BOOT-15: the five meta actions have buttons in order, with no quarantine button', async () => {
     const setup = makeBootSetup({
       loadResult: { ok: true, dto: makeEnvelope() },
     });
     const bootstrap = await loadBootstrap();
     const result = await boot(bootstrap, setup.dependencies);
 
-    const labels = [
-      'Save',
-      'Load',
-      'Download',
-      'Import',
-      'Restart',
-      'Download quarantined save',
-    ];
-    const found = labels.map((label) => findButton(result.root, label));
-    expect(new Set(found).size).toBe(labels.length);
+    const expected = ['Save', 'Load', 'Download', 'Import', 'Restart'];
+    const labels = descendants(result.root)
+      .filter(
+        (element) =>
+          element.tagName === 'BUTTON' &&
+          element.parentNode?.className === 'save-controls',
+      )
+      .map((button) => button.textContent.trim());
+    expect(labels).toEqual(expected);
+    expect(labels).toHaveLength(expected.length);
+    expect(labels).not.toContain('Download quarantined save');
   });
 
-  it('S-PERSIST-22: Download quarantined save exposes the stored raw text', async () => {
-    const raw = '{"version":1,"savedAt":"2026-11-24T12:06:00.000Z","state":{}}';
-    const quarantined = JSON.stringify({
-      quarantinedAt: '2026-11-24T12:06:00.000Z',
-      reason: 'invalid-json',
-      raw,
-    });
+  it('S-PERSIST-22: boot quarantine keeps the stored raw text as a recovery path with no download action', async () => {
+    const raw = 'not-json';
     const setup = makeBootSetup({
-      storageEntries: { [QUARANTINE_KEY]: quarantined },
+      storageEntries: { [SAVE_KEY]: raw },
+    });
+    const saveManager = await loadSaveManager({
+      storage: setup.storage,
+      clock: setup.dependencies.clock,
+      bundle: setup.bundle,
     });
     const bootstrap = await loadBootstrap();
-    const result = await boot(bootstrap, setup.dependencies);
+    const result = await boot(bootstrap, {
+      ...setup.dependencies,
+      saveManager,
+    });
 
-    findButton(result.root, 'Download quarantined save').click();
-    await flush();
-
-    expect(setup.downloads).toHaveLength(1);
-    expect(setup.downloads[0]?.text).toBe(raw);
+    const quarantined = setup.storage.read(QUARANTINE_KEY) ?? '';
+    expect(quarantined).not.toBe('');
+    const record = JSON.parse(quarantined) as Partial<QuarantineDto>;
+    expect(record.raw).toBe(raw);
+    expect(record.reason).toBe('invalid-json');
+    expect(setup.downloads).toEqual([]);
     expect(setup.storage.read(QUARANTINE_KEY)).toBe(quarantined);
+    expect(
+      descendants(result.root)
+        .filter(
+          (element) =>
+            element.tagName === 'BUTTON' &&
+            element.parentNode?.className === 'save-controls',
+        )
+        .map((button) => button.textContent.trim()),
+    ).not.toContain('Download quarantined save');
   });
 
   it('S-PERSIST-26: every LoadFailureReason maps to a distinct friendly message', async () => {

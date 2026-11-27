@@ -147,31 +147,6 @@ function areaViews(
   });
 }
 
-function metaActionOf(raw: string): MetaAction | undefined {
-  const trimmed = raw.trim();
-  const lowered = trimmed.toLowerCase();
-  switch (lowered) {
-    case 'save': {
-      return { kind: 'save' };
-    }
-    case 'load': {
-      return { kind: 'load' };
-    }
-    case 'download': {
-      return { kind: 'download' };
-    }
-    case 'restart': {
-      return { kind: 'restart' };
-    }
-    default: {
-      const prefix = 'import ';
-      return lowered.startsWith(prefix)
-        ? { kind: 'import', text: trimmed.slice(prefix.length) }
-        : undefined;
-    }
-  }
-}
-
 function quizView(
   state: GameState,
   bundle: ContentBundle,
@@ -182,12 +157,22 @@ function quizView(
   const question =
     questionId === undefined ? undefined : bundle.questions.getById(questionId);
   if (question === undefined) return undefined;
+  const quiz = bundle.quizzes.getById(quizId);
+  if (quiz === undefined) return undefined;
+  const questionCount = state.quiz.questionIds.length;
   return {
     quizId,
     prompt: question.prompt,
     options: question.options,
     questionNumber: state.quiz.index + 1,
-    questionCount: state.quiz.questionIds.length,
+    questionCount,
+    passMark: quiz.passMark,
+    remainingWrong: Math.max(
+      0,
+      questionCount -
+        quiz.passMark -
+        (state.quiz.answers.length - state.quiz.correctCount),
+    ),
   };
 }
 
@@ -223,12 +208,14 @@ const END_STATE_COMMANDS: ReadonlySet<Command['kind']> = new Set([
 ]);
 
 export function createGame(dependencies: GameDependencies): Game {
+  // The single fresh-state seam: every fresh start (including the fallback
+  // below and the typed `restart` meta action) constructs state here only.
+  const createFreshState = (): GameState => createInitial(dependencies.bundle);
   // The injected runtime state is the one live state object: injected appliers,
   // tracker and session already point at it, and every production system reads
   // and writes it. Restores still pass through createFromDto so the derived
   // score is rebuilt from progress.
-  let state: GameState =
-    dependencies.initialState ?? createInitial(dependencies.bundle);
+  let state: GameState = dependencies.initialState ?? createFreshState();
   adoptSeed(dependencies.random, state);
   const isInjectedScore = dependencies.score !== undefined;
   const isInjectedSession = dependencies.session !== undefined;
@@ -247,6 +234,10 @@ export function createGame(dependencies: GameDependencies): Game {
   // The current suggestion is view state, not persisted game state. It comes
   // only from the NPC event stream; the panel never computes a prompt itself.
   let conversationPrompt: string | undefined;
+  // Transient hint-view suppression: a new quiz attempt hides hints from the
+  // previous attempt in the view only. Persisted HintStateDto records, hint
+  // penalties, cooldown counters and quiz scoring are never touched.
+  let isHintViewSuppressed = false;
 
   const evaluator = createConditionEvaluator();
   const ruleEngine = createRuleEngine({
@@ -324,16 +315,31 @@ export function createGame(dependencies: GameDependencies): Game {
     }
   };
 
-  const publish = (events: readonly GameEvent[]): readonly GameEvent[] => {
-    for (const event of events) {
-      if (event.type === 'topic-suggested') {
+  // Private view-event bookkeeping for the single publish seam. This is not a
+  // second event owner: EventBus still publishes the whole batch unchanged.
+  const observeViewEvent = (event: GameEvent): void => {
+    switch (event.type) {
+      case 'topic-suggested': {
         conversationPrompt = event.text;
-        continue;
+        break;
       }
-      if (event.type === 'conversation-ended') {
+      case 'conversation-ended': {
         conversationPrompt = undefined;
+        break;
+      }
+      case 'quiz-started': {
+        isHintViewSuppressed = true;
+        break;
+      }
+      case 'hint-shown': {
+        isHintViewSuppressed = false;
+        break;
       }
     }
+  };
+
+  const publish = (events: readonly GameEvent[]): readonly GameEvent[] => {
+    for (const event of events) observeViewEvent(event);
     dependencies.bus.publish(events);
     return events;
   };
@@ -345,6 +351,7 @@ export function createGame(dependencies: GameDependencies): Game {
     state = next;
     adoptSeed(dependencies.random, state);
     conversationPrompt = undefined;
+    isHintViewSuppressed = false;
     rebind();
     dependencies.clearViews?.();
     if (shouldResetSession) session.newGame();
@@ -353,7 +360,17 @@ export function createGame(dependencies: GameDependencies): Game {
 
   const saveGame = (): void => {
     recordSeed(dependencies.random, state);
-    dependencies.saveManager.save(state);
+    // SaveManager takes a plain DTO: a freshly created runtime state carries a
+    // toDto() method and a derived score getter, neither of which is data.
+    dependencies.saveManager.save(createFromDto(state).toDto());
+  };
+
+  // Fresh starts share one save/publish sequence; callers supply the fresh
+  // state so each call site goes through the single construction seam above.
+  const startFresh = (fresh: GameState): readonly GameEvent[] => {
+    const events = replaceState(fresh, true);
+    saveGame();
+    return publish(events);
   };
 
   const downloadGame = (): void => {
@@ -369,6 +386,7 @@ export function createGame(dependencies: GameDependencies): Game {
       state = dependencies.saveManager.restore(result.dto);
       adoptSeed(dependencies.random, state);
       conversationPrompt = undefined;
+      isHintViewSuppressed = false;
       rebind();
       dependencies.clearViews?.();
     }
@@ -380,11 +398,12 @@ export function createGame(dependencies: GameDependencies): Game {
 
   const loadMeta = (): readonly GameEvent[] => {
     const result = dependencies.saveManager.load();
-    return result.ok
-      ? publish(
-          replaceState(dependencies.saveManager.restore(result.dto), false),
-        )
-      : metaMessage('No saved game could be loaded.');
+    if (!result.ok) return metaMessage('No saved game could be loaded.');
+    const batch = replaceState(
+      dependencies.saveManager.restore(result.dto),
+      false,
+    );
+    return publish([...batch, { type: 'message', text: 'Game loaded.' }]);
   };
 
   const importMeta = (text: string): readonly GameEvent[] => {
@@ -411,7 +430,7 @@ export function createGame(dependencies: GameDependencies): Game {
         return importMeta(meta.text);
       }
       case 'restart': {
-        return publish(replaceState(createInitial(dependencies.bundle), true));
+        return startFresh(createFreshState());
       }
     }
   };
@@ -481,16 +500,19 @@ export function createGame(dependencies: GameDependencies): Game {
       };
       const events = runTurn(command, context);
       recordSeed(dependencies.random, state);
-      return publish(session.observe(score.observe(events)));
+      const observed = session.observe(score.observe(events));
+      // Autosave the final, post-observer state through the single save seam.
+      saveGame();
+      return publish(observed);
     },
     newGame(): void {
-      publish(replaceState(createInitial(dependencies.bundle), true));
+      startFresh(createFreshState());
     },
     continueGame(dto: SaveDto): void {
       publish(replaceState(createFromDto(dto.state), false));
     },
     restart(): void {
-      publish(replaceState(createInitial(dependencies.bundle), true));
+      startFresh(createFreshState());
     },
     getViewData(): GameViewData {
       const speaking = Object.entries(state.npcs).find(
@@ -516,7 +538,9 @@ export function createGame(dependencies: GameDependencies): Game {
         areas: areaViews(state, dependencies.bundle),
         ...(activeQuiz && { activeQuiz }),
         ...(conversation && { conversation }),
-        hints: hintViews(state, dependencies.bundle),
+        hints: isHintViewSuppressed
+          ? []
+          : hintViews(state, dependencies.bundle),
       };
     },
     save(): void {
@@ -534,4 +558,31 @@ export function createGame(dependencies: GameDependencies): Game {
       return result;
     },
   };
+}
+
+// Pure classification helper; a hoisted declaration stays available to submit()
+// wherever it is placed in the module.
+function metaActionOf(raw: string): MetaAction | undefined {
+  const trimmed = raw.trim();
+  const lowered = trimmed.toLowerCase();
+  switch (lowered) {
+    case 'save': {
+      return { kind: 'save' };
+    }
+    case 'load': {
+      return { kind: 'load' };
+    }
+    case 'download': {
+      return { kind: 'download' };
+    }
+    case 'restart': {
+      return { kind: 'restart' };
+    }
+    default: {
+      const prefix = 'import ';
+      return lowered.startsWith(prefix)
+        ? { kind: 'import', text: trimmed.slice(prefix.length) }
+        : undefined;
+    }
+  }
 }

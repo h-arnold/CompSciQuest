@@ -194,13 +194,18 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
       const before = await savedQuiz(page);
       const index = optionIndex(question, raw);
       expect(index).toBeGreaterThanOrEqual(0);
+      // §6.1 renders answer-evaluated as the canonical verdict followed by
+      // the verbatim authored explanation. The displayed option decides which
+      // verdict applies, so no expectation is loosened.
+      const verdict =
+        index === correctIndex(question) ? 'Correct. ' : 'Incorrect. ';
 
       await submit(page, raw);
       await waitForLine(page, `> ${raw}`);
       const lines = await transcript(page);
       const at = lines.indexOf(`> ${raw}`);
       expect(at).toBeGreaterThanOrEqual(0);
-      expect(lines[at + 1]).toBe(question.explanation);
+      expect(lines[at + 1]).toBe(`${verdict}${question.explanation}`);
 
       const after = await savedQuiz(page);
       if (after.activeQuizId === undefined) {
@@ -231,7 +236,9 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
     await submit(page, `answer ${index + 1}`);
     await waitForLine(page, `> answer ${index + 1}`);
     const numeric = await savedQuiz(page);
-    expect(await transcript(page)).toContain(question.explanation);
+    expect(await transcript(page)).toContain(
+      `Correct. ${question.explanation}`,
+    );
 
     // A second quiz run substitutes only the answer form; the seeded save gives
     // the same shuffled question order on both runs.
@@ -240,7 +247,9 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
     await submit(page, raw);
     await waitForLine(page, `> ${raw}`);
     const exact = await savedQuiz(page);
-    expect(await transcript(page)).toContain(question.explanation);
+    expect(await transcript(page)).toContain(
+      `Correct. ${question.explanation}`,
+    );
 
     expect(exact.answers).toEqual(numeric.answers);
     expect(exact.correctCount).toBe(numeric.correctCount);
@@ -258,7 +267,9 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
     await reachQuestion(page, question.id);
     await submit(page, `answer ${index + 1}`);
     await waitForLine(page, `> answer ${index + 1}`);
-    expect(await transcript(page)).toContain(question.explanation);
+    expect(await transcript(page)).toContain(
+      `Correct. ${question.explanation}`,
+    );
     const numericState = await liveState(page);
 
     await enterOrientationQuiz(page);
@@ -269,7 +280,7 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
     const exactState = await liveState(page);
 
     expect(
-      exactLines.filter((line) => line === question.explanation),
+      exactLines.filter((line) => line === `Correct. ${question.explanation}`),
     ).toHaveLength(1);
     expect(exactLines).toContain(authoredPassMessage().text);
     expect(exactState.flags).toEqual(numericState.flags);
@@ -290,7 +301,9 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
         throw new Error('Missing authored correct option');
       await submit(page, option);
       await waitForLine(page, `> ${option}`);
-      expect(await transcript(page)).toContain(question.explanation);
+      expect(await transcript(page)).toContain(
+        `Correct. ${question.explanation}`,
+      );
     }
 
     const lines = await transcript(page);
@@ -338,9 +351,14 @@ test.describe('ward round 3 — exact displayed quiz options', () => {
       answered += 1;
       const option = question.options[index];
       if (option === undefined) throw new Error('Missing authored option');
+      // The first two answers are deliberately wrong; the rest are correct.
+      const verdict =
+        index === correctIndex(question) ? 'Correct. ' : 'Incorrect. ';
       await submit(page, option);
       await waitForLine(page, `> ${option}`);
-      expect(await transcript(page)).toContain(question.explanation);
+      expect(await transcript(page)).toContain(
+        `${verdict}${question.explanation}`,
+      );
     }
 
     const lines = await transcript(page);

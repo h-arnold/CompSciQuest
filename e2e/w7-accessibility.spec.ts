@@ -1,10 +1,12 @@
 // W7 accessibility evidence, split from the opening walkthrough by domain.
 // Covers disabled-state exposure, labels, live transcript, keyboard order,
 // visible focus, contrast, narrow reflow and reduced motion.
-import { expect, test } from 'playwright/test';
+import { expect, test, type Page } from 'playwright/test';
+import { quizzes } from '../src/content/authored/quizzes';
+import { startFromLiveSave } from './helpers';
 
 // prettier-ignore
-const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart', 'Download quarantined save'];
+const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart'];
 
 function parseColour(value: string): number[] {
   return (value.match(/[\d.]+/gu) ?? []).map(Number);
@@ -117,4 +119,79 @@ test('W7 accessibility — labels, live transcript, keyboard order, focus, contr
   }));
   expect(motion.matches).toBe(true);
   expect(motion.durations.every((duration) => duration === '0s')).toBe(true);
+});
+
+// E2E-PASSMARK-A11Y-01..02 — the requirement line is a polite live region while
+// an authored quiz is active, and no stale live-region node survives a fresh
+// start. Values come from the generated authored quiz, never from prose copy.
+function requirementNode(page: Page) {
+  return page.locator('.quiz-panel > p');
+}
+
+async function accessibilityCommand(page: Page, raw: string): Promise<void> {
+  await page.getByRole('textbox', { name: 'Command' }).fill(raw);
+  await page.getByRole('textbox', { name: 'Command' }).press('Enter');
+}
+
+async function enterSwitchyardQuiz(page: Page): Promise<void> {
+  await startFromLiveSave(page, { 'tutorial-complete': true });
+  await expect(page.locator('.workspace')).toBeVisible();
+  await accessibilityCommand(page, 'east');
+  await accessibilityCommand(page, 'east');
+  // Room-entry effects must settle before the quiz trigger (ENG10 correction).
+  await expect(
+    page.locator('.output-log > div', { hasText: 'The Binary Hall' }).first(),
+  ).toBeVisible();
+  await accessibilityCommand(page, 'ask foreman about switch-to-bit');
+  await expect(page.locator('.quiz-panel')).toBeVisible();
+}
+
+test.describe('ENG30-PASSMARK-A11Y-01 — quiz requirement live region', () => {
+  test('E2E-PASSMARK-A11Y-01 — the active quiz requirement is an aria-live polite paragraph with no console errors', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
+    page.on('pageerror', (error) => {
+      errors.push(String(error));
+    });
+
+    const quiz = quizzes.find((entry) => entry.id === 'quiz-switchyard');
+    if (quiz === undefined) {
+      throw new Error("Authored quiz 'quiz-switchyard' is missing");
+    }
+    await enterSwitchyardQuiz(page);
+
+    const count = quiz.questionIds.length;
+    const node = requirementNode(page);
+    await expect(node).toHaveText(
+      `Pass mark: ${quiz.passMark} correct of ${count}. Wrong answers allowed: ${count - quiz.passMark}.`,
+    );
+    await expect(node).toHaveAttribute('aria-live', 'polite');
+    expect(await node.locator('*').count(), 'text-only live region').toBe(0);
+    await expect(page.locator('.output-log')).toHaveAttribute(
+      'aria-live',
+      'polite',
+    );
+    expect(errors, 'no console errors').toEqual([]);
+  });
+
+  test('E2E-PASSMARK-A11Y-02 — a fresh start leaves no requirement live region and keeps the transcript one', async ({
+    page,
+  }) => {
+    await enterSwitchyardQuiz(page);
+    await expect(requirementNode(page)).toHaveCount(1);
+
+    await page.reload();
+    await page.getByRole('button', { name: 'New Game' }).click();
+    await expect(page.locator('.workspace')).toBeVisible();
+    await expect(page.locator('.quiz-panel')).toBeHidden();
+    await expect(requirementNode(page)).toHaveCount(0);
+    await expect(page.locator('.output-log')).toHaveAttribute(
+      'aria-live',
+      'polite',
+    );
+  });
 });

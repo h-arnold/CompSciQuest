@@ -80,6 +80,9 @@ describe('quiz and hint view data (application-and-ui.md §7.2)', () => {
       options: question.options,
       questionNumber: 1,
       questionCount: 4,
+      // quiz-data-types is authored with passMark 3 across four questions.
+      passMark: 3,
+      remainingWrong: 1,
     });
 
     for (let guard = 0; guard < 4; guard += 1) {
@@ -98,17 +101,17 @@ describe('QuizPanel and HintPanel rendering (application-and-ui.md §7.1, §7.2)
     expect(panel.element.hidden).toBe(true);
     expect(panel.element.textContent).toBe('');
 
-    panel.refresh(
-      makeViewData({
-        activeQuiz: {
-          quizId: 'quiz-stub',
-          prompt: 'Which <b>type</b>?',
-          options: ['first <b>option</b>', 'second option'],
-          questionNumber: 2,
-          questionCount: 5,
-        },
-      }),
-    );
+    // Stub quiz: passMark 2 of five questions leaves 3 wrong answers affordable.
+    const stubQuiz = {
+      quizId: 'quiz-stub',
+      prompt: 'Which <b>type</b>?',
+      options: ['first <b>option</b>', 'second option'],
+      questionNumber: 2,
+      questionCount: 5,
+      passMark: 2,
+      remainingWrong: 3,
+    };
+    panel.refresh(makeViewData({ activeQuiz: stubQuiz }));
     expect(panel.element.hidden).toBe(false);
     expect(panel.element.textContent).toContain('Which <b>type</b>?');
     expect(panel.element.textContent).toContain('1. first <b>option</b>');
