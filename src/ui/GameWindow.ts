@@ -133,13 +133,13 @@ export class GameWindow {
     return {
       setStatus,
       save: () => {
-        this.game.save();
+        this.game.submit('save');
       },
       load: () => {
         this.game.submit('load');
       },
       download: () => {
-        this.game.download();
+        this.game.submit('download');
       },
       openImport: async (): Promise<void> => {
         try {

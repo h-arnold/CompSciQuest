@@ -32,6 +32,10 @@ export interface BootSetupOptions {
   readonly importText?: string;
   readonly viewData?: GameViewData;
   readonly submitResult?: readonly GameEvent[];
+  // Opt-in: mirror the real façade by publishing submitResult on the bus when
+  // submit() is called. Off by default so inherited boot tests keep their
+  // returned-batch rendering path.
+  readonly publishOnSubmit?: boolean;
   readonly onNewGame?: () => void;
   readonly onRestart?: () => void;
   readonly appPresent?: boolean;
@@ -111,6 +115,11 @@ export function makeBootSetup(options: BootSetupOptions = {}): BootSetup {
   const game = new RecordingGame({
     viewData: options.viewData ?? makeViewData(),
     submitResult: options.submitResult ?? [],
+    ...(options.publishOnSubmit && {
+      onSubmit: (_raw: string, events: readonly GameEvent[]): void => {
+        bus.publish(events);
+      },
+    }),
     // Game owns import interception (application-and-ui.md §4): the facade's
     // importSave result is the single source of the status message, so the
     // configured failure must be the same one the save-manager fake returns.
