@@ -5,6 +5,7 @@ import { expect, test, type Page } from 'playwright/test';
 import { hazards } from '../src/content/authored/hazards';
 import {
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -70,7 +71,9 @@ test('ENG8-LOGID-01 — hazard, conversation and quiz-pass flows keep the log pl
   page,
 }) => {
   const errors = watchConsole(page);
-  await startNewGame(page);
+  // Seed the accepted hub-card precondition so the ordinary east route reaches
+  // the authored overheat hazard and the same no-debug-line assertions apply.
+  await startFromLiveSave(page, { 'tutorial-complete': true });
 
   const question = await command(page, 'ask ai about why here');
   expect(question.join('\n')).toContain(

@@ -35,11 +35,19 @@ interface SaveState {
   [key: string]: unknown;
 }
 
+// Later-area traces start after the accepted Assistance Ward orientation:
+// `tutorial-complete` is the single flag produced by puzzle-calibrate-assistance
+// and read by the hub east/north gates (docs/content/topics/assistance-ward.md
+// §8/§10 and the network-hub room card). Passing it here changes setup only;
+// every command, expectation and assertion in the traces is unchanged.
+const WARD_COMPLETE_FLAGS = { 'tutorial-complete': true } as const;
+
 function saveAt(
   state: SaveState,
   roomId: string,
   areaId: string,
   lives: number,
+  flags: Readonly<Record<string, boolean>>,
 ): string {
   return JSON.stringify({
     version: 1,
@@ -51,7 +59,7 @@ function saveAt(
         position: { worldId: WORLD, areaId, roomId },
         lives,
       },
-      flags: {},
+      flags: { ...flags },
     },
   });
 }
@@ -94,7 +102,13 @@ test('W7 scoped — lives reset on both area changes into the concourse and the 
   const template = await liveSave(page);
 
   // Hub (2 lives) -> concourse: area change restores 3.
-  const hub = saveAt(template, 'room-network-hub', 'area-network-hub', 2);
+  const hub = saveAt(
+    template,
+    'room-network-hub',
+    'area-network-hub',
+    2,
+    WARD_COMPLETE_FLAGS,
+  );
   await continueFrom(page, hub);
   const toConcourse = await command(page, 'north');
   expect(toConcourse).toContain('The Rule Machine Concourse');
@@ -107,6 +121,7 @@ test('W7 scoped — lives reset on both area changes into the concourse and the 
     'room-1-4-concourse',
     'area-1-4-concourse',
     2,
+    WARD_COMPLETE_FLAGS,
   );
   await continueFrom(page, concourse);
   const toMill = await command(page, 'east');
@@ -126,6 +141,7 @@ test('W7 scoped — Bureau beats render and the east door stays bolted before th
     'room-pattern-bureau',
     'area-1-4-programming-constructs',
     3,
+    {},
   );
   await continueFrom(page, atBureau);
 
@@ -160,6 +176,6 @@ test('W7 scoped — Bureau beats render and the east door stays bolted before th
   // walk stops here rather than handing off quiz-pattern-bureau.
   const bolted = await command(page, 'east');
   expect(bolted).toContain('> east');
-  expect(bolted.join('\n')).toContain('That way is blocked: flag-set.');
+  expect(bolted.join('\n')).toContain('That way is closed for now.');
   expect(errors()).toEqual([]);
 });

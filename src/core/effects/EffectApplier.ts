@@ -77,7 +77,23 @@ function applyItemEffect(
   const player = state.player as unknown as { inventory: string[] };
   const index = player.inventory.indexOf(effect.itemId);
   if (effect.kind === 'grant-item') {
-    if (index === -1) player.inventory.push(effect.itemId);
+    // storage-schema.md §3.3(1): a grant makes the player the sole owner, so
+    // the authored initialRoom copy and every other owner copy must be removed
+    // before the player receives the item. inventoryOf() is the shared lookup.
+    for (const ownerId of [
+      'player',
+      ...Object.keys(state.npcs),
+      ...Object.keys(state.rooms),
+    ]) {
+      const inventory = inventoryOf(state, ownerId);
+      if (inventory === undefined) continue;
+      let at = inventory.indexOf(effect.itemId);
+      while (at !== -1) {
+        inventory.splice(at, 1);
+        at = inventory.indexOf(effect.itemId);
+      }
+    }
+    player.inventory.push(effect.itemId);
   } else if (index !== -1) {
     player.inventory.splice(index, 1);
   }
@@ -311,6 +327,9 @@ function startQuiz(
   bundle: ContentBundle | undefined,
   random: Random,
 ): readonly GameEvent[] {
+  // A second start while an attempt is live is a no-op: no replacement
+  // question and no extra attempt (content-bible.md §12 W7 fix round).
+  if (state.quiz.activeQuizId !== undefined) return [];
   const quiz = bundle?.quizzes.getById(effect.quizId);
   const attempts = state.quizAttempts[effect.quizId] ?? 0;
   if (quiz?.attemptsAllowed !== undefined && attempts >= quiz.attemptsAllowed) {

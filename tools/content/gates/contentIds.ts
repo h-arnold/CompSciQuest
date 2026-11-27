@@ -199,6 +199,7 @@ function hintTargetFindings(
     ...known,
     ...idsOf(collection(cards, 'puzzles')),
     ...idsOf(collection(cards, 'quizzes')),
+    ...idsOf(collection(cards, 'rooms')),
   ]);
   return collection(cards, 'hintSequences').flatMap((hint) =>
     artefacts.size === 0
@@ -257,8 +258,10 @@ function exitFindings(
 ): readonly Finding[] {
   return collection(cards, 'rooms').flatMap((room) => {
     const exits = asObjectArray(room.data['exits']);
+    // Authoring spells the target `to:`; the canonical normaliser maps it to
+    // `targetRoomId`. Accept both when this gate is called on raw parsed cards.
     const missing = exits
-      .map((exit) => asText(exit['targetRoomId']))
+      .map((exit) => asText(exit['targetRoomId'] ?? exit['to']))
       .filter((id) => roomIds.size > 0 && !roomIds.has(id))
       .map((id) =>
         finding(

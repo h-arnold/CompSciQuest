@@ -4,13 +4,14 @@
 import type { ContentBundle } from '../../content/ContentBundle';
 import type { Command } from '../commands/Command';
 import { createNameResolver } from '../commands/NameResolver';
+import type { Condition } from '../rules/Condition';
 import type { ConditionEvaluator } from '../rules/ConditionEvaluator';
 import type { TurnContext } from '../TurnContext';
 import type { ConversationNode } from './ConversationNode';
 import type { ConversationTopic } from './ConversationTopic';
 import type { TopicMatch } from './TopicMatch';
 import type { ResolvedTopic } from './ResolvedTopic';
-import { findDeclaredObjectPhrase } from './TopicPhrase';
+import { findDeclaredObjectPhrase, normalise } from './TopicPhrase';
 
 export interface SelectedTopic {
   readonly topic: ConversationTopic;
@@ -84,10 +85,12 @@ function isCommandCompatible(match: TopicMatch, command: Command): boolean {
   }
 }
 
-// A catch-all ask/tell topic declares no object IDs; its authored response is
-// the only wording the runtime uses for an unmatched phrase (GAP-09).
+// A catch-all is an askTell topic with no object IDs; its authored response is
+// the only wording the runtime uses for an unmatched phrase (GAP-09). An
+// empty-object tell remains an explicit free-text target because it cannot
+// answer ask (npcs.md §3).
 export function isDefaultTopic(topic: ConversationTopic): boolean {
-  return isAskTellMatch(topic.match) && topic.match.objectIds.length === 0;
+  return topic.match.kind === 'askTell' && topic.match.objectIds.length === 0;
 }
 
 function hasKeyword(keywords: readonly string[], phrase: string): boolean {
@@ -120,12 +123,17 @@ function hasResolvedMatch(
   resolved: ResolvedTopic,
   command: Command,
   phrase: string,
+  canMatchKeywordPhrase: boolean,
+  isTopicIdPhrase: boolean,
 ): boolean {
   if (resolved.kind === 'keyword') {
     return (
-      topic.id === resolved.topicId &&
-      (isKeywordMatch(topic.match) || isAskTellMatch(topic.match)) &&
-      isCommandCompatible(topic.match, command)
+      (topic.id === resolved.topicId &&
+        (isKeywordMatch(topic.match) || isAskTellMatch(topic.match)) &&
+        isCommandCompatible(topic.match, command)) ||
+      (canMatchKeywordPhrase &&
+        isKeywordMatch(topic.match) &&
+        hasKeyword(topic.match.keywords, phrase))
     );
   }
   if (resolved.kind === 'object') {
@@ -133,7 +141,7 @@ function hasResolvedMatch(
   }
   const match = topic.match;
   if (isKeywordMatch(match)) {
-    return hasKeyword(match.keywords, phrase);
+    return !isTopicIdPhrase && hasKeyword(match.keywords, phrase);
   }
   if (isGiveShowMatch(match)) {
     return match.kind === command.kind && match.itemIds.includes(phrase);
@@ -155,6 +163,25 @@ function isActive(
   evaluator: ConditionEvaluator,
 ): boolean {
   return evaluator.evaluate(topic.isActive, context.state, context);
+}
+
+// Positive room gates in a mandatory `all` chain provide presence or absence
+// evidence. Alternatives, negations and node-only conditions remain neutral.
+function hasRequiredRoomEvidence(
+  condition: Condition,
+  context: TurnContext,
+  evaluator: ConditionEvaluator,
+  evidence: 'matching' | 'unmet',
+): boolean {
+  if (condition.kind === 'in-room') {
+    const matches = evaluator.evaluate(condition, context.state, context);
+    return evidence === 'matching' ? matches : !matches;
+  }
+  return condition.kind === 'all'
+    ? condition.of.some((child) =>
+        hasRequiredRoomEvidence(child, context, evaluator, evidence),
+      )
+    : false;
 }
 
 function usesOf(
@@ -191,18 +218,21 @@ export function findDefaultTopic(
             isDefaultTopic(topic) &&
             !excludedTopicIds.includes(topic.id),
         );
-  const globalDefault = context.bundle.conversationTopics.all.find(
-    (topic) =>
-      isDefaultTopic(topic) &&
-      (topic.actorId === undefined || topic.actorId === actorId) &&
-      !excludedTopicIds.includes(topic.id) &&
-      !isExhaustedOnce(topic, context, actorId),
+  const activeNodeDefault =
+    nodeDefault !== undefined && isActive(nodeDefault, context, evaluator)
+      ? nodeDefault
+      : undefined;
+  return (
+    activeNodeDefault ??
+    context.bundle.conversationTopics.all.find(
+      (topic) =>
+        isDefaultTopic(topic) &&
+        (topic.actorId === undefined || topic.actorId === actorId) &&
+        !excludedTopicIds.includes(topic.id) &&
+        !isExhaustedOnce(topic, context, actorId) &&
+        isActive(topic, context, evaluator),
+    )
   );
-  for (const topic of [nodeDefault, globalDefault]) {
-    if (topic !== undefined && isActive(topic, context, evaluator))
-      return topic;
-  }
-  return undefined;
 }
 
 // A phrase that names a declared object ID selects that exact authored topic
@@ -235,6 +265,26 @@ function exactDeclaredTopic(
   return bound.length === 1 ? bound[0] : undefined;
 }
 
+// With no selectable topic or default, absence requires unmet mandatory room
+// evidence and no matching evidence on any actor-bound topic. Node-only topics
+// do not establish presence or absence.
+export function isActorOutOfRoom(
+  context: TurnContext,
+  evaluator: ConditionEvaluator,
+  actorId: string,
+): boolean {
+  const actorTopics = context.bundle.conversationTopics.all.filter(
+    (topic) => topic.actorId === actorId,
+  );
+  const hasUnmetRoom = actorTopics.some((topic) =>
+    hasRequiredRoomEvidence(topic.isActive, context, evaluator, 'unmet'),
+  );
+  const hasMatchingRoom = actorTopics.some((topic) =>
+    hasRequiredRoomEvidence(topic.isActive, context, evaluator, 'matching'),
+  );
+  return hasUnmetRoom && !hasMatchingRoom;
+}
+
 function chooseCandidate(
   candidates: readonly (readonly [ConversationTopic, boolean])[],
   context: TurnContext,
@@ -242,6 +292,8 @@ function chooseCandidate(
   actorId: string,
   resolved: ResolvedTopic,
   phrase: string,
+  canMatchKeywordPhrase: boolean,
+  isTopicIdPhrase: boolean,
 ): SelectedTopic | undefined {
   const exact = exactDeclaredTopic(context, actorId, resolved, phrase);
   if (exact !== undefined) {
@@ -251,18 +303,27 @@ function chooseCandidate(
     const bound = candidates.find(([topic]) => topic.id === exact.id);
     if (bound !== undefined) {
       if (!isCompatible) return undefined;
-      return {
-        topic: exact,
-        fromNode: bound[1],
-        isDefault: false,
-      };
+      if (isActive(exact, context, evaluator)) {
+        return {
+          topic: exact,
+          fromNode: bound[1],
+          isDefault: false,
+        };
+      }
     }
   }
   const match = candidates.find(
     ([topic]) =>
       !isDefaultTopic(topic) &&
       isActive(topic, context, evaluator) &&
-      hasResolvedMatch(topic, resolved, context.command, phrase),
+      hasResolvedMatch(
+        topic,
+        resolved,
+        context.command,
+        phrase,
+        canMatchKeywordPhrase,
+        isTopicIdPhrase,
+      ),
   );
   return match === undefined
     ? undefined
@@ -281,6 +342,26 @@ export function selectTopic(
   const actorTopics = context.bundle.conversationTopics.all.filter(
     (topic) => topic.actorId === undefined || topic.actorId === actorId,
   );
+  // The resolver may name an inactive special. Its exact ID remains
+  // authoritative across both passes while active; only otherwise may
+  // selection recover by authored keywords in node-then-actor order.
+  const keywordCandidate =
+    resolved.kind === 'keyword'
+      ? (nodeTopics.find((topic) => topic.id === resolved.topicId) ??
+        actorTopics.find((topic) => topic.id === resolved.topicId))
+      : undefined;
+  const canMatchKeywordPhrase =
+    resolved.kind === 'keyword' &&
+    (keywordCandidate === undefined ||
+      !isActive(keywordCandidate, context, evaluator));
+  // A whole phrase equal to a catalogue topic ID is not authored vocabulary.
+  // Exclude it from free-text keyword token matching without ranking topics.
+  const normalisedPhrase = normalise(phrase);
+  const isTopicIdPhrase =
+    resolved.kind === 'free-text' &&
+    context.bundle.conversationTopics.all.some(
+      (topic) => normalise(topic.id) === normalisedPhrase,
+    );
   const nodeMatch = chooseCandidate(
     nodeTopics.map((topic) => [topic, true] as const),
     context,
@@ -288,6 +369,8 @@ export function selectTopic(
     actorId,
     resolved,
     phrase,
+    canMatchKeywordPhrase,
+    isTopicIdPhrase,
   );
   if (nodeMatch !== undefined) return nodeMatch;
   const actorMatch = chooseCandidate(
@@ -297,14 +380,17 @@ export function selectTopic(
     actorId,
     resolved,
     phrase,
+    canMatchKeywordPhrase,
+    isTopicIdPhrase,
   );
   if (actorMatch !== undefined) return actorMatch;
-  // W7-HANDOFF.md §103 fix 2: an exact object-match topic that was rejected as
+  // W7-HANDOFF.md §103 fix 2: an exact object-match topic that is
   // command-incompatible must not fall through to a different topic here. The
   // default catch-all is delivered by the non-counting idle-response path.
+  const exact = exactDeclaredTopic(context, actorId, resolved, phrase);
   if (
-    resolved.kind === 'object' &&
-    exactDeclaredTopic(context, actorId, resolved, phrase) !== undefined
+    exact !== undefined &&
+    !isCommandCompatible(exact.match, context.command)
   ) {
     return undefined;
   }

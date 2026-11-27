@@ -288,7 +288,10 @@ describe('W7R-NPC-01 authored ask/tell resolution', () => {
     expect(lift).toBeDefined();
     const state = authoredState({
       roomId: 'room-binary-hall',
-      flags: { 'switches-set': true },
+      flags: {
+        'quiz-passed:quiz-switchyard': true,
+        'switches-set': true,
+      },
     });
     const { game, storage } = authoredGame({ state });
 

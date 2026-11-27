@@ -25,6 +25,12 @@ import {
   makeStateDto,
   roundTripThroughJson,
 } from '../fixtures/persistence';
+import {
+  CHEST_ID,
+  KEY_A,
+  START_ROOM,
+  makeParserBundle,
+} from '../fixtures/parser';
 import type { SaveDto } from '../../src/application/SaveDto';
 
 function managerDependencies(
@@ -535,5 +541,44 @@ describe('SaveManager persistence contracts', () => {
     expect(game.getViewData().turn).toBe(0);
     game.submit('examine nowhere');
     expect(game.getViewData().turn).toBe(1);
+  });
+
+  it('WR4-B1: a save with fixture-held item contents loads without quarantine', async () => {
+    const storage = new MemoryStorage();
+    const manager = await loadSaveManager(
+      managerDependencies(storage, makeParserBundle()),
+    );
+    const position = {
+      worldId: 'world-stub',
+      areaId: 'area-stub',
+      roomId: START_ROOM,
+    };
+
+    // Control: an ordinary room-only save still loads and never quarantines.
+    manager.save(
+      makeStateDto({
+        player: { position, inventory: [KEY_A], lives: 3 },
+        rooms: { [START_ROOM]: { inventory: [] } },
+      }),
+    );
+    expect(manager.load()).toMatchObject({ ok: true });
+    expect(storage.read(QUARANTINE_KEY)).toBeNull();
+
+    // A placed item is owned by the visible fixture: transfer-item writes the
+    // item into a state.rooms entry keyed by that fixture's item ID.
+    manager.save(
+      makeStateDto({
+        player: { position, inventory: [], lives: 3 },
+        rooms: {
+          [START_ROOM]: { inventory: [CHEST_ID] },
+          [CHEST_ID]: { inventory: [KEY_A] },
+        },
+      }),
+    );
+
+    const result = manager.load();
+
+    expect(storage.read(QUARANTINE_KEY)).toBeNull();
+    expect(result).toMatchObject({ ok: true });
   });
 });

@@ -244,8 +244,11 @@ function hasValidPositionReferences(
     bundle.areas.getById(position.areaId) !== undefined &&
     bundle.rooms.getById(position.roomId) !== undefined &&
     haveExistingIds(state.player.inventory, (id) => bundle.items.getById(id)) &&
-    haveExistingIds(Object.keys(state.rooms), (id) =>
-      bundle.rooms.getById(id),
+    // transfer-item keys a fixture-held inventory by the fixture's item ID
+    // (EffectApplier), so a valid room-state owner is a declared room or item.
+    haveExistingIds(
+      Object.keys(state.rooms),
+      (id) => bundle.rooms.getById(id) ?? bundle.items.getById(id),
     ) &&
     haveExistingIds(Object.keys(state.npcs), (id) => bundle.actors.getById(id))
   );

@@ -23,6 +23,10 @@ export interface StateSeed {
   readonly status?: 'playing' | 'won' | 'lost';
   readonly turn?: number;
   readonly counters?: Readonly<Record<string, number>>;
+  // Preconditions declared by accepted cards (for example the ward's
+  // tutorial-complete gate on the hub's teaching sockets) are part of a valid
+  // v1 save and must be seedable without weakening any browser assertion.
+  readonly flags?: Readonly<Record<string, boolean>>;
 }
 
 export interface StorageSeed {
@@ -95,7 +99,7 @@ export function makeState(seed: StateSeed = {}): Record<string, unknown> {
     hints: {},
     quiz: { questionIds: [], index: 0, correctCount: 0, answers: [] },
     quizAttempts: {},
-    flags: {},
+    flags: seed.flags ?? {},
     progress: [
       {
         worldId: authoredWorld.id,
@@ -192,6 +196,27 @@ export async function expectWorkspace(page: Page): Promise<void> {
 export async function startNewGame(page: Page): Promise<void> {
   await page.goto('./');
   await page.getByRole('button', { name: 'New Game' }).click();
+  await expectWorkspace(page);
+}
+
+// Continue from the full live New Game state with an accepted-card route
+// precondition (the ward calibration mark) added, so authored room inventories
+// and NPC states remain intact for longer routes.
+export async function startFromLiveSave(
+  page: Page,
+  flags: Readonly<Record<string, boolean>>,
+): Promise<void> {
+  await startNewGame(page);
+  await submit(page, 'save');
+  const raw = await readStorage(page, SAVE_KEY);
+  if (raw === null) throw new Error('New Game did not write a save');
+  const save = JSON.parse(raw) as {
+    state: { flags: Record<string, boolean> };
+  };
+  save.state.flags = { ...save.state.flags, ...flags };
+  await seedStorage(page, { save: JSON.stringify(save) });
+  await page.goto('./');
+  await page.getByRole('button', { name: 'Continue' }).click();
   await expectWorkspace(page);
 }
 

@@ -2,6 +2,7 @@
 import type { ContentBundle } from '../../content/ContentBundle';
 import type { GameState } from '../GameState';
 import { resolveScenery } from './InteractionRules';
+import { itemVisibility } from './ItemVisibility';
 
 export interface NameResolver {
   resolve(
@@ -33,9 +34,7 @@ export function createNameResolver(): NameResolver {
       const normalised = phrase.trim().toLowerCase();
       if (normalised.length === 0) return;
 
-      const roomId = state.player.position.roomId;
-      const inRoom = state.rooms[roomId]?.inventory ?? [];
-      const visible = new Set<string>([...state.player.inventory, ...inRoom]);
+      const visible = itemVisibility.visibleInRoom(state, bundle);
       const candidates = [
         ...bundle.items.all
           .filter((item) => visible.has(item.id))

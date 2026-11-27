@@ -3,6 +3,7 @@
 // visible focus, contrast, narrow reflow and reduced motion.
 import { expect, test, type Page } from 'playwright/test';
 import { quizzes } from '../src/content/authored/quizzes';
+import { startFromLiveSave } from './helpers';
 
 // prettier-ignore
 const CONTROL_ORDER = ['Command', 'Save', 'Load', 'Download', 'Import', 'Restart'];
@@ -133,8 +134,7 @@ async function accessibilityCommand(page: Page, raw: string): Promise<void> {
 }
 
 async function enterSwitchyardQuiz(page: Page): Promise<void> {
-  await page.goto('./');
-  await page.getByRole('button', { name: 'New Game' }).click();
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await expect(page.locator('.workspace')).toBeVisible();
   await accessibilityCommand(page, 'east');
   await accessibilityCommand(page, 'east');

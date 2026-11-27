@@ -11,6 +11,7 @@
 import { expect, test, type Page } from 'playwright/test';
 import {
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -111,7 +112,9 @@ test('ENG22-SUCCESSIDS-01 — a solved puzzle drops the solved line and keeps th
   page,
 }) => {
   const errors = watchConsole(page);
-  await startNewGame(page);
+  // The accepted hub card gates east on the ward mark; seed it so the same
+  // puzzle assertion still runs in the Binary Hall.
+  await startFromLiveSave(page, { 'tutorial-complete': true });
 
   // Two east moves reach the Binary Hall deterministically: the first entry
   // to the switch floor triggers the authored heat hazard and returns here.

@@ -1,7 +1,11 @@
 // Regressions for W7R-NPC-01/g (npcs.md §3/§5; W7-HANDOFF.md §103 fix 2).
-// The five spoken phrases are the row's own literals; every topic ID, actor ID,
-// authored response and producer flag below comes from the generated authored
-// bundle. Storage, clock and randomness stay injected through the W7 fixtures.
+// The approved locality contract supersedes the historical inactive-exact
+// preference: an inactive exact handoff now falls through normal compatible
+// selection without exact quiz, flag or use effects. A command-incompatible
+// exact handoff still cannot fall through to another concrete topic. The five
+// spoken phrases are the row's own literals; every topic ID, actor ID, authored
+// response and producer flag below comes from the generated authored bundle.
+// Storage, clock and randomness stay injected through the W7 fixtures.
 import { describe, expect, it } from 'vitest';
 import type { GameState } from '../../src/core/GameState';
 import { authoredBundle } from '../fixtures/authored';
@@ -103,12 +107,18 @@ function authoredQuizId(quizId: string): void {
   ).toBeDefined();
 }
 
-function concreteSnapshot(state: GameState, actorId: string): string {
+function concreteSnapshot(
+  state: GameState,
+  actorId: string,
+  shouldIncludeTopicUses: boolean = true,
+): string {
   return JSON.stringify({
     flags: state.flags,
     knownTopics: state.npcs[actorId]?.knownTopics,
     activeNodeId: state.npcs[actorId]?.activeNodeId,
-    topicUses: state.npcs[actorId]?.topicUses,
+    ...(shouldIncludeTopicUses && {
+      topicUses: state.npcs[actorId]?.topicUses,
+    }),
     inventories: Object.fromEntries(
       Object.entries(state.npcs).map(([id, npc]) => [id, [...npc.inventory]]),
     ),
@@ -126,14 +136,15 @@ function decoy(topicId: string, phrase: string) {
   return topic({
     id: topicId,
     match: { kind: 'askTell', objectIds: [phrase] },
+    isActive: { kind: 'flag-set', flag: NEVER_SET_FLAG },
     responses: [DECOY_REPLY],
     effects: [{ kind: 'set-flag', flag: `${topicId}-chosen`, value: true }],
   });
 }
 
-describe('W7R-NPC-01/g exact handoff preference', () => {
+describe('W7R-NPC-01/g inactive exact handoff fallthrough', () => {
   it.each(HANDOFFS)(
-    'W7R-NPC-01/g: the $phrase handoff is preferred among several object matches, even while inactive',
+    'W7R-NPC-01/g: the inactive $phrase handoff falls through to the active default without exact effects',
     async ({
       phrase,
       actorId,
@@ -177,25 +188,31 @@ describe('W7R-NPC-01/g exact handoff preference', () => {
         ],
       });
       const state = askState(actorId);
-      const before = concreteSnapshot(state, actorId);
+      const before = concreteSnapshot(state, actorId, false);
 
       const { events } = await submitNpc(
         { kind: 'ask', actorId, topic: phrase },
         { bundle, state },
       );
 
-      expect(spokenTexts(events)).toEqual([authoredReply]);
+      expect(spokenTexts(events)).toEqual([DEFAULT_REPLY]);
+      expect(spokenTexts(events)).not.toContain(authoredReply);
       expect(
         events.filter(
           (event) => event.type === 'quiz-started' && event.quizId === quizId,
         ),
-      ).toHaveLength(1);
-      expect(state.flags[exactFlag]).toBe(true);
+      ).toEqual([]);
       expect(spokenTexts(events)).not.toContain(DECOY_REPLY);
       expect(spokenTexts(events)).not.toContain(INCOMPATIBLE_REPLY);
+      expect(state.flags[exactFlag]).toBeUndefined();
       expect(state.flags[`${decoyTopicId}-chosen`]).toBeUndefined();
       expect(state.flags[`${incompatibleTopicId}-chosen`]).toBeUndefined();
-      expect(concreteSnapshot(state, actorId)).not.toBe(before);
+      expect(state.npcs[actorId]?.topicUses[exactTopicId]).toBeUndefined();
+      expect(state.npcs[actorId]?.topicUses[decoyTopicId]).toBeUndefined();
+      expect(
+        state.npcs[actorId]?.topicUses[incompatibleTopicId],
+      ).toBeUndefined();
+      expect(concreteSnapshot(state, actorId, false)).toBe(before);
     },
   );
 });

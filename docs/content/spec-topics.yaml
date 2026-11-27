@@ -149,5 +149,30 @@ topics:
       `src/core/commands/InteractionRules.ts` (seam landed; W6 wiring
       pending); `src/content/authored/*` for this area is *planned* until W6
       generates it.
-    roomIds: [room-warp-walk, room-bobbin-window, room-threading-order, room-colour-court, room-weft-counter, room-endless-selvedge, room-finished-rail]
+    roomIds:
+      [
+        room-warp-walk,
+        room-bobbin-window,
+        room-threading-order,
+        room-colour-court,
+        room-weft-counter,
+        room-endless-selvedge,
+        room-finished-rail,
+      ]
     maxScore: 14
+
+  - id: tutorial-mechanics
+    title: Game orientation
+    specReference: >-
+      Not a WJEC specification topic — non-assessed onboarding for The Assistance Ward. The AI hand-holding satire makes no course or medical claim and does not complete `ai-ethics-and-implications`.
+    codeLocation: src/content/authored/rooms.ts
+    status: in progress
+    evidence: >-
+      Gate 0 curated set approved 2026-11-26; all cards returned and passed `content:validate` after W4 revision round 1. Both independent reviewers returned FAIL on 2026-11-26; content findings are revised and CC-01 closed in code on 2026-11-27. PCK re-review returned PASS with no findings; content-critic returned PASS WITH MINORS. The CC-04 NPC revision validates, but focused content-critic re-review returned FAIL because the runtime could not then reach its empty-object `tell` reason producer; `code-lead` closed the blocker with independent PASS; final content-critic and focused PCK re-reviews are PASS; all six ward cards are approved and revalidate cleanly; final whole-set V4 review returned PASS WITH MINORS with no blocker or major and focused minor closure is complete (content-critic PASS WITH MINORS, PCK PASS, no blocker or major). Rooms are `room-assistance-intake`, `room-assistance-demonstration` and `room-assistance-records`, with `quiz-assistance-orientation`, `puzzle-calibrate-assistance` and `hint-assistance-orientation`. This entry supplies a valid topic reference for the practice systems and room-based hint context only. All scores are 0; the topic is excluded from the win set and is not evidence for any WJEC topic.
+    roomIds:
+      [
+        room-assistance-intake,
+        room-assistance-demonstration,
+        room-assistance-records,
+      ]
+    maxScore: 0

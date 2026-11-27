@@ -1,0 +1,265 @@
+kind: area
+areaId: assistance-ward
+status: approved
+topicIds: [tutorial-mechanics]
+
+definition:
+  id: area-assistance-ward
+  worldId: world-wjec-gcse-computer-science-2025-spec
+  name: The Assistance Ward
+  startRoomId: room-assistance-intake
+  lives: 3
+
+rooms:
+  - id: room-assistance-intake
+    title: Intake Bay
+    aliases: [intake, intake bay]
+    description: >-
+      You stand in cold air that carries the smell of hot dust from the counter
+      grille. A tally token rests beside the grille, three scratches across its face
+      and a pale shadow where its label peeled away. The observation card is clipped
+      flat nearby, one corner chipped; Nia holds her pencil above it. The AI taps
+      LOOK, then EXAMINE, then slides the token towards your empty pocket. It has
+      prepared this lesson for the pupil. North returns to the Network Hub; an
+      opening east leads to the Demonstration Ward.
+    topicIds: [tutorial-mechanics]
+    exits:
+      - { direction: north, to: room-network-hub }
+      - { direction: east, to: room-assistance-demonstration }
+    score: 0
+    authoring:
+      interesting: >-
+        A peeled label and three scratches make the tiny token worth examining; the
+        AI's staged lesson turns looking and carrying into clinic routine.
+
+  - id: room-assistance-demonstration
+    title: Demonstration Ward
+    aliases: [demonstration, demonstration ward]
+    description: >-
+      You step onto a rubber mat that smells of warm machine oil and brass filings. A
+      practice cabinet squats beside the instruction card, its chalk outline marking
+      where the practice block belongs; a practice key hangs from its handle, and a
+      practice block is part of the bench set. Mateo holds one finger
+      under the instruction card's four lines. Kofi checks the practice crank's handle
+      against a chalk mark. The practice bell is screwed to the far end of the bench.
+      The AI taps key, cabinet, block, then door, and chalks UNLOCK, OPEN, PUT and
+      CLOSE on the bench. West returns to Intake; north leads to Records.
+    topicIds: [tutorial-mechanics]
+    exits:
+      - { direction: west, to: room-assistance-intake }
+      - { direction: north, to: room-assistance-records }
+    score: 0
+    authoring:
+      interesting: >-
+        The cabinet's independent lock and door turn four ordinary actions into a
+        reversible bench exercise.
+
+  - id: room-assistance-records
+    title: Records Office
+    aliases: [records, records office]
+    description: >-
+      You sit beneath a desk lamp green with age. Paper dust drifts through its light
+      as Priya reads the audit card's CHECKED and ASSUMED columns aloud, then looks to
+      the AI for a verdict. The AI holds its pencil above the marks and says, 'The
+      pupil will now supply a reason.' The recovery board covers the wall beside you,
+      five record slots above the desk, each initialled as its record is entered. A calibration dial sits in the
+      console, five sockets around its rim. South returns to the Demonstration Ward;
+      west opens back into the Network Hub.
+    topicIds: [tutorial-mechanics]
+    exits:
+      - { direction: south, to: room-assistance-demonstration }
+      - { direction: west, to: room-network-hub }
+    score: 0
+    authoring:
+      interesting: >-
+        Priya's spoken choice, the five-slot board and the dark dial ring make
+        assessment feel like a records clerk's pending audit.
+
+items:
+  - id: item-assistance-tally-token
+    name: tally token
+    aliases: [tally token, intake token]
+    portable: true
+    description: >-
+      You turn the tally token over. Three scratches cross its brass face; a peeled
+      label leaves a pale rectangle beside the number 1. It fits easily into a pocket.
+    initialRoom: room-assistance-intake
+    authoring:
+      useNotes: >-
+        TAKE and DROP transfer the tally token between the room and your inventory;
+        INVENTORY lists it while carried. No flag is set and no progress depends on
+        possession.
+
+  - id: item-assistance-observation-card
+    name: observation card
+    aliases: [observation card, observation slip]
+    portable: false
+    refusalText: >-
+      You can examine the observation card, but its counter clip holds it fast.
+    description: >-
+      You follow the observation card's border to one chipped corner. Nia's pencil
+      hovers beside the chip; the rest of the card waits for an independent
+      observation.
+    initialRoom: room-assistance-intake
+    authoring:
+      useNotes: >-
+        EXAMINE observation card, then ASK Nia about observation card:
+        topic-nia-observation sets nia-observation-recovered. The card is fixed;
+        possession is neither required nor sufficient.
+
+  - id: item-assistance-instruction-card
+    name: instruction card
+    aliases: [instruction card, practice instruction]
+    portable: false
+    refusalText: >-
+      You can examine the instruction card, but its pins hold it in place.
+    description: >-
+      You compare the instruction card with the practice cabinet. Four lines read:
+      UNLOCK. OPEN. PLACE. CLOSE. A pencil underline marks PLACE.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        EXAMINE instruction card, then ASK Mateo about instruction card:
+        topic-mateo-instruction sets mateo-reading-recovered. The card stays fixed
+        and possession is irrelevant.
+
+  - id: item-assistance-practice-key
+    name: practice key
+    aliases: [practice key, demo key]
+    portable: true
+    description: >-
+      You turn the practice key over. A red thread hangs from its bow, and its only
+      stamped label reads PRACTICE CABINET.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        unlock practice key with practice cabinet sets
+        container-unlocked:item-assistance-practice-cabinet. It does not open the
+        cabinet or consume the key. Unlock the cabinet before any optional SHOW or
+        GIVE hand-over of the key; no route flag is set.
+
+  - id: item-assistance-practice-cabinet
+    name: practice cabinet
+    aliases: [practice cabinet, demo cabinet]
+    portable: false
+    refusalText: >-
+      You can open the practice cabinet's door, but its bench bolts hold the cabinet
+      itself in place.
+    description: >-
+      You find one lock and a hinged door on the practice cabinet. A chalk outline
+      inside shows where the practice block belongs. The lock and door work
+      independently.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        unlock practice key with practice cabinet sets
+        container-unlocked:item-assistance-practice-cabinet. OPEN practice cabinet
+        sets container-open:item-assistance-practice-cabinet to true; CLOSE sets the
+        same flag to false. PUT practice block in practice cabinet transfers
+        ownership. Unlock the cabinet before any optional key hand-over. No route or
+        puzzle flag is set.
+
+  - id: item-assistance-practice-block
+    name: practice block
+    aliases: [practice block, demo block]
+    portable: true
+    description: >-
+      The practice block fits in your palm. One face bears a chalk cross; the opposite
+      face is blank. You can place it in the practice cabinet, but no ward route
+      depends on keeping it.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        Reserve the practice block for PUT practice: PUT practice block in practice
+        cabinet transfers it to the cabinet. Direct optional SHOW and GIVE practice
+        to the practice key after unlocking the cabinet. No flag is set, and losing
+        the block cannot strand progress.
+
+  - id: item-assistance-practice-bell
+    name: practice bell
+    aliases: [practice bell, demo bell]
+    portable: false
+    refusalText: >-
+      You can examine the practice bell, but its bench screws keep it fixed in place.
+    description: >-
+      You find the practice bell screwed to the bench, with a dark felt striker beside
+      it. Its label reads HARMLESS PRACTICE.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        Deferred contract: USE practice bell is harmless, scoreless and flag-free. No
+        room interaction is declared, so this card does not claim the action works at
+        runtime.
+
+  - id: item-assistance-practice-crank
+    name: practice crank
+    aliases: [practice crank, demo crank]
+    portable: false
+    refusalText: >-
+      You can examine the practice crank, but its fixed axle keeps it in place.
+    description: >-
+      You follow the practice crank's handle to a chalk mark on its housing. One full
+      turn brings the two marks together; Kofi checks them before the wheel settles.
+    initialRoom: room-assistance-demonstration
+    authoring:
+      useNotes: >-
+        EXAMINE practice crank, then ASK Kofi about practice crank:
+        topic-kofi-practice-cycle sets kofi-operation-recovered. The recovery is
+        conversation-set, not possession-set.
+
+  - id: item-assistance-audit-card
+    name: audit card
+    aliases: [audit card, choice card]
+    portable: false
+    refusalText: >-
+      You can examine every mark on the audit card through the desk glass, but the
+      sealed card stays beneath it.
+    description: >-
+      You read the audit card through the desk glass. Two columns read CHECKED and
+      ASSUMED. A printed example carries an arrow from a clue to CHECKED, with a
+      reason written beside it.
+    initialRoom: room-assistance-records
+    authoring:
+      useNotes: >-
+        EXAMINE shows CHECKED, ASSUMED and the printed example. Priya's audit
+        conversation enters node-priya-choice through topic-priya-choice-start;
+        topic-priya-choice-made sets priya-choice-taken, and
+        topic-priya-choice-reason sets priya-reasoning-recovered. The fixed card
+        sets no flag by possession.
+
+  - id: item-assistance-recovery-board
+    name: recovery board
+    aliases: [recovery board, pupil record board]
+    portable: false
+    refusalText: >-
+      You can examine each record on the recovery board, but its wall bolts hold the
+      board in place.
+    description: >-
+      You find five record slots above the desk, each initialled as its record is entered. Its lettering reads: OBSERVE — Nia. READ — Mateo. REASON — Priya. OPERATE — Kofi. ORIENTATION PASS — the AI's practice audit. All five records are required.
+    initialRoom: room-assistance-records
+    authoring:
+      useNotes: >-
+        EXAMINE displays the five required records and the ORIENTATION PASS
+        requirement. The board is fixed and sets no flag; its text supplies the first
+        final-calibration clue.
+
+  - id: item-assistance-calibration-dial
+    name: calibration dial
+    aliases: [calibration dial, assistance dial]
+    portable: false
+    refusalText: >-
+      You can examine the calibration dial, but its console housing stays bolted down.
+    description: >-
+      You find the calibration dial set into the records console, ringed by five sockets. Its labels read: OBSERVE, READ, REASON, OPERATE, ORIENTATION PASS. Sockets light as records are entered; dark sockets keep the teaching ports closed.
+    initialRoom: room-assistance-records
+    useText:
+      success: 'The dial gives a small, reluctant click. All five sockets are lit; the teaching ports have stopped pretending to be decoration.'
+      blocked: "The dial does not move. Lit sockets show records already entered; dark ones still need attention. OBSERVE needs Nia's observation card, READ needs Mateo's instruction card, REASON needs Priya's reason, OPERATE needs Kofi's practice cycle, and ORIENTATION PASS needs the practice quiz. Fill any remaining sockets, then try again."
+    authoring:
+      useNotes: >-
+        Deferred contract: USE calibration dial sets assistance-dial-calibrated only
+        when nia-observation-recovered, mateo-reading-recovered,
+        priya-reasoning-recovered, kofi-operation-recovered and
+        quiz-passed:quiz-assistance-orientation all hold. Otherwise it leaves state
+        unchanged and points to the dark sockets. No room interaction is declared
+        because the conditional content-declared action seam is deferred.

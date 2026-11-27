@@ -13,6 +13,7 @@ import {
   makeState,
   SAVED_AT,
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -107,7 +108,7 @@ function optionNumber(
 }
 
 async function enterSwitchFloorQuiz(page: Page): Promise<void> {
-  await startNewGame(page);
+  await startFromLiveSave(page, { 'tutorial-complete': true });
   await submit(page, 'east');
   await waitForLine(page, 'The Network Hub');
   await submit(page, 'east');

@@ -1,0 +1,10 @@
+kind: hazard
+areaId: assistance-ward
+status: approved
+topicIds: [tutorial-mechanics]
+
+authoring:
+  note: >-
+    The user approved no hazards and no life loss in this area.
+
+hazards: []

@@ -6,11 +6,13 @@ export interface TitleCopy {
   readonly controls: string;
 }
 
-// Engine placeholders only; final wording comes from content (ENGINE_ISSUES.md
-// Batch E1). GameWindow shares these exact strings to seed the boot transcript.
+// Code-owned orientation copy (PLAYTEST-assistance-ward.md finding 10).
+// GameWindow shares these exact strings to seed the boot transcript.
 export const DEFAULT_TITLE_COPY: TitleCopy = {
-  objective: 'Objective copy to follow.',
-  controls: 'Controls copy to follow.',
+  objective:
+    'The register marks your attention not satisfied. Pass the Assistance Ward orientation and the mark can be cleared.',
+  controls:
+    'Use plain commands: look, examine, take and a direction such as east. Ask someone about what you can see, or type help for the full list.',
 };
 
 export class TitleScreen {

@@ -10,7 +10,7 @@ export interface HintLevel {
 
 export interface HintSequence {
   readonly id: string;
-  readonly targets: readonly string[]; // puzzle / quiz / topic ids
+  readonly targets: readonly string[]; // puzzle / quiz / topic / declared room ids
   readonly levels: readonly HintLevel[];
   readonly autoOfferAfter?: number; // failed attempts or stuck turns
   readonly cooldownTurns?: number; // minimum turns between requests

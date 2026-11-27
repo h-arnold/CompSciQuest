@@ -5,6 +5,7 @@
 import { expect, test, type Page } from 'playwright/test';
 import {
   seedStorage,
+  startFromLiveSave,
   startNewGame,
   submit,
   transcript,
@@ -75,7 +76,9 @@ test('ENG13-INVENTORY-01 — the carried cartridge is named, never shown as an I
   page,
 }) => {
   const errors = watchConsole(page);
-  await startNewGame(page);
+  // The hub's east teaching socket requires the ward calibration mark
+  // (network-hub/rooms.yaml), so the route precondition is seeded explicitly.
+  await startFromLiveSave(page, { 'tutorial-complete': true });
 
   expect(await command(page, 'inventory')).toContain(
     'You are carrying nothing.',

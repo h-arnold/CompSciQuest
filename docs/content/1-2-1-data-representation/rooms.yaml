@@ -1,7 +1,18 @@
 kind: area
 areaId: 1-2-1-data-representation
 status: approved
-topicIds: [switch-to-bit, data-types, number-conversion, character-representation, graphics-representation, sound-representation, data-storage-units, data-compression, ai-ethics-and-implications]
+topicIds:
+  [
+    switch-to-bit,
+    data-types,
+    number-conversion,
+    character-representation,
+    graphics-representation,
+    sound-representation,
+    data-storage-units,
+    data-compression,
+    ai-ethics-and-implications,
+  ]
 
 definition:
   id: area-1-2-1-data-representation
@@ -22,10 +33,15 @@ rooms:
     title: The Interface
     aliases: [interface, entry, hub]
     description: >-
-      A narrow interface glows around you, a single arrow painted east on its rim. Beyond it, a machine clears its throat and reads out your attendance record in a flat, well-practised voice. A strip of text scrolls past: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. The arrow east points to the switch floor; behind you, another opening gives onto the Network Hub. The machine has clearly said all this before.
+      A narrow interface glows around you, a single arrow painted east on its rim. Beyond it, a machine clears its throat and reads out your attendance record in a flat, well-practised voice. A strip of text scrolls past: MASTERY OF THE WHOLE OF UNIT 1, OR DELETION. The east arrow is dark until the Assistance Ward's calibration mark is on record and live once it is; the opening behind you still returns to the hub. An interface plaque is bolted beneath the arrow. The machine has clearly said all this before.
     topicIds: [ai-ethics-and-implications]
     exits:
-      - { direction: east, to: room-switch-floor }
+      - {
+          direction: east,
+          to: room-switch-floor,
+          conditions: [{ kind: flag-set, flag: tutorial-complete }],
+          blockedText: The east arrow stays dark. The plaque beneath it names the calibration mark it waits for.,
+        }
       - { direction: out, to: room-network-hub }
     score: 0
     authoring:
@@ -73,12 +89,36 @@ rooms:
     exits:
       - { direction: down, to: room-switch-floor }
       - { direction: west, to: room-network-hub }
-      - { direction: north, to: room-hex-deck, conditions: [{ kind: flag-set, flag: switches-set }] }
-      - { direction: east, to: room-character-tiles, conditions: [{ kind: flag-set, flag: hex-read }] }
-      - { direction: south, to: room-picture-mosaic, conditions: [{ kind: flag-set, flag: characters-matched }] }
-      - { direction: up, to: room-sound-choir, conditions: [{ kind: flag-set, flag: picture-built }] }
-      - { direction: in, to: room-storage-stacks, conditions: [{ kind: flag-set, flag: sound-sampled }] }
-      - { direction: out, to: room-compression-press, conditions: [{ kind: flag-set, flag: stacks-sorted }] }
+      - {
+          direction: north,
+          to: room-hex-deck,
+          conditions: [{ kind: flag-set, flag: switches-set }],
+        }
+      - {
+          direction: east,
+          to: room-character-tiles,
+          conditions: [{ kind: flag-set, flag: hex-read }],
+        }
+      - {
+          direction: south,
+          to: room-picture-mosaic,
+          conditions: [{ kind: flag-set, flag: characters-matched }],
+        }
+      - {
+          direction: up,
+          to: room-sound-choir,
+          conditions: [{ kind: flag-set, flag: picture-built }],
+        }
+      - {
+          direction: in,
+          to: room-storage-stacks,
+          conditions: [{ kind: flag-set, flag: sound-sampled }],
+        }
+      - {
+          direction: out,
+          to: room-compression-press,
+          conditions: [{ kind: flag-set, flag: stacks-sorted }],
+        }
     scenery:
       - name: real bin
         aliases: [real bin, bin]
@@ -330,6 +370,19 @@ rooms:
         P-b, P-c, P-d; the choice is physical and consequential, with a straight-faced sales pitch to follow.
 
 items:
+  - id: item-assistance-interface-plaque
+    name: interface plaque
+    aliases: [ward port plaque, teaching-port plaque]
+    portable: false
+    refusalText: >-
+      You tug at the interface plaque, but its rusted bolts hold it fast to the rim. The warning stays where it is.
+    description: >-
+      A steel interface plaque is bolted beneath the east arrow, its four bolts furred with rust. Raised lettering across its face reads: NO SIGNAL UNTIL ASSISTANCE WARD CALIBRATION. THE ROUTE BACK REMAINS OPEN.
+    initialRoom: room-entry-interface
+    authoring:
+      useNotes: >-
+        EXAMINE the interface plaque to read its fixed warning. Purely decorative: examining or attempting to take it sets no flag and opens no gate.
+
   - id: item-switch-gauge
     name: switch gauge
     aliases: [switch gauge, gauge]

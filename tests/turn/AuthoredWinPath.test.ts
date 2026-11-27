@@ -79,6 +79,26 @@ describe('authored win transition', () => {
 
   it('W7R-QUIZ-01: E2E-4 follows walkthrough §8 steps 1–30, including teaching beats, two zone-one hazard lives, fourteen quiz handoffs, ten completed topics and one game-won', () => {
     const run = new AuthoredRun();
+    // Fixture precondition only: the mandatory Assistance Ward checkpoint is
+    // already complete, so the hub's teaching-port gates are open before this
+    // downstream trace starts (walkthrough §2 C2.10–C2.12, §3 gate table).
+    // The recorded orientation pass is part of that completed checkpoint and
+    // satisfies the win check without adding tutorial-mechanics to the ten-topic
+    // set. No ward command is added here and no runtime producer is invented.
+    run.game.continueGame(
+      createSaveManager({
+        storage: run.storage,
+        clock: new FixedClock(),
+        bundle: authoredBundle,
+      }).buildDto(
+        authoredState({
+          flags: {
+            'tutorial-complete': true,
+            'quiz-passed:quiz-assistance-orientation': true,
+          },
+        }),
+      ),
+    );
 
     // Opening beats A–C (walkthrough §2): the verdict, the scoped AI topics
     // and the hub's two live ports before the Switchyard is entered.
@@ -184,9 +204,19 @@ describe('authored win transition', () => {
 
     // The zone-one milestone at step 18: two lives lost, eight topics and
     // eight quizzes complete, and no end event yet.
-    const zoneOneTopics = new Set(
-      authoredBundle.quizzes.all.slice(0, 8).map((quiz) => quiz.topicId),
-    );
+    // The eight canonical Zone A topics from walkthrough §1, not a slice of
+    // the quiz catalogue: the non-assessed ward orientation quiz now precedes
+    // them in declaration order.
+    const zoneOneTopics = new Set([
+      'switch-to-bit',
+      'data-types',
+      'number-conversion',
+      'character-representation',
+      'graphics-representation',
+      'sound-representation',
+      'data-storage-units',
+      'data-compression',
+    ]);
     const completedAt18 = new Set(
       readSave(run.game, run.storage).dto.state.progress.flatMap(
         (entry) => entry.completedTopics,
@@ -328,14 +358,22 @@ describe('authored win transition', () => {
     expect(run.game.getViewData().status).toBe('won');
     expect(run.passedQuizzes.size).toBe(14);
     expect(run.passedQuizzes).toEqual(
-      new Set(authoredBundle.quizzes.all.map((quiz) => quiz.id)),
+      new Set(
+        authoredBundle.quizzes.all
+          .filter((quiz) => quiz.id !== 'quiz-assistance-orientation')
+          .map((quiz) => quiz.id),
+      ),
     );
     for (const flag of [...TRACE_FLAGS, ...MILL_FLAGS])
       expect(run.flags.has(flag)).toBe(true);
     const solved = allEvents.filter((event) => event.type === 'puzzle-solved');
     expect(solved).toHaveLength(23);
     expect(new Set(solved.map((event) => event.puzzleId))).toEqual(
-      new Set(authoredBundle.puzzles.all.map((puzzle) => puzzle.id)),
+      new Set(
+        authoredBundle.puzzles.all
+          .filter((puzzle) => puzzle.id !== 'puzzle-calibrate-assistance')
+          .map((puzzle) => puzzle.id),
+      ),
     );
 
     const wins = allEvents.filter((event) => event.type === 'game-won');
@@ -347,7 +385,11 @@ describe('authored win transition', () => {
       saved.progress.flatMap((entry) => entry.completedTopics),
     );
     expect(completed).toEqual(
-      new Set(authoredBundle.quizzes.all.map((quiz) => quiz.topicId)),
+      new Set(
+        authoredBundle.quizzes.all
+          .filter((quiz) => quiz.topicId !== 'tutorial-mechanics')
+          .map((quiz) => quiz.topicId),
+      ),
     );
     expect(completed.size).toBe(10);
     expect(completed).toEqual(

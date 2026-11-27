@@ -16,6 +16,7 @@ import type { ConversationTopic } from './ConversationTopic';
 import type { NpcDependencies } from './NpcDependencies';
 import {
   findDefaultTopic,
+  isActorOutOfRoom,
   selectTopic,
   type SelectedTopic,
 } from './TopicSelection';
@@ -80,6 +81,7 @@ function speakIdleTopic(
   actorId: string,
   dependencies: NpcDependencies,
   events: GameEvent[],
+  state: GameState,
 ): void {
   const response = responseFor(topic, usesOf(npc, topic.id));
   if (response !== undefined) {
@@ -92,7 +94,7 @@ function speakIdleTopic(
       text: topic.prompt,
     });
   }
-  applyTopicEffects(topic, npc, dependencies, events);
+  applyTopicEffects(topic, npc, dependencies, events, state);
 }
 
 function responseFor(
@@ -125,6 +127,7 @@ function applyTopicEffects(
   npc: MutableNpcState,
   dependencies: NpcDependencies,
   events: GameEvent[],
+  state: GameState,
 ): { readonly exited: boolean } {
   const { applier, bundle } = dependencies;
   let isExited = false;
@@ -137,8 +140,13 @@ function applyTopicEffects(
     ) {
       continue;
     }
-    // A quiz handoff exits the active node first (npcs.md §6, combat.md §3).
-    if (effect.kind === 'start-quiz' && npc.activeNodeId !== undefined) {
+    // A quiz handoff exits the active node first (npcs.md §6, combat.md §3),
+    // but an ignored start while a quiz is live must not disturb that node.
+    if (
+      effect.kind === 'start-quiz' &&
+      state.quiz.activeQuizId === undefined &&
+      npc.activeNodeId !== undefined
+    ) {
       applyAll(
         [{ kind: 'exit-node', actorId: effect.actorId }],
         applier,
@@ -176,6 +184,32 @@ function conversationTransfer(
         fromOwnerId: 'player',
         toOwnerId: command.actorId,
       };
+}
+
+// npcs.md §4 step 6: one short in-world announcement at the moment SHOW/GIVE
+// hands over a carried item. It covers both the built-in fallback transfer and
+// an authored transfer-item effect, without touching authored teaching text.
+function announceHandover(context: TurnContext, events: GameEvent[]): void {
+  const command = context.command;
+  if (command.kind !== 'give' && command.kind !== 'show') return;
+  const moved = events.findIndex(
+    (event) =>
+      event.type === 'item-moved' &&
+      event.itemId === command.itemId &&
+      event.fromOwnerId === 'player' &&
+      event.toOwnerId === command.actorId,
+  );
+  if (moved === -1) return;
+  const itemName =
+    context.bundle.items.getById(command.itemId)?.name ?? command.itemId;
+  const actorAlias =
+    context.bundle.actors.getById(command.actorId)?.aliases[0] ??
+    command.actorId;
+  const text = `You hand the ${itemName} to ${actorAlias}.`;
+  if (events.some((event) => event.type === 'message' && event.text === text)) {
+    return;
+  }
+  events.splice(moved + 1, 0, { type: 'message', text });
 }
 
 export function startConversation(
@@ -294,7 +328,22 @@ export function handleConversationTopic(
       node,
     );
     if (fallback !== undefined) {
-      speakIdleTopic(npc, fallback, actorId, dependencies, events);
+      speakIdleTopic(
+        npc,
+        fallback,
+        actorId,
+        dependencies,
+        events,
+        context.state,
+      );
+      return;
+    }
+    if (isActorOutOfRoom(context, dependencies.evaluator, actorId)) {
+      applyAll(
+        [{ kind: 'message', text: 'You cannot see that here.' }],
+        dependencies.applier,
+        events,
+      );
     }
     return;
   }
@@ -317,7 +366,9 @@ export function handleConversationTopic(
     npc,
     dependencies,
     events,
+    context.state,
   );
+  announceHandover(context, events);
 
   const entered = topic.effects.some((effect) => effect.kind === 'enter-node');
   const isExited =
@@ -392,7 +443,14 @@ export function handleIdleTopic(
   if (selected === undefined) return;
   const npc = mutableNpc(context.state, actorId);
   if (npc === undefined) return;
-  speakIdleTopic(npc, selected.topic, actorId, dependencies, events);
+  speakIdleTopic(
+    npc,
+    selected.topic,
+    actorId,
+    dependencies,
+    events,
+    context.state,
+  );
 }
 
 export function speakingActorIds(state: GameState): readonly string[] {

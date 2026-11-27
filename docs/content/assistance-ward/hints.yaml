@@ -1,0 +1,124 @@
+kind: hint
+areaId: assistance-ward
+status: approved
+
+hintSequences:
+  - id: hint-assistance-orientation
+    targets:
+      [
+        room-assistance-records,
+        quiz-assistance-orientation,
+        puzzle-calibrate-assistance,
+        tutorial-mechanics,
+      ]
+    levels:
+      - level: 1
+        text: >-
+          In the Records Office, Priya's exchange has two halves: a choice and
+          then a reason. Name which half is still open before you speak to her
+          again.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-orientation,
+            value: 0,
+          }
+      - level: 2
+        text: >-
+          The practice audit sets its options out in a numbered list. Read them
+          against what you observed in the ward, one at a time, and decide which
+          one you could defend when Priya asks for her reason.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-orientation,
+            value: 1,
+          }
+      - level: 3
+        text: >-
+          Line up the recovery board's five records with the five sockets on the
+          calibration dial. Check which record is still unfilled, settle that
+          one, then try the dial again; the adjustment you make is yours to
+          choose.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-orientation,
+            value: 2,
+          }
+    cooldownTurns: 2
+  - id: hint-assistance-intake
+    targets: [room-assistance-intake]
+    levels:
+      - level: 1
+        text: >-
+          In the Intake Bay the observation card is clipped flat beside you,
+          and Nia is waiting on a detail. Look closely at the card before you
+          tell her what it shows.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-intake,
+            value: 0,
+          }
+      - level: 2
+        text: >-
+          The tally token is there for carrying practice: take it, check your
+          inventory, then drop it again. Its scratches and peeled label are
+          worth a closer look as well.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-intake,
+            value: 1,
+          }
+      - level: 3
+        text: >-
+          Once you have looked around and examined what is fixed in place, take
+          the east route into the Demonstration Ward. Nothing here asks you to
+          guess a name; the labels tell you what each thing is.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-intake,
+            value: 2,
+          }
+    cooldownTurns: 2
+  - id: hint-assistance-demonstration
+    targets: [room-assistance-demonstration]
+    levels:
+      - level: 1
+        text: >-
+          In the Demonstration Ward the practice cabinet offers a lock and a
+          door, and they are two separate jobs. Say which one is holding you up
+          before you act.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-demonstration,
+            value: 0,
+          }
+      - level: 2
+        text: >-
+          Mateo's instruction card has four words in a row. The first one
+          belongs to the lock, not the door; read it and fit the key to that
+          step yourself.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-demonstration,
+            value: 1,
+          }
+      - level: 3
+        text: >-
+          Two props wait on the bench. The key serves the lock step and the
+          showing step that follows it; the block is for putting something
+          inside. Decide which prop your current step needs, then try it on the
+          cabinet and leave the wording to your own reasoning.
+        unlock:
+          {
+            kind: counter-at-least,
+            key: hints-shown:hint-assistance-demonstration,
+            value: 2,
+          }
+    cooldownTurns: 2
