@@ -1,7 +1,6 @@
-// Red tests for incremental spec-topic authoring and generation
-// (content-toolchain.md §2, §8; content-rules.md P1, §5, §7; architecture.md §7).
-// Coverage headings are injected as strings: the static toolchain never reads
-// COVERAGE.md or a coverage graph from disk.
+// Red tests for incremental spec-topic authoring and generation. Coverage
+// headings are injected as strings: the static toolchain never reads a coverage
+// source from disk.
 import { describe, expect, it } from 'vitest';
 import {
   SPEC_TOPICS_PATH,

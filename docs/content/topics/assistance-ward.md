@@ -141,7 +141,8 @@ All IDs and aliases below are ratified in bible §9 (D2).
 
 Every fixed item receives in-world take-refusal text or the approved fallback
 (N5, D3). Room descriptions name resident actors and intended nouns physically
-and stay at or below 200 words (N6, N8; narrative-principles §11).
+and stay at most two paragraphs, usually 200–300 words unless extra detail is
+warranted (N6, N8; narrative-principles §2).
 
 ## 6. Three-room teaching spine
 
@@ -172,7 +173,8 @@ practice cabinet` before any key hand-over, use the key for `show`/`give`
 
 The full tour covers every canonical command family without adding verbs. Quiz
 answers use `answer N`, a bare `N`, or exact option text. Save controls remain
-manual; there is no undo, autosave or save slot (content-rules §8).
+manual; there is no undo, autosave or save slot (storage-schema.md §§2, 11;
+application-and-ui.md §5).
 
 ## 7. Conversation architecture
 

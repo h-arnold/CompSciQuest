@@ -1,6 +1,5 @@
-// Red tests for the YAML authoring shape contract (content-toolchain.md §2 and
-// §4; content-rules.md §4.1, D3, V1). All cards are declared in-memory strings;
-// no YAML card is read from docs/content and no real I/O is used.
+// Red tests for the YAML authoring shape contract. All cards are declared
+// in-memory strings; no YAML card is read from disk and no real I/O is used.
 import { describe, expect, it } from 'vitest';
 import {
   AREA_ID,
@@ -129,10 +128,8 @@ describe('YAML card shapes (content-toolchain.md §2, §4)', () => {
 });
 
 // C-CONTENT-18: the optional item `refusalText` is an authoring-only YAML
-// check (content-rules.md §3 D3, §4.2, §7/V1/D5). The non-blank rule is a user
-// decision of 2026-11-25 recorded in the branch matrix, not a design-card
-// citation. The runtime fallback and empty-as-absent behaviour stay with
-// P-TAKE-01 and are not re-asserted here.
+// check. The non-blank rule was decided on 2026-11-25. The runtime fallback and
+// empty-as-absent behaviour stay with P-TAKE-01 and are not re-asserted here.
 const REFUSAL_ITEM_ID = 'item-register-cache';
 const INITIAL_ROOM_LINE = '    initialRoom: room-binary-hall';
 

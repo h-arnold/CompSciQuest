@@ -1,5 +1,5 @@
-// world-graph gate (content-rules.md §7, §8; application-and-ui.md §3.3):
-// declarations, ID-based starts, reachability and covered-topic completion.
+// world-graph gate: declarations, ID-based starts, reachability and
+// covered-topic completion.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {
@@ -17,7 +17,7 @@ import {
 type AreaLike = CardEntry;
 
 // A world may be declared only once across the whole card set, by the area
-// that owns its startAreaId (content-toolchain.md §2, content-rules.md §7).
+// that owns its startAreaId.
 function duplicateWorlds(cards: ParsedCardSet): readonly Finding[] {
   const seen = new Set<string>();
   return collection(cards, 'worlds').flatMap((world) => {
@@ -218,8 +218,8 @@ export function checkWorld(cards: ParsedCardSet): readonly Finding[] {
   const worlds = collection(cards, 'worlds');
   const rooms = collection(cards, 'rooms');
   const roomIds = idsOf(rooms);
-  // Reachability and covered-topic completion are whole-graph gates
-  // (content-rules.md §7 `world-graph`). A card set is a whole graph when it
+  // Reachability and covered-topic completion are whole-graph gates. A card
+  // set is a whole graph when it
   // declares a `world` or uses the older `areas` collection; a spec-topics-only
   // fragment (CT-TOPIC-* fixtures) declares neither and is not audited for
   // completion. Completion is never gated on a completion source or on a quiz /

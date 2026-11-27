@@ -1,8 +1,7 @@
-// Red tests for the eight cross-artifact gates at the toolchain layer
-// (content-toolchain.md §4, content-rules.md §7). Findings are asserted with
-// their gate ID; negative cases also assert that no artefact was mutated.
-// These are YAML/toolchain-layer assertions, not repeats of the runtime-bundle
-// assertions in StructuralGates/ScoreGates/CoverageGates.
+// Red tests for the eight cross-artifact gates at the toolchain layer.
+// Findings are asserted with their gate ID; negative cases also assert that no
+// artefact was mutated. These are YAML/toolchain-layer assertions, not repeats
+// of the runtime-bundle assertions in StructuralGates/ScoreGates/CoverageGates.
 import { describe, expect, it } from 'vitest';
 import {
   AREA_ID,

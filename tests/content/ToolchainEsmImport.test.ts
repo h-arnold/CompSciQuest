@@ -1,7 +1,6 @@
-// CT-IMPORT-01: content-toolchain.md §4–5, content-rules.md §3 (D5, V1) and §7,
-// architecture.md §8. The canonical validator module must load under a plain
-// Node ESM process so all three content CLI commands can reach their documented
-// command path, and Vitest must see the same shared gate functions.
+// CT-IMPORT-01: the canonical validator module must load under a plain Node ESM
+// process so all three content CLI commands can reach their command path, and
+// Vitest must see the same shared gate functions.
 import { spawnSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
 

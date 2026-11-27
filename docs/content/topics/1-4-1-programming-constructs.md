@@ -160,7 +160,8 @@ reconvergence.
 
 Every gated exit carries two discoverable clues (N6); every room description
 names its resident and its interactables in physical clauses ("Presence, not
-labels", §11 of narrative-principles); prose ceiling 200 words (N8).
+labels", §11 of narrative-principles); prose of at most two paragraphs, usually
+200–300 words unless extra detail is warranted (N8).
 
 ## 4. Cast
 
@@ -188,7 +189,7 @@ nothing mechanically except their `specialDesc` and message-only `onEnter`.
 Conversation topic plan (ids allocated at this file's approval): per resident —
 a teaching beat, the **give-matched Licence delivery** topic (match kind
 `give`, itemIds the pattern card; effects `transfer-item`, `set-flag`,
-teaching message; per the rulebook's topic union), stray-card redirect topics
+teaching message; per the `npcs.md` §2 topic union), stray-card redirect topics
 (N5: the refusal teaches where the card goes), a demonstration topic gated on
 the room's fix, a freetext catch-all (`in-room` scoped, T2), and 2–4 characterful
 topics. The cousin carries one vandal topic per room, `in-room` scoped; one
@@ -394,7 +395,7 @@ the engine seam that executes card-declared verb effects is deferred (bible
 §12, user decision 2026-11-25) — the cards stay authored on the ratified
 shapes and no card rewrites when the seam lands.
 
-Quiz-pass flags follow the rulebook convention `quiz-passed:<quizId>` and are
+Quiz-pass flags follow the `shared-rules.md` §5 convention `quiz-passed:<quizId>` and are
 not separately allocated. The avalanche's `when` condition reads
 `quiz-passed:quiz-colour-court` **and not** `colours-lifted`, on room entry —
 per the ratified arming decision.

@@ -1,8 +1,7 @@
-// C7 authoring-time topic-overlap gate (content-rules.md C7 and the §7
-// npc-content row; npcs.md §3). It compares an actor's topics that can receive
-// the same input and reports every pair whose isActive conditions cannot be
-// proved mutually exclusive. The check is deliberately conservative: anything
-// it cannot prove stays a finding.
+// C7 authoring-time topic-overlap gate. It compares an actor's topics that can
+// receive the same input and reports every pair whose isActive conditions
+// cannot be proved mutually exclusive. The check is deliberately conservative:
+// anything it cannot prove stays a finding.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {
@@ -287,7 +286,7 @@ function isTopicOverlap(left: TopicInfo, right: TopicInfo): boolean {
     right.kind !== 'command' ||
     areKeywordsOverlapping(keywordsOf(left), keywordsOf(right));
   // Cross-class pairs are out of scope: objectIds name spec topics, itemIds
-  // name items (content-rules.md C7).
+  // name items.
   const areBothGiveShow = isGiveShowClass(left) && isGiveShowClass(right);
   const isGiveShowOverlap =
     left.kind === right.kind &&

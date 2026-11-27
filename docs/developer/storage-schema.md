@@ -184,7 +184,7 @@ omitted.
 
 The save stores IDs, not content. Content must therefore declare:
 
-- each item's `initialRoom` ([content-rules.md §4.2](content-rules.md#42-area-and-rooms-card));
+- each item's `initialRoom` ([areas.md §3](areas.md#3-exits-and-items));
 - each area's `startRoomId` for hazard and quiz-failure teleports, as defined in
   [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions);
 - each topic's `status` and `evidence` in `COVERAGE.md`, used for the covered +

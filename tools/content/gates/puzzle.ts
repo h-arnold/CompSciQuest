@@ -1,4 +1,4 @@
-// puzzle-graph gate (content-rules.md §7, §4.5): dependencies, topic and clues.
+// puzzle-graph gate: dependencies, topic and clues.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {

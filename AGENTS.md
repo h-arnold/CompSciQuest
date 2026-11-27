@@ -58,10 +58,14 @@ build/test commands.
 
 ## Delegation protocol (code work)
 
-There are two ownership areas with separate workflows. `content-editor` owns
-narrative, content cards and `docs/coverage/COVERAGE.md`; `code-lead` owns code,
-tests and browser QA. Do not cross the boundary: content agents never write
-TypeScript, and code agents never write design cards or invent course facts.
+There are three ownership areas with separate workflows. `content-editor` owns
+narrative decisions, content cards and coverage decisions; `code-lead` owns
+code, tests and browser QA; `docs` maintains all documentation (`docs/**`, root
+`README.md`, `AGENTS.md` and agent instruction files). Do not cross the
+code/content boundary: content agents never write TypeScript, and code agents
+never write design cards or invent course facts. The `docs` agent may edit
+content-owned documentation for accuracy and consistency but does not make
+creative decisions or invent course facts.
 The default agent remains `content-editor`; select `code-lead` for code work.
 The workers are subagents, not primaries: `code-lead` dispatches them for code
 slices, except that `content-editor` dispatches `play-tester` directly for W7,
@@ -75,7 +79,7 @@ brief as approval.
 
 For an accepted content area, `content-editor` hands the V4 trace in
 `docs/content/walkthrough.md` to `play-tester` as the expected outcome for a W7
-playtest against the generated authored content (`content-rules.md` V5). The
+playtest against the generated authored content (V5, owned by `play-tester.md`). The
 brief begins `Purpose: content playability and effectiveness review`, and the
 tester reads `docs/content/difficulty-and-fairness.md` to assess clue access,
 puzzle fairness, hints, combat readability, failure and challenge. The playtest
@@ -88,15 +92,15 @@ assessment.
 
 ### Agents and ownership
 
-| Agent              | Owns                                                                                                                            | Scratchpad output                                   |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `test-planner`     | `branch-matrix.md` only                                                                                                         | `branch-matrix.md`                                  |
-| `test-writer`      | `tests/**`                                                                                                                      | `slices/<id>/red-report.md`                         |
-| `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts`                                                                        | `slices/<id>/implementation.md`                     |
-| `code-reviewer`    | nothing — read-only                                                                                                             | `slices/<id>/review.md`                             |
-| `browser-tester`   | `e2e/**`, `playwright.config.ts`                                                                                                | `slices/<id>/qa-report.md` and screenshots          |
-| `play-tester`      | Root `PLAYTEST*.md` and `playtest-*.png`; W7 playtest report and screenshots named in the brief                                 | playtest findings and screenshots                   |
-| `docs`             | Documentation form, drift and duplication: `AGENTS.md`, `docs/developer/**`, root `README.md`, `docs/coverage/COVERAGE.md` form | `docs-audit/` findings and reviews (reconcile only) |
+| Agent              | Owns                                                                                                                                                | Scratchpad output                                   |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `test-planner`     | `branch-matrix.md` only                                                                                                                             | `branch-matrix.md`                                  |
+| `test-writer`      | `tests/**`                                                                                                                                          | `slices/<id>/red-report.md`                         |
+| `code-implementer` | `src/**`, `index.html`, `package.json`, `vite.config.ts`                                                                                            | `slices/<id>/implementation.md`                     |
+| `code-reviewer`    | nothing — read-only                                                                                                                                 | `slices/<id>/review.md`                             |
+| `browser-tester`   | `e2e/**`, `playwright.config.ts`                                                                                                                    | `slices/<id>/qa-report.md` and screenshots          |
+| `play-tester`      | Root `PLAYTEST*.md` and `playtest-*.png`; W7 playtest report and screenshots named in the brief                                                     | playtest findings and screenshots                   |
+| `docs`             | All documentation: `docs/developer/**`, `docs/content/**`, `docs/coverage/COVERAGE.md` form, root `README.md`, `AGENTS.md`, agent instruction files | `docs-audit/` findings and reviews (reconcile only) |
 
 The ESLint config (`eslint.config.*`) and TypeScript configs (`tsconfig*.json`)
 are user-owned. `opencode.json` denies edits to those paths for every agent;
@@ -144,7 +148,7 @@ red-green; UI and browser work is verification-led. `architecture.md` §12 sets
 the build order — persistence, then content registry and UI shell, then hazards
 and puzzles, NPCs, quiz combat and hints. Lint bootstrap and the parser slice are
 lead additions; the final content check is the W7 playtest required for
-each accepted area by `content-rules.md` V5, not a §12 requirement.
+each accepted area by V5 (`play-tester.md`), not a §12 requirement.
 
 ### Graphify in every code brief
 
@@ -172,14 +176,17 @@ each accepted area by `content-rules.md` V5, not a §12 requirement.
 - **Same-change documentation obligation.** A change that alters documented
   behaviour carries its documentation update in the same slice, delegated to
   the `docs` agent (`.opencode/agents/docs.md`). This binds `code-lead` and
-  `content-editor` alike.
+  `content-editor` alike. The `docs` agent maintains `docs/content/**` as well
+  as `docs/developer/**`; only creative decisions and course facts stay with
+  `content-editor` and the user.
 - AGENTS files route; documentation files own policy; recorded design
   decisions in `docs/developer/**` remain user-owned
   (`content-toolchain.md` §6). Keep `AGENTS.md` cross-cutting: module rules
   live in the doc that owns the subject and are linked from here.
-  The `docs` agent may update `AGENTS.md` when a workflow or delegation change
-  requires it; `opencode.json` remains user-owned, and the `docs` agent proposes
-  changes to it rather than applying edits.
+  The `docs` agent maintains all docs under user direction, including
+  `docs/content/**`, and may update `AGENTS.md` when a workflow or delegation
+  change requires it; `opencode.json` remains user-owned, and the `docs` agent
+  proposes changes to it rather than applying edits.
 - `docs/coverage/COVERAGE.md` is split-governed: coverage decisions to
   `content-editor`, form to the `docs` agent.
 - `.opencode/agents/code-reviewer.md` keeps a "Key documentation references"

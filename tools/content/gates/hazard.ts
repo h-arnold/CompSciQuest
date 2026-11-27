@@ -1,5 +1,5 @@
-// hazard-content gate (content-rules.md §7, §4.6, H1): telegraphs, shared
-// effects only and a declared level start.
+// hazard-content gate: telegraphs, shared effects only and a declared level
+// start.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {

@@ -1,8 +1,41 @@
 # Quiz combat
 
 Quiz combat is an adversarial quiz: an NPC questions the player on GCSE
-material. It is both a damage source and the main revision loop. The
-[developer documentation index](README.md) lists the other subsystem docs.
+material. It is both a damage source and the main revision loop. This document
+owns every quiz authoring and runtime rule; the `quiz-writer` must read it in
+full before beginning work and its agent brief is only a workflow checklist.
+Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
+[content-editor.md](../../.opencode/agents/content-editor.md). The exam
+specification is the only source of course facts.
+
+Rule map: [write the question first](#write-the-question-first),
+[card format](#6-card-format), [review checks](#7-reviewer-and-playtest-checks)
+and [acceptance](#8-agent-acceptance).
+
+## Write the question first
+
+A question tests a spec-backed idea, not a trick of wording. Draft the stem,
+the misconception each wrong option targets and the explanation before writing
+`correctOptionIds`, `passMark` or effects. The MUST/SHOULD/MUST NOT labels and
+finding severity are defined under [review labels](content-toolchain.md#review-labels).
+
+Apply the rules in this reading order: P4; P3; P5; N3/N4/N5; D1–D4.
+
+| ID  | Test              | MUST                                                                                                                                                                                          | SHOULD                                                                                                                                                  | MUST NOT                                                                             | Related        |
+| --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------- |
+| P4  | Plausible options | Build every distractor from a real misconception in the spec and record it under `authoring.misconception`. Give every answer an explanation of the key and, where useful, the chosen option. | Keep options equal in length, grammar and format; keep the stem lean. Let difficulty come from a misconception or a small scenario, not obscure trivia. | Use nonsense options, a giveaway length or grammar cue, or leak the key in the stem. | PCK-DISTRACTOR |
+| P3  | Objectives        | Tag every question `authoring.assessmentObjective` (AO1/AO2/AO3) and `authoring.difficulty`; each quiz has at least one AO1 and one AO2.                                                      | Use AO3 only for design/evaluation topics such as algorithms and SDLC.                                                                                  | Ask an evaluation question of a recall topic.                                        | PCK-AO         |
+| P5  | Retrieval loop    | Use a `passMark` count between 1 and the question count, unlimited retries unless the brief assigns `attemptsAllowed`, and no timer.                                                          | Let failure cost one life and return to `definition.startRoomId` without resetting topic or puzzle progress.                                            | Imply a clock, reset progress, or invent a retry policy.                             | §3             |
+| N3  | Diegetic learning | Frame the challenge as an in-world character's question.                                                                                                                                      | Let the explanation improve the next attempt.                                                                                                           | Stop the story to ask a bare question.                                               | N4             |
+| N4  | Voice             | Keep the prompt and explanation in second person, present tense and the bible register.                                                                                                       | Aim command words at the tagged objective.                                                                                                              | Use parser or engine vocabulary.                                                     | N5             |
+| D3  | Data shape        | Use 0-based `correctOptionIds` within range and effects only from the shared union; `onPass` sets `quiz-passed:<quizId>` and emits `complete-topic`.                                          | Check `1 <= passMark <= questionIds.length` before finishing.                                                                                           | Write score, use a percentage pass mark, or invent an effect kind.                   | §2             |
+
+**Example — a binary distractor set.** For denary 13 in 4-bit binary, options
+`1011`, `1101`, `1110`, `1100`: each wrong option is a real reversed-bit or
+off-by-one slip, with a misconception note. The explanation follows selection.
+
+**Non-example — a giveaway.** Options `1101`, `banana`, `1110`, `1100` let a
+pupil who knows nothing guess by elimination.
 
 ## 1. Scope
 
@@ -128,3 +161,90 @@ unlock a level or trigger an automatic hint in phase 4. A `show-hint` effect
 emits `hint-penalty-applied`, which `ScoreTracker` applies
 ([application-and-ui.md §9](application-and-ui.md#9-effect-to-event-mapping)); a
 hint never awards score.
+
+## 6. Card format
+
+`quizzes.yaml` holds `quizzes` and `questions` per area. This is a partial
+excerpt; generation is owned by [content-toolchain.md](content-toolchain.md).
+
+```yaml
+kind: quiz
+areaId: 1-1-computer-architecture
+status: draft
+topicIds: [fetch-decode-execute]
+
+quizzes:
+  - id: quiz-fde-cycle
+    actorId: npc-archivist
+    topicId: fetch-decode-execute
+    score: 2 # awarded once on pass; counts towards topic maxScore
+    questionIds: [q-fde-1, q-fde-2, q-fde-3]
+    passMark: 2
+    onPass:
+      - { kind: complete-topic, topicId: fetch-decode-execute }
+      - { kind: set-flag, flag: quiz-passed:quiz-fde-cycle, value: true }
+      - { kind: message, text: ... }
+    onFail:
+      - { kind: change-lives, delta: -1, reason: ... }
+      - { kind: move-player, roomId: room-cpu-lab, reason: ... }
+    hintSequenceId: hint-fde
+
+questions:
+  - id: q-fde-1
+    prompt: >-
+      ...
+    options: [...]
+    correctOptionIds: [1] # 0-based indices; UI shows 1-based
+    explanation: >-
+      ...
+    authoring:
+      assessmentObjective: AO1 # P3
+      difficulty: easy # P3
+      misconception: ... # P4
+```
+
+## 7. Reviewer and playtest checks
+
+`content-critic` applies the table above, checks AO mix, distractor plausibility
+and explanations, and verifies the V4 trace names every quiz and question.
+`pck-reviewer` checks every key and distractor against the spec and judges GCSE
+depth and cognitive load. `play-tester` confirms in W7 that readability,
+feedback and retry friction give a fair challenge.
+
+## 8. Agent acceptance
+
+### 8.1 Definition of done
+
+- Only `quizzes.yaml` changed; document metadata is valid and every quiz and
+  question is an entry in `quizzes` or `questions`, with prose in block scalars.
+- `1 <= passMark <= questionIds.length`; each question has at least three
+  options and every `correctOptionIds` value is within range.
+- Every question has a non-empty `explanation`, `authoring.misconception`,
+  `authoring.assessmentObjective` and `authoring.difficulty`; each quiz has at
+  least one AO1 and one AO2 question.
+- `onPass` sets `quiz-passed:<quizId>` with `set-flag` and emits
+  `complete-topic`; `onFail` includes `change-lives` and `move-player` to
+  `definition.startRoomId`.
+- Every factual claim and key cites a section or page of
+  `docs/exam-specs/wjec-unit1.md`; no timer is implied and no answer is revealed
+  before selection.
+- The report explains why difficulty is fair, how feedback and hints improve
+  the next attempt, and why failure and retry costs are proportionate.
+- The final report names the file path, quiz and question IDs, AO mix, the
+  readability and retry-friction check and flagged assumptions.
+
+### 8.2 Hard constraints and escalation
+
+Return `BLOCKED: <reason> — needs <owner>` rather than guessing when the spec
+does not support a proposed answer, the brief omits `startRoomId`, or
+`attemptsAllowed` conflicts with the unlimited-retry default in this document.
+After a review round, revise only your own card for at most two rounds; then
+return `BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## 9. Gates
+
+The `quiz-content` authoring gate checks the pass mark and question ids, a
+correct option in range, a non-empty explanation, AO and difficulty metadata,
+at least one AO1 and AO2, `quiz-passed` and `complete-topic` in `onPass`, and
+`change-lives` in `onFail`
+([content-toolchain.md §4](content-toolchain.md#4-validation)).

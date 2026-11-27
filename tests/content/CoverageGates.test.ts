@@ -1,7 +1,6 @@
 // Boot/test validation parity, coverage-topic ID checks and the declaration of
-// deferred mechanics gates (application-and-ui.md §3.3, §12; content-rules.md §7,
-// V3). Coverage headings are injected as data — the static runtime never reads
-// COVERAGE.md from disk.
+// deferred mechanics gates. Coverage headings are injected as data — the
+// static runtime never reads them from disk.
 import { describe, expect, it } from 'vitest';
 import { loadContent } from '../../src/content/index';
 import { localBundle } from '../fixtures/localBundle';
@@ -33,7 +32,7 @@ describe('shared boot/test validation', () => {
   });
 });
 
-describe('coverage topic IDs (content-rules.md §5, §7, V3)', () => {
+describe('coverage topic IDs', () => {
   it('C-CONTENT-15: a topic ID absent from the coverage headings is reported', async () => {
     const validate = await loadValidator();
     const bundle = bundleWithTopic(makeSpecTopic());
@@ -98,7 +97,7 @@ describe('coverage topic IDs (content-rules.md §5, §7, V3)', () => {
   });
 });
 
-describe('deferred mechanics gates (content-rules.md §7)', () => {
+describe('deferred mechanics gates', () => {
   it('C-CONTENT-17: deferred gates do not reject the local or generated bundle', async () => {
     const validate = await loadValidator();
 

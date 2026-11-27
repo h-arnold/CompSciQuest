@@ -1,5 +1,4 @@
-// C3 generation contracts (content-toolchain.md §5; AGENTS.md 600-line cap;
-// content-rules.md D4/D5). All emitted text comes from generateContent() in
+// C3 generation contracts. All emitted text comes from generateContent() in
 // memory: no file is written, no clock, randomness, network or storage is used.
 import { describe, expect, it } from 'vitest';
 import prettierIgnore from '../../.prettierignore?raw';

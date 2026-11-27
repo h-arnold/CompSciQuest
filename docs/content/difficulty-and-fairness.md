@@ -1,11 +1,15 @@
 # Difficulty and fairness
 
 This document owns cross-content difficulty, fairness and playability guidance for
-CompSciQuest. It does not define data shapes or runtime behaviour:
-[content-rules.md](../developer/content-rules.md) and the subsystem contracts for
+CompSciQuest. It does not define data shapes or runtime behaviour: the owning
+documents remain authoritative — the [content bible](content-bible.md),
+[narrative principles](narrative-principles.md), the kind contracts for
 [puzzles](../developer/puzzles.md), [hints](../developer/hints.md),
 [quiz combat](../developer/combat.md) and
-[hazards](../developer/hazards.md) remain authoritative. Where this document and a
+[hazards](../developer/hazards.md), and the shared contracts in
+[content-toolchain.md](../developer/content-toolchain.md),
+[application-and-ui.md](../developer/application-and-ui.md) and
+[storage-schema.md](../developer/storage-schema.md). Where this document and a
 contract differ, the contract wins.
 
 ## 1. Authority and use
@@ -17,31 +21,30 @@ punishment. This document applies that message across rooms, items, NPCs, puzzle
 quizzes, hazards and hints. It creates no mechanic, global difficulty setting or
 save feature.
 
-Use the existing rulebook and subsystem contracts as boundaries:
+Use the owning documents and subsystem contracts as boundaries:
 
 - A new game starts with **three lives**. Saves are **manual**; there is no undo,
   autosave or save-slot system. Recovery comes from the authored level-start
   return and preserved progress, not from a new checkpoint feature
-  ([content-rules.md §8](../developer/content-rules.md#8-fixed-contracts-content-must-use)).
+  ([application-and-ui.md §3.2](../developer/application-and-ui.md#32-world-area-room-and-item-definitions), [storage-schema.md §11](../developer/storage-schema.md#11-flow)).
 - Quiz combat is the current combat system. Quizzes have no timer and retries are
   unlimited unless `attemptsAllowed` is explicitly authored. Failure follows the
   quiz's authored `onFail` effects; the standard shape loses a life and returns to
   the declared level start, while approved exceptions remain as authored
-  ([combat.md §3](../developer/combat.md#3-flow),
-  [content-rules.md P5](../developer/content-rules.md#p--pedagogy-and-course-mapping)).
+  ([combat.md §3](../developer/combat.md#3-flow)).
 - Hazards are telegraphed before they can fire. Their standard harm loses a life
   and returns the player to the area start; they may reset level-local flags but
   never puzzle phase
   ([hazards.md §4](../developer/hazards.md#4-failure-consequences),
-  [content-rules.md H1](../developer/content-rules.md#h--hazards-and-hints)).
+  [hazards.md authoring rules](../developer/hazards.md#write-the-hazard-first)).
 - A hint ladder has **2–4 levels**. No level reveals an answer or completes the
   challenge. The default score penalty is zero
   ([hints.md §4](../developer/hints.md#4-adaptive-behaviour),
-  [content-rules.md H2](../developer/content-rules.md#h--hazards-and-hints)).
+  [hints.md authoring rules](../developer/hints.md#write-the-ladder-first)).
 - The verb list, alias registry and command forms are fixed. Authors make intended
   actions discoverable within those contracts; they do not add parser behaviour,
   verbs, aliases or answer shortcuts
-  ([content-rules.md §8](../developer/content-rules.md#8-fixed-contracts-content-must-use)).
+  ([application-and-ui.md §5](../developer/application-and-ui.md#5-canonical-command-union-and-verbs)).
 - Optional difficulty settings, reduced-hint variants and extra challenge modes
   are authoring guidance or future options only. They are not current promises and
   require a separately approved design before use.
@@ -393,7 +396,7 @@ puzzle is understandable or that difficulty is proportionate. Use the W4 content
 and PCK reviews for authored fairness and cognitive load, the V4 walkthrough for
 reachability, and a W7 content playability and effectiveness review for runtime
 behaviour, difficulty and fairness against this document
-([content-rules.md V1–V5](../developer/content-rules.md#v--validation)).
+([content-toolchain.md §4](../developer/content-toolchain.md#4-validation), `content-editor.md` Gates 2–3 and `play-tester.md`).
 
 A brief beginning `Purpose: content playability and effectiveness review`
 assesses runtime behaviour, difficulty and fairness using this document. The

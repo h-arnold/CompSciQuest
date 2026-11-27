@@ -10,9 +10,9 @@ curated cast, hazard, question-pool and prologue decisions. This file is the **r
 bible**; zone detail lives in `docs/content/topics/*.md`. The first zone's six design
 cards were subsequently briefed, written, reviewed and integrated (see `status.md`).
 The bible is co-authored with the user and
-changes only with their agreement (content-rules.md §2, W1–W2). It governs creative
-choices; the rulebook governs authoring practice; `docs/exam-specs/wjec-unit1.md`
-governs course facts.
+changes only with their agreement (`content-editor.md` Gate 0, W1–W2). It governs
+creative choices; the owning documents and subsystem contracts govern authoring
+practice; `docs/exam-specs/wjec-unit1.md` governs course facts.
 
 **Opening-sequence amendment (2026-11-25): approved.** The user asked for
 an opening in which the pupil is absorbed during a classroom attention scan, meets
@@ -34,11 +34,12 @@ teaching batch is **not** part of this work: it stays described only.
 
 ## 1. Authority and file map
 
-Authority order when sources disagree (content-rules.md §1): course facts →
+Authority order when sources disagree (§1): course facts →
 `docs/exam-specs/wjec-unit1.md` and the cited PDF, then `docs/coverage/COVERAGE.md`,
 then the bible; data shape and runtime behaviour → subsystem docs and
-`shared-rules.md`, then the rulebook; authoring practice → the rulebook; creative
-choices → the bible, subject to the rules.
+`shared-rules.md` with `content-toolchain.md`; authoring practice → the owning
+documents and subsystem contracts; creative choices → the bible, subject to the
+rules.
 
 | File                                               | Holds                                                                                                                                                                                        |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -94,7 +95,7 @@ failure.
   three lives, reset on area change; zero lives gives `status: 'lost'` and
   `game-over`; the player restarts from the title screen. The on-screen result is a
   cartoon deletion or severed connection, never permanent loss, realistic harm or
-  save damage (content-rules.md §8; narrative-principles.md §§5, 8).
+  save damage (storage-schema.md §2; narrative-principles.md §§5, 8).
 - The player is **one of the pupils from the class** — specifically one of those the
   AI judged not to be paying attention.
 - The opening now shows that judgement being made: the classroom attention scan is
@@ -110,7 +111,7 @@ cannot is rejected.
 | --- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P-a | **Attention is the scarce resource** | The AI's misalignment is about attention. The game never accepts "I was there" as mastery; the player must _demonstrate_ understanding. Source of the premise, the verdict key node and the AI's voice. |
 | P-b | **The machine is a place**           | Every GCSE concept is a mechanism of the world, not an interruption to it (N3). A quiz is a challenge issued by an in-world actor; a puzzle is a task that uses the concept.                            |
-| P-c | **Competence opens doors**           | Gates are conceptual mastery, not arbitrary keys. Every gate has an in-fiction reason and two discoverable clues (N6). Difficulty is reasoning (AO2/AO3), never obscurity.                              |
+| P-c | **Competence opens doors**           | Gates are conceptual mastery, not arbitrary keys. Every gate has an in-fiction reason and two discoverable clues in room, NPC or item text (N6). No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the editor's alias registry. Difficulty is reasoning (AO2/AO3), never obscurity. |
 | P-d | **Deadpan absurdity**                | Comic timing, cartoon peril, absurd options, bounded comeuppance. The joke never changes a course fact and never mocks the learner (narrative-principles.md §§3, 6, 8).                                 |
 | P-e | **Oversight matters**                | Legal, social, ethical, environmental and professional dimensions are integrated into topics, not bolted on — the spec requires this and the premise embodies it (1.1.1, 1.2.3, 1.5.2, 1.8.1).          |
 
@@ -138,8 +139,9 @@ in `docs/content/topics/1-2-1-data-representation.md`.
 
 The intended in-game order is four beats. The prose below is a **voice and staging
 seed for a future writer**, not an approved card: keep second person, present tense
-and the single deadpan register (N4), and keep each room passage at or under 200
-words (N8) — a ceiling, not a target. No beat asserts a course fact.
+and the single deadpan register (N4), and keep each room passage to at most two
+paragraphs, usually 200–300 words unless the place warrants more detail (N8). No
+beat asserts a course fact.
 
 1. **The classroom scan — `room-arrival` entry.** The register is open on the desk.
    A mark sits beside your name. The AI reads it aloud, in the flat voice of a
@@ -201,8 +203,9 @@ available. Concretely:
 - `docs/content/1-2-1-data-representation/npcs.yaml` owns the predecessor and all
   Switchyard teaching; it no longer owns any AI artefact.
 
-The one-file-per-(area, kind) convention is unchanged (content-rules.md §4.1), so
-no rulebook or toolchain change is required. Cross-card `actorId` binding is
+The one-file-per-(area, kind) convention is unchanged
+([content-toolchain.md §2](../developer/content-toolchain.md#2-authoring-format)),
+so no toolchain change is required. Cross-card `actorId` binding is
 permitted: the `npc-content` gate resolves actor IDs across the whole card set,
 so the hub topic can bind to an actor declared in the arrival card. Briefs must
 name the owning area card for every artefact and must not place an entity in an
@@ -261,8 +264,8 @@ the world layer redundant and leave boot dependent on declaration order.
 **Boot start and level start are different things.** The boot start is the room
 `GameState.createInitial()` resolves from `bundle.worlds.all[0]` → its
 `startAreaId` → that area's `startRoomId` (`src/core/GameState.ts` L104–115); the
-"Boot start position" row of
-[content-rules.md §8](../developer/content-rules.md#8-fixed-contracts-content-must-use)
+boot contract in
+[application-and-ui.md §2](../developer/application-and-ui.md#2-boot-title-screen-and-session-start)
 records this. The level start is simply an area's own `startRoomId`: it is where
 hazard and quiz-failure returns land, and lives reset on **area change**, not on
 every room move
@@ -318,6 +321,15 @@ also be registered in COVERAGE.md and `spec-topics.yaml` while `in progress`, so
 its practice systems have a valid P1 reference; that registration is not a coverage
 claim and does not weaken V3.
 
+Every room declares `topicIds`, every puzzle and quiz declares `topicId`, and
+every hint sequence declares `targets`; a room with no teaching purpose is marked
+`navigation-only` (P1). Room `topicIds` are authoring references for the gates
+and coverage mapping, not a runtime field of `RoomDefinition`. Topic IDs must
+match the `## Topic: <id>` heading in `COVERAGE.md` exactly and come from this
+index; writers never invent one. Where the spec calls for it, a topic has a
+teaching beat (NPC explanation), a retrieval beat (quiz) and an application beat
+(puzzle or in-world action); a quiz alone is incomplete (P2).
+
 | Spec section                                      | Spec topic IDs                                                                                                                                             | Owning file                              | Batch                                                                    |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------ |
 | Onboarding — **not a WJEC topic**                 | `tutorial-mechanics` — game orientation only; `in progress`, `maxScore 0`, excluded from the win set                                                       | `topics/assistance-ward.md`              | Curated Gate 0 set approved 2026-11-26                                   |
@@ -364,7 +376,8 @@ nouns, costing one life and a bounded in-world comeuppance (narrative-principles
 ## 9. Master ID and alias registry
 
 Writers copy IDs from this table verbatim; a request for a new ID goes back to the
-editor and the user (content-rules.md §5). This registry stays at the **root** because
+editor and the user (D2). IDs are kebab-case with a kind prefix, and no writer
+invents one outside their brief. This registry stays at the **root** because
 global uniqueness of aliases is a game-wide rule (D2; shared-rules.md §10). Aliases
 are lowercase words or short phrases, unique across **all** objects and NPCs. Zone
 files explain what each ID is for; this table owns the spellings.
@@ -597,7 +610,7 @@ must not reuse them bare).
 | `npc-`        | `npc-the-selvedge-warden`                                                                                                                                                                                                                                                                                                                                                                          | selvedge warden, warden                     | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
 | `npc-`        | `npc-the-bobbin-lad`                                                                                                                                                                                                                                                                                                                                                                               | bobbin lad                                  | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
 | `npc-`        | `npc-the-slop-cousin`                                                                                                                                                                                                                                                                                                                                                                              | slop cousin, cousin                         | root + all four 1.4 zones (§6)                                                                                                                                                                                                                                                                         |
-| `actorstate-` | `actorstate-loomwright-witnessing`, `actorstate-loomwright-complete`, `actorstate-warp-dresser-flustered`, `actorstate-warp-dresser-orderly`, `actorstate-shed-opener-dithering`, `actorstate-shed-opener-sorted`, `actorstate-weft-tally-counting`, `actorstate-weft-tally-exact`, `actorstate-selvedge-warden-looping`, `actorstate-selvedge-warden-dismissed`, `actorstate-slop-cousin-beaming` | —                                           | 1.4.1 Zone A; the generic `actorstate-ready` stays the rulebook default                                                                                                                                                                                                                                |
+| `actorstate-` | `actorstate-loomwright-witnessing`, `actorstate-loomwright-complete`, `actorstate-warp-dresser-flustered`, `actorstate-warp-dresser-orderly`, `actorstate-shed-opener-dithering`, `actorstate-shed-opener-sorted`, `actorstate-weft-tally-counting`, `actorstate-weft-tally-exact`, `actorstate-selvedge-warden-looping`, `actorstate-selvedge-warden-dismissed`, `actorstate-slop-cousin-beaming` | —                                           | 1.4.1 Zone A; the generic `actorstate-ready` stays the `npcs.md` §8 default                                                                                                                                                                                                                            |
 | `node-`       | `node-loomwright-demonstration`, `node-selvedge-signal`                                                                                                                                                                                                                                                                                                                                            | —                                           | 1.4.1 Zone A; deliberate teaching beats only (T3)                                                                                                                                                                                                                                                      |
 | `quiz-`       | `quiz-pattern-bureau`, `quiz-threading-order`, `quiz-colour-court`, `quiz-weft-tally`, `quiz-selvedge`, `quiz-finished-rail`                                                                                                                                                                                                                                                                       | —                                           | 1.4.1 Zone A                                                                                                                                                                                                                                                                                           |
 | `q-`          | `q-pc-01` … `q-pc-24`                                                                                                                                                                                                                                                                                                                                                                              | —                                           | 1.4.1 Zone A; question pool, 0-based correct-option indices                                                                                                                                                                                                                                            |
@@ -633,8 +646,8 @@ its sketch renames at its own scoping (D2).
 
 All text is **second person, present tense, British English**, rendered as plain text
 via `textContent` — no HTML. `narrative-principles.md` remains authoritative for
-voice, humour, stakes, harm floor, fourth wall and Welsh references; the rulebook
-wins on any conflict.
+voice, humour, stakes, harm floor, fourth wall and Welsh references; the owning
+documents and subsystem contracts win on any conflict.
 
 The user chose "all of the above" tonal modes. They are three colours of **one
 deadpan register**, selected by context rather than mixed at random:
@@ -760,7 +773,9 @@ Recorded in §12.
     `npcs.yaml` keeps only the predecessor and the Switchyard teaching. Cross-card
     `actorId` binding is safe: `npc-content` resolves actor IDs over the whole card
     set, so the hub topic can bind to an actor declared in the arrival card. The
-    one-file-per-(area, kind) rule (content-rules.md §4.1) is unchanged.
+    one-file-per-(area, kind) rule
+    ([content-toolchain.md §2](../developer/content-toolchain.md#2-authoring-format))
+    is unchanged.
 
 15. **Zone A (The Pattern Mill) scoping — RESOLVED 2026-11-25.** Unit 1.4 is
     four areas (Zone A constructs — approved first; Zone B search & sort; Zone C
@@ -855,7 +870,7 @@ Zone-specific questions are in the owning topic file.
   by area rather than scattered. A new `entry-interface/npcs.yaml` owns the AI
   actor, its states, its node and the five arrival/global topics; a new
   `network-hub/npcs.yaml` owns the hub-scoped escape topic; zone-1 `npcs.yaml`
-  keeps the predecessor and all Switchyard teaching. No toolchain or rulebook
+  keeps the predecessor and all Switchyard teaching. No toolchain or governing-rules
   change is needed because the generator and gates merge collections across
   cards.
 - 2026-11-25 — **Tone revision approved, full scope.** The user judged the existing
@@ -869,7 +884,7 @@ Zone-specific questions are in the owning topic file.
   → V2 both reviewers → V4 trace audit → W6 regeneration and W7 walkthrough.
 - 2026-11-25 — **N8 word ceiling raised to 200.** The user asked for room prose to
   have room to describe and breathe, and specified that 200 is a limit rather than
-  a target. Rulebook N8, `narrative-principles.md` §2 and §11, the topic file and
+  a target. The N8 rule, `narrative-principles.md` §2 and §11, the topic file and
   the area-writer instructions were updated. All currently authored room
   descriptions (68–80 words) remain valid; the change does not by itself reopen
   any accepted card.
@@ -894,7 +909,7 @@ Zone-specific questions are in the owning topic file.
   alias, flag, gate, score, coverage entry or V4 trace changes, so no writer is
   briefed and no review cycle opens. The `ItemDefinition` and take-handler seam is a
   `code-lead` handoff; the pins in `application-and-ui.md` §3.2/§5.1–§5.2 (and any
-  N5 example in the rulebook) are outside the content editor's edit boundary and
+  N5 example in `narrative-principles.md`) are outside the content editor's edit boundary and
   are made by their owner.
 - 2026-11-25 — **Ideation sub-stage moved to the editor's agent instructions.** The
   user asked that the workflow documentation sit with the editor process rather than
@@ -956,7 +971,7 @@ Zone-specific questions are in the owning topic file.
   hints. Each wave's brief carries only the ids, flags and seam contracts the
   earlier waves ratified; writer-proposed ids are marked `proposed — needs
 editor approval (D2)` and ratified in §9 at review acceptance. Documented as
-  editor practice, not rulebook text (user decision).
+  editor practice, not governing-rules text (user decision).
   **(b) Scoring from authored activities — no budgets.** Writers declare
   per-activity scores; the accepted per-topic total is _recorded_ as
   `maxScore` at integration (W5) and never pre-set. The `score-content` cap
@@ -1156,7 +1171,7 @@ broadcast bay`; the concourse room keeps `concourse`. Hub card amended in
   ORIENTATION PASS needs the practice quiz. Fill any remaining sockets, then try
   again." It remains verbatim authored content from the card field, with no new
   flag, score or state. The user also approved the docs agent adding "declared
-  room IDs" to the user-owned rulebook H2 and §7 hint-target rows. Other round-2
+  room IDs" to the user-owned `hints.md` H2 and hint-target rules. Other round-2
   findings — state-true room and item prose, the `saving` keyword and the
   wrong-order unlock refusal — are fixes to existing content or code, not new
   mechanics.

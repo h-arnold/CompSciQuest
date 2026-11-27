@@ -10,8 +10,8 @@ authoring:
       topic file; no ID or alias is invented. Spec topic IDs in the frontmatter match the
       accepted rooms card.
     - >-
-      Editor adjudication (C3): `npc-knows.topicId` and `learn-topic.topicId` use approved
-      **spec** topic IDs, as the rulebook example and the `content-ids` gate require. Where
+      Editor adjudication (T2): `npc-knows.topicId` and `learn-topic.topicId` use approved
+      **spec** topic IDs, as the bible §7 index and the `content-ids` gate require. Where
       several beats share one spec topic, only the first gates on `npc-knows`; later beats
       gate on a relevant puzzle flag (the AltTopic pattern), and flavour topics with no
       spec topic in this area are always active with no `learn-topic`. No beat disappears
@@ -27,7 +27,7 @@ authoring:
       Nodes are entered by an `enter-node` effect on a topic (a member of the shared
       `Effect` union, npcs.md §5) and list already-registered `askTell` topics at node
       priority. There is no turn timeout: conversation ends on `bye`, on leaving the room
-      or on starting a quiz (C4, npcs.md §4).
+      or on starting a quiz (T3, npcs.md §4).
     - >-
       A `start-quiz` topic hands off to a quiz registered in the bible. The foreman hands
       off both of his quizzes: `topic-foreman-switches` → `quiz-switchyard` and
@@ -40,7 +40,7 @@ authoring:
       (N3, P2). No score is authored here, no HTML is used, and all prose is British
       English in the single deadpan register.
     - >-
-      C7 lesson ladders use two kinds of evidence. The first beat gates on
+      T2 lesson ladders use two kinds of evidence. The first beat gates on
       `not npc-knows`; a middle beat sets the `*-heard` flag it records, and the next
       beat requires it: `topic-clerk-carries` and `topic-clerk-shifts-known` set
       `clerk-carry-heard`, `topic-critic-depth` sets `critic-depth-heard`,
@@ -237,7 +237,7 @@ conversationTopics:
       (You could ask about the cartridge.)
     authoring:
       note: >-
-        First beat on the cartridge, and the first free-text beat the predecessor offers; it records `predecessor-cartridge-heard` so the C7 ladder does not rest on declaration order or ID wording. `topic-predecessor-duck-as-bit` requires that flag, and `topic-predecessor-geese` is a `special` keyword topic outside the ask/tell class.
+        First beat on the cartridge, and the first free-text beat the predecessor offers; it records `predecessor-cartridge-heard` so the T2 ladder does not rest on declaration order or ID wording. `topic-predecessor-duck-as-bit` requires that flag, and `topic-predecessor-geese` is a `special` keyword topic outside the ask/tell class.
 
   - id: topic-predecessor-geese
     actorId: npc-predecessor
@@ -266,7 +266,7 @@ conversationTopics:
       (You could ask how a duck becomes a bit.)
     authoring:
       note: >-
-        Second free-text beat: it requires `predecessor-cartridge-heard`, recorded by `topic-predecessor-comic-sans`, so the pair is complementary on the flag and needs no declaration order (C7); the `npc-knows` negation is the AltTopic complement that retires it after the lesson. `topic-predecessor-geese` is a `special` keyword topic, so it matches on its own words and never competes with this class.
+        Second free-text beat: it requires `predecessor-cartridge-heard`, recorded by `topic-predecessor-comic-sans`, so the pair is complementary on the flag and needs no declaration order (T5); the `npc-knows` negation is the AltTopic complement that retires it after the lesson. `topic-predecessor-geese` is a `special` keyword topic, so it matches on its own words and never competes with this class.
 
   - id: topic-predecessor-default
     actorId: npc-predecessor
@@ -285,7 +285,7 @@ conversationTopics:
       (You could ask what I left behind.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2).
+        Free-text DefaultAskTellTopic (A6).
 
   - id: topic-foreman-switches
     actorId: npc-the-foreman
@@ -340,7 +340,7 @@ conversationTopics:
       (You could ask about the predecessor, or the switches.)
     authoring:
       note: >-
-        Free-text fallback for the foreman (C2). The registry has no `topic-foreman-default`, so this always-active topic covers unmatched input rather than inventing an ID.
+        Free-text fallback for the foreman (A6). The registry has no `topic-foreman-default`, so this always-active topic covers unmatched input rather than inventing an ID.
 
   - id: topic-foreman-show-gauge
     actorId: npc-the-foreman
@@ -436,7 +436,7 @@ conversationTopics:
       (You could ask what the carry token does.)
     authoring:
       note: >-
-        The rule wording is the spec's own; no worked addition beyond it. Second beat on `number-conversion`, so it gates on the puzzle flag `switches-set` that opens the deck rather than on `npc-knows` (C3); no `learn-topic` here, so the carry beat adds no knowledge; the first beat's gate is unchanged. C7 ladder: records `clerk-carry-heard`, so `topic-clerk-shifts` can require it.
+        The rule wording is the spec's own; no worked addition beyond it. Second beat on `number-conversion`, so it gates on the puzzle flag `switches-set` that opens the deck rather than on `npc-knows` (T2); no `learn-topic` here, so the carry beat adds no knowledge; the first beat's gate is unchanged. T2 ladder: records `clerk-carry-heard`, so `topic-clerk-shifts` can require it.
 
   - id: topic-clerk-shifts
     actorId: npc-nibble-clerk
@@ -452,7 +452,7 @@ conversationTopics:
       (You could ask which way the arithmetic shift goes, or take the number audit.)
     authoring:
       note: >-
-        "arithmetic shift", "overflow" and "underflow" sit beside the plain glosses (PCK-TERM); no worked number exists in the guidance (topic file §6). Third beat on `number-conversion`, gated on the puzzle flag `carries-added` rather than `npc-knows` so it stays reachable (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `clerk-carry-heard`, so it never competes with the carry beat or the shift-introduction beat. The `not quiz-passed quiz-number-systems` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
+        "arithmetic shift", "overflow" and "underflow" sit beside the plain glosses (PCK-TERM); no worked number exists in the guidance (topic file §6). Third beat on `number-conversion`, gated on the puzzle flag `carries-added` rather than `npc-knows` so it stays reachable (T2). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. T2 ladder: requires `clerk-carry-heard`, so it never competes with the carry beat or the shift-introduction beat. The `not quiz-passed quiz-number-systems` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-clerk-bases-known
     actorId: npc-nibble-clerk
@@ -467,7 +467,7 @@ conversationTopics:
       (You could ask about bases now you have read the card.)
     authoring:
       note: >-
-        AltTopic (C3): complement of the primary gate, plus independent discovery through the card or the `hex-read` flag. C7 ladder: reachable after the carry beat and before `carries-added`, with `clerk-carry-heard` as the complement against `topic-clerk-carries`; the `carries-added` negation separates it from both shift beats.
+        AltTopic (T2): complement of the primary gate, plus independent discovery through the card or the `hex-read` flag. T2 ladder: reachable after the carry beat and before `carries-added`, with `clerk-carry-heard` as the complement against `topic-clerk-carries`; the `carries-added` negation separates it from both shift beats.
 
   - id: topic-clerk-shifts-known
     actorId: npc-nibble-clerk
@@ -483,7 +483,7 @@ conversationTopics:
       (You could ask about the shift now the carries are in.)
     authoring:
       note: >-
-        AltTopic (C3): complement of the primary gate, plus the independently discovered `carries-added` flag. C7 ladder: records `clerk-carry-heard` in the post-carry, pre-shift state (the branch where the player adds the carries before the clerk's carry beat), so `topic-clerk-shifts` can require it; the `carries-added` complement keeps the carry beat out.
+        AltTopic (T2): complement of the primary gate, plus the independently discovered `carries-added` flag. T2 ladder: records `clerk-carry-heard` in the post-carry, pre-shift state (the branch where the player adds the carries before the clerk's carry beat), so `topic-clerk-shifts` can require it; the `carries-added` complement keeps the carry beat out.
 
   - id: topic-clerk-default
     actorId: npc-nibble-clerk
@@ -502,7 +502,7 @@ conversationTopics:
       (You could ask about bases, carries or shifts.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2).
+        Free-text DefaultAskTellTopic (A6).
 
   - id: topic-setter-ascii
     actorId: npc-typesetter
@@ -535,7 +535,7 @@ conversationTopics:
       (You could ask about the tile in the spare drawer.)
     authoring:
       note: >-
-        The `ŵ` is "a different character" only; no coverage claim (spec-check flag). Second beat on `character-representation`, gated on `characters-matched` rather than `npc-knows` (C3). The `unicode-tile-cut` flag is the producer named for `puzzle-make-room-for-the-welsh-letter` in topic file §5. Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: the negated `quiz-passed quiz-character-representation` complement keeps it exclusive against `topic-setter-string`, and unlike the former `unicode-tile-cut` complement it keeps the handoff selectable after a failed attempt (P5).
+        The `ŵ` is "a different character" only; no coverage claim (spec-check flag). Second beat on `character-representation`, gated on `characters-matched` rather than `npc-knows` (T2). The `unicode-tile-cut` flag is the producer named for `puzzle-make-room-for-the-welsh-letter` in topic file §5. Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. T2 ladder: the negated `quiz-passed quiz-character-representation` complement keeps it exclusive against `topic-setter-string`, and unlike the former `unicode-tile-cut` complement it keeps the handoff selectable after a failed attempt (P5).
 
   - id: topic-setter-string
     actorId: npc-typesetter
@@ -550,7 +550,7 @@ conversationTopics:
       (You could ask how a string differs from a character.)
     authoring:
       note: >-
-        Two clues for `characters-matched`: the ordered tiles and the case lid inscription (N6). Third beat on `character-representation`, gated on the puzzle flag `unicode-tile-cut` rather than `npc-knows` (C3). C7 ladder: requires the `quiz-character-representation` pass (and the cut tile), so the two never compete, and the pass is the only thing that retires the handoff beat.
+        Two clues for `characters-matched`: the ordered tiles and the case lid inscription (N6). Third beat on `character-representation`, gated on the puzzle flag `unicode-tile-cut` rather than `npc-knows` (T2). T2 ladder: requires the `quiz-character-representation` pass (and the cut tile), so the two never compete, and the pass is the only thing that retires the handoff beat.
 
   - id: topic-setter-default
     actorId: npc-typesetter
@@ -569,7 +569,7 @@ conversationTopics:
       (You could ask about the tiles, the stamp or the drawer.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2).
+        Free-text DefaultAskTellTopic (A6).
 
   - id: topic-critic-vectors
     actorId: npc-mosaic-critic
@@ -601,7 +601,7 @@ conversationTopics:
       (You could ask what bit depth and colour depth mean.)
     authoring:
       note: >-
-        Modern bits-per-channel convention as required by topic file §2; no older bits-per-pixel material. Second beat on `graphics-representation`, gated on the puzzle flag `picture-built` rather than `npc-knows` (C3). C7 ladder: records `critic-depth-heard`, so `topic-critic-storage` can require it.
+        Modern bits-per-channel convention as required by topic file §2; no older bits-per-pixel material. Second beat on `graphics-representation`, gated on the puzzle flag `picture-built` rather than `npc-knows` (T2). T2 ladder: records `critic-depth-heard`, so `topic-critic-storage` can require it.
 
   - id: topic-critic-storage
     actorId: npc-mosaic-critic
@@ -617,7 +617,7 @@ conversationTopics:
       (You could ask what an image costs to store, or ask for the gallery audit.)
     authoring:
       note: >-
-        Method only: no worked storage total. Third beat on `graphics-representation`, gated on the puzzle flag `pixels-weighed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `critic-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-graphics-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
+        Method only: no worked storage total. Third beat on `graphics-representation`, gated on the puzzle flag `pixels-weighed` rather than `npc-knows` (T2). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. T2 ladder: requires `critic-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-graphics-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-critic-default
     actorId: npc-mosaic-critic
@@ -636,7 +636,7 @@ conversationTopics:
       (You could ask about vectors, depth or storage.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2).
+        Free-text DefaultAskTellTopic (A6).
 
   - id: topic-conductor-samples
     actorId: npc-choirmaster
@@ -668,7 +668,7 @@ conversationTopics:
       (You could ask what the two desk dials mean.)
     authoring:
       note: >-
-        Spec terms only; no Nyquist or codec material (topic file §6). Second beat on `sound-representation`, gated on the puzzle flag `sound-sampled` rather than `npc-knows` (C3). C7 ladder: records `conductor-depth-heard`, so `topic-conductor-storage` can require it.
+        Spec terms only; no Nyquist or codec material (topic file §6). Second beat on `sound-representation`, gated on the puzzle flag `sound-sampled` rather than `npc-knows` (T2). T2 ladder: records `conductor-depth-heard`, so `topic-conductor-storage` can require it.
 
   - id: topic-conductor-storage
     actorId: npc-choirmaster
@@ -684,7 +684,7 @@ conversationTopics:
       (You could ask what fills the blank dial, or ask for the audio test.)
     authoring:
       note: >-
-        Structure only, with no worked bit-rate number. Third beat on `sound-representation`, gated on the puzzle flag `bit-rate-counted` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: requires `conductor-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-sound-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
+        Structure only, with no worked bit-rate number. Third beat on `sound-representation`, gated on the puzzle flag `bit-rate-counted` rather than `npc-knows` (T2). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. T2 ladder: requires `conductor-depth-heard`, so it never competes with the bit-depth beat. The `not quiz-passed quiz-sound-representation` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-conductor-default
     actorId: npc-choirmaster
@@ -703,7 +703,7 @@ conversationTopics:
       (You could ask about samples, depth or storage.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2); the rude surface and the patience both stay in voice.
+        Free-text DefaultAskTellTopic (A6); the rude surface and the patience both stay in voice.
 
   - id: topic-keeper-units
     actorId: npc-stack-keeper
@@ -736,7 +736,7 @@ conversationTopics:
       (You could ask how to move between the rungs, or ask for the capacity tally.)
     authoring:
       note: >-
-        Method only; no worked capacity. Prose chain only, not the inconsistent equivalence column (topic file §6). Second beat on `data-storage-units`, gated on the puzzle flag `stacks-sealed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. C7 ladder: the `npc-knows` complement against `topic-keeper-units` keeps the two mutually exclusive. The `not quiz-passed quiz-storage-units` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
+        Method only; no worked capacity. Prose chain only, not the inconsistent equivalence column (topic file §6). Second beat on `data-storage-units`, gated on the puzzle flag `stacks-sealed` rather than `npc-knows` (T2). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. T2 ladder: the `npc-knows` complement against `topic-keeper-units` keeps the two mutually exclusive. The `not quiz-passed quiz-storage-units` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-keeper-default
     actorId: npc-stack-keeper
@@ -755,7 +755,7 @@ conversationTopics:
       (You could ask about the rungs or the capacity.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2); the flaking labels are the hazard telegraph (H1).
+        Free-text DefaultAskTellTopic (A6); the flaking labels are the hazard telegraph (H1).
 
   - id: topic-operator-lossy
     actorId: npc-press-operator
@@ -788,7 +788,7 @@ conversationTopics:
       (You could ask how the ratio is worked out, or ask for the final audit.)
     authoring:
       note: >-
-        Ratio definition as given in the brief; no worked numbers. Second beat on `data-compression`, gated on the puzzle flag `archive-packed` rather than `npc-knows` (C3). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. The `not quiz-passed quiz-data-compression` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
+        Ratio definition as given in the brief; no worked numbers. Second beat on `data-compression`, gated on the puzzle flag `archive-packed` rather than `npc-knows` (T2). Post-quiz state: `actorstate-ready` on `quiz-ended`; this card sets no different state in the quiz. The `not quiz-passed quiz-data-compression` term keeps the handoff askable after a failed attempt and retires it on the pass (P5).
 
   - id: topic-operator-default
     actorId: npc-press-operator
@@ -807,7 +807,7 @@ conversationTopics:
       (You could ask about lossy, lossless or the ratio.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic (C2).
+        Free-text DefaultAskTellTopic (A6).
 
 conversationNodes:
   - id: node-predecessor-advice
@@ -827,7 +827,7 @@ conversationNodes:
     authoring:
       reserved: true
       note: >-
-        Reserved and deliberately unentered in this card. It was to be entered from `topic-foreman-switches`, but that topic also starts `quiz-switchyard`, and `start-quiz` exits any active node before the quiz, so no conversational turn could happen inside the node. The foreman's teaching now lands in the ordinary topic responses (`topic-foreman-switches` and `topic-foreman-lift`). The artifact stays defined with a valid `defaultTopicId` and no turn timeout (C4); no new topic ID is allocated.
+        Reserved and deliberately unentered in this card. It was to be entered from `topic-foreman-switches`, but that topic also starts `quiz-switchyard`, and `start-quiz` exits any active node before the quiz, so no conversational turn could happen inside the node. The foreman's teaching now lands in the ordinary topic responses (`topic-foreman-switches` and `topic-foreman-lift`). The artifact stays defined with a valid `defaultTopicId` and no turn timeout (T3); no new topic ID is allocated.
 
   - id: node-operator-choose
     actorId: npc-press-operator
@@ -836,4 +836,4 @@ conversationNodes:
     defaultTopicId: topic-operator-default
     authoring:
       stickyReason: >-
-        The climax puzzle needs the player to tell lossy from lossless before committing a file; comparing the two trays and the ratio window takes several turns, so the node must stay open across them (C4). It still ends on `bye`, on leaving the room or on `start-quiz`; there is no turn timeout.
+        The climax puzzle needs the player to tell lossy from lossless before committing a file; comparing the two trays and the ratio window takes several turns, so the node must stay open across them (T3). It still ends on `bye`, on leaving the room or on `start-quiz`; there is no turn timeout.

@@ -1,7 +1,7 @@
-// DESIGN-OWNED GAP: referenced by application-and-ui.md §3.1 (ContentBundle)
-// but not defined there; the design docs own a later canonical definition.
-// The runtime fields of the NPC card are canonical in content-rules.md §4.3;
-// authoring-only fields (role, voice, motivation, relationship) stay in cards.
+// DESIGN-OWNED GAP: this type is referenced by the ContentBundle contract but
+// was not defined alongside it; a canonical definition is expected later.
+// Only runtime fields belong here; authoring-only fields (role, voice,
+// motivation, relationship) stay in the card source.
 export interface ActorDefinition {
   readonly id: string;
   readonly aliases: readonly string[];

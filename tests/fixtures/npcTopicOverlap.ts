@@ -1,7 +1,7 @@
-// Deterministic in-memory builders for the C7 npc topic-overlap red tests
-// (content-rules.md C7 and §7 npc-content; npcs.md §3). Every card, condition
-// and runtime topic is a declared literal: no card is read from disk and no
-// wall clock, Math.random, network or browser storage is touched.
+// Deterministic in-memory builders for the C7 npc topic-overlap red tests.
+// Every card, condition and runtime topic is a declared literal: no card is
+// read from disk and no wall clock, Math.random, network or browser storage
+// is touched.
 import { expect } from 'vitest';
 import { stringify } from 'yaml';
 import type { ConversationTopic } from '../../src/core/npcs/ConversationTopic';

@@ -3,19 +3,27 @@
 ## 1. Purpose
 
 This document defines how approved content is authored, validated and turned
-into the runtime `ContentBundle`. The authority order in
-[content-rules.md §1](content-rules.md#1-purpose-and-authority) applies: this
-document specifies the **mechanism**, not course facts or narrative. The
-rulebook and the subsystem documents own what a card means; this document owns
-how it is stored, checked and generated.
+into the runtime `ContentBundle`. It specifies the **mechanism**, not course
+facts or narrative: the bible, narrative principles and subsystem documents own
+what a card means; this document owns how it is stored, checked and generated.
+Course facts come from `docs/exam-specs/wjec-unit1.md` and the cited PDF, then
+`docs/coverage/COVERAGE.md`; the bible owns creative intent.
 
 ## 2. Authoring format
 
 YAML is the sole authoring format. One file per (area, kind) lives under
 `docs/content/<area-id>/`; `docs/content/spec-topics.yaml` is the single
-non-per-area card and holds spec topics across all areas. Card shape, the
-kind-to-file table and the binding conventions are defined in
-[content-rules.md §4.1](content-rules.md#41-common-conventions).
+non-per-area card and holds spec topics across all areas. Each card carries
+`kind`, `areaId`, `status`, optional `topicIds` and one or more named
+collections; every artefact has an ID from the bible §9 registry. Runtime keys
+use the exact names in the subsystem documents (D3), optional fields are omitted
+rather than set to `null`, prose uses block scalars (`>-` or `|-`), and authoring
+metadata lives under an `authoring:` block that the generator drops (D4).
+Conditions, triggers and effects use only the unions in `shared-rules.md`. Each
+kind's card shape is owned by its contract doc:
+[areas](areas.md#7-card-format), [npcs](npcs.md#8-npc-card-format),
+[combat](combat.md#6-card-format), [puzzles](puzzles.md#7-card-format),
+[hazards](hazards.md#7-card-format) and [hints](hints.md#6-card-format).
 
 The schema in `tools/content/schema.ts` parses each card with the `yaml` package
 and validates the authoring envelope with Zod: the `kind` enum, the optional
@@ -26,13 +34,15 @@ unresolved `todo` placeholder. Field names come from the subsystem documents
 §4, not the schema. An item may declare a top-level `useText` with required
 `success` and optional `blocked` prose; the Zod item shape enforces that.
 
-Card allocation follows [content-rules.md §1](content-rules.md#1-purpose-and-authority);
-the validator and generator merge every card into the same catalogue, so this
-layout needs no special handling.
+Card allocation follows the ownership rule in
+[bible §4.2](../content/content-bible.md#42-card-ownership-by-area--user-directed-structure):
+an artefact belongs in the card of the area that uses it. The validator and
+generator merge every card into the same catalogue, so this layout needs no
+special handling.
 
 A world is declared once, in the `worlds` collection of the area whose
 `startAreaId` it names; other areas in that world set only `definition.worldId`
-([content-rules.md §4.2](content-rules.md#42-area-and-rooms-card); D3).
+([areas.md §2](areas.md#2-ownership-and-worlds); D3).
 
 `docs/content/spec-topics.yaml` grows as topics are created; do not enumerate
 the specification up front. Each entry follows the `SpecTopic` contract in
@@ -43,6 +53,47 @@ in `docs/coverage/COVERAGE.md`. World and area indexing stays in
 `score-content` needs. Query the coverage graph (`graphify` from `docs/`, or the
 `coverage-local` MCP server) to find the topics that exist, and never invent a
 topic that has no coverage heading.
+
+### Review labels
+
+Briefs, card notes and reviewer findings use three labels:
+
+| Label        | Meaning                                                       | Failure handling                                                        |
+| ------------ | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **MUST**     | Required for acceptance.                                      | Blocker or major finding; the card cannot be approved while it is open. |
+| **SHOULD**   | Expected quality default, not a hidden acceptance test.       | Minor finding, or major if repeated across a card set.                  |
+| **MUST NOT** | Forbidden in authored content, even when the rest is correct. | Blocker or major finding, according to the cited rule.                  |
+
+A rule ID owns its rule. The labels organise reading; they do not replace the
+cited rule or change its meaning.
+
+### Authoring rules
+
+- **D1 — YAML cards only.** Writers populate YAML cards under
+  `docs/content/<area-id>/` from the schema-driven scaffolds. They never edit
+  the schema, validator, generator, generated TypeScript, engine code, the
+  design documents, agent files or `opencode.json`. There is no hand conversion to
+  TypeScript.
+- **D3 — Runtime data shape.** Runtime fields use exactly the names and types in
+  the subsystem docs and appear as YAML keys of the same names, except the exit
+  `to` → `targetRoomId` and `conditions` → `preconditions` renames (§5). Only
+  plain strings, numbers, arrays and records are allowed; omit optional fields
+  rather than assigning `undefined` or `null`
+  ([storage-schema.md §3](storage-schema.md#3-persisted-shape-canonical)). Prose
+  uses block scalars (`>-` or `|-`). `AreaDefinition.roomIds` is derived from the
+  order of `rooms` and `ConversationNode.topics` is resolved from the node's
+  `topicIds`; neither is authored. Each item declares its `initialRoom`; after
+  that, ownership lives on Player, NPC or Room state. An item may also declare
+  the optional `refusalText` string; omit it when absent or empty, since an
+  empty value falls back to the default refusal.
+- **D4 — Authoring metadata is separate.** Keys such as `assessmentObjective`,
+  `difficulty`, `clues`, `misconception`, `role`, `voice`, `motivation`,
+  `relationship`, `telegraph`, `interesting` and `useNotes` live under an
+  `authoring:` block on the artefact. The generator drops that block wholesale;
+  a stray authoring key outside the block is a validation finding. `startRoomId`
+  is a runtime field of the area definition; `levelStart` is retired. Room
+  `topicIds` are a separate authoring reference used by the gates; the generator
+  does not copy them into `RoomDefinition`.
 
 ## 3. Scaffolds
 
@@ -82,29 +133,74 @@ never edit the schema, validator or generator.
 
 ## 4. Validation
 
-`npm run content:validate` parses every card, applies the Zod shapes and runs
-the eight cross-artefact gates in
-[content-rules.md §7](content-rules.md#7-structural-validation-gates) as plain
-TypeScript: `content-ids`, `quiz-content`, `puzzle-graph`, `world-graph`,
-`hint-content`, `hazard-content`, `npc-content` and `score-content`. §7 defines
-what each gate checks and which of them also run against the generated bundle.
+`npm run content:validate` parses every card with the `yaml` package, applies the
+Zod shapes and runs the eight cross-artefact gates below as plain TypeScript:
+`content-ids`, `quiz-content`, `puzzle-graph`, `world-graph`, `hint-content`,
+`hazard-content`, `npc-content` and `score-content`. Findings print as
+`path/to/file.yaml:entry — what is wrong — gate ID`, and any finding fails the
+command with a non-zero exit code.
 
-ID prefixes follow [content-rules.md §5](content-rules.md#5-id-and-alias-registry),
-including `area-` and `world-`; `content-ids` enforces them. An exit in a rooms
-card may carry an optional `blockedText` plain string beside `direction`, `to`
-and `conditions`; §5 covers its handoff to the runtime. Both `content-ids` and
-`hint-content` accept declared room IDs as hint-sequence targets
+A card set is not ready for review or generation until validation passes with no
+findings (D5). These eight gates with their boot and test mirrors are the V1
+structural-gate rule. Validation is a structural gate before `content-critic`
+and `pck-reviewer`, never a replacement for either. `content-critic` checks voice,
+fairness and data shape against the rules in their owning documents;
+`pck-reviewer` checks accuracy, GCSE depth, terminology and load. Their finding
+formats, checks and verdicts live in `content-critic.md` and `pck-reviewer.md`.
+
+ID prefixes follow the bible §9 registry (D2), including `area-` and `world-`;
+`content-ids` enforces them. An exit in a rooms card may carry an optional
+`blockedText` plain string beside `direction`, `to` and `conditions`; §5 covers
+its handoff to the runtime. Both `content-ids` and `hint-content` accept declared
+room IDs as hint-sequence targets
 ([hints.md §2](hints.md#2-model), [§3](hints.md#3-commands-and-delivery)).
 
-Findings print as `path/to/file.yaml:entry — what is wrong — gate ID`. A single
-finding fails the command with a non-zero exit code. Shape checks — stray
-authoring keys, the document `status`, unresolved `todo` placeholders — run only
-on YAML and cannot run against the runtime bundle.
+### Gate definitions
 
-Validation is a gate before independent review, not a replacement for it.
-`content-critic` checks voice, fairness and data shape against the N/P/C/H/D
-rules; `pck-reviewer` checks accuracy, GCSE depth, terminology and load
-([content-rules.md §6](content-rules.md#6-reviewer-rubrics)).
+The gates split into two sets:
+
+- **Runtime-mirrored** — `content-ids`, `puzzle-graph`, `hazard-content` and
+  `score-content`. The boot-time check and the Vitest suite re-run their shared
+  checks against the generated `ContentBundle`
+  ([application-and-ui.md §3.3](application-and-ui.md#33-loading-and-validation)),
+  so authoring, test and boot cannot drift for these four.
+- **Authoring-only** — `world-graph`, `quiz-content`, `hint-content` and
+  `npc-content` run at authoring time in `content:validate` and again before
+  generation, never against the runtime bundle.
+
+Shape checks for stray authoring keys, document `status` and unresolved `todo`
+placeholders run only on YAML and cannot run against the runtime bundle. When
+the coverage headings are unavailable, the CLI reports that clause as an
+unverified gap rather than passing it.
+
+Room interaction and scenery shape is shared rather than authoring-only.
+`interactionShapeProblems()` in `src/content/validateContent.ts` is the single
+owner: `validateContent()` runs it against the generated bundle at boot and in
+tests, and the authoring adapter runs it against raw card rooms. It reports a
+present non-array `interactions` container, a present `itemId` that is not a
+non-empty string (including on EXAMINE), any acting item on EXAMINE, and
+malformed scenery names, descriptions and aliases. Authoring findings carry
+gate `shape` and the path of the room card that owns the problem. Target
+existence stays with `content-ids`, so a shape finding never substitutes for a
+missing target.
+
+| Gate             | Checks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content-ids`    | Unique artefact IDs; globally unique aliases across items and actors; ID prefixes per the bible §9 registry; every topic ID used by a card, room, puzzle or quiz resolves to a `## Topic: <id>` heading in `COVERAGE.md` or a declared spec topic; hint targets name a declared topic, puzzle, quiz or room; every exit target, `move-player` target, item `initialRoom` and area `startRoomId` names a declared room; exit directions valid.                                                                         |
+| `quiz-content`   | `1 <= passMark <= questionIds.length`; every questionIds entry names a declared question; every question has at least one correct option within range; explanation non-empty; an AO tag and a difficulty in `authoring`; at least one AO1 and one AO2 per quiz; `onPass` sets `quiz-passed:<id>` and emits `complete-topic`; `onFail` includes `change-lives`.                                                                                                                                                        |
+| `puzzle-graph`   | `dependsOn` IDs exist; the graph is acyclic; requirements are action-set flags rather than bare `has-item`; at least two `authoring.clues`; `topicId` names a declared spec topic.                                                                                                                                                                                                                                                                                                                                    |
+| `world-graph`    | Exactly one `worlds` declaration per world and every `definition.worldId` resolves; a world is declared by the area its `startAreaId` names; `startAreaId` and that area's `startRoomId` resolve by ID; when several worlds are declared, the world owning the authored start area is first in declaration order, because `GameState.createInitial()` boots from `worlds.all[0]`; every room is reachable from an area's `startRoomId`; every `covered` topic with evidence has a `complete-topic` completion source. |
+| `hint-content`   | 2–4 levels in ascending order from 1; unlock keys from the counter namespaces; targets name a declared spec topic, puzzle, quiz or room; no level matches answer-revealing phrasing; `scorePenalty` absent or 0.                                                                                                                                                                                                                                                                                                      |
+| `hazard-content` | `authoring.telegraph` present; effects from the shared union and no `set-puzzle-*`; a declared `schedule` has positive `remainingTurns`; the area's `startRoomId` names a declared room.                                                                                                                                                                                                                                                                                                                              |
+| `npc-content`    | Defined in [npcs.md §10](npcs.md#10-structural-validation-gates), including the T5 overlap proof. It runs at authoring time and again before generation; it does not run against the runtime bundle.                                                                                                                                                                                                                                                                                                                  |
+| `score-content`  | Every room, puzzle and quiz declares a non-negative integer `score`; every `spec-topics.yaml` entry carries the `SpecTopic` fields declared in [application-and-ui.md §8](application-and-ui.md#8-behavioural-signatures) and a non-empty evidence note; the mapped room, puzzle and quiz scores total at most `maxScore` ([application-and-ui.md §10](application-and-ui.md#10-scoring-with-many-puzzles-per-topic)); every area's `startRoomId` names a declared room.                                              |
+
+### Free-text topic-overlap proof
+
+The T5 proof is owned by [npcs.md §10.1](npcs.md#101-free-text-topic-overlap-proof).
+It runs with `npc-content` at authoring time and proves structure only;
+usefulness, tone and comprehension are authoring tests in the
+[npcs.md A rules](npcs.md#authoring-conversation-rules-a).
 
 ## 5. Generation
 
@@ -157,8 +253,7 @@ authoring pass.
 `GameState.createInitial()` boots from the first declared world
 (`worlds.all[0]`), then resolves the area by `world.startAreaId` and the room by
 `area.startRoomId`, by ID. The opening world is therefore first in declaration
-order, which the `world-graph` gate enforces
-([content-rules.md §7](content-rules.md#7-structural-validation-gates)). Unit
+order, which the `world-graph` gate enforces (§4). Unit
 tests mix small injected fixtures with assertions over the generated
 `loadContent()` bundle.
 

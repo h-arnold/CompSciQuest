@@ -1,6 +1,5 @@
-// Red tests for YAML scaffolds (content-toolchain.md §3 and §2;
-// content-rules.md §4.2). File writes go through the in-memory MemoryContentIo
-// fake; no scaffold is written under docs/content.
+// Red tests for YAML scaffolds. File writes go through the in-memory
+// MemoryContentIo fake; no scaffold is written to disk.
 import { describe, expect, it } from 'vitest';
 import {
   AREA_ID,

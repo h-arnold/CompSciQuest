@@ -1,10 +1,8 @@
 // W6 content handoff: the accepted card set, its approved counts, the twelve
-// canonical coverage headings and the authored quiz/hint wiring. The contract
-// basis is docs/content/status.md, docs/coverage/COVERAGE.md,
-// docs/developer/content-toolchain.md §5, docs/developer/application-and-ui.md
-// §3.1/§3.3 and docs/developer/content-rules.md §7; HANDOFF.md §7 records the
-// totals for reference and is not a canonical source. No file is written and
-// no wall clock, randomness, network or browser storage is consulted.
+// canonical coverage headings and the authored quiz/hint wiring. The handoff
+// totals are recorded for reference only and are not a canonical source. No
+// file is written and no wall clock, randomness, network or browser storage is
+// consulted.
 import { describe, expect, it } from 'vitest';
 import { parseCardSet } from '../../tools/content/schema.ts';
 import { authoredBundle } from '../fixtures/authored';

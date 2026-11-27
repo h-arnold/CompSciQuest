@@ -22,8 +22,8 @@ const DIRECTIONS = new Set<Direction>([
   'out',
 ]);
 
-// `hazard-content` and `puzzle-graph` now have runtime mirrors below. The
-// remaining three gates stay with their own mechanics slices (content-rules.md §7).
+// `hazard-content` and `puzzle-graph` have runtime mirrors below. The
+// remaining three gates are enforced by their own mechanics code.
 export const DEFERRED_GATES = [
   'quiz-content',
   'hint-content',
@@ -98,10 +98,9 @@ function interactionProblems(label: string, value: unknown): readonly string[] {
   return problems;
 }
 
-// One shared interaction/scenery shape owner for the runtime bundle gate and
-// the authoring adapter (content-rules.md §4.2, D3). Target-reference existence
-// stays with `referenceProblems()`; this function only inspects local shape and
-// never mutates its input.
+// One shared interaction/scenery shape check for the runtime bundle and the
+// authoring adapter. Target-reference existence stays with `referenceProblems()`;
+// this function only inspects local shape and never mutates its input.
 export function interactionShapeProblems(
   rooms: readonly unknown[],
 ): readonly string[] {

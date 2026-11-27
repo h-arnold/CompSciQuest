@@ -1,6 +1,6 @@
 # npcs card for 1-4-programming-constructs (Zone A: The Pattern Mill)
 # Populated from the approved topic file (topics/1-4-1-programming-constructs.md)
-# and the root bible §9. Applicable rules: C1–C6, N3–N5, D2–D4.
+# and the root bible §9. Applicable rules: A1–A6, T1–T6, D6, N3–N5, D2–D4.
 kind: npc
 areaId: 1-4-programming-constructs
 status: approved # draft | reviewed | approved (V1)
@@ -18,13 +18,13 @@ authoring:
       characters' own names and checked against the registry's freed nouns; none takes
       a bare noun the registry has granted to a room.
     - >-
-      C6 scoping: each of the five room-bound residents' catch-alls carries `in-room` on
+      T2 scoping: each of the five room-bound residents' catch-alls carries `in-room` on
       `isActive`; the first teaching beats and the give/stray delivery topics stay
       unscoped and so remain globally reachable by design — the ratified pattern (bible
       §11 item 14: unscoped topics stay globally reachable), with the catch-all
-      scoping being what C6 actually requires. Locality is never a topic field.
+      scoping being what T2 actually requires. Locality is never a topic field.
     - >-
-      Silent-ready rule (recorded decision, content-rules.md §4.3 point 3): no
+      Silent-ready rule (recorded decision, npcs.md §8): no
       `onEnter` effects on any state — greetings live in topic responses. States change
       `stateDesc`/`specialDesc` only, so no V4 requirement rests on a state flip.
     - >-
@@ -54,7 +54,7 @@ authoring:
       tests them.
     - >-
       All prose is plain text rendered via textContent: no HTML, no markdown, no
-      parser-error phrasing (C2). British English throughout. Welsh is never a joke
+      parser-error phrasing (A5). British English throughout. Welsh is never a joke
       target and no resident mocks the learner (harm floor); the cousin blames looms,
       thread tension and the weather for his own work, never the pupil.
 
@@ -482,7 +482,7 @@ conversationTopics:
       (You could ask what to do next.)
     authoring:
       note: >-
-        Keyword-addressed C3 AltTopic: after the teaching beat, while the room fix
+        Keyword-addressed T2 AltTopic: after the teaching beat, while the room fix
         is undone, the beat is reachable as a `special` on [next, order, sequence]
         rather than by free text. It is no longer `askTell` because the `special`
         demonstration must not be shadowed once `isIdMatchingPhrase` is removed
@@ -648,7 +648,7 @@ conversationTopics:
       (You could ask what to lift next.)
     authoring:
       note: >-
-        Keyword-addressed C3 AltTopic: after the teaching beat, while the selection
+        Keyword-addressed T2 AltTopic: after the teaching beat, while the selection
         fix is undone, the beat is reachable as a `special` on [next, shed,
         selection] rather than by free text. It is no longer `askTell` because the
         `special` demonstration must not be shadowed once `isIdMatchingPhrase` is
@@ -829,8 +829,8 @@ conversationTopics:
       (You could ask about the slip tooth.)
     authoring:
       note: >-
-        C7 ladder rung and C3 AltTopic: after the teaching beat, active only at
-        the Weft Counter (C6) once the construct is known and `pad-checked` is
+        T2 ladder rung and T2 AltTopic: after the teaching beat, active only at
+        the Weft Counter (T2) once the construct is known and `pad-checked` is
         set, while the count fix is undone (`not weft-counted`) and the ratchet
         guidance has not yet been given (`not weft-ratchet-heard`). Its first ask
         sets `weft-ratchet-heard`, the positive literal
@@ -889,14 +889,14 @@ conversationTopics:
       (You could ask her to count the passes.)
     authoring:
       note: >-
-        C7 gate: active only at the Weft Counter (C6) once the construct is
+        T5 gate: active only at the Weft Counter (T2) once the construct is
         known, `pad-checked` and the prediction beat are on record, and the
         count fix is done (`weft-counted`). The ratchet link runs
         `weft-ratchet-heard` (set by the first ask of `count-known`) →
         `prediction` → `pass-count-predicted`; the `not pass-count-predicted`
         gate on `prediction` and the `not weft-counted` gate on `count-known`
         make each pair exclusive by a positive/negated literal, never by
-        declaration order (C7). British English (D4); no quiz, score or retry
+        declaration order (T5). British English (D4); no quiz, score or retry
         change (P5); the card stays draft at V1.
 
   - id: topic-weft-tally-pad
@@ -928,12 +928,12 @@ conversationTopics:
     authoring:
       note: >-
         Disarm beat for `hazard-dye-pad`: sets the ratified flag `pad-checked`.
-        C7 gate (content-rules.md C7, npcs.md §3): askable at the Weft Counter
-        (C6) once the construct is known and while `pad-checked` is unset, so it
+        T5 gate (npcs.md §3): askable at the Weft Counter
+        (T2) once the construct is known and while `pad-checked` is unset, so it
         is exclusive with `topic-weft-tally-count-known` and
         `topic-weft-tally-prediction`, which both require `pad-checked`. Setting
         `pad-checked` opens `count-known`, whose first ask sets
-        `weft-ratchet-heard` for `prediction` (C3 ladder). Teaching only — the
+        `weft-ratchet-heard` for `prediction` (T2 ladder). Teaching only — the
         counting stays the spec's own (L1259 as world behaviour), and no new
         spec claim is made. `item-dye-pad` is ratified 2026-11-25 (§9). British
         English (D4); no quiz, score or retry change (P5); the card stays draft
@@ -983,8 +983,8 @@ conversationTopics:
       note: >-
         Producer for `pass-count-predicted`, the flag `puzzle-seat-the-ratchet`
         requires (topic file §10, allocated 2026-11-25): the Tally books the
-        figure the pupil names before the loom runs. C7 gate: active only at the
-        Weft Counter (C6) after `pad-checked` and `weft-ratchet-heard` are set —
+        figure the pupil names before the loom runs. T5 gate: active only at the
+        Weft Counter (T2) after `pad-checked` and `weft-ratchet-heard` are set —
         the latter by the first ask of `topic-weft-tally-count-known` — and while
         `pass-count-predicted` is unset; the positive/negated pair separates it
         from `count-known` and `mended`. One-shot; no teaching here — the
@@ -1111,7 +1111,7 @@ conversationTopics:
       (You could ask what to mend next.)
     authoring:
       note: >-
-        Keyword-addressed C3 AltTopic: after the teaching beat and while either
+        Keyword-addressed T2 AltTopic: after the teaching beat and while either
         selvedge fix is still undone, the beat is reachable as a `special` on
         [next, mend, mending] rather than by free text. It is no longer `askTell`
         because the `special` demonstration must not be shadowed once
@@ -1293,10 +1293,10 @@ conversationTopics:
       (You could ask what the despatch printer prints.)
     authoring:
       note: >-
-        C7 gate: askable at the Bobbin Window (C6) only before the construct is
+        T5 gate: askable at the Bobbin Window (T2) only before the construct is
         known. `topic-bobbin-lad-average` asserts the same `npc-knows` literal,
         so the two free-text beats are provably exclusive by evidence, not by
-        declaration order (C7). This pair is separate from the Weft Tally's
+        declaration order (T5). This pair is separate from the Weft Tally's
         `weft-ratchet-heard` ladder. British English (D4); no quiz, score or
         retry change (P5); the card stays draft at V1.
 
@@ -1580,12 +1580,12 @@ conversationNodes:
     defaultTopicId: topic-loomwright-default
     authoring:
       note: >-
-        Deliberate teaching beat (C4): entered from `topic-loomwright-pseudocode`,
+        Deliberate teaching beat (T3): entered from `topic-loomwright-pseudocode`,
         it lands the five flowchart shapes before the entry demonstration is
         asked for, then expires after one turn — so not sticky.
         `topic-loomwright-shapes` stays in `topicIds`; `defaultTopicId` points at
         the catch-all `topic-loomwright-default` because a `special` default is
-        ignored at runtime (npcs.md §4.3, C4). There is no turn timeout; the node
+        ignored at runtime (npcs.md §8, T3). There is no turn timeout; the node
         ends on bye, on leaving the room, or when the demonstration quiz starts.
 
   - id: node-selvedge-signal
@@ -1595,10 +1595,10 @@ conversationNodes:
     defaultTopicId: topic-selvedge-warden-default
     authoring:
       note: >-
-        Deliberate teaching beat (C4): entered from `topic-selvedge-warden-until`,
+        Deliberate teaching beat (T3): entered from `topic-selvedge-warden-until`,
         it lands the rogue-value signal explanation before the demonstration is
         asked for, then expires after one turn — so not sticky.
         `topic-selvedge-warden-signal` stays in `topicIds`; `defaultTopicId`
         points at the catch-all `topic-selvedge-warden-default` because a
-        `special` default is ignored at runtime (npcs.md §4.3, C4). No turn
+        `special` default is ignored at runtime (npcs.md §8, T3). No turn
         timeout; the signal topic stays askable in the room afterwards.

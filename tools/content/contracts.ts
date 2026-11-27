@@ -35,8 +35,8 @@ export interface ValidationOptions {
   readonly coverageTopicIds?: readonly string[];
   readonly coverageHeadings?: readonly string[];
   readonly uncheckedClauses?: readonly string[];
-  // C7 authoring-time topic-overlap check (content-rules.md C7, §7). Off for
-  // direct validateCards() callers; content:validate and generation enable it.
+  // C7 authoring-time topic-overlap check. Off for direct validateCards()
+  // callers; content:validate and generation enable it.
   readonly topicOverlap?: boolean;
 }
 

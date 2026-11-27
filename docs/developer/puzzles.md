@@ -2,8 +2,42 @@
 
 Puzzles are revision tasks: using an item at the right place, combining clues,
 or answering an NPC correctly. A puzzle is solved when all its requirement
-conditions hold, and completion records its mapped spec topic. The
-[developer documentation index](README.md) lists the other subsystem docs.
+conditions hold, and completion records its mapped spec topic. This document
+owns every puzzle authoring and runtime rule; the `puzzle-writer` must read it in
+full before beginning work and its agent brief is only a workflow checklist.
+Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
+[content-editor.md](../../.opencode/agents/content-editor.md).
+
+Rule map: [write the puzzle first](#write-the-puzzle-first),
+[card format](#7-card-format), [review checks](#8-reviewer-and-playtest-checks)
+and [acceptance](#9-agent-acceptance).
+
+## Write the puzzle first
+
+A puzzle is a task the player can work out, not a secret to guess. Draft the
+goal, blocker, tools and clue route before writing `requirements`, `dependsOn`
+or `onSolve`. The MUST/SHOULD/MUST NOT labels and finding severity are defined
+under [review labels](content-toolchain.md#review-labels).
+
+Apply the rules in this reading order: N7; N6 and
+[P1/P2](../content/content-bible.md#7-topic-index); action flags; D1–D4.
+
+| ID  | Test                | MUST                                                                                                                            | SHOULD                                                                                                             | MUST NOT                                                                                                             | Related                                              |
+| --- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| N7  | Ancestor-only prose | Reference only plot points in the puzzle's ancestor set in the PDG.                                                             | Name the shared ancestor when branches reconverge.                                                                 | Assume a fixed solve order or say "after you solved the other branch".                                               | §4                                                   |
+| N6  | Fair gate           | Place at least two discoverable clues in room or NPC text before the gate is needed, and give the blocker an in-fiction reason. | Put a clue beside the thing it explains. Aim for an "of course" insight; avoid false puzzles and misleading props. | Hide a single word in a room the player has no reason to visit.                                                      | [bible §3](../content/content-bible.md#3-pillars-n1) |
+| P1  | Topic contract      | Declare a `topicId` that resolves in `COVERAGE.md`, or mark the puzzle `navigationOnly`.                                        | State the teaching purpose in the brief.                                                                           | Invent a topic ID.                                                                                                   | P2                                                   |
+| P2  | Three beats         | Pair the puzzle with a teaching beat and a retrieval beat for its topic.                                                        | Let the puzzle apply the concept the NPC taught.                                                                   | Rely on a quiz alone to cover a topic.                                                                               | P1                                                   |
+| D3  | Action flags        | Make every `requirements` entry an action-set flag and record the named producing action in the card.                           | Give each intermediate step useful feedback or a reward.                                                           | Use bare `has-item` for an action puzzle, or make possession the only requirement when carrying is not the solution. | §3                                                   |
+| D4  | Authoring metadata  | List at least two `authoring.clues` with the room or NPC text where each appears.                                               | State goal, blocker, tools and clue-discovery route in the report.                                                 | Put clues in a runtime field or write score.                                                                         | N6                                                   |
+
+**Example — an overflow register.** Two clues: the tray under the register and
+the foreman's line about checking for a carry. `USE register` sets
+`overflow-checked`, which the puzzle requires; the flags, not carrying the
+register, solve it.
+
+**Non-example — a possession check.** `requirements: [{ kind: has-item, ... }]`
+auto-solves on pickup and tests no knowledge.
 
 ## 1. Scope
 
@@ -114,3 +148,70 @@ gated by `counter-at-least` conditions such as `turns-since:<puzzleId>` or
   ([npcs.md §4](npcs.md#4-conversation-flow)).
 - **Hazards:** a failure can reset level-local flags, but never puzzle phase
   ([hazards.md §4](hazards.md#4-failure-consequences)).
+
+## 7. Card format
+
+`puzzles.yaml` holds one `puzzles` collection per area. This is a partial
+excerpt; generation is owned by [content-toolchain.md](content-toolchain.md).
+
+```yaml
+kind: puzzle
+areaId: 1-1-computer-architecture
+status: draft
+topicIds: [data-representation]
+
+puzzles:
+  - id: puzzle-unlock-cache
+    requirements:
+      - { kind: flag-set, flag: cache-decoded } # action flags, not possession
+    onSolve:
+      - { kind: complete-topic, topicId: data-representation }
+    topicId: data-representation
+    score: 1 # awarded once on solve; topics may be scored per puzzle
+    hintSequenceId: hint-cache
+    dependsOn: [puzzle-find-key]
+    authoring:
+      clues:
+        - ... # ≥2 discoverable clues, N6
+        - ...
+```
+
+## 8. Reviewer and playtest checks
+
+`content-critic` applies the table above, checks that each clue is placed before
+it is needed, and verifies the V4 trace names every puzzle and dependency edge.
+`pck-reviewer` checks course facts, topic mapping and GCSE reading load only.
+`play-tester` confirms in W7 that the challenge comes from applying the taught
+concept and that reasonable wrong actions produce useful feedback.
+
+## 9. Agent acceptance
+
+### 9.1 Definition of done
+
+- Only `puzzles.yaml` changed; document metadata is valid and every puzzle is an
+  entry in `puzzles`, with prose in block scalars.
+- Every requirement is a flag set by a named action, never bare `has-item`, and
+  the producing action is recorded in the card.
+- All `dependsOn` ids exist; the graph is acyclic, every puzzle is reachable from
+  a root, and a topological solve order is in the report.
+- Every puzzle has at least two clues with placement; `onSolve` uses only shared
+  effects and emits `complete-topic` when a `topicId` is set.
+- The report names the goal, blocker, tools, clue route, useful failure feedback
+  and fairness rationale; multi-step nodes give intermediate feedback.
+- Prose references only ancestor plot points.
+- The final report names the file path, puzzle and topic IDs, dependency edges,
+  the fairness check for each puzzle and flagged assumptions.
+
+### 9.2 Hard constraints and escalation
+
+Return `BLOCKED: <reason> — needs <owner>` rather than guessing when an edge
+would create a cycle, a required flag is produced by no other card, or
+multi-step work needs a new puzzle ID. After a review round, revise only your
+own card for at most two rounds; then return
+`BLOCKED: <finding> requires <owner>` and let the editor resolve it.
+
+## 10. Gates
+
+The `puzzle-graph` authoring gate checks resolving `dependsOn` ids, acyclicity,
+action-set requirements, at least two `authoring.clues` and a declared `topicId`
+([content-toolchain.md §4](content-toolchain.md#4-validation)).

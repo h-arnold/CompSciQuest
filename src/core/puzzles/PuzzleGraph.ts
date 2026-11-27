@@ -1,6 +1,6 @@
-// Runtime mirror of the authoring `puzzle-graph` gate (puzzles.md §4,
-// content-rules.md §7). Authoring-only fields such as clues live in the
-// toolchain gate; this checks the declarative graph carried by the bundle.
+// Runtime mirror of the authoring `puzzle-graph` gate. Authoring-only fields
+// such as clues stay in the toolchain gate; this checks the declarative graph
+// carried by the bundle.
 import type { ContentBundle } from '../../content/ContentBundle';
 import type { Puzzle } from './Puzzle';
 

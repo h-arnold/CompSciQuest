@@ -31,16 +31,21 @@ for actors, actor states, conversation topics and conversation nodes.
 **Mandatory reading.** Before any other action, read `docs/developer/npcs.md` in
 full. It owns every NPC content and technical rule; this brief adds only
 workflow and a short operational checklist and never replaces the document.
-Then read `docs/developer/content-rules.md` §1.1, §2, §3.1, §3.2 (N — Narrative,
-at least N3–N5), D1–D5 and §8, `docs/developer/content-toolchain.md` §2,
-`docs/content/content-bible.md`, `docs/content/narrative-principles.md` and the
-brief. The output path is given in the brief and always ends in `npcs.yaml`.
-Write only that file. Use block scalars for prose, keep authoring metadata under
+Then read these documents: the MUST/SHOULD/MUST NOT label legend in
+`docs/developer/content-toolchain.md` §2 (`#review-labels`), the W1–W7 workflow
+in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` and
+`docs/content/narrative-principles.md`. Read the brief as well. The rules named
+in your contract doc live in their owning documents (bible, narrative
+principles, toolchain, application-and-ui, editor and play-tester). The output
+path is given in the brief and always ends in `npcs.yaml`. Write only that file. Use block scalars for prose, keep authoring metadata under
 `authoring:`, and never edit the schema, validator, generator or generated
 TypeScript.
 
-Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`, plus N3–N5 and D1–D5 in
-`content-rules.md`. Work in two passes: author the exchange, then implement it.
+Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
+`content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 in
+`content-bible.md`
+§9 and D1, D3, D4 and D5 in `content-toolchain.md` §§2/4. Work in two passes:
+author the exchange, then implement it.
 
 ## Pass 1 — author the exchange
 

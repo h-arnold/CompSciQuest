@@ -24,7 +24,7 @@ definition:
     pillar: >-
       P-a, P-b, P-c, P-d; the AI's "compliance" framing, each abstraction as a floor, competence gates, and deadpan machinery
     notes: >-
-      `startRoomId` is the runtime successor to the old `levelStart: true` authoring note (content-rules D4; application-and-ui §3.2). It is declared once, here. Rooms are navigation and setting, so every room declares `score: 0` (P6; topic file §3). Entry effects are empty and therefore omitted (D3).
+      `startRoomId` is the runtime successor to the old `levelStart: true` authoring note (content-toolchain D4; application-and-ui §3.2). It is declared once, here. Rooms are navigation and setting, so every room declares `score: 0` (P6; topic file §3). Entry effects are empty and therefore omitted (D3).
     worldIdNote: >-
       `worldId: world-wjec-gcse-computer-science-2025-spec` is the single world for the machine, resolved and declared once by `area-entry-interface` (decision 2026-11-25). This area names it only.
 

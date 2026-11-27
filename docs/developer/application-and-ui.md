@@ -167,8 +167,8 @@ exits:
 ```
 
 `startRoomId` is the runtime level start for hazards and quiz-failure teleports;
-[content-rules.md](content-rules.md) D4 owns the authoring rule for `startRoomId`
-and `lives`. A new game starts with 3 lives: `Session.newGame` assigns them after
+[content-toolchain.md D4](content-toolchain.md#authoring-rules) owns the authoring
+rule for `startRoomId` and `lives`. A new game starts with 3 lives: `Session.newGame` assigns them after
 `createInitial` has read `WorldDefinition.lives`, so a world that declares
 another value is not yet honoured. After the start, lives change through
 `change-lives` and on a gated area change.
@@ -197,7 +197,7 @@ files in `src/content/authored/`; it never reads or parses YAML.
 `validateContent` returns a list of human-readable problems; an empty array
 means valid. At boot it re-runs these checks against the bundle: the runtime
 mirrors of `content-ids`, `puzzle-graph`, `hazard-content` and `score-content`
-([content-rules.md §7](content-rules.md#7-structural-validation-gates)), plus
+([content-toolchain.md §4](content-toolchain.md#4-validation)), plus
 the interaction and scenery shape checks shared with authoring:
 
 - unique artefact IDs and globally unique object/NPC aliases;
@@ -208,14 +208,13 @@ the interaction and scenery shape checks shared with authoring:
   schedule);
 - per-topic score budgets hold (§10 of this document);
 - room interaction and scenery shape holds, through the owner shared with the
-  authoring gate ([content-rules.md §7](content-rules.md#7-structural-validation-gates)).
+  authoring gate ([content-toolchain.md §4](content-toolchain.md#4-validation)).
   Target-reference checks stay with `content-ids`.
 
 NPC actor binding is checked at authoring time: every authored topic and node
 carries an `actorId` that resolves to one actor, except for a brief-approved
 global topic, and the `npc-content` gate enforces it
-([npcs.md §8 "Actor binding"](npcs.md#8-npc-card-format),
-[content-rules.md §8](content-rules.md#8-fixed-contracts-content-must-use)). That
+([npcs.md §8 "Actor binding"](npcs.md#8-npc-card-format)). That
 gate is authoring-only, so boot does not re-check it. The remaining shape checks (stray
 keys outside `authoring:`, document `status`, unresolved `todo` placeholders)
 run only in `npm run content:validate` on the YAML. The four
@@ -414,6 +413,8 @@ only state mutator. `TurnContext` carries the read-only state, the injected
 globally unique object/NPC aliases ([npcs.md §3](npcs.md#3-commands-and-topic-resolution));
 there is **no disambiguation prompt**. The verb and alias tables are engine
 constants (not content), but individual item/actor aliases come from content.
+A room card may declare `aliases`, but they are authoring-only: the generator
+drops them and `NameResolver` never resolves a room name.
 
 `take` transfers a visible portable item to the player and emits "Taken.". A
 visible item whose `portable` is `false` is never transferred: it stays in the
@@ -421,7 +422,7 @@ room and remains examinable, and the handler emits exactly one `message` effect
 using the item's `refusalText` when present and non-empty, otherwise the exact
 fallback "You cannot take that item with you." An empty `refusalText` is treated
 as absent. This is in-world feedback under
-[content-rules.md §3 N5](content-rules.md#3-rule-catalogue), not a parser-style
+[narrative-principles.md §2](../content/narrative-principles.md#2-register-and-technical-language), not a parser-style
 denial. `drop` shares `takeHandler()` and is unaffected
 by `portable`: it transfers from the player to the room and emits "Dropped.".
 
@@ -1029,6 +1030,11 @@ declared `Puzzle.score`, so no score-carrying effect kind exists;
 
 The settled rule is **per-puzzle scoring**: each solved puzzle awards its own
 declared points, so one spec topic can be scored several times, up to a budget.
+
+Content declares each room, puzzle and quiz `score` but never writes score
+itself (P6). `ScoreTracker` awards from the achievement events for covered topics
+with evidence; `topic-completed` records completion and awards nothing. Hints
+default to zero penalty.
 
 - `Puzzle.score`, `Quiz.score` (awarded on pass) and `RoomDefinition.score`
   (first visit) are content-declared integers, zero when not scoreable.

@@ -1,6 +1,5 @@
 // W7F-07 — authored exit feedback through the in-memory toolchain fixture.
-// No real YAML card is read and no generated file is written; content-rules.md
-// D3/V1 and content-toolchain.md §5 are the owning contracts.
+// No real YAML card is read and no generated file is written.
 import { describe, expect, it } from 'vitest';
 import { normalisedCards } from '../../tools/content/gates/common.ts';
 import {

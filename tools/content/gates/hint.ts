@@ -1,5 +1,5 @@
-// hint-content gate (content-rules.md §7, §4.7, H2/H3): ladder, unlock keys,
-// targets and the zero-default penalty.
+// hint-content gate: ladder, unlock keys, targets and the zero-default
+// penalty.
 
 import type { Finding, ParsedCardSet } from '../contracts.ts';
 import {

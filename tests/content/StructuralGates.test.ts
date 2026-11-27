@@ -1,6 +1,5 @@
-// Red tests for the content-ids structural gates (content-rules.md §7,
-// application-and-ui.md §3.3). Each negative case asserts the reported problem
-// AND that the injected bundle is left untouched.
+// Red tests for the content-ids structural gates. Each negative case asserts
+// the reported problem AND that the injected bundle is left untouched.
 import { describe, expect, it } from 'vitest';
 import {
   LOCAL_FIXTURE_COVERAGE_TOPIC_IDS,

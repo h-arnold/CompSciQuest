@@ -40,7 +40,7 @@ export interface ValidationOptions {
   readonly coverageTopicIds?: readonly string[];
   readonly coverageHeadings?: readonly string[];
   // Clauses whose source is not available to the validator must be reported as
-  // gaps instead of silently passing (content-rules.md §7, final paragraph).
+  // gaps instead of silently passing.
   readonly uncheckedClauses?: readonly string[];
 }
 

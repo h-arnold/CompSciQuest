@@ -27,7 +27,7 @@ import { gNpc15, gNpc16, gNpc17, gNpc18 } from './npcTopicOverlapHandoffCases';
 
 const EMPTY = undefined;
 
-describe('C7 npc topic-overlap gate (content-rules.md C7, §7)', () => {
+describe('C7 npc topic-overlap gate', () => {
   it('G-NPC-01: compatible ask topics with disjoint objectIds are one pair finding', async () => {
     expect(await gNpc01()).toBe(EMPTY);
   });
