@@ -20,14 +20,14 @@ export class QuizPanel {
     if (quiz === undefined) {
       return;
     }
-    // The prompt keeps the paragraph produced by the block renderer.
-    const prompt = document.createElement('div');
-    prompt.append(
+    // The prompt keeps the paragraph produced by the block renderer. Its nodes
+    // go straight into the panel so the only direct div children are the
+    // numbered options (§7.1).
+    this.element.append(
       ...renderBlock(
         `Question ${quiz.questionNumber} of ${quiz.questionCount}: ${quiz.prompt}`,
       ),
     );
-    this.element.append(prompt);
 
     let index = 0;
     for (const option of quiz.options) {
