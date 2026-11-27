@@ -615,6 +615,11 @@ only `#app`; all markup is created by `GameWindow` and its children.
 (`aria-live="polite"`), so assistive technology announces it when a quiz
 starts.
 
+`OutputLog`'s transcript element carries `role="log"` and `aria-live="polite"`,
+so assistive technology announces appended lines without interrupting the
+player. `OutputLog` appends the formatted lines it is given without parsing
+their content ([§6.1](#61-event-to-view-mapping)).
+
 ### 7.2 View data
 
 Events are a stream; `ScorePanel` needs current aggregate state and is forbidden
