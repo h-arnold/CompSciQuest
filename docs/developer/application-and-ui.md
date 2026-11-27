@@ -713,7 +713,10 @@ Alignment is a class rather than an inline style, and CSS owns layout, spacing
 and contrast.
 
 Links pass an allowlist: scheme `https`, host `h-arnold.github.io`, and path
-`/CompSciQuest` or below it. Allowed links carry `target="_blank"` and
+`/CompSciQuest` or below it. Destinations are parsed as absolute URLs; malformed
+URLs and embedded credentials (`username`/`password`) are rejected, as is an
+explicit non-default port. Query strings and fragments are permitted because
+they do not change the destination. Allowed links carry `target="_blank"` and
 `rel="noopener noreferrer"`; every other link, raw HTML and images render as
 plain text. Content uses no links by default; the Pages footer link in `help`
 is the exception ([content-rules.md §4.1.1](content-rules.md#411-markdown-and-affordance-formatting)).
