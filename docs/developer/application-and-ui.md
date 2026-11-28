@@ -666,6 +666,14 @@ event mapping in §9 still holds for the event pipeline; suppression happens
 only at render time. Submitted commands **are** echoed to the transcript as
 `> <raw input>` before their resulting batch is rendered.
 
+The suggested prompt has one on-screen owner: the canonical `topic-suggested`
+line in the `.output-log` transcript, rendered as a Markdown block above.
+`ConversationPanel` shows `Talking with X.` only and MUST NOT also render
+`conversation.prompt`. Both answer forms in a prompt such as
+`(You could ask ai yes or ask ai no.)` therefore appear exactly once each, with
+nothing lost. `ConversationView.prompt` remains in `GameViewData` for other
+consumers and metadata (§7.2).
+
 ## 7. UI structure and view-model
 
 ### 7.1 DOM layout
@@ -790,6 +798,10 @@ rules. `ScorePanel` presents `earnedScore`/`maxScore`, visited counts and the
 linked spec topics using `SpecTopicCatalogue` labels. `Game.getViewData()` caps
 `visitedRoomCount` at the area's declared `roomIds.length`, so the panel never
 shows more visits than the area has rooms.
+
+`ConversationView.prompt` stays in the view model for other consumers and
+metadata. The suggested prompt reaches the player through the `topic-suggested`
+transcript line (§6.1); `ConversationPanel` renders only `Talking with X.`.
 
 `QuizView.passMark` is the authored `quiz.passMark` count.
 `QuizView.remainingWrong` is the wrong answers still affordable in the active

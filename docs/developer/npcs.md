@@ -160,7 +160,7 @@ Conversation is authored as actors, actor states, topics and nodes.
 // src/core/npcs/ActorState.ts — data, not behaviour
 export interface ActorState {
   readonly id: string; // e.g. 'idle', 'ready', 'talking', 'hostile'
-  readonly stateDesc: string; // appended to examine text
+  readonly stateDesc: string; // current-state actor examine text (emitted verbatim)
   readonly specialDesc: string; // shown in the room listing
   readonly onEnter?: readonly Effect[];
   readonly onExit?: readonly Effect[];
@@ -221,6 +221,12 @@ export interface ConversationNode {
 `aliases` and `initialStateId`. Runtime state lives in `NpcStateDto`: `stateId`,
 `knownTopics`, `inventory`, `activeNodeId?` and `topicUses`
 ([storage-schema.md §3.2](storage-schema.md#32-entity-and-system-state)).
+
+When an actor has no authored `examine` interaction, `examine <actor>` (aliases
+`x`, `look at`) emits a single `message` whose text is that actor's current-state
+`ActorState.stateDesc` verbatim. No base or fallback string is appended, and
+`ActorDefinition` supplies no `description` on this path. Item and scenery
+examine paths are unchanged.
 
 ## 3. Commands and topic resolution
 
@@ -316,10 +322,17 @@ loaded. This keeps `NameResolver` unambiguous without a disambiguation prompt.
    lesson-state mutation. Actor location is inferred rather than stored on
    `NpcStateDto`.
 
-4. `bye` emits `conversation-ended` and returns the actor to its declared
-   `initialStateId`. Leaving the room in phase 4 also ends the conversation.
-   There is deliberately **no turn timeout** — no implicit "you drifted away"
-   farewell.
+4. `bye`/`goodbye` while in conversation emits a single plain `message`
+   `Goodbye.` before `conversation-ended`, then returns the actor to its
+   declared `initialStateId`. The node-exit order is unchanged: current-state
+   `onExit` effects, then `exit-node`, then `conversation-ended`, then the
+   restore of `initialStateId`. `conversation-ended` stays transcript-suppressed
+   ([application-and-ui.md §6.1](application-and-ui.md#61-event-to-view-mapping));
+   the farewell emits no `npc-spoke`, selects no topic and changes no flag or
+   gate. Outside a conversation, `bye`/`goodbye` replies with the code-owned
+   `You are not in a conversation.` instead of authored farewell copy. Leaving
+   the room in phase 4 also ends the conversation. There is deliberately **no
+   turn timeout** — no implicit "you drifted away" farewell.
 5. A topic's `effects` can call `learn-topic`, adding a topic ID to
    `knownTopics`. This is TADS's `knowsAbout`: the player cannot ask about the
    ring until the NPC mentions it. Where the player could have discovered the
