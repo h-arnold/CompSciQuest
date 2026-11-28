@@ -8,6 +8,10 @@ Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
 [content-editor.md](../../.opencode/agents/content-editor.md). The exam
 specification is the only source of course facts.
 
+A topic's quizzes are settled with its puzzle goals, so a quiz is the retrieval
+beat of a teaching beat that already exists. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 Rule map: [write the question first](#write-the-question-first),
 [card format](#6-card-format), [review checks](#7-reviewer-and-playtest-checks)
 and [acceptance](#8-agent-acceptance).

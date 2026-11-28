@@ -159,11 +159,12 @@ exploration with a QA report and screenshots after implementation, then E2E
 authoring once the area's behaviour is confirmed by playtest and findings are
 resolved. [testing.md](docs/developer/testing.md) owns that sequencing rule, the
 evidence rule, the test-value filter and copy-pinning guidance.
-`architecture.md` §12 sets the build order —
-persistence, then content registry and UI shell, then hazards and puzzles, NPCs,
-quiz combat and hints. Lint bootstrap and the parser slice are lead additions;
-the final content check is the W7 playtest required for each accepted area by
-V5 (`play-tester.md`), not a §12 requirement.
+`code-lead` sequences the engine build — persistence, then content registry and
+UI shell, then hazards and puzzles, NPCs, quiz combat and hints — against
+[architecture.md](docs/developer/architecture.md) §4 and §5. Lint bootstrap and
+the parser slice are lead additions; the final content check is the W7 playtest
+required for each accepted area by V5 (`play-tester.md`), not a build-order
+requirement.
 
 ### Graphify in every code brief
 

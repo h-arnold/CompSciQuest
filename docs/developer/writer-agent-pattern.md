@@ -9,11 +9,11 @@ and ownership rules.
 
 ## The three layers
 
-| Layer            | Location                              | Owns                                                                                                                                                          |
-| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Agent file       | `.opencode/agents/<kind>-writer.md`   | Workflow passes, short operational checklists of rules that bear repeating, the mandatory-reading pointer, the final report and the escalation pointer.       |
-| Contract doc     | `docs/developer/<kind>.md`            | Every authoring and technical rule for the kind, card format, gates, reviewer checks, definition of done and hard constraints. The single source of truth.   |
-| Cross-cutting    | `content-rules.md`, `narrative-principles.md` | Rules and guidance that apply to all writing and all agents.                                                                                          |
+| Layer         | Location                                      | Owns                                                                                                                                                          |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent file    | `.opencode/agents/<kind>-writer.md`           | Workflow passes, short operational checklists of rules that bear repeating, the mandatory-reading pointer, the final report and the escalation pointer.       |
+| Contract doc  | `docs/developer/<kind>.md`                    | Every authoring and technical rule for the kind, card format, gates, reviewer checks, definition of done and hard constraints. The single source of truth.    |
+| Cross-cutting | `narrative-principles.md`, `content-bible.md` | Rules and guidance that apply to all writing and all agents: the N rules, the voice and the harm floor in the narrative principles, the P rules in the bible. |
 
 An agent file never restates a rule table, a research section or a worked
 example. It names the rule ID and links to the owning section. If a line in an
@@ -32,13 +32,25 @@ exchange, scene or mechanic the player should experience, then meets the
 technical contract that delivers it. Code and data tables serve the narrative;
 they do not define it.
 
+## Ideation briefs
+
+A writer may be briefed to propose rather than to author. The editor runs the
+area design stages
+([`content-editor.md`](../../.opencode/agents/content-editor.md#design-stages-w1w2))
+and briefs the owning writer for options. An ideation brief names no output
+path: the writer returns two or three options in its final message, edits no
+file, and allocates no ID or alias, because the editor curates, the user
+selects and the editor pins the choice. Each agent file says this in one short
+paragraph, so the writer knows the difference between a design stage and a card
+job.
+
 ## Writer agent template
 
 Keep this shape and keep it short. The contract doc holds the detail.
 
 ```md
 ---
-description: "<one line>"
+description: '<one line>'
 mode: subagent
 permissions: <unchanged deny/allow block for one YAML card>
 ---
@@ -49,13 +61,20 @@ You are the <kind> writer for CompSciQuest. <One sentence of role.>
 It owns every <kind> content and technical rule; this brief adds only workflow
 and a short operational checklist and never replaces the document. Then read
 <cross-cutting sections>, <bible>, <difficulty doc where relevant> and the
-brief. The output path is given in the brief and always ends in `<file>.yaml`.
-Write only that file. Use block scalars for prose, keep authoring metadata under
-`authoring:`, and never edit the schema, validator, generator or generated
-TypeScript.
+brief. In a card brief the output path is given in the brief and always ends in
+`<file>.yaml`; write only that file. Use block scalars for prose, keep
+authoring metadata under `authoring:`, and never edit the schema, validator,
+generator or generated TypeScript.
 
-Rules you own: <rule IDs> in `<contract doc>`, plus <shared IDs> in
-`content-rules.md`. Work in two passes: author the <thing>, then implement it.
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must reach the
+depth the brief asks for. Name the rule IDs each option depends on.
+
+Rules you own: <rule IDs> in `<contract doc>`, plus the shared N and P rules in
+`narrative-principles.md` and `content-bible.md`. Work in two passes: author the
+<thing>, then implement it.
 
 ## Pass 1 — author the <thing>
 
@@ -97,14 +116,21 @@ with a short example and non-example.>
 ## <Metadata or card-shape rules owned by this kind>
 
 ## 1. Scope
+
 ## 2. Model
+
 <Existing numbered runtime sections stay in place.>
 
 ## <next number>. Card format
+
 ## <next number>. Reviewer and playtest checks
+
 ## <next number>. Structural validation gates
+
 ## <next number>. Agent acceptance
+
 ### <next number>.1 Definition of done
+
 ### <next number>.2 Hard constraints and escalation
 ```
 
@@ -112,8 +138,7 @@ with a short example and non-example.>
 
 The full statement of a rule lives in one doc. Where another doc needs the rule,
 it names the ID and links to the owner. Rule IDs are stable when a rule moves:
-update the
-[rule index](content-rules.md#3-rule-catalogue), the writer's mandatory-reading
-list and every link that cited the old location. Cross-cutting docs gain no
+update the rule's owning document, the writer's mandatory-reading list and
+every link that cited the old location. Cross-cutting docs gain no
 kind-specific detail, and contract docs gain no rule that applies to every
 kind.

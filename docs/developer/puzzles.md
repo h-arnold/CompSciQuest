@@ -19,6 +19,11 @@ goal, blocker, tools and clue route before writing `requirements`, `dependsOn`
 or `onSolve`. The MUST/SHOULD/MUST NOT labels and finding severity are defined
 under [review labels](content-toolchain.md#review-labels).
 
+The puzzle goals are settled and pinned before the cast and the key items are
+designed, so the card's requirements name an action that exists by the time it
+is written. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 Apply the rules in this reading order: N7; N6 and
 [P1/P2](../content/content-bible.md#7-topic-index); action flags; D1–D4.
 

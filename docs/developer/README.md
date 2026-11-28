@@ -23,9 +23,10 @@ and writing rules.
 
 ## Content pipeline
 
-| Doc                                          | Owns                                                                                                                              |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [content-toolchain.md](content-toolchain.md) | YAML authoring format, review labels, D/V1 rules, scaffolds, Zod shapes, validator, generator and committed generated TypeScript. |
+| Doc                                                | Owns                                                                                                                                   |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [content-toolchain.md](content-toolchain.md)       | YAML authoring format, review labels, D/V1 rules, scaffolds, Zod shapes, validator, generator and committed generated TypeScript.      |
+| [writer-agent-pattern.md](writer-agent-pattern.md) | The three layers of content writing — writer agent file, contract document, cross-cutting rules — and the templates for the first two. |
 
 The W1–W7 workflow and its gates live in `.opencode/agents/content-editor.md`.
 Content rules live in the bible, `narrative-principles.md`, the subsystem

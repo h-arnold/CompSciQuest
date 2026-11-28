@@ -38,8 +38,7 @@ in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` §9 (tone gu
 and `docs/content/difficulty-and-fairness.md`. Read the
 brief as well. The rules named in your contract doc live in their owning
 documents (bible, narrative principles, toolchain, application-and-ui, editor
-and play-tester). The output path is given in the brief and always ends in
-`rooms.yaml`. Write only that file. Use a literal `|` block for room descriptions
+and play-tester). In a card brief the output path is given in the brief and always ends in `rooms.yaml`; write only that file. Use a literal `|` block for room descriptions
 and other multi-paragraph prose (a folded `>-` destroys paragraph breaks). Apply
 [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10):
 bold marks a thing the player can handle, bold italic a person they can address,
@@ -47,6 +46,17 @@ italic a way through; style only resolvable spans on first mention, keep to at
 most four bold and four italic spans per room description, and never use emphasis
 for rhetorical stress. Keep authoring metadata under `authoring:`, and never edit
 the schema, validator, generator or generated TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must reach the
+depth the brief asks for — for the area stage, the place's physical behaviour,
+the pillars it serves, the room cluster with each room's purpose and
+connections, the resident cast by role, the sensory palette, the spec topics
+covered and the hazards it selects; for the key-items stage, which items
+exist, what each one is, and the action that sets each flag a pinned puzzle
+goal requires. Name the rule IDs each option depends on.
 
 Rules you own: N4, N5, N6, N8, D2–D4 in `areas.md`; cross-cutting N1–N3 in
 `content-bible.md` (§3 for N3), N4/N5 and N9 in `narrative-principles.md` §2 and

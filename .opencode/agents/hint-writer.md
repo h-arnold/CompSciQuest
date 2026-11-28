@@ -39,13 +39,21 @@ in `content-editor.md` Gates 0–3, `docs/developer/shared-rules.md` §3,
 and `docs/content/narrative-principles.md` (§2 register, §8 harm floor). Read
 the brief as well. The rules named in your contract doc live in
 their owning documents (bible, narrative principles, toolchain,
-application-and-ui, editor and play-tester). The output path is given in the
-brief and always ends in `hints.yaml`. Write only that file. Use a literal `|`
+application-and-ui, editor and play-tester). In a card brief the output path is given in the
+brief and always ends in `hints.yaml`; write only that file. Use a literal `|`
 block for multi-paragraph hint text (a folded `>-` destroys paragraph breaks).
 Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10): hints carry no emphasis at all; inline code,
 lists, tables and fences are enough. Keep authoring metadata under
 `authoring:`, and never edit the schema, validator, generator or generated
 TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must state the
+ladder for each pinned puzzle goal: how many levels, what each level reveals
+and must not give away, and the stuckness that unlocks it. Name the rule IDs
+each option depends on.
 
 Rules you own: H2, H2a, H3, P6, N4 in `hints.md`; cross-cutting N and P rules in
 `narrative-principles.md` §2, `content-bible.md` §7 and `application-and-ui.md`

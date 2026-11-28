@@ -309,7 +309,8 @@ Provide a concise handoff summary including:
 │   │   ├── hazards.md                                   # Hazard authoring (H1) and declarative scheduled life-loss rules
 │   │   ├── hints.md                                     # Hint authoring (H2, H3), escalating ladders, cooldowns, penalties
 │   │   ├── npcs.md                                      # NPC authoring (A1–A6, T1–T6, D6), actors, states, topics, ConvNode, knowledge gating, TopicResolver
-│   │   └── puzzles.md                                   # Puzzle authoring (N7), action-flag completion, rewards, PDG validation
+│   │   ├── puzzles.md                                   # Puzzle authoring (N7), action-flag completion, rewards, PDG validation
+│   │   └── writer-agent-pattern.md                      # The three layers of content writing (agent file, contract doc, cross-cutting rules) and the templates for the first two
 │   ├── content/                                         # Maintained by docs agent: content-bible.md,
 │   │                                                    #   narrative-principles.md (cross-cutting voice and harm floor),
 │   │                                                    #   difficulty-and-fairness.md (cross-content difficulty, fairness and playtest guidance),

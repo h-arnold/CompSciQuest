@@ -41,12 +41,20 @@ the topics in your brief, `docs/content/content-bible.md` and
 `docs/content/narrative-principles.md` (§2 register, §8 harm floor). Read the
 brief as well. The rules named in your contract doc live in their owning
 documents (bible, narrative principles, toolchain, application-and-ui, editor
-and play-tester). The output path is given in the brief and always ends in
-`quizzes.yaml`. Write only that file. Use a literal `|` block for multi-paragraph
+and play-tester). In a card brief the output path is given in the brief and always ends in
+`quizzes.yaml`; write only that file. Use a literal `|` block for multi-paragraph
 prose (a folded `>-` destroys paragraph breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10): quiz
 prompts, options and explanations carry no emphasis; inline code for expressions
 is enough. Keep authoring metadata under `authoring:`, and never edit the
 schema, validator, generator or generated TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must state which
+quiz asks what, the adversarial shape of each quiz, the topics it covers, and
+how it pairs with the teaching and application beats. Name the rule IDs each
+option depends on.
 
 Rules you own: P3, P4, P5, N3, N4, D3 in `combat.md`; cross-cutting P1, P2 and
 N5 in `content-bible.md` §7 and `narrative-principles.md` §2; P6 in

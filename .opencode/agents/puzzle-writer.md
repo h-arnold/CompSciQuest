@@ -40,13 +40,21 @@ W1–W7 workflow in `content-editor.md` Gates 0–3,
 PDG sketch) and `docs/content/narrative-principles.md` (§2 register, §8 harm
 floor). Read the brief as well. The rules named in your
 contract doc live in their owning documents (bible, narrative principles,
-toolchain, application-and-ui, editor and play-tester). The output path is
-given in the brief and always ends in `puzzles.yaml`. Write only that file. Use
+toolchain, application-and-ui, editor and play-tester). In a card brief the output path is
+given in the brief and always ends in `puzzles.yaml`; write only that file. Use
 a literal `|` block for multi-paragraph prose (a folded `>-` destroys paragraph
 breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10) to clue and response prose: style affordances, not
 rhetorical emphasis, and keep every styled span resolvable. Keep authoring
 metadata under `authoring:`, and never edit the schema, validator, generator or
 generated TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must state the
+area's end goal, the puzzle goals with their goal, blocker, tools and clue
+route, the PDG edges between them, and the teaching and retrieval beat for
+each topic. Name the rule IDs each option depends on.
 
 Rules you own: N6, N7, P1, P2, D3, D4 in `puzzles.md`; cross-cutting N/P rules in
 `narrative-principles.md` §2 and `content-bible.md` §7; D2 (IDs and aliases) and

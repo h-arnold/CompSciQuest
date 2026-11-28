@@ -39,13 +39,20 @@ W1–W7 workflow in `content-editor.md` Gates 0–3,
 (hazard palette) and `docs/content/narrative-principles.md` (§3 comic mode, §8
 harm floor). Read the brief as well. The rules named in your
 contract doc live in their owning documents (bible, narrative principles,
-toolchain, application-and-ui, editor and play-tester). The output path is
-given in the brief and always ends in `hazards.yaml`. Write only that file. Use
+toolchain, application-and-ui, editor and play-tester). In a card brief the output path is
+given in the brief and always ends in `hazards.yaml`; write only that file. Use
 a literal `|` block for multi-paragraph prose (a folded `>-` destroys paragraph
 breaks). Apply [N10](../../docs/content/narrative-principles.md#markdown-affordance-formatting-n10)
 to telegraph and failure text: style only real affordances, never rhetorical
 emphasis or an action the game will not offer. Keep authoring metadata under
 `authoring:`, and never edit the schema, validator, generator or generated TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must state which
+hazards suit the area, what triggers each one, how it is telegraphed, and what
+it costs. Name the rule IDs each option depends on.
 
 Rules you own: H1, H1a, H1b, N4, N5 in `hazards.md`; cross-cutting N rules in
 `narrative-principles.md` §2 and `content-bible.md` §7; D2 (IDs and aliases) and

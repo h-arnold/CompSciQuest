@@ -8,6 +8,10 @@ its agent brief is only a workflow checklist.
 Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
 [content-editor.md](../../.opencode/agents/content-editor.md).
 
+The area's hazards are selected in the area design stage, and the card is
+written from that pinned selection. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 Rule map: [write the hazard first](#write-the-hazard-first),
 [card format](#7-card-format), [review checks](#8-reviewer-and-playtest-checks)
 and [acceptance](#9-agent-acceptance).

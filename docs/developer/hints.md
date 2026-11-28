@@ -8,6 +8,10 @@ beginning work and its agent brief is only a workflow checklist.
 Rules are cited by ID from their owning documents; the W1–W7 workflow lives in
 [content-editor.md](../../.opencode/agents/content-editor.md).
 
+A ladder is designed last, after the puzzle it targets is pinned, because a
+hint's target is a puzzle ID. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 Rule map: [write the ladder first](#write-the-ladder-first),
 [card format](#6-card-format), [review checks](#7-reviewer-and-playtest-checks)
 and [acceptance](#8-agent-acceptance).

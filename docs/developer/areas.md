@@ -24,6 +24,17 @@ are defined under [review labels](content-toolchain.md#review-labels).
 Apply the rules in this reading order: N4/N5; N8; N6; N1/N2; D2/D3/D4. Resolve
 a conflict in favour of the rule earlier in that order.
 
+A brief must supply the area premise at the depth set in
+[bible §5](../content/content-bible.md#5-area-index): physical logic, pillars
+served, room purposes, resident cast and sensory palette. A one-line index
+purpose is not enough to brief a writer.
+
+The area is designed before it is written. The premise, the room cluster and
+the area's hazards are settled in the area design stage, and the key items
+follow the pinned puzzle goals, so a writer is never asked to invent the shape
+of the place. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 | ID  | Test                   | MUST                                                                                                                                                                                           | SHOULD                                                                                                                                                             | MUST NOT                                                                   | Related |
 | --- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | ------- |
 | N4  | Voice                  | Write in second person, present tense and the bible's register. Failure text, refusals and unmatched commands stay in voice.                                                                   | Give each room one concrete image rather than a stack of adjectives; bind each exit to a named landmark and keep a room's description stable across state changes. | Use first person, past tense, or a labelled inventory in place of a scene. | N5, A1  |

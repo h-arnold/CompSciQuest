@@ -36,11 +36,20 @@ Then read these documents: the MUST/SHOULD/MUST NOT label legend in
 in `content-editor.md` Gates 0–3, `docs/content/content-bible.md` and
 `docs/content/narrative-principles.md`. Read the brief as well. The rules named
 in your contract doc live in their owning documents (bible, narrative
-principles, toolchain, application-and-ui, editor and play-tester). The output
-path is given in the brief and always ends in `npcs.yaml`. Write only that file.
+principles, toolchain, application-and-ui, editor and play-tester). In a card brief the output
+path is given in the brief and always ends in `npcs.yaml`; write only that file.
 Use a literal `|` block for multi-paragraph prose (a folded `>-` destroys
 paragraph breaks), keep authoring metadata under `authoring:`, and never edit
 the schema, validator, generator or generated TypeScript.
+
+**Ideation briefs.** When the brief asks for options and names no output path,
+this is a design stage, not a card job. Return two or three options in your
+final message, edit no file, and allocate no ID or alias: the editor curates,
+the user selects, and the editor pins the choice. Each option must reach the
+profile depth in bible §6: who is resident, why that person exists here, what
+they want, who opposes them, their voice with a sample line, and which key
+item each pinned puzzle goal needs them to hold. Name the rule IDs each option
+depends on.
 
 Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
 `content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 (IDs and

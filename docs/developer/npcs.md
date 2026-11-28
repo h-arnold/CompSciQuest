@@ -11,6 +11,10 @@ the W1–W7 workflow lives in
 read this document in full before beginning work; its agent brief supplies
 workflow and a short operational checklist, never a substitute for these rules.
 
+The cast is designed after the puzzle goals are pinned, so a character exists
+for a reason the game has already committed to. See the
+[design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
+
 Start with the exchange the player should experience: voice, narrative aim,
 takeaway, fallback and comprehension. Only then choose the match kinds, gates,
 nodes and effects that deliver it. Rule map:
@@ -165,19 +169,19 @@ export interface ActorState {
 // src/core/npcs/ConversationTopic.ts
 export type TopicMatch =
   | {
-      readonly kind: "ask" | "tell" | "askTell";
+      readonly kind: 'ask' | 'tell' | 'askTell';
       readonly objectIds: readonly string[];
     }
-  | { readonly kind: "give" | "show"; readonly itemIds: readonly string[] }
+  | { readonly kind: 'give' | 'show'; readonly itemIds: readonly string[] }
   | {
-      readonly kind: "command" | "special";
+      readonly kind: 'command' | 'special';
       readonly keywords: readonly string[];
     };
 
 export type ResponseStrategy =
-  | { readonly kind: "once" }
-  | { readonly kind: "sequence" } // play in order, repeat the last
-  | { readonly kind: "rotating" }; // cycle; uses injected Random if shuffled
+  | { readonly kind: 'once' }
+  | { readonly kind: 'sequence' } // play in order, repeat the last
+  | { readonly kind: 'rotating' }; // cycle; uses injected Random if shuffled
 
 export interface ConversationTopic {
   readonly id: string;
@@ -233,9 +237,9 @@ during resolution. Its canonical signature is in
 
 ```ts
 export type ResolvedTopic =
-  | { readonly kind: "object"; readonly objectId: string }
-  | { readonly kind: "keyword"; readonly topicId: string }
-  | { readonly kind: "free-text"; readonly text: string };
+  | { readonly kind: 'object'; readonly objectId: string }
+  | { readonly kind: 'keyword'; readonly topicId: string }
+  | { readonly kind: 'free-text'; readonly text: string };
 ```
 
 Resolution order:
