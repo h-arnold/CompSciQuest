@@ -107,7 +107,17 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
     expect(panel.element.className).toBe('conversation-panel');
     expect(panel.element.hidden).toBe(false);
     expect(panel.element.textContent).toContain('Guide');
-    expect(panel.element.textContent).toContain(prompt);
+    // UI-CONVPROMPT-01 (application-and-ui.md §6.1): the panel carries only
+    // "Talking with X."; the canonical topic-suggested transcript line is the
+    // sole on-screen owner of the authored prompt.
+    expect(panel.element.textContent).toBe('Talking with Guide.');
+    expect(panel.element.textContent).not.toContain(prompt);
+    expect(
+      formatEvent(
+        { type: 'topic-suggested', actorId: ACTOR_ID, text: prompt },
+        npcBundle(),
+      ),
+    ).toEqual([prompt]);
     const mounted = panel.element;
 
     const state = npcState({
@@ -126,7 +136,7 @@ describe('NPC integration (application-and-ui.md §4, §8)', () => {
 
     expect(panel.element).toBe(mounted);
     expect(panel.element.hidden).toBe(false);
-    expect(panel.element.textContent).toContain('Guide');
+    expect(panel.element.textContent).toBe('Talking with Guide.');
   });
 
   it('NPC-INTEG-04: GameViewData.conversation carries actorId, actorName and an optional prompt, and is absent with no conversation', async () => {

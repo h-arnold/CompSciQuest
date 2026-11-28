@@ -22,8 +22,5 @@ export class ConversationPanel {
     const name = conversation.actorName;
     const displayName = name.charAt(0).toUpperCase() + name.slice(1);
     appendMarkdownBlock(this.element, `Talking with ${displayName}.`);
-    if (conversation.prompt !== undefined) {
-      appendMarkdownBlock(this.element, conversation.prompt);
-    }
   }
 }

@@ -3,14 +3,12 @@
 // §4.4, §4.5, §6.1, §8, §10.5–§10.6; branch-matrix.md rows MD-UI-01..10;
 // docs/developer/application-and-ui.md §6.1, §7.1.
 // Canonical graph nodes: GameWindow (.handleCommand, .renderBatch), OutputLog
-// (.append), QuizPanel / ConversationPanel / HintPanel / ScorePanel (.refresh),
+// (.append), QuizPanel / ScorePanel (.refresh),
 // formatEvent() and the FakeDocument / FakeElement harness. Only injected fakes
 // are used: no real DOM, wall clock, random source, storage, network or files.
 import { afterEach, expect, it } from 'vitest';
 import type { GameEvent } from '../../src/core/events/GameEvent';
-import { ConversationPanel } from '../../src/ui/ConversationPanel';
 import { formatEvent } from '../../src/ui/formatEvent';
-import { HintPanel } from '../../src/ui/HintPanel';
 import { loadFailureMessage } from '../../src/ui/loadFailureMessage';
 import { OutputLog } from '../../src/ui/OutputLog';
 import { QuizPanel } from '../../src/ui/QuizPanel';
@@ -340,7 +338,8 @@ it('MD-UI-06: a table and a fence leave the log role and live region intact', ()
 });
 
 // ---------------------------------------------------------------------------
-// MD-UI-07 / 08 — panels use the assigned channels
+// MD-UI-07 — quiz panel uses the assigned channels (MD-UI-08 lives in
+// markdownConversationPanel.test.ts to keep this file within the line cap)
 // ---------------------------------------------------------------------------
 
 it('MD-UI-07: quiz options use inline Markdown and prompt and requirement use block Markdown', () => {
@@ -398,41 +397,6 @@ it('MD-UI-07: quiz options use inline Markdown and prompt and requirement use bl
   expect(lastChild?.getAttribute('aria-live')).toBe('polite');
   expect(element.textContent).not.toContain('quiz-stub');
   assertNoHtmlWrites(element);
-});
-
-it('MD-UI-08: conversation and hint text use block Markdown without extra entries', () => {
-  installFakeDocument();
-  const conversation = new ConversationPanel();
-  conversation.refresh(
-    makeViewData({
-      conversation: {
-        actorId: 'npc-stub',
-        actorName: 'AI',
-        prompt: '**Ask** about sorting.',
-      },
-    }),
-  );
-  const conversationElement = fake(conversation.element);
-  expect(conversationElement.hidden).toBe(false);
-  expect(conversationElement.children).toHaveLength(2);
-  expect(hasTag(conversationElement, 'STRONG')).toBe(true);
-  expect(conversationElement.textContent).toContain('Ask about sorting.');
-  expect(conversationElement.textContent).not.toContain('**Ask**');
-
-  const hint = new HintPanel();
-  hint.refresh(
-    makeViewData({
-      hints: [{ hintId: 'hint-stub', level: 1, text: 'Try **this** next.' }],
-    }),
-  );
-  const hintElement = fake(hint.element);
-  expect(hintElement.hidden).toBe(false);
-  expect(hintElement.children).toHaveLength(1);
-  expect(hasTag(hintElement, 'STRONG')).toBe(true);
-  expect(hintElement.textContent).toBe('Hint 1: Try this next.');
-  expect(hintElement.textContent).not.toContain('**this**');
-  assertNoHtmlWrites(conversationElement);
-  assertNoHtmlWrites(hintElement);
 });
 
 // ---------------------------------------------------------------------------
