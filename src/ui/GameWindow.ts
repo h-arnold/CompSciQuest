@@ -159,6 +159,7 @@ export class GameWindow {
     const lowered = raw.trim().toLowerCase();
     const isImport = lowered === 'import' || lowered.startsWith('import ');
     this.outputLog.appendPlain([`> ${isImport ? 'import' : raw}`]);
+    this.outputLog.scrollToLatest();
     if (isImport) {
       void this.actions.openImport();
       return;
@@ -210,6 +211,7 @@ export class GameWindow {
       }
     }
     this.refreshPanels();
+    this.outputLog.scrollToLatest();
   }
 
   private refreshPanels(): void {
@@ -227,5 +229,6 @@ export class GameWindow {
     this.overlayDismissed = true;
     this.titleScreen.element.remove();
     this.workspace.hidden = false;
+    this.outputLog.scrollToLatest();
   }
 }

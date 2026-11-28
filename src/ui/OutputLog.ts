@@ -37,4 +37,8 @@ export class OutputLog {
   clear(): void {
     this.element.textContent = '';
   }
+
+  scrollToLatest(): void {
+    this.element.scrollTop = this.element.scrollHeight;
+  }
 }
