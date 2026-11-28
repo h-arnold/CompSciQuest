@@ -43,7 +43,7 @@ that indentation, so the Markdown reaches the transcript unchanged. No schema
 change is required: descriptions and responses are already strings.
 
 Card allocation follows the ownership rule in
-[bible §4.2](../content/content-bible.md#42-card-ownership-by-area--user-directed-structure):
+[bible §4.2](../content/content-bible.md#42-card-ownership-by-area):
 an artefact belongs in the card of the area that uses it. The validator and
 generator merge every card into the same catalogue, so this layout needs no
 special handling.
@@ -177,9 +177,12 @@ The gates split into two sets:
   generation, never against the runtime bundle.
 
 Shape checks for stray authoring keys, document `status` and unresolved `todo`
-placeholders run only on YAML and cannot run against the runtime bundle. When
-the coverage headings are unavailable, the CLI reports that clause as an
-unverified gap rather than passing it.
+placeholders run only on YAML and cannot run against the runtime bundle. The
+stray-key check inspects the card record, a card's `definition:` record and the
+direct keys of collection entries; it does not descend into nested structures,
+so authoring metadata belongs in an `authoring:` block on the artefact or entry
+it describes. When the coverage headings are unavailable, the CLI reports that
+clause as an unverified gap rather than passing it.
 
 Room interaction and scenery shape is shared rather than authoring-only.
 `interactionShapeProblems()` in `src/content/validateContent.ts` is the single

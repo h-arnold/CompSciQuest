@@ -12,7 +12,8 @@ read this document in full before beginning work; its agent brief supplies
 workflow and a short operational checklist, never a substitute for these rules.
 
 The cast is designed after the puzzle goals are pinned, so a character exists
-for a reason the game has already committed to. See the
+for a reason the game has already committed to, and each actor's profile is
+pinned and approved before its dialogue brief. See the
 [design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2).
 
 Start with the exchange the player should experience: voice, narrative aim,
@@ -75,8 +76,8 @@ shared tone rules, follow
 [narrative-principles.md](../content/narrative-principles.md).
 
 A brief must supply the actor profile at the depth set in
-[bible §6](../content/content-bible.md#6-cast-index); `npc-the-ai` is the model.
-A voice adjective and a relationship label are not enough to brief a writer.
+[Profile depth](#profile-depth). A voice adjective and a relationship label are
+not enough to brief a writer.
 
 ### Voice and temperament
 
@@ -100,6 +101,48 @@ comes from the cast, not a count.
 
 **Example.** "Oh, brilliant. Another student who's read the spec. I'll just
 fetch the mop, shall I?" — brash, delivered straight.
+
+### Profile depth
+
+A recurring actor's profile is the brief its writer works from. It is not a mood
+board and it is not a list of adjectives: it states what the actor is for, what
+they believe, what they want, who stands in their way, and how they sound, in
+enough detail that a writer can write their lines without inventing a motive.
+
+The minimum for a new or revised actor is the table below. Each row names the
+`authoring:` field and what that field must record. These are the fields the
+card format already carries — four on the actor, one beside them under
+`authoring:`, one on each non-default conversation topic — so a profile needs
+no new schema.
+
+| Field                            | MUST record                                                                                                                                                                                 | Test the field must pass                                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `authoring.role` (actor)         | What the actor does in the area, who they answer to, and the thing in the world that would not work without them                                                                            | Swap in another actor's name: if the role still fits, it is a job title, not a role                                                     |
+| `authoring.motivation` (actor)   | What the actor wants from the player, what they would trade for it, and the core belief behind the want that they would defend                                                              | The belief predicts behaviour the card never stages                                                                                     |
+| `authoring.relationship` (actor) | One relationship the actor is defined by: who it is with, what that other party wants, and how it shapes the actor's behaviour                                                              | The relationship names a person, not a mood; swap the actor out and it no longer holds. Opposing wants are preferred, not required (A1) |
+| `authoring.voice` (actor)        | Sentence length and shape, register, contractions, point of view, and the truths the actor never says out loud                                                                              | A writer could produce two lines in this voice without looking anything up                                                              |
+| `authoring.voiceSamples` (actor) | The D6 voice plan in full ([D6](#dialogue-plan-metadata-d6))                                                                                                                                | The sample line is something the actor would say, not a description of how they speak                                                   |
+| `authoring.dialoguePlan` (topic) | The D6 plan in full for every non-default topic the actor owns: `intent` is pinned at the profile stage, the rest is completed when the topic is written ([D6](#dialogue-plan-metadata-d6)) | Each intent says what the exchange is for, not what it says                                                                             |
+
+A profile passes when it is **specific**: a writer can predict how the actor
+behaves in a situation the game never stages, and can write a line for them
+without inventing a new motive or a new voice. A profile that would fit a
+different actor unchanged is a label, not a profile, and it fails A1's cover
+test — which is a major finding. A missing or contradictory D6 plan is the A2
+finding [D6](#dialogue-plan-metadata-d6) names, and an actor whose profile
+falls short of the actor-level rows above is returned at the profile stage
+before any card is written.
+
+**Non-example.** "Role: a grumpy but kind mentor. Voice: warm and wise." It
+names no world-need, no belief, no relationship and no sample line, and it
+would fit any mentor in any area.
+
+The profile is a design decision, not a writing one: it is pinned and approved
+before the dialogue brief is dispatched
+([design stages](../../.opencode/agents/content-editor.md#design-stages-w1w2)).
+A writer implements the pinned profile in the `authoring:` fields and completes
+each topic's D6 plan from the pinned intent; inventing a new motive,
+relationship or voice departs from the brief rather than revising it.
 
 ### Dialogue plan metadata (D6)
 

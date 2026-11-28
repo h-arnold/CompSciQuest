@@ -26,8 +26,10 @@ a conflict in favour of the rule earlier in that order.
 
 A brief must supply the area premise at the depth set in
 [bible §5](../content/content-bible.md#5-area-index): physical logic, pillars
-served, room purposes, resident cast and sensory palette. A one-line index
-purpose is not enough to brief a writer.
+served, the room cluster and each room's purpose, the resident cast or its
+absence, the sensory palette, the spec topics or the statement that it teaches
+none, and the hazard selection. A one-line index purpose is not enough to brief
+a writer.
 
 The area is designed before it is written. The premise, the room cluster and
 the area's hazards are settled in the area design stage, and the key items
@@ -43,7 +45,7 @@ of the place. See the
 | N6  | Fair gates             | Give each locked exit an in-fiction justification and at least two clues discoverable before the gate is needed, placed in room, item or NPC text. Use only agreed verbs and registered nouns. | Put a clue where the player naturally looks next to the blocker.                                                                                                   | Build a maze, a guess-the-verb trap or a guess-the-noun trap.              | N7, D2  |
 | D2  | IDs and aliases        | Take every ID and alias from the brief and authored cards; propose new ones for editor approval; `content-ids` enforces unique IDs, globally unique aliases and the fixed prefix set.          | Group aliases with the artefact they name.                                                                                                                         | Reuse an alias from another area or invent an id outside the brief.        | D1      |
 | D3  | Runtime shape          | Use the exact field names from [application-and-ui.md §3.2](application-and-ui.md#32-world-area-room-and-item-definitions); omit optional fields. Prose uses block scalars.                    | Set `portable` from real-world plausibility.                                                                                                                       | Set `null` or `undefined` on an optional field, or author `roomIds`.       | D4      |
-| D4  | Authoring metadata     | Keep `interesting`, `useNotes`, `topicIds` and clues under `authoring:`.                                                                                                                       | State in `useNotes` which action sets which flag.                                                                                                                  | Expect authoring keys to reach the runtime bundle.                         | D3      |
+| D4  | Authoring metadata     | Keep `interesting`, `useNotes` and clues under `authoring:`. A room's `topicIds` stay beside the room, not under `authoring:`.                                                                 | State in `useNotes` which action sets which flag.                                                                                                                  | Expect authoring keys to reach the runtime bundle.                         | D3      |
 
 **Example — a gate with two placed clues.** The notice reads "Storfa — staff
 only" and a sticky key is pinned beside it; `EXAMINE key` says it fits the
@@ -97,7 +99,7 @@ and are not restated here.
 ## 2. Ownership and worlds
 
 An artefact belongs in the card of the area that uses it
-([bible §4.2](../content/content-bible.md#42-card-ownership-by-area--user-directed-structure)),
+([bible §4.2](../content/content-bible.md#42-card-ownership-by-area)),
 never in an unrelated area for convenience. A world is declared exactly once,
 in the area whose `startAreaId` names it; other areas in that world set only
 `definition.worldId`. `AreaDefinition.roomIds` is derived from room declaration

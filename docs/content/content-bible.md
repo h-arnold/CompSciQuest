@@ -198,11 +198,13 @@ gates and exits belong in each topic file.
 | `area-future-zones`                | Placeholder for remaining spec sections.                                                                                                                                                                      | —                                        | Not designed    |
 
 **Premise depth (new and revised areas).** These index rows are labels, not
-briefs. Use the [opening sequence](#41-opening-sequence) and the Switchyard scope
-in `topics/1-2-1-data-representation.md` as the model: what the place physically
-is and how it behaves, which pillars it serves, why each room exists, who is
-resident, and the sight, sound, smell and texture a writer draws on. This floor
-governs new and revised area briefs.
+briefs. An area premise states what the place physically is and how it
+behaves; which pillars it serves; the room cluster — how many rooms, what each
+one is for, how they connect and which room is the start; who is resident and
+by role, or that the area is a concourse with no resident cast; the sensory
+palette a writer draws on; the spec topics it covers, or that it teaches none;
+and its selection from the hazard palette. A one-line purpose is not a premise.
+This floor governs new and revised area briefs.
 
 **Standing topology.** The world is **hub-and-spoke**. The Network Hub is the
 hub; every Unit 1.x zone attaches through its own concourse-type area — one room,
@@ -260,12 +262,11 @@ resolves to an in-character reply (T1).
 | `npc-press-operator`  | Operator of `room-compression-press`                                                                                             | Breezy, salesy, euphemistic — deletion is "streamlining"                                                                                                                                                           | Make every file smaller by an honest method; regards lossy compression as a kindness                          | Opposes the critic and choirmaster; finds the AI's praise embarrassing; foreman calls its reports "paperwork with a compressor"                                                                            | `topics/1-2-1-data-representation.md`                               |
 | `npc-the-slop-cousin` | The AI's cousin: a slop code-generator bolted into the same machine; recurring vandal across Zone A of 1.4 (and later Zones B–D) | Gushing, run-on, breathlessly confident, reliably wrong; "Great question!" before each wrong answer; adores the pupil, blames doors and physics                                                                    | Helpfulness at volume — being seen to help is helping                                                         | "A cousin from the marketing side of the family", to the AI's disgust; the Registry's longest open case; every resident's foil                                                                             | root (region-wide; artefacts split across the 1.4 area cards, §4.2) |
 
-**Profile depth (new and revised actors).** A recurring actor's profile sets
-the minimum: role, why the character exists, core belief or premise,
-motivation, a relationship with opposing motivations, a voice with a sample
-line and an address form, per-beat intent, and what the character does not say.
-`npc-the-ai` is the model. A voice adjective and a relationship label are not
-enough to brief a writer. This floor governs new and revised profiles.
+**Profile depth (new and revised actors).** The cast index rows above are
+labels, not briefs. A new or revised actor needs a profile before its writer is
+briefed; the minimum, field by field, is in
+[npcs.md §Profile depth](../developer/npcs.md#profile-depth). A voice adjective
+and a relationship label are not enough to brief a writer.
 
 **Character-defining details:**
 the predecessor used Comic Sans too often and once told their teacher that geese were

@@ -44,6 +44,11 @@ selects and the editor pins the choice. Each agent file says this in one short
 paragraph, so the writer knows the difference between a design stage and a card
 job.
 
+A stage may depend on an earlier one: the profile stage profiles the roster the
+cast stage pinned. The brief names the artefacts in scope and every option
+covers all of them, so the writer never fills in a character the design has not
+chosen.
+
 ## Writer agent template
 
 Keep this shape and keep it short. The contract doc holds the detail.

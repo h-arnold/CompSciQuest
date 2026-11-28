@@ -45,11 +45,16 @@ the schema, validator, generator or generated TypeScript.
 **Ideation briefs.** When the brief asks for options and names no output path,
 this is a design stage, not a card job. Return two or three options in your
 final message, edit no file, and allocate no ID or alias: the editor curates,
-the user selects, and the editor pins the choice. Each option must reach the
-profile depth in bible §6: who is resident, why that person exists here, what
-they want, who opposes them, their voice with a sample line, and which key
-item each pinned puzzle goal needs them to hold. Name the rule IDs each option
-depends on.
+the user selects, and the editor pins the choice. A cast-stage brief asks for
+the roster and the key items; a profile-stage brief names the actors in it, and
+each option profiles all of them at
+[npcs.md §Profile depth](../../docs/developer/npcs.md#profile-depth). Name the
+rule IDs each option depends on.
+
+**Card briefs.** A card brief supplies the pinned profile. Implement it in the
+`authoring:` fields and write dialogue to it; do not redesign the character. A
+profile that is missing or below the floor is a blocker for the editor, not a
+gap to fill from invention.
 
 Rules you own: A1–A6, T1–T6 and D6 in `npcs.md`; cross-cutting N3 in
 `content-bible.md` §3 and N4/N5 in `narrative-principles.md` §2; D2 (IDs and
@@ -62,11 +67,11 @@ Follow
 [Write the dialogue first](../../docs/developer/npcs.md#write-the-dialogue-first)
 and its examples.
 
-1. **Voice sheet.** Complete `authoring.role`, `voice`, `motivation` and
-   `relationship`, plus `authoring.voiceSamples` (A1, D6;
+1. **Voice sheet.** Record the pinned profile in `authoring.role`, `voice`,
+   `motivation` and `relationship`, plus `authoring.voiceSamples` (A1, D6;
    [§8](../../docs/developer/npcs.md#8-npc-card-format)).
 2. **Narrative aim.** Complete `authoring.dialoguePlan` for every non-default
-   topic (A2, D6;
+   topic from the pinned intents (A2, D6;
    [D6](../../docs/developer/npcs.md#dialogue-plan-metadata-d6)).
 3. **Draft responses** before `match`, `isActive` and `effects`; apply A3–A5
    from `npcs.md` to every line. Bold italic marks a person the player can
