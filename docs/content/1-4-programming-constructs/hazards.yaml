@@ -3,8 +3,8 @@ areaId: 1-4-programming-constructs
 status: draft
 topicIds: [algorithms-and-pseudocode, programming-constructs]
 
-# Three hazards for The Pattern Mill (ids verbatim from bible §9; design ratified
-# in topics/1-4-1-programming-constructs.md §7). Every failure returns to the
+# Three hazards for The Pattern Mill (ids and designs ratified in
+# topics/1-4-1-programming-constructs.md §7). Every failure returns to the
 # area's startRoomId, room-pattern-bureau (declared on the area card).
 
 hazards:

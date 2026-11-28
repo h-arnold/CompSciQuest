@@ -33,8 +33,8 @@ interface AuthoredUseInteraction {
 
 const SCENERY: readonly SceneryDefinition[] = [
   {
-    // content-bible.md §12 (round-2 findings): code-owned scenery reusing the
-    // accepted room-arrival prose, with no new item ID or authored card edit.
+    // walkthrough.md §8.6: code-owned scenery reusing the accepted room-arrival
+    // prose, with no new item ID or authored card edit.
     id: 'scenery-arrival-register',
     roomId: 'room-arrival',
     // The parser keeps articles in the noun phrase, so the two definite forms

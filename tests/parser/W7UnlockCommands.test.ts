@@ -1,5 +1,5 @@
-// W7F-03..05 — unlock syntax and in-world refusal from the 2026-11-27 ward
-// fix round (content-bible.md §12; assistance-ward.md §§6, 9.1, 10).
+// W7F-03..05 — unlock syntax and in-world refusal
+// (assistance-ward.md §§6, 9.1, 10).
 // All objects come from the in-memory fixture bundle, never authored YAML.
 import { describe, expect, it } from 'vitest';
 import { resolveGameCommand } from '../../src/application/commandResolution';
@@ -19,7 +19,7 @@ import {
 
 const EXPECTED_UNLOCK_COMMAND: Command = W7_UNLOCK_COMMAND;
 
-describe('W7 unlock command acceptance (content-bible.md §12)', () => {
+describe('W7 unlock command acceptance (assistance-ward.md §6)', () => {
   it('W7F-03: unlock <item> with <target> resolves to the canonical item-first command', () => {
     const state = w7UnlockState(true);
     const bundle = w7UnlockBundle();
@@ -58,7 +58,7 @@ describe('W7 unlock command acceptance (content-bible.md §12)', () => {
   });
 });
 
-describe('W7 unlock refusal (content-bible.md §12)', () => {
+describe('W7 unlock refusal (assistance-ward.md §10)', () => {
   it('W7F-05: a missing key yields one in-world message and no false carrying claim', async () => {
     const table = await loadVerbTable();
     const state = w7UnlockState(false);

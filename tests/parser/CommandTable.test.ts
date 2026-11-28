@@ -57,15 +57,15 @@ const CANONICAL_COMMANDS: readonly CommandSpec[] = [
   { verb: 'open', syntax: 'open <target>', aliases: [] },
   { verb: 'close', syntax: 'close <target>', aliases: ['shut'] },
   { verb: 'unlock', syntax: 'unlock <item> <target>', aliases: [] },
-  // content-bible.md §12 (2026-11-27 W7 ward findings fix round): the
-  // instruction card teaches PLACE, so it is an authorised alias of put.
+  // application-and-ui.md §5.1: the instruction card teaches PLACE, so it is
+  // an authorised alias of put.
   { verb: 'put', syntax: 'put <item> <target>', aliases: ['place'] },
   { verb: 'look', syntax: 'look', aliases: [] },
   { verb: 'inventory', syntax: 'inventory', aliases: ['i', 'inv'] },
   { verb: 'score', syntax: 'score', aliases: [] },
   { verb: 'help', syntax: 'help', aliases: ['?'] },
-  // content-bible.md §12 authorises the natural spacing alongside the
-  // documented hyphenated form; both aliases come from this canonical table.
+  // assistance-ward.md authorises natural spacing alongside the documented
+  // hyphenated form; both aliases come from this canonical table.
   {
     verb: 'talk-to',
     syntax: 'talk-to <npc>',
@@ -309,11 +309,10 @@ describe('issue 9 forms in the generated help text', () => {
   });
 });
 
-// content-bible.md §12 (2026-11-27 W7 ward findings fix round) authorises two
-// aliases that the instruction card and the player already use. The canonical
-// table above was updated deliberately; these rows pin the player-visible
-// result of that change, not a hidden parser constant.
-describe('W7 ward fixes — command aliases (content-bible.md §12)', () => {
+// Two aliases that the instruction card and the player already use are declared
+// in the canonical table above. These rows pin the player-visible result, not a
+// hidden parser constant.
+describe('W7 ward fixes — command aliases (assistance-ward.md)', () => {
   it('W7F-01: talk to <npc> is a declared alias and resolves like talk-to <npc>', async () => {
     const { COMMAND_TABLE, helpText } = await loadCommandTable();
     const parser = await loadParser();
@@ -321,7 +320,7 @@ describe('W7 ward fixes — command aliases (content-bible.md §12)', () => {
 
     expect(
       spec?.aliases,
-      'content-bible.md §12 adds natural spacing alongside talk',
+      'assistance-ward.md adds natural spacing alongside talk',
     ).toEqual(expect.arrayContaining(['talk', 'talk to']));
     expect(parser.parse('talk to nia')).toEqual({
       verb: 'talk-to',

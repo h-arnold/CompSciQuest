@@ -116,7 +116,7 @@ async function parsedCards(cards: CardSet) {
   };
 }
 
-describe('W7 room hint target gates (content-bible.md §12)', () => {
+describe('W7 room hint target gates (assistance-ward.md §9.3)', () => {
   it('W7F-14: checkHint and checkContentIds admit declared room targets', async () => {
     const cards = await parsedCards(cardsWithRoomHints());
 

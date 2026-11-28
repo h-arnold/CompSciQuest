@@ -21,7 +21,7 @@ quizzes:
     hintSequenceId: hint-switchyard
     authoring:
       framing: >-
-        N3 — the foreman needs the switch described in writing before he will sign the AI's "paperwork"; a challenge on his own floor, never a stop-and-answer. Awareness depth only (§1.1.1), score 0 and no life loss (topic file §6, bible §12). Delta 0 and the switch-floor return are the user-approved prologue exception to the normal level-start fail path; flagged for the editor against the generic "declared level start" wording.
+        N3 — the foreman needs the switch described in writing before he will sign the AI's "paperwork"; a challenge on his own floor, never a stop-and-answer. Awareness depth only (§1.1.1), score 0 and no life loss (topic file §6). Delta 0 and the switch-floor return are the approved prologue exception to the normal level-start fail path (difficulty-and-fairness.md); flagged for the editor against the generic "declared level start" wording.
 
   - id: quiz-data-types
     actorId: npc-the-foreman

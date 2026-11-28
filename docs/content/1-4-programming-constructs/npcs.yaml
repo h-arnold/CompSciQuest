@@ -1,6 +1,6 @@
 # npcs card for 1-4-programming-constructs (Zone A: The Pattern Mill)
 # Populated from the approved topic file (topics/1-4-1-programming-constructs.md)
-# and the root bible §9. Applicable rules: A1–A6, T1–T6, D6, N3–N5, D2–D4.
+# and the approved cards (D2). Applicable rules: A1–A6, T1–T6, D6, N3–N5, D2–D4.
 kind: npc
 areaId: 1-4-programming-constructs
 status: approved # draft | reviewed | approved (V1)
@@ -9,19 +9,16 @@ topicIds: [algorithms-and-pseudocode, programming-constructs]
 authoring:
   conventions:
     - >-
-      Every actor, state, node, quiz, item, room and flag ID below is copied from the
-      root bible §9 or the approved topic file §10. Conversation topic IDs are authored
-      on the ratified §10 scheme (topic-<actor-stem>-<beat>) and are listed in the
-      writer's return for editor ratification (D2). `item-dye-pad` is ratified
-      2026-11-25 (§9): the pad is named by the hazards and rooms cards and its ID is
-      registered. Actor aliases below are ratified 2026-11-25 (§9), drawn from the
-      characters' own names and checked against the registry's freed nouns; none takes
-      a bare noun the registry has granted to a room.
+      Every actor, state, node, quiz, item, room and flag ID below comes from the
+      approved topic file and cards (D2). Conversation topic IDs are authored on
+      the ratified §10 scheme (topic-<actor-stem>-<beat>) and are listed in the
+      writer's return for editor ratification (D2). `item-dye-pad` is named by the
+      hazards and rooms cards. Actor aliases come from the characters' own names
+      (D2); none takes a bare noun granted to a room.
     - >-
       T2 scoping: each of the five room-bound residents' catch-alls carries `in-room` on
       `isActive`; the first teaching beats and the give/stray delivery topics stay
-      unscoped and so remain globally reachable by design — the ratified pattern (bible
-      §11 item 14: unscoped topics stay globally reachable), with the catch-all
+      unscoped and so remain globally reachable (npcs.md T2), with the catch-all
       scoping being what T2 actually requires. Locality is never a topic field.
     - >-
       Silent-ready rule (recorded decision, npcs.md §8): no
@@ -1544,8 +1541,9 @@ conversationTopics:
       (You could ask about his improvements.)
     authoring:
       note: >-
-        Catch-all left unscoped (bible §11 item 14): the cousin roams the mill and
-        unmatched input must land in voice wherever he is. His seven wrong
+        Catch-all left unscoped (npcs.md T2 — an unscoped topic stays globally
+        reachable): the cousin roams the mill and unmatched input must land in
+        voice wherever he is. His seven wrong
         claims are contradicted by the rooms themselves and by the residents'
         topics; he blames looms, thread tension and the weather.
 

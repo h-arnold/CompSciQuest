@@ -295,7 +295,7 @@ rooms:
         is carried in the room's prose and the rail quiz, not in conversation
         here. The Loomwright's attendance is in the description prose: he has
         come up from the Bureau, ledger squared, to audit the despatch
-        (bible §11 item 12, presence without a placement field).
+        (presence, not a placement field — `docs/developer/areas.md`).
 
 items:
   - id: item-pattern-card-sequence

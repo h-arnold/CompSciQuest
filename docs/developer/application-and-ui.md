@@ -437,8 +437,9 @@ trace, whose rows act on room items and scenery without an intervening `take`
 
 A small authored-use table handles bare `use <item>` with no target: the
 calibration dial in `room-assistance-records` and the practice bell in
-`room-assistance-demonstration`. The approved prose is signed off in
-[content-bible.md §12](../content/content-bible.md#12-approval-record).
+`room-assistance-demonstration`. The approved prose is carried by the accepted item cards in
+[rooms.yaml](../content/assistance-ward/rooms.yaml)
+(`item-assistance-calibration-dial`, `item-assistance-practice-bell`).
 For these rows the table holds IDs, prerequisites and the flag to set; all
 player-facing text comes from the item (§3.2). With all five dial prerequisites
 set, the producer emits one `message` from `useText.success` and one

@@ -1,5 +1,5 @@
 // WR2-E1 — arrival nouns resolve to the accepted room scenery prose
-// (application-and-ui.md §5; content-bible.md §12;
+// (application-and-ui.md §5;
 // topics/assistance-ward.md §6; PLAYTEST-assistance-ward-round2.md §3 finding E).
 // The state and bundle are in-memory fixtures only: no YAML, authored prose,
 // real storage, wall clock, random source or network is read by this test.

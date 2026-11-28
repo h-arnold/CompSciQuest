@@ -328,7 +328,7 @@ function startQuiz(
   random: Random,
 ): readonly GameEvent[] {
   // A second start while an attempt is live is a no-op: no replacement
-  // question and no extra attempt (content-bible.md §12 W7 fix round).
+  // question and no extra attempt (assistance-ward.md §9.1).
   if (state.quiz.activeQuizId !== undefined) return [];
   const quiz = bundle?.quizzes.getById(effect.quizId);
   const attempts = state.quizAttempts[effect.quizId] ?? 0;

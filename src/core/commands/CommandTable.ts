@@ -97,8 +97,8 @@ export const COMMAND_TABLE: readonly CommandSpec[] = [
   },
   { verb: 'score', syntax: 'score', aliases: [], group: 'Progress' },
   { verb: 'help', syntax: 'help', aliases: ['?'], group: 'Progress' },
-  // content-bible.md §12 (2026-11-27 W7 fix): both the documented hyphenated
-  // form and natural spacing are player-facing aliases for talk-to.
+  // assistance-ward.md: both the documented hyphenated form and natural
+  // spacing are player-facing aliases for talk-to.
   {
     verb: 'talk-to',
     syntax: 'talk-to <npc>',

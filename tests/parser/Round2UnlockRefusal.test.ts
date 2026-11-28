@@ -1,5 +1,5 @@
 // WR2-B1 / WR2-B2 — round-2 unlock refusal and the item-first preservation
-// contract (content-bible.md §12; application-and-ui.md §5/§5.1;
+// contract (application-and-ui.md §5/§5.1;
 // topics/assistance-ward.md §6; PLAYTEST-assistance-ward-round2.md §3 finding B).
 // Every object comes from the deterministic in-memory ward fixture: no authored
 // YAML, real storage, wall clock, random source or network is used.
@@ -32,7 +32,7 @@ const WRONG_ORDER_COMMAND: Command = {
 const WRONG_ORDER_TEXT = `The ${W7_CABINET_NAME} stays in place; turn its lock with the ${W7_KEY_NAME} instead.`;
 const MISSING_KEY_TEXT = `You need the ${W7_KEY_NAME} in hand before it will turn in the ${W7_CABINET_NAME}.`;
 
-describe('WR2-B1 — wrong-order unlock refusal (content-bible.md §12)', () => {
+describe('WR2-B1 — wrong-order unlock refusal (assistance-ward.md §6)', () => {
   it('WR2-B1: the bolted-down cabinet gets one in-world refusal that points to the key and leaves the whole state unchanged', async () => {
     const table = await loadVerbTable();
     const state = w7UnlockState(true);
@@ -81,7 +81,7 @@ describe('WR2-B1 — wrong-order unlock refusal (content-bible.md §12)', () => 
   });
 });
 
-describe('WR2-B2 — item-first unlock preservation contract (content-bible.md §12)', () => {
+describe('WR2-B2 — item-first unlock preservation contract (application-and-ui.md §5.1)', () => {
   // Both tests in this describe were green before the round-2 slice; they are
   // preservation contracts, not new behaviour.
   it('WR2-B2: preservation — both authorised item-first forms resolve to the key-first unlock command', () => {

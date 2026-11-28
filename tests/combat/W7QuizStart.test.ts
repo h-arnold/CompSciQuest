@@ -1,5 +1,5 @@
-// W7F-09/W7F-13 — explicit, idempotent quiz starts (content-bible.md §12;
-// assistance-ward.md §§7.1, 9.1). The answers keyword must never start or reset
+// W7F-09/W7F-13 — explicit, idempotent quiz starts
+// (assistance-ward.md §§7.1, 9.1). The answers keyword must never start or reset
 // an attempt; every collaborator is an injected fake.
 import { describe, expect, it } from 'vitest';
 import type { Effect } from '../../src/core/effects/Effect';
@@ -38,7 +38,7 @@ function quizSnapshot(state: ReturnType<typeof w7QuizState>): string {
   return JSON.stringify({ quiz: state.quiz, quizAttempts: state.quizAttempts });
 }
 
-describe('W7 quiz start contract (content-bible.md §12)', () => {
+describe('W7 quiz start contract (assistance-ward.md §9.1)', () => {
   it('W7F-09: re-applying start-quiz while an attempt is active changes nothing', () => {
     const state = w7QuizState({ activeQuizId: W7_QUIZ_ID });
     const before = quizSnapshot(state);

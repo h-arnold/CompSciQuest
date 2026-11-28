@@ -235,6 +235,15 @@ requirement.
   - "The thing nobody..." (and variations on that)
   - "Needs to be owed" / "owed" (unless it literally refers to a debt the player must repay; otherwise it is unclear)
 
+  **Exception (2026-11-27, user-approved):** Quiet/quietly, Honest, honestly,
+  Caveat/Caveats, Delve/delveing/delves, Tapestry/tapestries, "The thing
+  nobody..." (and variations on that) and "Needs to be owed" / "owed" are
+  permitted in **authored game text for `npc-the-ai` only**, where they are
+  used deliberately as that misaligned AI's in-character slop voice. This
+  exception does not apply to room descriptions, quizzes, hints, other NPCs,
+  documentation, agent prompts, code comments, commit messages or any other
+  prose. The rest of the ban is unchanged.
+
 ## Host gotchas
 
 - The three bind-mount source dirs must exist on the **host** before `devcontainer up`,

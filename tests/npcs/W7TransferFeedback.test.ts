@@ -1,6 +1,6 @@
 // W7F-10 — SHOW/GIVE announce the transfer at the moment it happens
-// (PLAYTEST-assistance-ward.md finding 11; assistance-ward.md §6;
-// content-bible.md §12). Authored teaching text is never asserted or changed.
+// (PLAYTEST-assistance-ward.md finding 11; assistance-ward.md §6).
+// Authored teaching text is never asserted or changed.
 import { describe, expect, it } from 'vitest';
 import { authoredGame } from '../fixtures/authored';
 import type { Effect } from '../../src/core/effects/Effect';
@@ -21,7 +21,7 @@ function transferTopic(effects: readonly Effect[]) {
   return w7TransferTopic('topic-fixture-transfer', effects);
 }
 
-describe('W7 SHOW/GIVE feedback (content-bible.md §12)', () => {
+describe('W7 SHOW/GIVE feedback (assistance-ward.md §6)', () => {
   it.each(['show', 'give'] as const)(
     'W7F-10: %s transfers once and announces the handover',
     (verb) => {

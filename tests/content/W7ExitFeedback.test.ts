@@ -93,7 +93,7 @@ function sourceRoomLine(text: string): string {
   return line ?? '';
 }
 
-describe('W7 authored exit feedback (content-bible.md §12)', () => {
+describe('W7 authored exit feedback (assistance-ward.md §10)', () => {
   it('W7F-07: an authored blockedText exit has no shape finding', async () => {
     const { parseCardSet } = await loadSchema();
 

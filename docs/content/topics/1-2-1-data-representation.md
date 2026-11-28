@@ -1,8 +1,8 @@
 # Topic file: 1.2.1 Data representation — The Switchyard
 
 **Status: approved 2026-11-24, including the curated ideation set (workflow now in
-`.opencode/agents/content-editor.md`; curated set recorded in the root bible approval
-record).**
+`.opencode/agents/content-editor.md`; curated set recorded as current rules in the
+root bible).**
 Specific detail for the first zone only. Overarching rules and the cast index are
 in `docs/content/content-bible.md`; IDs and aliases are fixed in the briefs and
 approved cards (D2). This file must not contradict them. Course facts come from `docs/exam-specs/wjec-unit1.md` §1.2.1 (and

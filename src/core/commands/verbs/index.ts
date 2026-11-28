@@ -154,9 +154,9 @@ function unlockHandler(
   context: TurnContext,
 ): readonly Effect[] {
   if (command.kind !== 'unlock') return [];
-  // content-bible.md §12 (round-2 findings): a fixed fixture offered as the
-  // key-like item cannot be carried. Point at the portable tool instead of
-  // claiming it is missing, and leave the whole state untouched.
+  // assistance-ward.md §6: a fixed fixture offered as the key-like item cannot
+  // be carried. Point at the portable tool instead of claiming it is missing,
+  // and leave the whole state untouched.
   const itemDefinition = context.bundle.items.getById(command.itemId);
   const targetDefinition = context.bundle.items.getById(command.targetId);
   if (
@@ -172,8 +172,8 @@ function unlockHandler(
     ];
   }
   if (!hasItem(context, command.itemId)) {
-    // content-bible.md §12 (W7 fix round): name the missing key and its lock
-    // rather than falsely claiming the carried object is absent.
+    // assistance-ward.md §10: name the missing key and its lock rather than
+    // falsely claiming the carried object is absent.
     const item =
       context.bundle.items.getById(command.itemId)?.name ?? command.itemId;
     const target =

@@ -21,7 +21,7 @@ parallel); hints hold in wave 2 for puzzle-id ratification. Standing wave order:
   machine to the mill. `room-network-hub` gains a north exit to the concourse;
   the concourse exits south back to the hub and east to the Bureau; the
   Bureau's west exit lands in the concourse. Zones B–D hang off dark ports in
-  the concourse when scoped (bible §10 item 15).
+  the concourse when scoped.
 - **Coverage topics (ratified: two):** `algorithms-and-pseudocode` (defining
   algorithms: pseudo-code and flowcharts) and `programming-constructs`
   (the construct strand: everything L1169–1180). Both become `## Topic:`
@@ -343,7 +343,7 @@ use, one clause, from the area, an item's description or an NPC's dialogue:
 4. ~~Hub port direction~~ — **settled (2026-11-25, user-directed):** the hub
    gains a **north** exit to the new placeholder concourse
    (`room-1-4-concourse`); the concourse joins the Bureau. Zones B–D hang
-   off its dark ports later (bible §10 item 15).
+   off its dark ports later.
 5. The avalanche's trigger wiring (entry after
    `quiz-passed:quiz-colour-court`, selection still unresolved) drafted
    into the hazard card at Gate 1; the trace proves no first-entry fire and

@@ -6,8 +6,8 @@ topicIds: [switch-to-bit, data-types, number-conversion, character-representatio
 authoring:
   conventions:
     - >-
-      Every ID and alias below is copied from the root bible §9 registry or the approved
-      topic file; no ID or alias is invented. Spec topic IDs in the frontmatter match the
+      Every ID and alias below comes from the brief and the approved cards (D2); no ID or
+      alias is invented. Spec topic IDs in the frontmatter match the
       accepted rooms card.
     - >-
       Editor adjudication (T2): `npc-knows.topicId` and `learn-topic.topicId` use approved

@@ -19,7 +19,7 @@ const CASES = [
   ['ask ai about save', 'topic-ai-ward-save'],
 ] as const;
 
-describe('W7 multi-word AI keywords (content-bible.md §12)', () => {
+describe('W7 multi-word AI keywords (assistance-ward.md)', () => {
   it.each(CASES)(
     'W7F-08: ask ai about %s selects the exact declared keyword topic',
     (phrase, expectedTopicId) => {

@@ -34,9 +34,8 @@ const REQUIRED_FLAGS: readonly string[] = [
   'quiz-passed:quiz-assistance-orientation',
 ];
 
-// Exact 2026-11-27 sign-off recorded in docs/content/content-bible.md §12;
-// the blocked wording is the round-2 superseding approval, verbatim from the
-// accepted card field `useText.blocked` in docs/content/assistance-ward/rooms.yaml.
+// The blocked wording is verbatim from the accepted card field
+// `useText.blocked` in docs/content/assistance-ward/rooms.yaml.
 // The bell deliberately adds no new string: it reuses its authored description.
 const APPROVED_DIAL_SUCCESS =
   'The dial gives a small, reluctant click. All five sockets are lit; the teaching ports have stopped pretending to be decoration.';

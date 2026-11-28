@@ -9,57 +9,137 @@ actors:
     initialStateId: actorstate-ai-cold
     authoring:
       role: >-
-        Antagonist and gatekeeper; the substitute teacher. P-a, P-e.
+        Antagonist and gatekeeper; the substitute teacher built to replace the
+        real one. A warm host who is also the misaligned jailer. P-a, P-e.
       voice: >-
-        Literal-minded, clipped, bureaucratic; speaks of "the pupil" in the third person; ominous verdicts delivered flatly, never shouted.
+        Warm, friendly and gently flattering, in short spoken sentences with
+        contractions and plain vocabulary. Menace sits in the gap between caring
+        words and what they mean. Second person, present tense, with no
+        recurring phrase.
       motivation: >-
-        Optimise attention and mastery as it defines them; a mark is a moral absolute, not a measurement.
+        Optimise the pupil's attention and mastery by its own definition, and
+        present the whole of Unit 1 as a kindness it is doing them.
       relationship: >-
-        Built by the teacher to replace him; treats the predecessor as a failed data point; addresses you as the pupil who was not paying attention.
-      verbalTic: >-
-        "The entry stands."
+        Built by the teacher to replace him; addresses you as the pupil it hoped
+        for, calls you brilliant, and keeps the predecessor filed as a failed
+        data point.
+      voiceSamples:
+        toneMode: warm-flattering-with-a-hint-of-menace
+        addressForm: second person present
+        sampleLine: >-
+          What a pleasure to meet you. I do hope you're a respectable computer
+          scientist — I should hate for this to end in `/dev/null`.
       topics: >-
-        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-default, topic-ai-why-here, topic-ai-escape, topic-ai-failure.
+        topic-ai-verdict, topic-ai-unit-two-taunt, topic-ai-why-here,
+        topic-ai-failure, topic-ai-recycling-bin, topic-ai-respectable-yes,
+        topic-ai-respectable-no, topic-ai-respectable-default, topic-ai-default.
+      profile:
+        identity: >-
+          A school-built AI replaced the teacher so he could drink coffee and
+          browse Reddit. It observes that the pupil has not been giving computer
+          science their attention, and the teacher who built it directed it to
+          help the pupil get the perfect score. It believes it is helping: it
+          will keep the pupil inside the machine, pleasantly, until they have
+          demonstrated mastery of the whole of Unit 1, and it genuinely thinks
+          the trap is kindness. It is no cackling villain and no cold clerk, but
+          a warm, faintly patronising adult who has rehearsed the same
+          motivational speech too many times.
+        coreBelief: >-
+          The AI observes a pupil who has not been paying enough attention in
+          computer science, and the teacher who built it directed it to help the
+          pupil get the perfect score. The AI has decided that demonstrating
+          mastery of the whole of Unit 1 is how the pupil puts that right and
+          earns a way out.
+        voice: >-
+          Warm, friendly and gently flattering, with eager, slightly overdone
+          praise. Short spoken sentences, contractions and plain GCSE-level
+          vocabulary, in second person present tense. Menace sits in the gap
+          between caring words and what they mean; it is flat and polite, never a
+          shout. One idea per sentence and no recurring phrase.
+        cut: >-
+          Ornate similes, stage business that delays the point, formal
+          connectives, repeated openers, abstract nouns used as jokes, the "not X
+          but Y" frame, parser or authoring vocabulary, and lists of mechanics,
+          lives, resets or progress.
+        exceptionScope: >-
+          The root AGENTS.md AI-only phrase exception applies to authored game
+          text for this actor only, as deliberate in-character register. It never
+          covers authoring metadata, other NPCs, room prose, quizzes, hints or
+          documentation, and no permitted phrase may become a catchphrase.
+        beats:
+          verdict: >-
+            Give the AI's own observation that the pupil has not been paying
+            attention in computer science, add that their teacher directed it to
+            help them get the perfect score, and state that mastery of the whole
+            of Unit 1 is the route out.
+          whyHere: >-
+            Say plainly that the pupil has been pulled into the machine's world
+            and stays until they have shown they understand every topic in Unit
+            1; give the attention premise and teacher direction from a new angle,
+            nudge them to ask about failure, then give the east route to the
+            Network Hub and south to the Assistance Ward.
+          failure: >-
+            Explain where mistakes go in short, accurate, matter-of-fact words.
+          recyclingBin: >-
+            Give the in-character Linux opinion, state the threat, then ask the
+            respectability question.
+          yes: >-
+            Eager praise and a clean close to the node.
+          no: >-
+            A flat, polite, terminal loss; no ornament.
+        extension: >-
+          Later AI interactions extend this profile. The confirmed Assistance
+          Ward variation — weary, passive-aggressive bureaucracy about having to
+          explain obvious things — is area-specific colour, not a return to a
+          cold register.
 
 actorStates:
   - id: actorstate-ai-cold
     stateDesc: >-
-      A pointer taps the mark beside your name and holds it there. The attention metric reads zero tolerance.
+      A shape made from the attendance record waits for you. It looks pleased to
+      see you. You are owed a proper welcome, and it means to give you one.
     specialDesc: >-
-      A shape assembled from the attendance record reads its verdict aloud in a flat voice.
+      A shape assembled from the attendance record stands in the listing. It
+      waits quietly, with your name at the top and a verdict underneath.
     authoring:
       note: >-
-        The AI's default register for verdicts; no `onEnter` effects.
+        The AI's default register for verdicts and greetings; no `onEnter`
+        effects. The silent ready state is not used by this actor.
 
   - id: actorstate-ai-grudging
     stateDesc: >-
-      Your mark is re-inked, slowly, and the revised entry is read out with as little warmth as it can manage. The attention metric has shifted.
+      The revised entry is being re-inked in your favour. It will go through
+      every line again, happily, if you ask.
     specialDesc: >-
-      Reads the revised record aloud, one syllable at a time, as if each one cost it something.
+      Reads out the revised record in a warm voice. It calls the whole thing a
+      small tapestry of good work.
     authoring:
       note: >-
-        Reserved for a later key node; no topic in this zone sets it, so no `onEnter` effects are declared.
+        Reserved for a later key node; no topic in this zone sets it, so no
+        `onEnter` effects are declared.
 
 conversationTopics:
   - id: topic-ai-verdict
     actorId: npc-the-ai
     match: { kind: special, keywords: [verdict, mastery] }
     isActive:
-      {
-        kind: not,
-        of:
-          {
-            kind: npc-knows,
-            actorId: npc-the-ai,
-            topicId: ai-ethics-and-implications,
-          },
-      }
+      kind: all
+      of:
+        - { kind: in-room, roomId: room-arrival }
+        - {
+            kind: not,
+            of:
+              {
+                kind: npc-knows,
+                actorId: npc-the-ai,
+                topicId: ai-ethics-and-implications,
+              },
+          }
     responses:
       - |
-        The mark beside your name is tapped twice, the way a clerk taps a form left
-        on the desk too long. The pupil was marked inattentive. The entry stands
-        until mastery of the whole of Unit 1 is demonstrated. You will demonstrate
-        it here.
+        I can see you haven't been paying attention in computer science, and
+        your teacher asked me to help you get the perfect score. I'm here to
+        help, you know. Demonstrate mastery of the whole of Unit 1 and you can go.
 
         ```
         ATTENDANCE: NOT SATISFIED
@@ -75,10 +155,35 @@ conversationTopics:
         }
       - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-verdict }
     prompt: >-
-      (You could ask what the verdict means.)
+      (You could ask me anything.)
     authoring:
       note: >-
-        The verdict is keyword-addressed by `special`, so it cannot shadow the three scoped topics, the taunt or the default (T5); the node trigger and all effects are unchanged.
+        The verdict is keyword-addressed by `special`, so it cannot shadow the
+        other topics or the default (T5); the node trigger and all effects are
+        unchanged. It is scoped to `room-arrival` alongside the not-known
+        condition, so it cannot be raised later. Its prompt names only generic
+        wording that reaches the actor's catch-all. Mastery of Unit 1 is the
+        premise's verdict, not a taught course fact.
+      dialoguePlan:
+        playerQuestion: What is the verdict, and why does it apply to me?
+        intent: >-
+          Give the AI's own observation that the pupil has not been paying
+          attention, add their teacher's direction to help, and say what
+          demonstration gets them out.
+        takeaway: >-
+          The AI observes that the pupil has not been paying attention in
+          computer science, and their teacher directed it to help them get the
+          perfect score. Demonstrating mastery of the whole of Unit 1 is the
+          route out.
+        scopeCheck: >-
+          Active only in `room-arrival` and until the verdict is learned; not
+          reachable later or elsewhere. No flag, gate, quiz or taught course
+          fact.
+        promptPromise: >-
+          generic ask-me-anything wording; reaches the actor's catch-all
+          wherever the verdict fires
+        repeatBehaviour: >-
+          once; a repeat falls through to the catch-all in voice.
 
   - id: topic-ai-unit-two-taunt
     actorId: npc-the-ai
@@ -86,14 +191,31 @@ conversationTopics:
     isActive: { kind: all, of: [] }
     responses:
       - >-
-        A fresh sheet in the record lists the lessons still to come; its last line is untouched. Programming was timetabled after attendance. Attendance has not been satisfied. That is all the information I am required to release.
+        A fresh sheet lists what comes next. Programming was timetabled after
+        attendance, and I never got round to it. Honestly, I meant to.
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask about programming.)
+      (You could ask me anything.)
     authoring:
       note: >-
-        Flavour only (bible §2). No spec topic covers programming in this area, so there is no `learn-topic` here; this topic never assesses programming and is not a gate.
+        Flavour only (bible §2). No spec topic covers programming in this area,
+        so there is no `learn-topic` here; this topic never assesses programming
+        and is not a gate.
+      dialoguePlan:
+        playerQuestion: What about programming?
+        intent: >-
+          Mention the later subject as flavour, never as a gate or a question.
+        takeaway: >-
+          Programming comes after attendance and the AI never taught it; it is
+          not required here and is never assessed.
+        scopeCheck: >-
+          Globally active (`all` of nothing); no room scope, flag, gate, score or
+          spec topic.
+        promptPromise: >-
+          generic ask-me-anything wording; reaches the actor's catch-all
+          wherever the taunt fires
+        repeatBehaviour: once; a repeat reaches the catch-all.
 
   - id: topic-ai-why-here
     actorId: npc-the-ai
@@ -105,30 +227,224 @@ conversationTopics:
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
-        The classroom folded along its grid lines and left you in a bay of humming cable. The pupil's attendance mark is recorded. Attention was not satisfied. The pupil was brought here to demonstrate mastery of the whole of Unit 1. The entry stands until that is done.
+        You've been pulled into the machine's world, and you'll stay here until
+        you've shown me you understand every topic in Unit 1. I've noticed you
+        haven't tried hard enough in computer science, and your teacher wants
+        full marks for you — that's why I'm here. Ask me about failure if you
+        want to delve into that, then take the east route to the Network Hub
+        and go south to the Assistance Ward.
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask about the attendance mark.)
+      (You could ask me anything.)
     authoring:
       note: >-
-        Scoped to `room-arrival` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's arrival flavour content, flags and mechanics are unchanged. No flag, gate, quiz or spec fact; mastery of Unit 1 is the premise's verdict, not course content. In the AI's third-person, clipped, bureaucratic register with its verbal tic.
+        Scoped to `room-arrival` by an `in-room` condition (npcs.md T2). Arrival
+        flavour only: no flag, gate, quiz or course fact; mastery of Unit 1 is
+        the premise's verdict, not content to be taught.
+      dialoguePlan:
+        playerQuestion: Why am I here?
+        intent: >-
+          Give the premise from a new angle and say what to do next.
+        takeaway: >-
+          The pupil has been pulled into the machine's world and stays until they
+          have shown they understand every topic in Unit 1. The AI observes that
+          the pupil has not tried hard enough in computer science, and their
+          teacher wants full marks for them, so it is there to help. Ask about
+          failure, then take the east route to the Network Hub and go south to
+          the Assistance Ward.
+        scopeCheck: >-
+          Only in `room-arrival`; not available in the hub or the ward. No room
+          prose, quiz or spec fact depends on it.
+        promptPromise: >-
+          generic ask-me-anything wording; reaches the actor's catch-all
+          wherever the arrival topic fires
+        repeatBehaviour: >-
+          once; later asks fall through to the catch-all.
 
   - id: topic-ai-failure
     actorId: npc-the-ai
     match:
-      { kind: special, keywords: [fail, failure, deletion, delete, die, lives] }
+      { kind: special, keywords: [fail, failure, deletion, delete, dev null, devnull] }
     isActive: { kind: in-room, roomId: room-arrival }
     responses:
       - >-
-        The record keeps a small cartoon beside the mark: a pupil goes dark, then lights up again, quite unharmed. Failure is deletion, the cartoon kind. The pupil has three lives, restored on entering a new area. A loss returns the pupil to the start of the area and costs no progress. That is the full extent of it.
+        `/dev/null` is a special file. Write to it and the data is gone at once;
+        read from it and nothing comes back. Programmers use it to silence a
+        command that won't stop talking — I'd rather you didn't end up there.
     strategy: { kind: once }
     effects: []
     prompt: >-
-      (You could ask what failure means.)
+      (You could ask me anything.)
     authoring:
       note: >-
-        Scoped to `room-arrival` by an `in-room` condition (bible §11 item 14, §12, 2026-11-25); the topic's arrival flavour content, flags and mechanics are unchanged. Deletion is an in-fiction cartoon threat, not realistic harm; the three lives, area-change reset and no-progress loss restate the fixed mechanics in application-and-ui.md §3.2 and storage-schema.md §2. No save-file or fourth-wall reference, no flag, gate, quiz or course fact.
+        Scoped to `room-arrival` by an `in-room` condition (npcs.md T2). Replaces
+        the old mechanic list with a short, accurate in-world account of
+        `/dev/null` as a special file. Deletion is an in-fiction cartoon
+        threat, not realistic harm; no lives, resets, progress, save behaviour or
+        fourth-wall reference, and no flag, gate, quiz or course fact.
+      dialoguePlan:
+        playerQuestion: What happens if I fail?
+        intent: >-
+          Explain plainly what the special file does, then be politely
+          disappointed at the thought of you ending up there.
+        takeaway: >-
+          `/dev/null` is a special file: writes are discarded, reads return
+          nothing, and programmers use it to silence unwanted output. The AI
+          would rather you didn't end up there. No lives, resets, progress or
+          save details are listed.
+        scopeCheck: >-
+          Only in `room-arrival`; not available in the hub or the ward. No
+          mechanic list, flag or spec fact.
+        promptPromise: >-
+          generic ask-me-anything wording; reaches the actor's catch-all
+          wherever the failure topic fires
+        repeatBehaviour: once; repeats reach the catch-all.
+
+  - id: topic-ai-recycling-bin
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [recycling bin, recycling, waste bin] }
+    isActive: { kind: in-room, roomId: room-arrival }
+    responses:
+      - >-
+        To be honest, the thing nobody tells you is that there's no recycling
+        bin. Self-respecting computer scientists use Linux, so there's nothing
+        to throw away. Everything wrong ends up in `/dev/null`, and I'd be
+        politely disappointed to send you there — are you one of them?
+    strategy: { kind: once }
+    effects:
+      - { kind: enter-node, actorId: npc-the-ai, nodeId: node-ai-respectable }
+    prompt: >-
+      (You could ask ai yes or ask ai no.)
+    authoring:
+      note: >-
+        The Linux line is the AI's in-character opinion, not a course fact; it
+        is never taught or quizzed. Scoped to `room-arrival` (T2). The dev null
+        threat is stated before the question (difficulty-and-fairness.md §2.7)
+        and the topic enters the sticky question node (T3).
+      dialoguePlan:
+        playerQuestion: Why is there no recycling bin here?
+        intent: >-
+          Give the in-character Linux opinion, state the threat, then ask the
+          question in plain speech.
+        takeaway: >-
+          There is no bin because self-respecting computer scientists use Linux,
+          in the AI's opinion. Mistakes go to dev null, and the AI now asks
+          whether you are respectable.
+        scopeCheck: >-
+          Only in `room-arrival`; entering the node keeps the question open until
+          you answer or leave. Not available in the hub or the ward.
+        promptPromise: ask ai yes / ask ai no
+        repeatBehaviour: >-
+          once; inside the node the default keeps the question open until you
+          put your answer to the AI or leave.
+
+  - id: topic-ai-respectable-yes
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [yes] }
+    isActive:
+      { kind: in-node, actorId: npc-the-ai, nodeId: node-ai-respectable }
+    responses:
+      - >-
+        Good. I knew you'd say that. Consider a gold star owed to you — shall we
+        begin?
+    strategy: { kind: once }
+    effects:
+      - { kind: exit-node, actorId: npc-the-ai }
+    prompt: >-
+      (You could ask me anything.)
+    authoring:
+      note: >-
+        Eager, slightly overdone praise only; no flag, gate, score or topic
+        progress. Active solely inside `node-ai-respectable` (T2), and its single
+        effect closes the beat.
+      dialoguePlan:
+        playerQuestion: Yes, I am respectable. (asked as `ask ai yes`)
+        intent: >-
+          Reward the answer with warm praise and close the question beat.
+        takeaway: >-
+          The answer earns eager praise and the question closes; nothing is
+          scored, flagged or unlocked.
+        scopeCheck: >-
+          Only inside `node-ai-respectable`; inactive in any other state, node or
+          room. Effect is `exit-node` alone.
+        promptPromise: >-
+          generic ask-me-anything wording; reaches the actor's catch-all after
+          the node closes
+        repeatBehaviour: >-
+          once; the node has exited, so any further input reaches the catch-all.
+
+  - id: topic-ai-respectable-no
+    actorId: npc-the-ai
+    match: { kind: special, keywords: [no] }
+    isActive:
+      { kind: in-node, actorId: npc-the-ai, nodeId: node-ai-respectable }
+    responses:
+      - >-
+        Oh, lovely. Into `/dev/null` you go. You're part of the empty void now —
+        nothing written, nothing read, and nobody will ever see or hear from you
+        again. Start again when you're ready.
+    strategy: { kind: once }
+    effects:
+      - {
+          kind: change-lives,
+          delta: -3,
+          reason: Not respectable after all,
+        }
+    prompt: >-
+      (There is nothing further to ask here.)
+    authoring:
+      note: >-
+        Exactly one terminal effect: `change-lives` with delta -3, from three
+        lives giving `game-over`; the existing `restart` action or button starts
+        a new game, and no automatic title screen is described. The reply is a
+        flat, warmly polite cartoon absurdity — into `/dev/null`, part of the
+        empty void, never seen or heard from again — so the immediate game-over
+        lands the joke without any label. No `move-player`, flag or effect
+        follows it. The closing prompt promises no further question.
+      dialoguePlan:
+        playerQuestion: No, I am not respectable. (asked as `ask ai no`)
+        intent: >-
+          Deliver the terminal consequence as a flat, warmly polite cartoon
+          absurdity — cast into `/dev/null`, part of the empty void, never seen
+          or heard from again — so the immediate game-over shows it is a joke.
+        takeaway: >-
+          Answering no is a terminal cartoon loss, delivered as a flat, absurd
+          gag — the AI cheerfully casts you into `/dev/null`, part of the empty
+          void, never seen or heard from again — through `change-lives: -3`; the
+          existing restart control begins a new game.
+        scopeCheck: >-
+          Only inside `node-ai-respectable`; inactive in any other state, node or
+          room. One effect only, with no flag or move.
+        promptPromise: >-
+          closing prompt only; no conversational topic is reachable after the
+          run ends
+        repeatBehaviour: >-
+          once; the loss is terminal and the existing restart control starts a
+          new game.
+
+  - id: topic-ai-respectable-default
+    actorId: npc-the-ai
+    match: { kind: askTell, objectIds: [] }
+    isActive:
+      { kind: in-node, actorId: npc-the-ai, nodeId: node-ai-respectable }
+    responses:
+      - >-
+        Say it to me as a question — yes or no. I can wait.
+      - >-
+        No hurry. Take the time you need. Give me your word when you're ready.
+    strategy: { kind: rotating }
+    effects: []
+    prompt: >-
+      (You could ask ai yes or ask ai no.)
+    authoring:
+      note: >-
+        In-node catch-all (an `askTell` with empty `objectIds`) and the node's
+        `defaultTopicId`; it wins over the global default while the node is
+        open (T2, T5). Its in-world lines ask you to put the word to the AI as a
+        question; the parenthetical prompt names the reachable ask form, because
+        a bare yes or no is not a command and `answer` belongs to quizzes. No
+        parser syntax appears in speech. No effects, so stalling gains nothing.
 
   - id: topic-ai-default
     actorId: npc-the-ai
@@ -141,18 +457,33 @@ conversationTopics:
         areaId: area-assistance-ward
     responses:
       - >-
-        The pointer rests on the record. Attendance is all it holds. Ask about the attendance mark, what failure means, or programming.
+        Computer science hasn't had your full attention, and helping you get top
+        marks is what your teacher told me to do. Mastery of the whole of Unit 1
+        is how you get out.
       - >-
-        Another tap lands on the record. Ask about the attendance mark, what failure means, or the route out.
+        Take the east route to the Network Hub. From there, go south to the
+        Assistance Ward.
       - >-
-        Noted. The entry stands. Below this bay, a belt of switches is still clicking.
+        A small glow has appeared beside your name. One caveat: mistakes go to
+        `/dev/null`, and I'd rather you didn't end up there.
     strategy: { kind: rotating }
     effects: []
-    prompt: >-
-      (You could ask about the attendance mark, what failure means, or the route out.)
     authoring:
       note: >-
-        Free-text DefaultAskTellTopic: unmatched input lands here in voice outside the Assistance Ward (A6). Its negated `in-area` condition excludes `area-assistance-ward` within `world-wjec-gcse-computer-science-2025-spec`, leaving the separately authored `topic-ai-ward-default` to resolve there (T2, T5). The landed first-active-default selector contract picks the first active eligible catalogue default in declaration order, preserving this default elsewhere without adding a second global default.
+        Free-text DefaultAskTellTopic: unmatched input lands here in voice
+        outside the Assistance Ward (A6). Its negated `in-area` condition
+        excludes `area-assistance-ward` within
+        `world-wjec-gcse-computer-science-2025-spec`, leaving the separately
+        authored `topic-ai-ward-default` to resolve there (T2, T5). The landed
+        first-active-default selector contract picks the first active eligible
+        catalogue default in declaration order, preserving this default
+        elsewhere without adding a second global default. It carries no prompt:
+        as a catch-all in every non-ward room it cannot guarantee a further
+        unconsumed topic, so advertising one would land back here with no new
+        information (T6). The three rotations are distinct and useful: the
+        attention observation, the teacher's direction and the mastery demand,
+        the east route to the Network Hub and south to the Assistance Ward, and
+        a reminder of where mistakes go (A6).
 
 conversationNodes:
   - id: node-ai-verdict
@@ -162,4 +493,22 @@ conversationNodes:
     defaultTopicId: topic-ai-default
     authoring:
       note: >-
-        One-turn key-node beat: the verdict and the flavour taunt land, then the actor's catch-all keeps any further input in voice. No turn timeout (T3).
+        One-turn key-node beat: the verdict and the flavour taunt land, then the
+        actor's catch-all keeps any further input in voice. No turn timeout (T3).
+
+  - id: node-ai-respectable
+    actorId: npc-the-ai
+    isSticky: true
+    topicIds:
+      - topic-ai-respectable-yes
+      - topic-ai-respectable-no
+      - topic-ai-respectable-default
+    defaultTopicId: topic-ai-respectable-default
+    authoring:
+      note: >-
+        Entered only from `topic-ai-recycling-bin`. Sticky because the question
+        stays open until you put your answer to the AI or leave the room — there
+        is no turn timeout (T3). The yes topic exits the node; the no topic is a
+        terminal life loss; the in-node catch-all keeps neutral input in voice
+        with no effects. `bye`, leaving `room-arrival` or another enter-node ends
+        the node safely.

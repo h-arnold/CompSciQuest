@@ -31,13 +31,12 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). Requirement flags bell-wire-seated
-        and addressing-plate-re-lettered are ratified with it in §9 (allocated
-        in topic file section 10, seam-deferred per §12); the onSolve flag
+        Puzzle id approved for this area. Requirement flags bell-wire-seated
+        and addressing-plate-re-lettered are approved with it (allocated
+        in topic file section 10, with the action seam deferred); the onSolve flag
         bell-mended is allocated there and read by the Bobbin Lad's prediction
-        topics. hintSequenceId names hint-bobbin-window, the ladder bible
-        section 9 allocates (2026-11-25) and the wave-2 hint card authors for
-        this puzzle.
+        topics. hintSequenceId names hint-bobbin-window, whose ladder the wave-2 hint card
+        authors for this puzzle.
       pillar: >-
         P-b, P-c — bobbins in, cloth out: input and output (L1251) as the
         window's two instruments, and a fix that takes reasoning, not
@@ -119,9 +118,9 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). The requirement flag
-        dressing-re-ordered is ratified with it in §9 (allocated in topic file
-        section 10, seam-deferred per §12). card-sequence-given is allocated
+        Puzzle id approved for this area. The requirement flag
+        dressing-re-ordered is approved with it (allocated in topic file
+        section 10, with the action seam deferred). card-sequence-given is allocated
         there and read by this puzzle's guard; the brief's line for this puzzle
         omits it, and this card follows topic file section 10, which lists
         card-sequence-given as read by the Threading Order puzzle guard
@@ -209,10 +208,10 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). Requirement flags
+        Puzzle id approved for this area. Requirement flags
         shed-plate-returned, else-plate-restored and tray-routed-by-condition
-        are ratified with it in §9 (allocated in topic file section 10,
-        seam-deferred per §12); card-selection-given is allocated there and
+        are approved with it (allocated in topic file section 10,
+        with the action seam deferred); card-selection-given is allocated there and
         read by this puzzle's guard, and colours-lifted is allocated, feeding
         the Warp Walk's second light and disarming hazard-pick-avalanche.
       pillar: >-
@@ -309,9 +308,8 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). The requirement flags
-        slip-tooth-pried and counting-ratchet-reseated are ratified with it in
-        §9 (allocated in topic file section 10, seam-deferred per §12);
+        Puzzle id approved for this area. The requirement flags
+        slip-tooth-pried and counting-ratchet-reseated are approved with it (allocated in topic file section 10, with the action seam deferred);
         card-count-given is allocated there and read by this puzzle's guard,
         and weft-counted is allocated, feeding the Warp Walk's third light.
         pass-count-predicted is allocated in topic file section 10 (2026-11-25,
@@ -412,9 +410,9 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). The requirement flag
-        until-clause-restored is ratified with it in §9 (allocated in topic
-        file section 10, seam-deferred per §12); card-condition-given is
+        Puzzle id approved for this area. The requirement flag
+        until-clause-restored is approved with it (allocated in topic
+        file section 10, with the action seam deferred); card-condition-given is
         allocated there and read by this puzzle's guard, and
         condition-plate-set is allocated, feeding the Warp Walk's fourth light
         together with rogue-thread-filed.
@@ -499,9 +497,9 @@ puzzles:
     dependsOn: []
     authoring:
       note: >-
-        Puzzle id ratified 2026-11-25 (§9). The requirement flag
-        rogue-thread-in-drawer is ratified with it in §9 (allocated in topic
-        file section 10, seam-deferred per §12); card-condition-given is
+        Puzzle id approved for this area. The requirement flag
+        rogue-thread-in-drawer is approved with it (allocated in topic
+        file section 10, with the action seam deferred); card-condition-given is
         allocated there and read by this puzzle's guard, and
         rogue-thread-filed is allocated, feeding the Warp Walk's fourth light
         together with condition-plate-set.
@@ -543,7 +541,7 @@ puzzles:
         - >-
           npc-the-selvedge-warden, the signal beat (topic file section 10 stem
           topic-selvedge-warden-*; NPC card; node-selvedge-signal is the
-          ratified teaching beat for it, bible section 9): a rogue value is one
+          approved teaching beat for it): a rogue value is one
           which would not normally arise, put into a loop to stop it; the
           spec's own example reads grade = -1 (L1261). A signal goes in
           item-counterfoil-drawer, where it can be initialled — "The rogue

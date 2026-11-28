@@ -6,8 +6,7 @@ topicIds: [tutorial-mechanics]
 authoring:
   conventions:
     - >-
-      Every ID and alias is copied from the root bible §9 registry or the approved
-      Assistance Ward topic file. The four pupil actors start in the existing global
+      Every ID and alias comes from the brief and the approved cards (D2). The four pupil actors start in the existing global
       actorstate-ready; that state and npc-the-ai remain declared in the arrival card.
     - >-
       Each ward topic and node carries actorId. Locality appears only in isActive as

@@ -13,7 +13,7 @@ import {
   w7HintState,
 } from '../fixtures/wardW7Fixes';
 
-describe('W7 room-scoped hints (content-bible.md §12)', () => {
+describe('W7 room-scoped hints (assistance-ward.md §9.3)', () => {
   it('W7F-12: a demonstration hint starts at level 1 after an intake hint', () => {
     const bundle = w7HintBundle();
     const state = createFromDto(w7HintState(W7_INTAKE_ROOM_ID));

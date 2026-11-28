@@ -1,6 +1,6 @@
 // Deterministic fixtures for the `ward-w7-fixes` slice. Every object is an
 // in-memory test literal: no authored content prose, no real storage, clock,
-// random source, network or file system (content-bible.md §12 fix round).
+// random source, network or file system.
 import type { ContentBundle } from '../../src/content/ContentBundle';
 import type { Command } from '../../src/core/commands/Command';
 import type { Effect } from '../../src/core/effects/Effect';

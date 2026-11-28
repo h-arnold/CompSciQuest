@@ -47,7 +47,7 @@ function expectNoTechnicalDetail(messages: readonly string[]): void {
   }
 }
 
-describe('W7 gate denial (content-bible.md §12)', () => {
+describe('W7 gate denial (assistance-ward.md §10)', () => {
   it('W7F-06: an authored blockedText is returned verbatim and once', () => {
     const messages = checkExit({
       direction: 'east',

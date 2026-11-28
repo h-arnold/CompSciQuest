@@ -1,7 +1,7 @@
 // Browser coverage for the accepted round-2 ward fixes (WR2-B1, WR2-B2,
 // WR2-E1) and the round-2 card copy. Every command is driven through the real
 // Command box; no event seam is injected and no content ID or wording is
-// invented. Authority: content-bible.md §12 (2026-11-27 round-2 entries),
+// invented. Authority: docs/content/topics/assistance-ward.md (§6, §9.1, §10),
 // docs/content/assistance-ward/{rooms,npcs}.yaml and
 // docs/content/entry-interface/rooms.yaml.
 import { expect, test, type Page } from 'playwright/test';
