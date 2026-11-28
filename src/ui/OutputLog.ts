@@ -5,7 +5,11 @@ import {
   appendPlain as appendPlainLine,
 } from './appendMarkdown';
 
+// Allows for sub-pixel rounding in the browser's scroll range.
+const PIN_TOLERANCE_PX = 2;
+
 export class OutputLog {
+  private pinnedToLatest = true;
   readonly element: HTMLElement;
 
   constructor() {
@@ -16,6 +20,24 @@ export class OutputLog {
     // without interrupting the player. No content parsing happens here.
     this.element.setAttribute('role', 'log');
     this.element.setAttribute('aria-live', 'polite');
+    // Remember whether the player was following the newest line. A deliberate
+    // scroll-back emits a scroll event; appends and re-pins set the flag again.
+    this.element.addEventListener('scroll', () => {
+      this.pinnedToLatest = this.isAtLatest();
+    });
+    // Reflow is CSS-driven (application-and-ui.md §7.1). The element's own
+    // document view is the resize source; DOM fakes without a view add no
+    // listener, so the viewport policy stays inert under those fakes.
+    this.element.ownerDocument?.defaultView?.addEventListener('resize', () => {
+      if (this.pinnedToLatest) {
+        this.scrollToLatest();
+      }
+    });
+  }
+
+  private isAtLatest(): boolean {
+    const bottom = this.element.scrollHeight - this.element.clientHeight;
+    return this.element.scrollTop >= bottom - PIN_TOLERANCE_PX;
   }
 
   append(lines: readonly string[]): void {
@@ -39,6 +61,7 @@ export class OutputLog {
   }
 
   scrollToLatest(): void {
+    this.pinnedToLatest = true;
     this.element.scrollTop = this.element.scrollHeight;
   }
 }
