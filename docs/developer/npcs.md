@@ -39,14 +39,14 @@ Each A row is both a writing rule and a review test. Apply it to every useful
 reply, prompt and fallback. Related IDs point to other rules and do not replace
 the A row.
 
-| ID  | Test              | MUST                                                                                                                                                                                            | SHOULD                                                                                                                                            | MUST NOT                                                                                                                                | Related IDs            |
-| --- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| A1  | Tone and identity | Give the actor a distinct role, voice, motivation and relationship; record the approved tone mode, address form, one sample line and at most one recurring phrase. Cover-test failure is major. | Prefer opposing motivations.                                                                                                                      | Drift from the register, mock the learner's ability, or use more than one recurring phrase for one NPC.                                 | N4                     |
-| A2  | Goal and payoff   | Carry a D6 plan on every non-default topic; deliver its takeaway in character so the player can say why the exchange exists and what to do next.                                                | Offer a reachable next question after the takeaway.                                                                                               | Restate another topic, add no information, give away a quiz answer, or leave the goal implicit. Each is a major finding.                | D6, T6, V4             |
-| A3  | Relevance         | Answer the player's question or change the situation; every sentence advances the same topic.                                                                                                   | Add a fresh in-world detail that helps the player continue.                                                                                       | Restate another topic, give no new information, reveal a quiz answer, or add unrelated exposition.                                      | N9, A6                 |
-| A4  | Length            | Limit each reply to one takeaway; split longer teaching into one node or topic.                                                                                                                 | Keep a reply to 1–2 sentences where the takeaway allows it. Longer replies are acceptable for detailed exposition or an approved character voice. | Write a wall of text or stack several topics or mechanics into one reply.                                                               | N8, A2, A6             |
-| A5  | Comprehension     | Let a typical 14–16 learner restate the point, why it matters and the next action; use plain GCSE vocabulary before invented world terms. Never use parser-error phrasing.                      | Gloss the first technical term in apposition.                                                                                                     | Use engine or authoring vocabulary, parser phrases, or lists of lives, resets, progress costs, save behaviour or revision-game framing. | N9, T1, `PCK-DIALOGUE` |
-| A6  | Fallback value    | Give a default or catch-all reply a clue, reaction, useful next question or changed stance; repeats add information or change the response.                                                     | Change the character's stance when repetition is likely.                                                                                          | List lives, resets, progress costs, parser commands, save behaviour or revision-game framing.                                           | N9, T1                 |
+| ID  | Test              | MUST                                                                                                                                                                                            | SHOULD                                                                                                                                          | MUST NOT                                                                                                                                | Related IDs            |
+| --- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| A1  | Tone and identity | Give the actor a distinct role, voice, motivation and relationship; record the approved tone mode, address form, one sample line and at most one recurring phrase. Cover-test failure is major. | Prefer opposing motivations.                                                                                                                    | Drift from the register or use more than one recurring phrase for one NPC.                                                              | N4                     |
+| A2  | Goal and payoff   | Carry a D6 plan on every non-default topic; deliver its takeaway in character so the player can say why the exchange exists and what to do next.                                                | Offer a reachable next question after the takeaway.                                                                                             | Restate another topic, add no information, give away a quiz answer, or leave the goal implicit. Each is a major finding.                | D6, T6, V4             |
+| A3  | Relevance         | Answer the player's question or change the situation; every sentence advances the same topic.                                                                                                   | Add a fresh in-world detail that helps the player continue.                                                                                     | Restate another topic, give no new information, reveal a quiz answer, or add unrelated exposition.                                      | N9, A6                 |
+| A4  | Length            | Limit each reply to one takeaway; split longer teaching into one node or topic. Let the learner's comprehension set the length.                                                                 | Cut padding, not explanation: give the concrete beat or example the learner needs to follow the point, and run the reply as long as that takes. | Write a wall of text or stack several topics or mechanics into one reply.                                                               | N8, A2, A6             |
+| A5  | Comprehension     | Let a typical 14–16 learner restate the point, why it matters and the next action; use plain GCSE vocabulary before invented world terms. Never use parser-error phrasing.                      | Gloss the first technical term in apposition.                                                                                                   | Use engine or authoring vocabulary, parser phrases, or lists of lives, resets, progress costs, save behaviour or revision-game framing. | N9, T1, `PCK-DIALOGUE` |
+| A6  | Fallback value    | Give a default or catch-all reply a clue, reaction, useful next question or changed stance; repeats add information or change the response.                                                     | Change the character's stance when repetition is likely.                                                                                        | List lives, resets, progress costs, parser commands, save behaviour or revision-game framing.                                           | N9, T1                 |
 
 **Examples.** Two voices on the same topic:
 
@@ -70,15 +70,19 @@ governs; these lines only illustrate A1, A3, A5 and A6. For the audience and
 shared tone rules, follow
 [narrative-principles.md](../content/narrative-principles.md).
 
+A brief must supply the actor profile at the depth set in
+[bible §6](../content/content-bible.md#6-cast-index); `npc-the-ai` is the model.
+A voice adjective and a relationship label are not enough to brief a writer.
+
 ### Voice and temperament
 
 NPCs span the full temperament range: brash, rude and wittily sarcastic; warm,
 loving and compassionate; characters who present as warm but are cruel and
 passive-aggressive; and the exact opposite. There is no quota on inverted
 personas, and any target inside the fiction is fair game, including the player's
-avatar. Wit is the only limit beyond the harm floor in
+avatar, their intelligence and their ability. Wit is the only limit beyond the
+harm floor in
 [narrative-principles.md §8](../content/narrative-principles.md#8-harm-floor).
-An NPC never sneers at the pupil's intelligence or ability.
 
 The **Assistance Ward guide** is a confirmed area-specific voice: the AI's
 clipped bureaucracy becomes weary and passive-aggressive, resenting explanations
@@ -91,10 +95,7 @@ own at most one recurring phrase. There is no global catchphrase cap: variety
 comes from the cast, not a count.
 
 **Example.** "Oh, brilliant. Another student who's read the spec. I'll just
-fetch the mop, shall I?" — brash, aimed at the situation rather than the learner.
-
-**Non-example.** "You wouldn't understand this if I drew you a picture." That is
-mockery of the learner and barred by the harm floor.
+fetch the mop, shall I?" — brash, delivered straight.
 
 ### Dialogue plan metadata (D6)
 
@@ -164,19 +165,19 @@ export interface ActorState {
 // src/core/npcs/ConversationTopic.ts
 export type TopicMatch =
   | {
-      readonly kind: 'ask' | 'tell' | 'askTell';
+      readonly kind: "ask" | "tell" | "askTell";
       readonly objectIds: readonly string[];
     }
-  | { readonly kind: 'give' | 'show'; readonly itemIds: readonly string[] }
+  | { readonly kind: "give" | "show"; readonly itemIds: readonly string[] }
   | {
-      readonly kind: 'command' | 'special';
+      readonly kind: "command" | "special";
       readonly keywords: readonly string[];
     };
 
 export type ResponseStrategy =
-  | { readonly kind: 'once' }
-  | { readonly kind: 'sequence' } // play in order, repeat the last
-  | { readonly kind: 'rotating' }; // cycle; uses injected Random if shuffled
+  | { readonly kind: "once" }
+  | { readonly kind: "sequence" } // play in order, repeat the last
+  | { readonly kind: "rotating" }; // cycle; uses injected Random if shuffled
 
 export interface ConversationTopic {
   readonly id: string;
@@ -232,9 +233,9 @@ during resolution. Its canonical signature is in
 
 ```ts
 export type ResolvedTopic =
-  | { readonly kind: 'object'; readonly objectId: string }
-  | { readonly kind: 'keyword'; readonly topicId: string }
-  | { readonly kind: 'free-text'; readonly text: string };
+  | { readonly kind: "object"; readonly objectId: string }
+  | { readonly kind: "keyword"; readonly topicId: string }
+  | { readonly kind: "free-text"; readonly text: string };
 ```
 
 Resolution order:
@@ -464,7 +465,7 @@ cover evidence that the tables cannot carry alone.
   `npc-content` gate ([§10](#10-structural-validation-gates)); T5 has no
   same-input overlap.
 - Check the recorded player takeaway for each key NPC beat in the V4 trace.
-- Keep parser-error phrasing and one-takeaway length under A4/A5 and N4/N8.
+- Keep parser-error phrasing and one-takeaway discipline under A4/A5 and N4/N8.
 
 `content-critic` SHOULD note a cover-test pass that depends on one phrase rather
 than a stable voice, where A1 is otherwise satisfied. It MUST NOT accept

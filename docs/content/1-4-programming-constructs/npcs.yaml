@@ -55,8 +55,8 @@ authoring:
     - >-
       All prose is plain text rendered via textContent: no HTML, no markdown, no
       parser-error phrasing (A5). British English throughout. Welsh is never a joke
-      target and no resident mocks the learner (harm floor); the cousin blames looms,
-      thread tension and the weather for his own work, never the pupil.
+      target (harm floor); the cousin blames looms, thread tension and the weather
+      for his own work, never the pupil.
 
 actors:
   - id: npc-the-loomwright
@@ -1547,8 +1547,7 @@ conversationTopics:
         Catch-all left unscoped (bible §11 item 14): the cousin roams the mill and
         unmatched input must land in voice wherever he is. His seven wrong
         claims are contradicted by the rooms themselves and by the residents'
-        topics, and he never assembles a sentence that mocks the learner (harm
-        floor); he blames looms, thread tension and the weather.
+        topics; he blames looms, thread tension and the weather.
 
   # --- AI cameo (cross-card binding; flavour only) ----------------------------
   - id: topic-ai-licence

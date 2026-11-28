@@ -74,8 +74,7 @@ evidence against it. The ward is a deadpan machine clinic, not a horror area.
   therefore does not teach, retrieve or complete `ai-ethics-and-implications`.
 - **AI voice in this area only.** The AI becomes weary and passive-aggressive:
   clipped administrative complaint, elaborate reluctance and third-person
-  references to "the pupil". It never sneers at the player's intelligence or
-  treats a struggling learner as a monster (N4, A1; narrative-principles §§7–8).
+  references to "the pupil" (N4, A1; narrative-principles §§7–8).
 - **Cultures appear only through the pupils' names.** No accents, stereotypes or
   cultural joke traits are authored.
 

@@ -27,7 +27,9 @@ story develops; only `confirmed` entries influence writing.
 - Use the full, precise technical term from the Unit 1 teacher guidance. On its
   **first use** pair it with a short plain-English gloss in apposition; after
   that the term stands alone.
-- Adopt the similar voice to Terry Prattchett or Douglas Adams. Short, and punchy but with a certain amount of flair.
+- Adopt a voice closer to Terry Pratchett or Douglas Adams: flair, timing and a
+  comic beat, with comprehension setting the length. Cut padding, not
+  explanation; a short line earns its place by being clear, not by being short.
 - Keep second person, present tense and one consistent register (N4).
   Failed commands, unknown topics and hint text stay in voice; the bible defines
   the register and a card that drifts from it is a major finding.
@@ -234,17 +236,14 @@ unregistered noun, which turns it into the guess-the-noun trap N6 forbids.
 
 NPC voice, temperament, recurring phrases and area-specific guides are owned by
 [npcs.md §Authoring conversation rules](../developer/npcs.md#authoring-conversation-rules-a)
-and its [Voice and temperament](../developer/npcs.md#voice-and-temperament) section. The shared
-harm floor (§8) still forbids **mockery of the learner**: an NPC may be rude to
-the player's avatar, never to the pupil's intelligence or ability. Every
-conversational input resolves in character (T1) and teaching beats stay diegetic
-(N3).
+and its [Voice and temperament](../developer/npcs.md#voice-and-temperament) section.
+Every conversational input resolves in character (T1) and teaching beats stay
+diegetic (N3).
 
 ## 8. Harm floor
 
 - No sexual content; no slurs; no gore or realistic cruelty; no real-world
-  atrocity gags; no mockery of the learner; and no use of Welsh language or
-  culture as the target of a joke.
+  atrocity gags; and no use of Welsh language or culture as the target of a joke.
 - Peril falls on fictional creatures, objects and the player's cartoon avatar —
   never on the reader.
 - This floor overrides every other principle in this document, including the
@@ -278,7 +277,7 @@ different game; forbidden here.
 getting on with the actual business of the room.
 
 **Non-example:** A Welsh-speaking character who exists only to be mocked for
-how they talk.
+how they talk — §8 forbids making the language or its speakers the joke target.
 
 ## 11. Pattern log (living)
 

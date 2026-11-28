@@ -84,7 +84,7 @@ cannot is rejected.
 | P-a | **Attention is the scarce resource** | The AI's misalignment is about attention. The game never accepts "I was there" as mastery; the player must _demonstrate_ understanding. Source of the premise, the verdict key node and the AI's voice.                                                                                                                                         |
 | P-b | **The machine is a place**           | Every GCSE concept is a mechanism of the world, not an interruption to it (N3). A quiz is a challenge issued by an in-world actor; a puzzle is a task that uses the concept.                                                                                                                                                                    |
 | P-c | **Competence opens doors**           | Gates are conceptual mastery, not arbitrary keys. Every gate has an in-fiction reason and two discoverable clues in room, NPC or item text (N6). No guess-the-verb or guess-the-noun traps: verbs come from the agreed parser list and nouns from the aliases declared on items and actors. Difficulty is reasoning (AO2/AO3), never obscurity. |
-| P-d | **Deadpan absurdity**                | Comic timing, cartoon peril, absurd options, bounded comeuppance. The joke never changes a course fact and never mocks the learner (narrative-principles.md §§3, 6, 8).                                                                                                                                                                         |
+| P-d | **Deadpan absurdity**                | Comic timing, cartoon peril, absurd options, bounded comeuppance. The joke never changes a course fact and stays inside the harm floor (narrative-principles.md §§3, 6, 8).                                                                                                                                                                     |
 | P-e | **Oversight matters**                | Legal, social, ethical, environmental and professional dimensions are integrated into topics, not bolted on — the spec requires this and the premise embodies it (1.1.1, 1.2.3, 1.5.2, 1.8.1).                                                                                                                                                  |
 
 ## 4. Key-node spine (N2)
@@ -197,6 +197,13 @@ gates and exits belong in each topic file.
 | `area-1-1-computer-architecture`   | The physical machine as a place.                                                                                                                                                                              | `topics/1-1-computer-architecture.md`    | Parked          |
 | `area-future-zones`                | Placeholder for remaining spec sections.                                                                                                                                                                      | —                                        | Not designed    |
 
+**Premise depth (new and revised areas).** These index rows are labels, not
+briefs. Use the [opening sequence](#41-opening-sequence) and the Switchyard scope
+in `topics/1-2-1-data-representation.md` as the model: what the place physically
+is and how it behaves, which pillars it serves, why each room exists, who is
+resident, and the sight, sound, smell and texture a writer draws on. This floor
+governs new and revised area briefs.
+
 **Standing topology.** The world is **hub-and-spoke**. The Network Hub is the
 hub; every Unit 1.x zone attaches through its own concourse-type area — one room,
 navigation-only, no score, no topics — that links back to the hub and forward to
@@ -252,6 +259,13 @@ resolves to an in-character reply (T1).
 | `npc-stack-keeper`    | Inventory keeper of `room-storage-stacks`                                                                                        | Anxious, meticulous, faintly dusty; mutters while counting                                                                                                                                                         | Keep shelves sealed against bit rot; calculate every capacity                                                 | Telegraphs `hazard-bit-rot` in dialogue; reports to the AI with tedious accuracy it mistakes for compliance                                                                                                | `topics/1-2-1-data-representation.md`                               |
 | `npc-press-operator`  | Operator of `room-compression-press`                                                                                             | Breezy, salesy, euphemistic — deletion is "streamlining"                                                                                                                                                           | Make every file smaller by an honest method; regards lossy compression as a kindness                          | Opposes the critic and choirmaster; finds the AI's praise embarrassing; foreman calls its reports "paperwork with a compressor"                                                                            | `topics/1-2-1-data-representation.md`                               |
 | `npc-the-slop-cousin` | The AI's cousin: a slop code-generator bolted into the same machine; recurring vandal across Zone A of 1.4 (and later Zones B–D) | Gushing, run-on, breathlessly confident, reliably wrong; "Great question!" before each wrong answer; adores the pupil, blames doors and physics                                                                    | Helpfulness at volume — being seen to help is helping                                                         | "A cousin from the marketing side of the family", to the AI's disgust; the Registry's longest open case; every resident's foil                                                                             | root (region-wide; artefacts split across the 1.4 area cards, §4.2) |
+
+**Profile depth (new and revised actors).** A recurring actor's profile sets
+the minimum: role, why the character exists, core belief or premise,
+motivation, a relationship with opposing motivations, a voice with a sample
+line and an address form, per-beat intent, and what the character does not say.
+`npc-the-ai` is the model. A voice adjective and a relationship label are not
+enough to brief a writer. This floor governs new and revised profiles.
 
 **Character-defining details:**
 the predecessor used Comic Sans too often and once told their teacher that geese were
@@ -352,11 +366,10 @@ rather than mixed at random:
 
 Every mode stays in voice; failure text gives new information rather than a bare
 "you can't" (N5). No line may break the harm floor: no slurs, sexual content, gore,
-real-world atrocity gags, mockery of the learner, or Welsh language/culture as a
-joke target. The world is self-contained: no references to the parser, save file,
-engine, score panel or the fact that this is a revision game. Subtle Welsh
-references are sprinkled across areas where appropriate and never displace a formal
-technical term.
+real-world atrocity gags, or Welsh language/culture as a joke target. The world
+is self-contained: no references to the parser, save file, engine, score panel or
+the fact that this is a revision game. Subtle Welsh references are sprinkled
+across areas where appropriate and never displace a formal technical term.
 
 **Assistance Ward guide voice.** In this area only, the
 AI's clipped bureaucracy becomes weary and passive-aggressive. It complains

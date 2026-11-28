@@ -42,14 +42,13 @@ fluency without correctness. Working name `npc-slop-cousin` (proposed, D2).
 
 - **Role:** anti-teacher; has left one broken "optimisation" in every zone.
 - **Voice (A1):** warm, sycophantic, run-on; one recurring phrase — "Great
-  question!" — delivered before each wrong answer. Never mocks the learner
-  (harm floor, narrative-principles §8); it adores the pupil. targeting the
-  situation and itself only.
+  question!" — delivered before each wrong answer. It adores the pupil and
+  targets the situation and itself only.
 - **Relationships:** the AI regards it as an embarrassment ("a cousin from the
   marketing side of the family"); the zone keepers resent its "help" — opposing
   motivations preferred (A1).
-- **Harm floor note:** slop artefacts fail in cartoon ways only; no mockery of the
-  learner; no Welsh references as joke targets.
+- **Harm floor note:** slop artefacts fail in cartoon ways only; no Welsh
+  references as joke targets.
 - **Arc shape (no new spine key nodes — N2):** each zone ends with one mended
   artefact; the per-zone mending mirrors the spec verbs "write, correct, test and
   interpret" (L1169). Region synthesis lands in the existing Attention Audit and

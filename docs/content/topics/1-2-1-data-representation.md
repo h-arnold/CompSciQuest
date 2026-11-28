@@ -145,9 +145,9 @@ The duck-as-bit teaching hook is `topic-predecessor-duck-as-bit`.
 
 **Six layer actors** (user-approved; one per remaining abstraction layer). Each has
 a distinct voice, motivation and at least one relationship with opposing motivations
-(A1); at most one recurring phrase each (narrative-principles.md §7); no mockery of
-the learner or Welsh culture as a joke target (§8). Formal spec terms always appear
-beside any plain gloss (`PCK-TERM`).
+(A1); at most one recurring phrase each (narrative-principles.md §7); no Welsh
+culture as a joke target (§8). Formal spec terms always appear beside any plain
+gloss (`PCK-TERM`).
 
 | Actor ID             | Room / layer                | Voice (recurring phrase)                                                                           | Motivation and key relationship                                                                                       | Topics / node                                                                                                                                            |
 | -------------------- | --------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
