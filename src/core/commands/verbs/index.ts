@@ -100,6 +100,14 @@ function describeRoom(context: TurnContext): Effect {
 function describeTarget(context: TurnContext, targetId: string): Effect {
   const item = context.bundle.items.getById(targetId);
   const actor = context.bundle.actors.getById(targetId);
+  if (item === undefined && actor !== undefined) {
+    const stateId = context.state.npcs[targetId]?.stateId;
+    const description =
+      stateId === undefined
+        ? undefined
+        : context.bundle.actorStates.getById(stateId)?.stateDesc;
+    if (description !== undefined) return message(description);
+  }
   const description =
     item?.description ??
     actor?.aliases[0] ??
