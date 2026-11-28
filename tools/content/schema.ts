@@ -67,6 +67,7 @@ const cardShape = z
 
 // Authoring-only keys (content-toolchain.md §2). They are legal only inside an
 // `authoring:` block; a stray occurrence is a finding.
+// `topics` is deliberately absent: it is a legal card-level collection.
 const AUTHORING_KEYS: ReadonlySet<string> = new Set([
   'interesting',
   'pillar',
@@ -82,6 +83,24 @@ const AUTHORING_KEYS: ReadonlySet<string> = new Set([
   'assessmentObjective',
   'difficulty',
   'note',
+  'conventions',
+  'counterplay',
+  'dialoguePlan',
+  'framing',
+  'hintsNote',
+  'notes',
+  'producedBy',
+  'profile',
+  'reason',
+  'reserved',
+  'siblingCheck',
+  'spec',
+  'specCheck',
+  'stickyReason',
+  'task',
+  'verbalTic',
+  'voiceSamples',
+  'worldIdNote',
 ]);
 
 const COLLECTION_KEYS: readonly string[] = [
@@ -249,6 +268,10 @@ function todoFindings(
   return [];
 }
 
+// The stray-authoring-key walk (content-toolchain.md §2, D4) reaches the card
+// record, a card's `definition:` record and one level of collection entries.
+// It stops there: a nested record holds runtime shapes, so an effect array's
+// `reason:` is a runtime field rather than an authoring key.
 function strayFindings(
   path: string,
   data: Record<string, unknown>,
@@ -267,6 +290,10 @@ function strayFindings(
     }
   };
   check(data, String(data['kind'] ?? path));
+  const definition = asRecord(data['definition']);
+  if (definition !== undefined) {
+    check(definition, String(definition['id'] ?? 'definition'));
+  }
   for (const key of COLLECTION_KEYS) {
     const collection = data[key];
     if (!Array.isArray(collection)) continue;
