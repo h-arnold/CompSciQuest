@@ -44,6 +44,23 @@ function hasItem(context: TurnContext, itemId: string): boolean {
   return context.state.player.inventory.includes(itemId);
 }
 
+function farewell(
+  context: TurnContext,
+  dependencies: NpcDependencies,
+  events: GameEvent[],
+): void {
+  const speaking = speakingActorIds(context.state);
+  if (speaking.length === 0) return;
+  const acknowledgement = dependencies.applier.apply({
+    kind: 'message',
+    text: 'Goodbye.',
+  });
+  for (const event of acknowledgement) events.push(event);
+  for (const actorId of speaking) {
+    endConversation(context, actorId, 'said goodbye', dependencies, events);
+  }
+}
+
 export function createDialogueSystem(
   dependencies: NpcDependencies,
 ): DialogueSystem {
@@ -68,15 +85,7 @@ export function createDialogueSystem(
       }
 
       if (command.kind === 'bye') {
-        for (const actorId of speakingActorIds(context.state)) {
-          endConversation(
-            context,
-            actorId,
-            'said goodbye',
-            dependencies,
-            events,
-          );
-        }
+        farewell(context, dependencies, events);
         return events;
       }
 
